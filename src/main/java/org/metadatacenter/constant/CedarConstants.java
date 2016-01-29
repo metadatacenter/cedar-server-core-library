@@ -13,6 +13,6 @@ public final class CedarConstants {
   public final static String PARAM_LIMIT = "limit";
 
   // JSON ID constants
-  public final static String TEMP_ID_PREFIX = "@tmp-";
+  public final static String TEMP_ID_PREFIX = "tmp-";
 
 }
