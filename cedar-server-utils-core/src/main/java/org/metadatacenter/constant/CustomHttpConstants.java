@@ -6,6 +6,6 @@ public final class CustomHttpConstants {
   }
 
   // Custom HTTP headers
-  public static final String HTTP_CUSTOM_HEADER_TOTAL_COUNT = "Total-Count";
+  public static final String HEADER_TOTAL_COUNT = "Total-Count";
 
 }
