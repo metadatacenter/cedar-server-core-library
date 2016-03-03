@@ -13,6 +13,7 @@ public final class ConfigConstants {
   public static final String TEMPLATE_ELEMENTS_COLLECTION_NAME = MONGODB_COLLECTIONS + "template-elements";
   public static final String TEMPLATE_FIELDS_COLLECTION_NAME = MONGODB_COLLECTIONS + "template-fields";
   public static final String TEMPLATE_INSTANCES_COLLECTION_NAME = MONGODB_COLLECTIONS + "template-instances";
+  public static final String USERS_COLLECTION_NAME = MONGODB_COLLECTIONS + "users";
 
   private static String LD_IDPATH = "linkedData.idPath.";
   private static String LD_IDPATH_SUFFIX = LD_IDPATH + "suffix.";

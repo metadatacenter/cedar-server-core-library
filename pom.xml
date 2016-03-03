@@ -15,6 +15,7 @@
     <module>cedar-server-utils-core</module>
     <module>cedar-server-utils-play</module>
     <module>cedar-template-operations</module>
+    <module>cedar-user-operations</module>
   </modules>
 
   <properties>
