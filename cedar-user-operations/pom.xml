@@ -17,19 +17,6 @@
   <name>CEDAR User Server Operations</name>
 
   <properties>
-    <java.version>1.8</java.version>
-
-    <apache.httpclient.version>4.5.1</apache.httpclient.version>
-    <jackson.core.version>2.5.0</jackson.core.version>
-    <checker.framework.version>1.7.5</checker.framework.version>
-    <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
-    <fge.version>2.2.6</fge.version>
-    <mongodb.version>3.0.0</mongodb.version>
-
-    <org.metadatacenter.cedar.server.utils.core.version>0.1.0</org.metadatacenter.cedar.server.utils.core.version>
-
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencies>
@@ -89,16 +76,10 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
       </plugin>
     </plugins>
   </build>
