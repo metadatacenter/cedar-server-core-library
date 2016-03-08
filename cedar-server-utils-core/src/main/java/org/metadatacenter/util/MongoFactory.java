@@ -1,7 +1,7 @@
 package org.metadatacenter.util;
 
-import checkers.nullness.quals.NonNull;
 import com.mongodb.MongoClient;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class MongoFactory {
 

@@ -1,6 +1,6 @@
 package org.metadatacenter.server.dao;
 
-import checkers.nullness.quals.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.IOException;
 

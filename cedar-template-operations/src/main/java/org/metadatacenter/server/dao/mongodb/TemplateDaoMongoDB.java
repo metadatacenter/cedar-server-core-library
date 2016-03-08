@@ -1,6 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
-import checkers.nullness.quals.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class TemplateDaoMongoDB extends GenericLDDaoMongoDB {
 

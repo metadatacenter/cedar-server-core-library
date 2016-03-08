@@ -1,6 +1,6 @@
 package org.metadatacenter.server.service;
 
-import checkers.nullness.quals.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.server.security.IUserService;
 

@@ -1,9 +1,9 @@
 package org.metadatacenter.util.http;
 
-import checkers.nullness.quals.NonNull;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.constant.HttpConstants;
 

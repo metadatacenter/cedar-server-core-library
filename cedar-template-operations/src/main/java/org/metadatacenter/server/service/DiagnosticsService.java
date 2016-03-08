@@ -1,6 +1,6 @@
 package org.metadatacenter.server.service;
 
-import checkers.nullness.quals.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public interface DiagnosticsService<T> {
 

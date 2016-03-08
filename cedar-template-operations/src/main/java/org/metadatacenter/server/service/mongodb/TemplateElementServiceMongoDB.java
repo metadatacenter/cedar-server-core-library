@@ -1,6 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
-import checkers.nullness.quals.NonNull;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.server.dao.mongodb.TemplateElementDaoMongoDB;

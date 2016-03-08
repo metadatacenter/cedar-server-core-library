@@ -1,6 +1,5 @@
 package org.metadatacenter.util.json;
 
-import checkers.nullness.quals.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,6 +9,7 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.util.FixMongoDirection;
 
 import java.io.IOException;
