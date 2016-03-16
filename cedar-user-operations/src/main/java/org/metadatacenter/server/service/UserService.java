@@ -3,16 +3,17 @@ package org.metadatacenter.server.service;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.server.security.IUserService;
+import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.io.IOException;
 
-public interface UserService<K, A, T> extends IUserService<K, A, T> {
+public interface UserService extends IUserService {
 
   @NonNull
-  public T createUser(@NonNull T user) throws IOException;
+  public CedarUser createUser(@NonNull CedarUser user) throws IOException;
 
-  public T findUser(@NonNull K userId) throws IOException, ProcessingException;
+  public CedarUser findUser(@NonNull String userId) throws IOException, ProcessingException;
 
-  public T findUserByApiKey(@NonNull A apiKey) throws IOException, ProcessingException;
+  public CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
 
 }

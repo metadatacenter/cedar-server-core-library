@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.server.security.exception.CedarAccessException;
-import org.metadatacenter.server.security.exception.MissingRealmRoleException;
+import org.metadatacenter.server.security.exception.MissingPermissionException;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -35,8 +35,8 @@ public abstract class AbstractCedarController extends Controller {
       errorSubType = "authException";
       errorCode = ((CedarAccessException) t).getErrorCode();
       suggestedAction = ((CedarAccessException) t).getSuggestedAction();
-      if (t instanceof MissingRealmRoleException) {
-        errorParams.put("missingRole", ((MissingRealmRoleException) t).getRoleName());
+      if (t instanceof MissingPermissionException) {
+        errorParams.put("missingPermission", ((MissingPermissionException) t).getPermissionName());
       }
     }
     errorDescription.put("errorSubType", errorSubType);

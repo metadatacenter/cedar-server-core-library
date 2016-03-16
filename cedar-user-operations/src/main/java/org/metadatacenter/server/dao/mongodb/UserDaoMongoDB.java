@@ -1,32 +1,77 @@
 package org.metadatacenter.server.dao.mongodb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.server.dao.GenericUserDao;
+import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.FixMongoDirection;
+import org.metadatacenter.util.MongoFactory;
+import org.metadatacenter.util.json.JsonUtils;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class UserDaoMongoDB extends GenericDaoMongoDB {
+public class UserDaoMongoDB implements GenericUserDao {
+
+  protected final @NonNull MongoCollection<Document> entityCollection;
+  protected final @NonNull JsonUtils jsonUtils;
 
   public UserDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
-    super(dbName, collectionName);
+    MongoClient mongoClient = MongoFactory.getClient();
+    entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
+    jsonUtils = new JsonUtils();
   }
 
-  public JsonNode findByApiKey(String apiKey) throws IOException {
-    if ((apiKey == null) || (apiKey.length() == 0)) {
+  @Override
+  @NonNull
+  public CedarUser create(@NonNull CedarUser user) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode userNode = mapper.valueToTree(user);
+    // Adapts all keys not accepted by MongoDB
+    JsonNode fixedElement = jsonUtils.fixMongoDB(userNode, FixMongoDirection.WRITE_TO_MONGO);
+    Map elementMap = mapper.convertValue(fixedElement, Map.class);
+    Document elementDoc = new Document(elementMap);
+    entityCollection.insertOne(elementDoc);
+    // Returns the document created (all keys adapted for MongoDB are restored)
+    JsonNode savedUser = mapper.readTree(elementDoc.toJson());
+    JsonNode fixedUser = jsonUtils.fixMongoDB(savedUser, FixMongoDirection.READ_FROM_MONGO);
+    System.out.println(fixedUser.toString());
+    return mapper.treeToValue(fixedUser, CedarUser.class);
+  }
+
+  @Override
+  public CedarUser find(@NonNull String id) throws IOException {
+    if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
-
-
-    Document doc = entityCollection.find(eq("apiKeys", apiKey)).first();
+    Document doc = entityCollection.find(eq("userId", id)).first();
     if (doc == null) {
       return null;
     }
     ObjectMapper mapper = new ObjectMapper();
-    return jsonUtils.fixMongoDB(mapper.readTree(doc.toJson()), FixMongoDirection.READ_FROM_MONGO);
+    JsonNode readUser = mapper.readTree(doc.toJson());
+    JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
+    return mapper.treeToValue(fixedUser, CedarUser.class);
+  }
+
+  public CedarUser findByApiKey(String apiKey) throws IOException {
+    if ((apiKey == null) || (apiKey.length() == 0)) {
+      throw new IllegalArgumentException();
+    }
+
+    Document doc = entityCollection.find(eq("apiKeys.key", apiKey)).first();
+    if (doc == null) {
+      return null;
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode readUser = mapper.readTree(doc.toJson());
+    JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
+    return mapper.treeToValue(fixedUser, CedarUser.class);
   }
 }

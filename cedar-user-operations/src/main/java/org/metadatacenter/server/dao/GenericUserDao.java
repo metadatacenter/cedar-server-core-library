@@ -1,12 +1,13 @@
 package org.metadatacenter.server.dao;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.io.IOException;
 
-public interface GenericUserDao<K, T> {
+public interface GenericUserDao {
 
-  @NonNull T create(@NonNull T element) throws IOException;
+  @NonNull CedarUser create(@NonNull CedarUser element) throws IOException;
 
-  T find(@NonNull K id) throws IOException;
+  CedarUser find(@NonNull String id) throws IOException;
 }
