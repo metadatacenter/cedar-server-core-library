@@ -41,7 +41,6 @@ public class UserDaoMongoDB implements GenericUserDao {
     // Returns the document created (all keys adapted for MongoDB are restored)
     JsonNode savedUser = mapper.readTree(elementDoc.toJson());
     JsonNode fixedUser = jsonUtils.fixMongoDB(savedUser, FixMongoDirection.READ_FROM_MONGO);
-    System.out.println(fixedUser.toString());
     return mapper.treeToValue(fixedUser, CedarUser.class);
   }
 
