@@ -24,6 +24,9 @@ public final class ConfigConstants {
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_FIELDS = LD_IDPATH_SUFFIX + "template-fields";
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_INSTANCES = LD_IDPATH_SUFFIX + "template-instances";
 
+  public static final String USER_DATA_ID_PATH_BASE = "userData.base";
+
+
   private static String PAGINATION = "pagination.";
   public static final String PAGINATION_DEFAULT_PAGE_SIZE = PAGINATION + "defaultPageSize";
   public static final String PAGINATION_MAX_PAGE_SIZE = PAGINATION + "maxPageSize";

@@ -8,7 +8,12 @@ import org.metadatacenter.server.security.exception.MissingPermissionException;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public abstract class AbstractCedarController extends Controller {
+
+  protected static DateFormat xsdDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
   /* For CORS */
   public static Result preflight(String all) {
