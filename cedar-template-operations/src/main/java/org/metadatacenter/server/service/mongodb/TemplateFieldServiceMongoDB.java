@@ -54,16 +54,26 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
         Map.Entry<String, JsonNode> entry = it.next();
         JsonNode fieldCandidate = entry.getValue();
         // If the entry is an object
-        if (fieldCandidate.isObject()) {
-          if (fieldCandidate.get("@id") != null) {
-            String id = fieldCandidate.get("@id").asText();
-            if (id != null && id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
-              JsonNode removeId = ((ObjectNode) fieldCandidate).remove("@id");
-
-              templateFieldDao.create(fieldCandidate);
-            }
+        if (fieldCandidate.isObject() && fieldCandidate.get("type") != null) {
+          String type = fieldCandidate.get("type").asText();
+          // single fields
+          if ("object".equals(type)) {
+            saveFieldIfValid(fieldCandidate);
+            // multiple instance
+          } else if ("array".equals(type)) {
+            saveFieldIfValid(fieldCandidate.get("items"));
           }
         }
+      }
+    }
+  }
+
+  private void saveFieldIfValid(JsonNode fieldCandidate) throws IOException {
+    if (fieldCandidate.get("@id") != null) {
+      String id = fieldCandidate.get("@id").asText();
+      if (id != null && id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
+        JsonNode removeId = ((ObjectNode) fieldCandidate).remove("@id");
+        templateFieldDao.create(fieldCandidate);
       }
     }
   }
