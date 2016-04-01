@@ -3,6 +3,7 @@ package org.metadatacenter.server.service;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.metadatacenter.provenance.ProvenanceInfo;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,5 +18,5 @@ public interface TemplateFieldService<K, T> {
 
   public long count();
 
-  public void saveNewFieldsAndReplaceIds(T genericInstance) throws IOException;
+  public void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi) throws IOException;
 }

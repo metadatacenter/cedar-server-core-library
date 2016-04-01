@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.provenance.ProvenanceInfo;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
@@ -44,7 +45,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance) throws IOException {
+  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance, ProvenanceInfo pi) throws IOException {
 
     JsonNode properties = genericInstance.get("properties");
     if (properties != null) {
@@ -58,6 +59,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
             String id = fieldCandidate.get("@id").asText();
             if (id != null && id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
               JsonNode removeId = ((ObjectNode) fieldCandidate).remove("@id");
+
               templateFieldDao.create(fieldCandidate);
             }
           }
