@@ -11,7 +11,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class LinkHeaderUtil {
 
@@ -20,43 +22,54 @@ public final class LinkHeaderUtil {
 
   public static String getPagingLinkHeader(@NonNull String baseUrl, @NonNull Long total, Integer limit, Integer
       offset) {
+
+    Map<String, String> pagingLinkHeaders = getPagingLinkHeaders(baseUrl, total, limit, offset);
+
+    StringBuilder links = new StringBuilder();
+    pagingLinkHeaders.forEach((linkType, uri) -> appendPagingLinkHeader(links, linkType, uri));
+
+    return links.toString();
+  }
+
+  public static Map<String, String> getPagingLinkHeaders(@NonNull String baseUrl, @NonNull Long total, Integer limit,
+                                                         Integer offset) {
     if (limit == null) {
       limit = 0;
     }
     if (offset == null) {
       offset = 0;
     }
-    StringBuilder links = new StringBuilder();
 
+    Map<String, String> ret = new HashMap<>();
     if (offset + limit < total) {
       URI next = createOnePagingLink(baseUrl, offset + limit, limit);
-      appendPagingLinkHeader(links, next, HttpConstants.HEADER_LINK_TYPE_NEXT);
+      ret.put(HttpConstants.HEADER_LINK_TYPE_NEXT, next.toString());
     }
 
     URI last = createOnePagingLink(baseUrl, ((total - 1) / limit) * limit, limit);
-    appendPagingLinkHeader(links, last, HttpConstants.HEADER_LINK_TYPE_LAST);
+    ret.put(HttpConstants.HEADER_LINK_TYPE_LAST, last.toString());
 
     URI first = createOnePagingLink(baseUrl, 0, limit);
-    appendPagingLinkHeader(links, first, HttpConstants.HEADER_LINK_TYPE_FIRST);
+    ret.put(HttpConstants.HEADER_LINK_TYPE_FIRST, first.toString());
 
     if (offset - limit >= 0) {
       URI prev = createOnePagingLink(baseUrl, offset - limit, limit);
-      appendPagingLinkHeader(links, prev, HttpConstants.HEADER_LINK_TYPE_PREV);
+      ret.put(HttpConstants.HEADER_LINK_TYPE_PREV, prev.toString());
     }
 
-    return links.toString();
+    return ret;
   }
 
-  private static void appendPagingLinkHeader(StringBuilder sb, URI uri, String type) {
+  private static void appendPagingLinkHeader(StringBuilder sb, String linkType, String uri) {
     if (uri != null) {
       if (sb.length() > 0) {
         sb.append(",");
       }
       sb.append("<");
-      sb.append(uri.toString());
+      sb.append(uri);
       sb.append(">");
       sb.append("; rel=\"");
-      sb.append(type);
+      sb.append(linkType);
       sb.append("\"");
     }
   }
