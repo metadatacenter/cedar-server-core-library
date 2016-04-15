@@ -32,26 +32,28 @@ public abstract class AbstractCedarController extends Controller {
     String errorCode = "";
 
     ObjectNode errorDescription = JsonNodeFactory.instance.objectNode();
-    errorDescription.put("errorType", "exception");
-    errorDescription.put("message", t.getMessage());
-    errorDescription.put("localizedMessage", t.getLocalizedMessage());
-    errorDescription.put("string", t.toString());
-    if (t instanceof CedarAccessException) {
-      errorSubType = "authException";
-      errorCode = ((CedarAccessException) t).getErrorCode();
-      suggestedAction = ((CedarAccessException) t).getSuggestedAction();
-      if (t instanceof MissingPermissionException) {
-        errorParams.put("missingPermission", ((MissingPermissionException) t).getPermissionName());
+    if (t != null) {
+      errorDescription.put("errorType", "exception");
+      errorDescription.put("message", t.getMessage());
+      errorDescription.put("localizedMessage", t.getLocalizedMessage());
+      errorDescription.put("string", t.toString());
+      if (t instanceof CedarAccessException) {
+        errorSubType = "authException";
+        errorCode = ((CedarAccessException) t).getErrorCode();
+        suggestedAction = ((CedarAccessException) t).getSuggestedAction();
+        if (t instanceof MissingPermissionException) {
+          errorParams.put("missingPermission", ((MissingPermissionException) t).getPermissionName());
+        }
+      }
+      ArrayNode jsonST = errorDescription.putArray("stackTrace");
+      for (StackTraceElement ste : t.getStackTrace()) {
+        jsonST.add(ste.toString());
       }
     }
     errorDescription.put("errorSubType", errorSubType);
     errorDescription.put("errorCode", errorCode);
     errorDescription.put("suggestedAction", suggestedAction);
     errorDescription.set("errorParams", errorParams);
-    ArrayNode jsonST = errorDescription.putArray("stackTrace");
-    for (StackTraceElement ste : t.getStackTrace()) {
-      jsonST.add(ste.toString());
-    }
     return errorDescription;
   }
 
