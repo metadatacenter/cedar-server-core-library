@@ -6,6 +6,9 @@ public class ProvenanceUser {
   private String id;
   private String name;
 
+  public ProvenanceUser() {
+  }
+
   public ProvenanceUser(String id) {
     this.id = id;
   }

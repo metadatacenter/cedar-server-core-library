@@ -14,7 +14,6 @@ public final class ConfigConstants {
   public static final String TEMPLATE_FIELDS_COLLECTION_NAME = MONGODB_COLLECTIONS + "template-fields";
   public static final String TEMPLATE_INSTANCES_COLLECTION_NAME = MONGODB_COLLECTIONS + "template-instances";
   public static final String USERS_COLLECTION_NAME = MONGODB_COLLECTIONS + "users";
-  public static final String RESOURCES_COLLECTION_NAME = MONGODB_COLLECTIONS + "resources";
 
   private static String LD_IDPATH = "linkedData.idPath.";
   private static String LD_IDPATH_SUFFIX = LD_IDPATH + "suffix.";
@@ -25,6 +24,8 @@ public final class ConfigConstants {
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_INSTANCES = LD_IDPATH_SUFFIX + "template-instances";
 
   public static final String USER_DATA_ID_PATH_BASE = "userData.base";
+
+  public static final String FOLDER_SERVER_BASE = "folder.base";
 
   public static final String NEO4J_ADMIN_USER_UUID = "neo4j.adminUserUUID";
   public static final String NEO4J_REST_TRANSACTION_URL = "neo4j.rest.transactionUrl";
