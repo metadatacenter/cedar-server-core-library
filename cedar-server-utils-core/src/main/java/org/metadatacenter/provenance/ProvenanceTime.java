@@ -1,21 +1,20 @@
 package org.metadatacenter.provenance;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.metadatacenter.constant.CedarConstants;
 
-import java.lang.String;import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 public class ProvenanceTime {
 
   private Instant value;
-  private static final String PATTERN = "uuuu-MM-dd'T'HH:mm:ss'Z'";
-  private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(PATTERN).withZone(ZoneOffset.UTC);
 
   public ProvenanceTime(String s) {
     if (s != null) {
-      value = Instant.parse(s);
+      TemporalAccessor ta = CedarConstants.xsdDateTimeFormatter.parse(s);
+      value = Instant.from(ta);
     }
   }
 
@@ -27,7 +26,7 @@ public class ProvenanceTime {
 
   @JsonValue
   public String toString() {
-    return dateFormatter.format(value);
+    return CedarConstants.xsdDateTimeFormatter.format(value);
   }
 
 }

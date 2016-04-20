@@ -57,8 +57,34 @@ public abstract class AbstractCedarController extends Controller {
     return errorDescription;
   }
 
+  protected static ObjectNode generateErrorDescription(String errorSubType, String message) {
+    return generateErrorDescription(errorSubType, message, null, null, null);
+  }
+
+  protected static ObjectNode generateErrorDescription(String errorSubType, String message, ObjectNode errorParams) {
+    return generateErrorDescription(errorSubType, message, errorParams, null, null);
+  }
+
+  protected static ObjectNode generateErrorDescription(String errorSubType, String message, ObjectNode errorParams,
+                                                       String suggestedAction, String errorCode) {
+    if (errorParams == null) {
+      errorParams = JsonNodeFactory.instance.objectNode();
+    }
+    ObjectNode errorDescription = JsonNodeFactory.instance.objectNode();
+    errorDescription.put("message", message);
+    errorDescription.put("errorSubType", errorSubType);
+    errorDescription.put("errorCode", errorCode);
+    errorDescription.put("suggestedAction", suggestedAction);
+    errorDescription.set("errorParams", errorParams);
+    return errorDescription;
+  }
+
   protected static Result internalServerErrorWithError(Throwable t) {
     return internalServerError(generateErrorDescription(t));
+  }
+
+  protected static Result internalServerErrorWithError(ObjectNode on) {
+    return internalServerError(on);
   }
 
   protected static Result badRequestWithError(Throwable t) {

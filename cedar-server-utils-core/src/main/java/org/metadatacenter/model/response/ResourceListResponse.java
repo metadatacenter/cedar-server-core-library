@@ -1,7 +1,7 @@
 package org.metadatacenter.model.response;
 
-import org.metadatacenter.model.CedarFolder;
-import org.metadatacenter.model.CedarResource;
+import org.metadatacenter.model.folderserver.CedarFolder;
+import org.metadatacenter.model.folderserver.CedarResource;
 import org.metadatacenter.model.request.ResourceListRequest;
 
 import java.lang.String;

@@ -22,6 +22,7 @@ public final class ConfigConstants {
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_ELEMENTS = LD_IDPATH_SUFFIX + "template-elements";
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_FIELDS = LD_IDPATH_SUFFIX + "template-fields";
   public static final String LINKED_DATA_ID_PATH_SUFFIX_TEMPLATE_INSTANCES = LD_IDPATH_SUFFIX + "template-instances";
+  public static final String LINKED_DATA_ID_PATH_SUFFIX_FOLDERS = LD_IDPATH_SUFFIX + "folders";
 
   public static final String USER_DATA_ID_PATH_BASE = "userData.base";
 

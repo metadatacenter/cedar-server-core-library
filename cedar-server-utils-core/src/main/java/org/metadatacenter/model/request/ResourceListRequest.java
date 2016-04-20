@@ -6,20 +6,11 @@ import org.metadatacenter.model.CedarResourceType;
 import java.lang.String;import java.util.List;
 
 public class ResourceListRequest {
-  private String path;
   @JsonProperty("resource_types")
   private List<CedarResourceType> resourceTypes;
   private long limit;
   private long offset;
   private List<String> sort;
-
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
-  }
 
   public List<CedarResourceType> getResourceTypes() {
     return resourceTypes;
