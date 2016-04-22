@@ -1,31 +1,28 @@
 package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.model.AbstractCedarNode;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.provenance.ProvenanceTime;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public abstract class CedarResource {
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "resourceType")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = CedarFSFolder.class, name = CedarResourceType.Types.FOLDER),
+    @JsonSubTypes.Type(value = CedarFSField.class, name = CedarResourceType.Types.FIELD),
+    @JsonSubTypes.Type(value = CedarFSElement.class, name = CedarResourceType.Types.ELEMENT),
+    @JsonSubTypes.Type(value = CedarFSTemplate.class, name = CedarResourceType.Types.TEMPLATE),
+    @JsonSubTypes.Type(value = CedarFSInstance.class, name = CedarResourceType.Types.INSTANCE)
+})
+public abstract class CedarFSNode extends AbstractCedarNode {
 
-  protected String id;
-  protected CedarResourceType resourceType;
-  protected String name;
-  protected String description;
-  protected ProvenanceTime createdOn;
-  protected ProvenanceTime lastUpdatedOn;
-  protected String createdBy;
-  protected String lastUpdatedBy;
-  protected static Map<String, String> CONTEXT;
-
-  static {
-    CONTEXT = new HashMap<>();
-    CONTEXT.put("pav", "http://purl.org/pav/");
-    CONTEXT.put("cedar", "https://schema.metadatacenter.org/core/");
-  }
-
-  protected CedarResource(CedarResourceType resourceType) {
+  protected CedarFSNode(CedarResourceType resourceType) {
     this.resourceType = resourceType;
   }
 
@@ -105,23 +102,39 @@ public abstract class CedarResource {
     this.lastUpdatedBy = lastUpdatedBy;
   }
 
+  public long getLastUpdatedOnTS() {
+    return lastUpdatedOnTS;
+  }
+
+  public void setLastUpdatedOnTS(long lastUpdatedOnTS) {
+    this.lastUpdatedOnTS = lastUpdatedOnTS;
+  }
+
+  public long getCreatedOnTS() {
+    return createdOnTS;
+  }
+
+  public void setCreatedOnTS(long createdOnTS) {
+    this.createdOnTS = createdOnTS;
+  }
+
   @JsonProperty("@context")
   public Map<String, String> getContext() {
     return CONTEXT;
   }
 
-  public static CedarResource forType(CedarResourceType t) {
+  public static CedarFSNode forType(CedarResourceType t) {
     switch (t) {
       case FOLDER:
-        return new CedarFolder();
+        return new CedarFSFolder();
       case FIELD:
-        return new CedarField();
+        return new CedarFSField();
       case ELEMENT:
-        return new CedarElement();
+        return new CedarFSElement();
       case TEMPLATE:
-        return new CedarTemplate();
+        return new CedarFSTemplate();
       case INSTANCE:
-        return new CedarInstance();
+        return new CedarFSInstance();
     }
     return null;
   }

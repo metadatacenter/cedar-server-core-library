@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.CedarResourceType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarElement extends CedarResource {
+public class CedarFSElement extends CedarFSResource {
 
 
-  public CedarElement() {
+  public CedarFSElement() {
     super(CedarResourceType.ELEMENT);
   }
 

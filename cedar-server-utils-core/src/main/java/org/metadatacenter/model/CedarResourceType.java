@@ -1,13 +1,25 @@
 package org.metadatacenter.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;import java.lang.String;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.lang.String;
 
 public enum CedarResourceType {
-  FOLDER("folder"),
-  FIELD("field"),
-  ELEMENT("element"),
-  TEMPLATE("template"),
-  INSTANCE("instance");
+
+  FOLDER(Types.FOLDER),
+  FIELD(Types.FIELD),
+  ELEMENT(Types.ELEMENT),
+  TEMPLATE(Types.TEMPLATE),
+  INSTANCE(Types.INSTANCE);
+
+
+  public static class Types {
+    public static final String FOLDER = "folder";
+    public static final String FIELD = "field";
+    public static final String ELEMENT = "element";
+    public static final String TEMPLATE = "template";
+    public static final String INSTANCE = "instance";
+  }
 
   private final String value;
 

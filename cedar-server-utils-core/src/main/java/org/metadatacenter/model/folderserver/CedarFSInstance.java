@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.CedarResourceType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarTemplate extends CedarResource {
+public class CedarFSInstance extends CedarFSResource {
 
 
-  public CedarTemplate() {
-    super(CedarResourceType.TEMPLATE);
+  public CedarFSInstance() {
+    super(CedarResourceType.INSTANCE);
   }
 
 }

@@ -3,9 +3,10 @@ package org.metadatacenter.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarResourceType;
 
-import java.lang.String;import java.util.List;
+import java.util.List;
 
-public class ResourceListRequest {
+public class NodeListRequest {
+  
   @JsonProperty("resource_types")
   private List<CedarResourceType> resourceTypes;
   private long limit;

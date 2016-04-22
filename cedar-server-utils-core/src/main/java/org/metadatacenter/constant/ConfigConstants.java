@@ -26,7 +26,8 @@ public final class ConfigConstants {
 
   public static final String USER_DATA_ID_PATH_BASE = "userData.base";
 
-  public static final String FOLDER_SERVER_BASE = "folder.base";
+  public static final String FOLDER_SERVER_BASE = "folderServer.base";
+  public static final String TEMPLATE_SERVER_BASE = "templateServer.base";
 
   public static final String NEO4J_ADMIN_USER_UUID = "neo4j.adminUserUUID";
   public static final String NEO4J_REST_TRANSACTION_URL = "neo4j.rest.transactionUrl";
@@ -36,6 +37,8 @@ public final class ConfigConstants {
   public static final String NEO4J_FOLDERS_ROOT_DESCRIPTION = "folderStructure.rootFolder.description";
   public static final String NEO4J_FOLDERS_USERS_PATH = "folderStructure.usersFolder.path";
   public static final String NEO4J_FOLDERS_USERS_DESCRIPTION = "folderStructure.usersFolder.description";
+  public static final String NEO4J_FOLDERS_LOSTANDFOUND_PATH = "folderStructure.lostAndFoundFolder.path";
+  public static final String NEO4J_FOLDERS_LOSTANDFOUND_DESCRIPTION = "folderStructure.lostAndFoundFolder.description";
 
   private static String PAGINATION = "pagination.";
   public static final String PAGINATION_DEFAULT_PAGE_SIZE = PAGINATION + "defaultPageSize";
