@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNode;
-import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.provenance.ProvenanceTime;
 
 import java.util.Map;
@@ -14,11 +14,11 @@ import java.util.Map;
     include = JsonTypeInfo.As.PROPERTY,
     property = "resourceType")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = CedarRSFolder.class, name = CedarResourceType.Types.FOLDER),
-    @JsonSubTypes.Type(value = CedarRSField.class, name = CedarResourceType.Types.FIELD),
-    @JsonSubTypes.Type(value = CedarRSElement.class, name = CedarResourceType.Types.ELEMENT),
-    @JsonSubTypes.Type(value = CedarRSTemplate.class, name = CedarResourceType.Types.TEMPLATE),
-    @JsonSubTypes.Type(value = CedarRSInstance.class, name = CedarResourceType.Types.INSTANCE)
+    @JsonSubTypes.Type(value = CedarRSFolder.class, name = CedarNodeType.Types.FOLDER),
+    @JsonSubTypes.Type(value = CedarRSField.class, name = CedarNodeType.Types.FIELD),
+    @JsonSubTypes.Type(value = CedarRSElement.class, name = CedarNodeType.Types.ELEMENT),
+    @JsonSubTypes.Type(value = CedarRSTemplate.class, name = CedarNodeType.Types.TEMPLATE),
+    @JsonSubTypes.Type(value = CedarRSInstance.class, name = CedarNodeType.Types.INSTANCE)
 
 })
 public abstract class CedarRSNode extends AbstractCedarNode {
@@ -26,7 +26,7 @@ public abstract class CedarRSNode extends AbstractCedarNode {
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
 
-  protected CedarRSNode(CedarResourceType resourceType) {
+  protected CedarRSNode(CedarNodeType resourceType) {
     this.resourceType = resourceType;
   }
 
@@ -40,11 +40,11 @@ public abstract class CedarRSNode extends AbstractCedarNode {
     this.id = id;
   }
 
-  public CedarResourceType getType() {
+  public CedarNodeType getType() {
     return resourceType;
   }
 
-  public void setType(CedarResourceType resourceType) {
+  public void setType(CedarNodeType resourceType) {
     this.resourceType = resourceType;
   }
 
@@ -141,7 +141,7 @@ public abstract class CedarRSNode extends AbstractCedarNode {
     return CONTEXT;
   }
 
-  public static CedarRSNode forType(CedarResourceType t) {
+  public static CedarRSNode forType(CedarNodeType t) {
     switch (t) {
       case FOLDER:
         return new CedarRSFolder();

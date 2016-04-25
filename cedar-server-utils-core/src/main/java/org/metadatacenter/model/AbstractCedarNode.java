@@ -8,7 +8,7 @@ import java.util.Map;
 public abstract class AbstractCedarNode implements CedarNode {
 
   protected String id;
-  protected CedarResourceType resourceType;
+  protected CedarNodeType resourceType;
   protected String name;
   protected String description;
   protected ProvenanceTime createdOn;

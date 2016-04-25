@@ -1,23 +1,23 @@
 package org.metadatacenter.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.CedarNodeType;
 
 import java.util.List;
 
 public class NodeListRequest {
   
   @JsonProperty("resource_types")
-  private List<CedarResourceType> resourceTypes;
+  private List<CedarNodeType> resourceTypes;
   private long limit;
   private long offset;
   private List<String> sort;
 
-  public List<CedarResourceType> getResourceTypes() {
+  public List<CedarNodeType> getResourceTypes() {
     return resourceTypes;
   }
 
-  public void setResourceTypes(List<CedarResourceType> resourceTypes) {
+  public void setResourceTypes(List<CedarNodeType> resourceTypes) {
     this.resourceTypes = resourceTypes;
   }
 

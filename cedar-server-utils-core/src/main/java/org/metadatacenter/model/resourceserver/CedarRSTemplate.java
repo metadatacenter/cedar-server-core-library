@@ -1,14 +1,14 @@
 package org.metadatacenter.model.resourceserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.CedarNodeType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarRSTemplate extends CedarRSResource {
 
 
   public CedarRSTemplate() {
-    super(CedarResourceType.TEMPLATE);
+    super(CedarNodeType.TEMPLATE);
   }
 
 }
