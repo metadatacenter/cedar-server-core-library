@@ -10,6 +10,7 @@ import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
 
+import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,11 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
+  public JsonNode createTemplateField(@NonNull JsonNode templateField) throws IOException {
+    return templateFieldDao.create(templateField);
+  }
+
+  @Override
   @NonNull
   public List<JsonNode> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
       includeExclude) throws IOException {
@@ -37,6 +43,17 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   public JsonNode findTemplateField(@NonNull String templateFieldId) throws IOException,
       ProcessingException {
     return templateFieldDao.find(templateFieldId);
+  }
+
+  @Override
+  public JsonNode updateTemplateField(@NonNull String templateFieldId, @NonNull JsonNode modifications) throws
+      InstanceNotFoundException, IOException {
+    return templateFieldDao.update(templateFieldId, modifications);
+  }
+
+  @Override
+  public void deleteTemplateField(@NonNull String templateFieldId) throws InstanceNotFoundException, IOException {
+    templateFieldDao.delete(templateFieldId);
   }
 
   @Override
