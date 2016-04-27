@@ -28,6 +28,7 @@ public final class ConfigConstants {
 
   public static final String FOLDER_SERVER_BASE = "folderServer.base";
   public static final String TEMPLATE_SERVER_BASE = "templateServer.base";
+  public static final String USER_SERVER_BASE = "userServer.base";
 
   public static final String NEO4J_ADMIN_USER_UUID = "neo4j.adminUserUUID";
   public static final String NEO4J_REST_TRANSACTION_URL = "neo4j.rest.transactionUrl";
