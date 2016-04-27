@@ -1,10 +1,12 @@
 package org.metadatacenter.model.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.folderserver.CedarFSFolder;
 import org.metadatacenter.model.folderserver.CedarFSNode;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FSNodeListResponse extends AbstractNodeListResponse {
 
   private List<CedarFSNode> resources;
