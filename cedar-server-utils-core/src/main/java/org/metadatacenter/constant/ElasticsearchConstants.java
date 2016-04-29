@@ -11,5 +11,6 @@ public final class ElasticsearchConstants {
   public final static String ES_TYPE = ES + "type";
   public final static String ES_HOST = ES + "host";
   public final static String ES_TRANSPORT_PORT = ES + "transportPort";
+  public final static String ES_SIZE = ES + "size";
 
 }
