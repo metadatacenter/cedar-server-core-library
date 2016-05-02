@@ -19,6 +19,8 @@ public abstract class AbstractCedarNode implements CedarNode {
   protected String lastUpdatedBy;
   protected static Map<String, String> CONTEXT;
   protected String path;
+  protected String parentPath;
+  protected String parentFolderId;
 
   static {
     CONTEXT = new HashMap<>();
@@ -32,5 +34,21 @@ public abstract class AbstractCedarNode implements CedarNode {
 
   public void setPath(String path) {
     this.path = path;
+  }
+
+  public String getParentPath() {
+    return parentPath;
+  }
+
+  public void setParentPath(String parentPath) {
+    this.parentPath = parentPath;
+  }
+
+  public String getParentFolderId() {
+    return parentFolderId;
+  }
+
+  public void setParentFolderId(String parentFolderId) {
+    this.parentFolderId = parentFolderId;
   }
 }
