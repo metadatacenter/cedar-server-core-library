@@ -18,6 +18,7 @@ public abstract class AbstractCedarNode implements CedarNode {
   protected String createdBy;
   protected String lastUpdatedBy;
   protected static Map<String, String> CONTEXT;
+  protected String path;
 
   static {
     CONTEXT = new HashMap<>();
@@ -25,4 +26,11 @@ public abstract class AbstractCedarNode implements CedarNode {
     CONTEXT.put("cedar", "https://schema.metadatacenter.org/core/");
   }
 
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
 }
