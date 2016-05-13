@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.GenericUserDao;
@@ -12,6 +13,7 @@ import org.metadatacenter.util.FixMongoDirection;
 import org.metadatacenter.util.MongoFactory;
 import org.metadatacenter.util.json.JsonUtils;
 
+import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -73,4 +75,31 @@ public class UserDaoMongoDB implements GenericUserDao {
     JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
     return mapper.treeToValue(fixedUser, CedarUser.class);
   }
+
+  public boolean exists(@NonNull String id) throws IOException {
+    return (find(id) != null);
+  }
+
+  @Override
+  public @NonNull CedarUser update(@NonNull String id, JsonNode modifications) throws IOException,
+      InstanceNotFoundException {
+    if ((id == null) || (id.length() == 0)) {
+      throw new IllegalArgumentException();
+    }
+    if (!exists(id)) {
+      throw new InstanceNotFoundException();
+    }
+    // Adapts all keys not accepted by MongoDB
+    modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
+    ObjectMapper mapper = new ObjectMapper();
+    Map modificationsMap = mapper.convertValue(modifications, Map.class);
+    UpdateResult updateResult = entityCollection.updateOne(eq("userId", id), new Document("$set", modificationsMap));
+    if (updateResult.getMatchedCount() == 1) {
+      return find(id);
+    } else {
+      throw new InternalError();
+    }
+  }
+
+
 }
