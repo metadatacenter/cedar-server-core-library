@@ -12,5 +12,6 @@ public final class ElasticsearchConstants {
   public final static String ES_HOST = ES + "host";
   public final static String ES_TRANSPORT_PORT = ES + "transportPort";
   public final static String ES_SIZE = ES + "size";
+  public final static String ES_SCROLL_KEEP_ALIVE = ES + "scrollKeepAlive";
 
 }

@@ -28,8 +28,8 @@ public final class ConfigConstants {
 
   public static final String TEMPLATE_SERVER_BASE = "templateServer.base";
 
-  public static final String USER_SERVER_BASE = "userServer.base";
-  public static final String USER_DATA_ID_PATH_BASE = "userData.base";
+  public static final String USER_SERVER_BASE = "userData.base";
+  public static final String USER_DATA_ID_PATH_BASE = "userData.ldBase";
   public static final String USER_ADMIN_USER_UUID = "userData.adminUserUUID";
 
 
