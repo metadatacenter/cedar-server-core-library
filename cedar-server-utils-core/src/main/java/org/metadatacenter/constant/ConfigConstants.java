@@ -55,4 +55,10 @@ public final class ConfigConstants {
 
   public static final String FIELD_NAMES_LIST_EXCLUSION = "list.excludedFields";
 
+  private static final String SCHEMA_BASE = "https://schema.metadatacenter.org/core/";
+  public static final String SCHEMA_FIELD = SCHEMA_BASE + "TemplateField";
+  public static final String SCHEMA_STATIC_FIELD = SCHEMA_BASE + "StaticTemplateField";
+  public static final String SCHEMA_ELEMENT = SCHEMA_BASE + "TemplateElement";
+  public static final String SCHEMA_TEMPLATE = SCHEMA_BASE + "Template";
+
 }
