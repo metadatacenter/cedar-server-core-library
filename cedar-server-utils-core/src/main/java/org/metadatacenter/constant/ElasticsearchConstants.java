@@ -18,10 +18,6 @@ public final class ElasticsearchConstants {
   public final static String ES_SIZE = ES + "size";
   public final static String ES_SCROLL_KEEP_ALIVE = ES + "scrollKeepAlive";
 
-  /** Search index **/
-  public static final List<String> RESOURCES_NOT_IN_INDEX =
-      Collections.unmodifiableList(Arrays.asList("/", "Lost+Found"));
-
   public static final String ES_RESOURCE_PREFIX = "info.";
 
   // Searchable fields
