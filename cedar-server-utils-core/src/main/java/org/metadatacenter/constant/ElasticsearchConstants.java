@@ -1,5 +1,9 @@
 package org.metadatacenter.constant;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public final class ElasticsearchConstants {
 
   private ElasticsearchConstants() {
@@ -13,5 +17,25 @@ public final class ElasticsearchConstants {
   public final static String ES_TRANSPORT_PORT = ES + "transportPort";
   public final static String ES_SIZE = ES + "size";
   public final static String ES_SCROLL_KEEP_ALIVE = ES + "scrollKeepAlive";
+
+  /** Search index **/
+  public static final List<String> RESOURCES_NOT_IN_INDEX =
+      Collections.unmodifiableList(Arrays.asList("/", "Lost+Found"));
+
+  public static final String ES_RESOURCE_PREFIX = "info.";
+
+  // Searchable fields
+  public static final String ES_RESOURCE_ID_FIELD = "@id";
+  public static final String ES_RESOURCE_NAME_FIELD = "name";
+  public static final String ES_RESOURCE_DESCRIPTION_FIELD = "description";
+  public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "resourceType";
+
+  // Sortable fields
+  public static final String ES_RESOURCE_SORTABLE_NAME_FIELD = "name.raw";
+  public static final String ES_RESOURCE_SORTABLE_CREATEDONTS_FIELD = "createdOnTS";
+  public static final String ES_RESOURCE_SORTABLE_LASTUPDATEDONTS_FIELD = "lastUpdatedOnTS";
+
+  // Other
+  public static final String ES_SORT_DESC_PREFIX = "-";
 
 }
