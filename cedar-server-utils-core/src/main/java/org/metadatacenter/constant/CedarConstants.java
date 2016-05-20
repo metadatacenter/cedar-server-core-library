@@ -15,6 +15,11 @@ public final class CedarConstants {
   // Query String parameter names
   public static final String PARAM_OFFSET = "offset";
   public static final String PARAM_LIMIT = "limit";
+  public static final String PARAM_DEFAULT_LIMIT = "defaultLimit";
+  public static final String PARAM_MAX_ALLOWED_LIMIT = "maxAllowedLimit";
+  public static final String SEARCH_PREFIX = "search.";
+  public static final String SEARCH_PARAM_DEFAULT_LIMIT = SEARCH_PREFIX + PARAM_DEFAULT_LIMIT;
+  public static final String SEARCH_PARAM_MAX_ALLOWED_LIMIT = SEARCH_PREFIX + PARAM_MAX_ALLOWED_LIMIT;
 
   // JSON ID constants
   public static final String TEMP_ID_PREFIX = "tmp-";
@@ -25,6 +30,4 @@ public final class CedarConstants {
   public static String xsdDateTimeFormatterString = "uuuu-MM-dd'T'HH:mm:ssZ";
   public static DateTimeFormatter xsdDateTimeFormatter = DateTimeFormatter.ofPattern(xsdDateTimeFormatterString)
       .withZone(ZoneId.systemDefault());
-  ;
-
 }
