@@ -10,7 +10,8 @@ public enum CedarNodeType {
   FIELD(Types.FIELD, Prefix.FIELDS),
   ELEMENT(Types.ELEMENT, Prefix.ELEMENTS),
   TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES),
-  INSTANCE(Types.INSTANCE, Prefix.INSTANCES);
+  INSTANCE(Types.INSTANCE, Prefix.INSTANCES),
+  USER(Types.USER, Prefix.USERS);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -18,6 +19,7 @@ public enum CedarNodeType {
     public static final String ELEMENT = "element";
     public static final String TEMPLATE = "template";
     public static final String INSTANCE = "instance";
+    public static final String USER = "user";
   }
 
   public static class Prefix {
@@ -26,6 +28,7 @@ public enum CedarNodeType {
     public static final String ELEMENTS = "template-elements";
     public static final String TEMPLATES = "templates";
     public static final String INSTANCES = "template-instances";
+    public static final String USERS = "users";
   }
 
   private final String value;
