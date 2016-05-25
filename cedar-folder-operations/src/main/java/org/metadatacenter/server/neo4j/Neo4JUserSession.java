@@ -1,20 +1,24 @@
 package org.metadatacenter.server.neo4j;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.CedarFSFolder;
 import org.metadatacenter.model.folderserver.CedarFSNode;
 import org.metadatacenter.model.folderserver.CedarFSResource;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.service.UserService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class Neo4JUserSession {
   private CedarUser cu;
   private Neo4JProxy neo4JProxy;
   private String userIdPrefix;
+  private static ObjectMapper MAPPER = new ObjectMapper();
 
   public Neo4JUserSession(Neo4JProxy neo4JProxy, CedarUser cu, String userIdPrefix) {
     this.neo4JProxy = neo4JProxy;
@@ -22,8 +26,25 @@ public class Neo4JUserSession {
     this.userIdPrefix = userIdPrefix;
   }
 
-  public static Neo4JUserSession get(Neo4JProxy neo4JProxy, CedarUser cu, String userIdPrefix) {
-    return new Neo4JUserSession(neo4JProxy, cu, userIdPrefix);
+  public static Neo4JUserSession get(Neo4JProxy neo4JProxy, UserService userService, CedarUser cu, String
+      userIdPrefix, boolean createHome) {
+    Neo4JUserSession neo4JUserSession = new Neo4JUserSession(neo4JProxy, cu, userIdPrefix);
+    if (createHome) {
+      CedarFSFolder createdFolder = neo4JUserSession.ensureUserHomeExists();
+      if (createdFolder != null) {
+        ObjectNode homeModification = MAPPER.createObjectNode();
+        homeModification.put("homeFolderId", createdFolder.getId());
+        System.out.println("homeModification: " + homeModification);
+        try {
+          userService.updateUser(cu.getUserId(), homeModification);
+          System.out.println("User updated");
+        } catch (Exception e) {
+          System.out.println("Error while updating the user:");
+          e.printStackTrace();
+        }
+      }
+    }
+    return neo4JUserSession;
   }
 
   private String getUserId() {
