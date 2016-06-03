@@ -1,7 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
@@ -11,6 +10,7 @@ import org.metadatacenter.server.dao.GenericUserDao;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.FixMongoDirection;
 import org.metadatacenter.util.MongoFactory;
+import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 
 import javax.management.InstanceNotFoundException;
@@ -33,17 +33,16 @@ public class UserDaoMongoDB implements GenericUserDao {
   @Override
   @NonNull
   public CedarUser create(@NonNull CedarUser user) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode userNode = mapper.valueToTree(user);
+    JsonNode userNode = JsonMapper.MAPPER.valueToTree(user);
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(userNode, FixMongoDirection.WRITE_TO_MONGO);
-    Map elementMap = mapper.convertValue(fixedElement, Map.class);
+    Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
     Document elementDoc = new Document(elementMap);
     entityCollection.insertOne(elementDoc);
     // Returns the document created (all keys adapted for MongoDB are restored)
-    JsonNode savedUser = mapper.readTree(elementDoc.toJson());
+    JsonNode savedUser = JsonMapper.MAPPER.readTree(elementDoc.toJson());
     JsonNode fixedUser = jsonUtils.fixMongoDB(savedUser, FixMongoDirection.READ_FROM_MONGO);
-    return mapper.treeToValue(fixedUser, CedarUser.class);
+    return JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class);
   }
 
   @Override
@@ -55,10 +54,9 @@ public class UserDaoMongoDB implements GenericUserDao {
     if (doc == null) {
       return null;
     }
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode readUser = mapper.readTree(doc.toJson());
+    JsonNode readUser = JsonMapper.MAPPER.readTree(doc.toJson());
     JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
-    return mapper.treeToValue(fixedUser, CedarUser.class);
+    return JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class);
   }
 
   public CedarUser findByApiKey(String apiKey) throws IOException {
@@ -70,10 +68,9 @@ public class UserDaoMongoDB implements GenericUserDao {
     if (doc == null) {
       return null;
     }
-    ObjectMapper mapper = new ObjectMapper();
-    JsonNode readUser = mapper.readTree(doc.toJson());
+    JsonNode readUser = JsonMapper.MAPPER.readTree(doc.toJson());
     JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
-    return mapper.treeToValue(fixedUser, CedarUser.class);
+    return JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class);
   }
 
   public boolean exists(@NonNull String id) throws IOException {
@@ -91,8 +88,7 @@ public class UserDaoMongoDB implements GenericUserDao {
     }
     // Adapts all keys not accepted by MongoDB
     modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
-    ObjectMapper mapper = new ObjectMapper();
-    Map modificationsMap = mapper.convertValue(modifications, Map.class);
+    Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
     UpdateResult updateResult = entityCollection.updateOne(eq("userId", id), new Document("$set", modificationsMap));
     if (updateResult.getMatchedCount() == 1) {
       return find(id);

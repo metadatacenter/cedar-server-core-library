@@ -1,7 +1,6 @@
 package org.metadatacenter.constant;
 
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public final class CedarConstants {
@@ -27,7 +26,7 @@ public final class CedarConstants {
   // Date formats
   //public static String xsdDateTimeFormatString = "yyyy-MM-dd\'T\'HH:mm:ss\'Z\'";
   //public static DateFormat xsdDateTimeFormat = new SimpleDateFormat(xsdDateTimeFormatString);
-  public static String xsdDateTimeFormatterString = "uuuu-MM-dd'T'HH:mm:ssZ";
-  public static DateTimeFormatter xsdDateTimeFormatter = DateTimeFormatter.ofPattern(xsdDateTimeFormatterString)
+  public static final String xsdDateTimeFormatterString = "uuuu-MM-dd'T'HH:mm:ssZ";
+  public static final DateTimeFormatter xsdDateTimeFormatter = DateTimeFormatter.ofPattern(xsdDateTimeFormatterString)
       .withZone(ZoneId.systemDefault());
 }

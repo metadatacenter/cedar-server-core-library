@@ -1,17 +1,11 @@
 package org.metadatacenter.server.neo4j;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
 public class CypherQueryBuilder {
-
-  public static final String RELATION_CONTAINS = "CONTAINS";
-  public static final String LABEL_FOLDER = "Folder";
-  public static final String LABEL_RESOURCE = "Resource";
-  private static String folderByParentIdAndName;
 
   private CypherQueryBuilder() {
   }
@@ -28,33 +22,28 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createRootFolder(Map<String, Object> extraParams) {
+  public static String createRootFolder(Map<NodeExtraParameter, Object> extraParams) {
     StringBuilder sb = new StringBuilder();
-    sb.append(createFolder("root", extraParams));
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append(createFolder("root", NodeLabel.SYSTEM_FOLDER, extraParams));
+    sb.append("CREATE");
+    sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(root)");
     sb.append("RETURN root");
     return sb.toString();
   }
 
-  public static String createFolder(String folderAlias) {
-    return createFolder(folderAlias, null);
+  public static String createFolder(String folderAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    return createNode(folderAlias, label, extraProperties);
   }
 
-  public static String createFolder(String folderAlias, Map<String, Object> extraProperties) {
-    return createNode(folderAlias, LABEL_FOLDER, extraProperties);
+  public static String createResource(String resourceAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    return createNode(resourceAlias, label, extraProperties);
   }
 
-  public static String createResource(String resourceAlias) {
-    return createResource(resourceAlias, null);
-  }
-
-  public static String createResource(String resourceAlias, Map<String, Object> extraProperties) {
-    return createNode(resourceAlias, LABEL_RESOURCE, extraProperties);
-  }
-
-  private static String createNode(String nodeAlias, String nodeLabel, Map<String, Object> extraProperties) {
+  private static String createNode(String nodeAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
     sb.append("CREATE (");
-    sb.append(nodeAlias).append(":").append(nodeLabel).append(" {");
+    sb.append(nodeAlias).append(":").append(label).append(" {");
     sb.append(buildCreateAssignment(ID)).append(",");
     sb.append(buildCreateAssignment(NAME)).append(",");
     sb.append(buildCreateAssignment(DESCRIPTION)).append(",");
@@ -65,29 +54,32 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key)).append(","));
+      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key.getValue())).append(","));
     }
-    sb.append(buildCreateAssignment(RESOURCE_TYPE));
+    sb.append(buildCreateAssignment(NODE_TYPE));
     sb.append("}");
     sb.append(")");
     return sb.toString();
   }
 
 
-  public static String createFolderAsChildOfId(Map<String, Object> extraProperties) {
-    return createNodeAsChildOfId(LABEL_FOLDER, extraProperties);
+  public static String createFolderAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    return createNodeAsChildOfId(label, extraProperties);
   }
 
-  public static String createResourceAsChildOfId(Map<String, Object> extraProperties) {
-    return createNodeAsChildOfId(LABEL_RESOURCE, extraProperties);
+  public static String createResourceAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    return createNodeAsChildOfId(label, extraProperties);
   }
 
-  private static String createNodeAsChildOfId(String childNodeLabel, Map<String, Object> extraProperties) {
+  private static String createNodeAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(LABEL_FOLDER).append(" {id:{parentId} })");
-    sb.append(CypherQueryBuilder.createNode("child", childNodeLabel, extraProperties));
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentId} })");
+    sb.append(CypherQueryBuilder.createNode("child", label, extraProperties));
     sb.append("CREATE");
-    sb.append("(parent)-[:").append(RELATION_CONTAINS).append("]->(child)");
+    sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(child)");
+    sb.append("CREATE");
+    sb.append("(parent)-[:").append(RelationLabel.CONTAINS).append("]->(child)");
     sb.append("RETURN child");
     return sb.toString();
   }
@@ -95,21 +87,21 @@ public class CypherQueryBuilder {
   public static String getFolderLookupQueryByDepth(int cnt) {
     StringBuilder sb = new StringBuilder();
     if (cnt >= 1) {
-      sb.append("MATCH (f0:").append(LABEL_FOLDER).append(" {name:{f0} })");
+      sb.append("MATCH (f0:").append(NodeLabel.FOLDER).append(" {name:{f0} })");
     }
     for (int i = 2; i <= cnt; i++) {
       String parentAlias = "f" + (i - 2);
       String childAlias = "f" + (i - 1);
       sb.append("MATCH (");
       sb.append(childAlias);
-      sb.append(":").append(LABEL_FOLDER).append(" {name:{");
+      sb.append(":").append(NodeLabel.FOLDER).append(" {name:{");
       sb.append(childAlias);
       sb.append("} })");
 
       sb.append("MATCH (");
       sb.append(parentAlias);
       sb.append(")");
-      sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+      sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
       sb.append("(");
       sb.append(childAlias);
       sb.append(")");
@@ -121,12 +113,12 @@ public class CypherQueryBuilder {
 
   public static String getFolderContentsLookupQuery(List<String> sortList) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("MATCH (child)");
     sb.append("MATCH (parent)");
-    sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
-    sb.append("WHERE child.resourceType in {resourceTypeList}");
+    sb.append("WHERE child.nodeType in {nodeTypeList}");
     sb.append("RETURN child");
     sb.append(" ORDER BY ").append(getOrderByExpression(sortList));
     sb.append(" SKIP {offset}");
@@ -137,6 +129,7 @@ public class CypherQueryBuilder {
   public static String getAllNodesLookupQuery(List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (child)");
+    sb.append(" WHERE child:").append(NodeLabel.FOLDER).append(" OR child:").append(NodeLabel.RESOURCE);
     sb.append(" RETURN child");
     sb.append(" ORDER BY ").append(getOrderByExpression(sortList));
     sb.append(" SKIP {offset}");
@@ -146,19 +139,21 @@ public class CypherQueryBuilder {
 
   public static String getAllNodesCountQuery() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (nodes)");
-    sb.append(" RETURN count(nodes)");
+    sb.append("MATCH (node)");
+    sb.append(" WHERE node:").append(NodeLabel.FOLDER).append(" OR node:").append(NodeLabel.RESOURCE);
+    sb.append(" RETURN count(node)");
     return sb.toString();
   }
 
   private static String getOrderByExpression(List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     String prefix = "";
-    for(String s : sortList) {
+    for (String s : sortList) {
       sb.append(prefix);
       sb.append(getOrderByExpression(s));
       prefix = ", ";
-    };
+    }
+    ;
     return sb.toString();
   }
 
@@ -179,22 +174,22 @@ public class CypherQueryBuilder {
 
   public static String getFolderContentsFilteredCountQuery() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("MATCH (child)");
     sb.append("MATCH (parent)");
-    sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
-    sb.append("WHERE child.resourceType in {resourceTypeList}");
+    sb.append("WHERE child.nodeType in {nodeTypeList}");
     sb.append("RETURN count(child)");
     return sb.toString();
   }
 
   public static String getFolderContentsCountQuery() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("MATCH (child)");
     sb.append("MATCH (parent)");
-    sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
     sb.append("RETURN count(child)");
     return sb.toString();
@@ -202,25 +197,31 @@ public class CypherQueryBuilder {
 
   public static String getFolderById() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (folder:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("RETURN folder");
     return sb.toString();
   }
 
   public static String getResourceById() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (resource:").append(LABEL_RESOURCE).append(" {id:{id} })");
+    sb.append("MATCH (resource:").append(NodeLabel.RESOURCE).append(" {id:{id} })");
     sb.append("RETURN resource");
     return sb.toString();
   }
 
+  public static String getUserById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{id} })");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
 
   public static String getFolderByParentIdAndName() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("MATCH (child)");
     sb.append("MATCH (parent)");
-    sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
     sb.append("WHERE child.name = {name}");
     sb.append("RETURN child");
@@ -229,21 +230,21 @@ public class CypherQueryBuilder {
 
   public static String deleteFolderById() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (folder:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("DETACH DELETE folder");
     return sb.toString();
   }
 
   public static String deleteResourceById() {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (resource:").append(LABEL_RESOURCE).append(" {id:{id} })");
+    sb.append("MATCH (resource:").append(NodeLabel.RESOURCE).append(" {id:{id} })");
     sb.append("DETACH DELETE resource");
     return sb.toString();
   }
 
   public static String updateFolderById(Map<String, String> updateFields) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (folder:").append(LABEL_FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("SET folder.lastUpdatedBy= {lastUpdatedBy}");
     sb.append("SET folder.lastUpdatedOn= {lastUpdatedOn}");
     sb.append("SET folder.lastUpdatedOnTS= {lastUpdatedOnTS}");
@@ -256,7 +257,7 @@ public class CypherQueryBuilder {
 
   public static String updateResourceById(Map<String, String> updateFields) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (resource:").append(LABEL_RESOURCE).append(" {id:{id} })");
+    sb.append("MATCH (resource:").append(NodeLabel.RESOURCE).append(" {id:{id} })");
     sb.append("SET resource.lastUpdatedBy= {lastUpdatedBy}");
     sb.append("SET resource.lastUpdatedOn= {lastUpdatedOn}");
     sb.append("SET resource.lastUpdatedOnTS= {lastUpdatedOnTS}");
@@ -270,9 +271,9 @@ public class CypherQueryBuilder {
   public static String getFolderLookupQueryById() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH");
-    sb.append("(root:").append(LABEL_FOLDER).append(" {name:{name} })").append(",");
-    sb.append("(current:").append(LABEL_FOLDER).append(" {id:{id} })").append(",");
-    sb.append("path=shortestPath((root)-[:").append(RELATION_CONTAINS).append("*]->(current))");
+    sb.append("(root:").append(NodeLabel.FOLDER).append(" {name:{name} })").append(",");
+    sb.append("(current:").append(NodeLabel.FOLDER).append(" {id:{id} })").append(",");
+    sb.append("path=shortestPath((root)-[:").append(RelationLabel.CONTAINS).append("*]->(current))");
     sb.append("RETURN path");
     return sb.toString();
   }
@@ -280,11 +281,32 @@ public class CypherQueryBuilder {
   public static String getNodeLookupQueryById() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH");
-    sb.append("(root:").append(LABEL_FOLDER).append(" {name:{name} })").append(",");
+    sb.append("(root:").append(NodeLabel.FOLDER).append(" {name:{name} })").append(",");
     sb.append("(current {id:{id} })").append(",");
-    sb.append("path=shortestPath((root)-[:").append(RELATION_CONTAINS).append("*]->(current))");
+    sb.append("path=shortestPath((root)-[:").append(RelationLabel.CONTAINS).append("*]->(current))");
     sb.append("RETURN path");
     return sb.toString();
   }
 
+  public static String createUser() {
+    String nodeAlias = "user";
+    StringBuilder sb = new StringBuilder();
+    sb.append("CREATE (");
+    sb.append(nodeAlias).append(":").append(NodeLabel.USER).append(" {");
+    sb.append(buildCreateAssignment(ID)).append(",");
+    sb.append(buildCreateAssignment(CREATED_ON)).append(",");
+    sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(NODE_TYPE));
+    sb.append("}");
+    sb.append(")");
+    return sb.toString();
+  }
+
+  public static String wipeAllData() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (n:").append(NodeLabel.PlainLabels.SCOPE).append(") DETACH DELETE n");
+    return sb.toString();
+  }
 }

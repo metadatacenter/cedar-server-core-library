@@ -1,8 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -13,10 +11,12 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.util.FixMongoDirection;
 import org.metadatacenter.util.MongoFactory;
+import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 
 import javax.management.InstanceNotFoundException;
@@ -73,12 +73,11 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
 
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(element, FixMongoDirection.WRITE_TO_MONGO);
-    ObjectMapper mapper = new ObjectMapper();
-    Map elementMap = mapper.convertValue(fixedElement, Map.class);
+    Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
     Document elementDoc = new Document(elementMap);
     entityCollection.insertOne(elementDoc);
     // Returns the document created (all keys adapted for MongoDB are restored)
-    return jsonUtils.fixMongoDB(mapper.readTree(elementDoc.toJson()), FixMongoDirection.READ_FROM_MONGO);
+    return jsonUtils.fixMongoDB(JsonMapper.MAPPER.readTree(elementDoc.toJson()), FixMongoDirection.READ_FROM_MONGO);
   }
 
   /**
@@ -125,11 +124,10 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
       }
     }
     MongoCursor<Document> cursor = findIterable.iterator();
-    ObjectMapper mapper = new ObjectMapper();
     List<JsonNode> docs = new ArrayList<>();
     try {
       while (cursor.hasNext()) {
-        JsonNode node = jsonUtils.fixMongoDB(mapper.readTree(cursor.next().toJson()), FixMongoDirection
+        JsonNode node = jsonUtils.fixMongoDB(JsonMapper.MAPPER.readTree(cursor.next().toJson()), FixMongoDirection
             .READ_FROM_MONGO);
         docs.add(node);
       }
@@ -156,8 +154,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     if (doc == null) {
       return null;
     }
-    ObjectMapper mapper = new ObjectMapper();
-    return jsonUtils.fixMongoDB(mapper.readTree(doc.toJson()), FixMongoDirection.READ_FROM_MONGO);
+    return jsonUtils.fixMongoDB(JsonMapper.MAPPER.readTree(doc.toJson()), FixMongoDirection.READ_FROM_MONGO);
   }
 
   /**
@@ -182,8 +179,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     }
     // Adapts all keys not accepted by MongoDB
     modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
-    ObjectMapper mapper = new ObjectMapper();
-    Map modificationsMap = mapper.convertValue(modifications, Map.class);
+    Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
     UpdateResult updateResult = entityCollection.updateOne(eq("@id", id), new Document("$set", modificationsMap));
     if (updateResult.getMatchedCount() == 1) {
       return find(id);

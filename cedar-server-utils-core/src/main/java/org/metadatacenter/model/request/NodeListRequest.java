@@ -8,17 +8,17 @@ import java.util.List;
 public class NodeListRequest {
   
   @JsonProperty("resource_types")
-  private List<CedarNodeType> resourceTypes;
+  private List<CedarNodeType> nodeTypes;
   private long limit;
   private long offset;
   private List<String> sort;
 
-  public List<CedarNodeType> getResourceTypes() {
-    return resourceTypes;
+  public List<CedarNodeType> getNodeTypes() {
+    return nodeTypes;
   }
 
-  public void setResourceTypes(List<CedarNodeType> resourceTypes) {
-    this.resourceTypes = resourceTypes;
+  public void setNodeTypes(List<CedarNodeType> nodeTypes) {
+    this.nodeTypes = nodeTypes;
   }
 
   public long getLimit() {

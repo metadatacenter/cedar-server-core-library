@@ -24,7 +24,7 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_ID_FIELD = "@id";
   public static final String ES_RESOURCE_NAME_FIELD = "name";
   public static final String ES_RESOURCE_DESCRIPTION_FIELD = "description";
-  public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "resourceType";
+  public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "nodeType";
 
   // Sortable fields
   public static final String ES_RESOURCE_SORTABLE_NAME_FIELD = "name.raw";

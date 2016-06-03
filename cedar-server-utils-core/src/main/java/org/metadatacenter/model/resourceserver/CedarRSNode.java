@@ -12,22 +12,21 @@ import java.util.Map;
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
-    property = "resourceType")
+    property = "nodeType")
 @JsonSubTypes({
     @JsonSubTypes.Type(value = CedarRSFolder.class, name = CedarNodeType.Types.FOLDER),
     @JsonSubTypes.Type(value = CedarRSField.class, name = CedarNodeType.Types.FIELD),
     @JsonSubTypes.Type(value = CedarRSElement.class, name = CedarNodeType.Types.ELEMENT),
     @JsonSubTypes.Type(value = CedarRSTemplate.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = CedarRSInstance.class, name = CedarNodeType.Types.INSTANCE)
-
 })
 public abstract class CedarRSNode extends AbstractCedarNode {
 
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
 
-  protected CedarRSNode(CedarNodeType resourceType) {
-    this.resourceType = resourceType;
+  protected CedarRSNode(CedarNodeType nodeType) {
+    this.nodeType = nodeType;
   }
 
   @JsonProperty("@id")
@@ -41,11 +40,11 @@ public abstract class CedarRSNode extends AbstractCedarNode {
   }
 
   public CedarNodeType getType() {
-    return resourceType;
+    return nodeType;
   }
 
-  public void setType(CedarNodeType resourceType) {
-    this.resourceType = resourceType;
+  public void setType(CedarNodeType nodeType) {
+    this.nodeType = nodeType;
   }
 
   public String getName() {

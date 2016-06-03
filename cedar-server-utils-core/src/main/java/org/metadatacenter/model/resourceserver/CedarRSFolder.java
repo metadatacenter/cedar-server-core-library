@@ -2,11 +2,10 @@ package org.metadatacenter.model.resourceserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarFolder;
 import org.metadatacenter.model.CedarNodeType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarRSFolder extends CedarRSNode implements CedarFolder {
+public class CedarRSFolder extends CedarRSNode {
 
   private boolean userHome;
   private boolean system;

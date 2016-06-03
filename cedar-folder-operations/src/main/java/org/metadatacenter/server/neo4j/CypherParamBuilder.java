@@ -3,7 +3,6 @@ package org.metadatacenter.server.neo4j;
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.CedarFSFolder;
 
 import java.time.Instant;
 import java.util.*;
@@ -28,24 +27,24 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> createFolder(String parentId, String name, String description, String createdBy,
-                                                 Map<String, Object> extraProperties) {
+                                                 Map<NodeExtraParameter, Object> extraProperties) {
     String nodeId = UUID.randomUUID().toString();
     return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, description, createdBy, extraProperties);
   }
 
-  public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType resourceType,
+  public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType nodeType,
                                                    String name, String description, String createdBy) {
-    return createResource(parentId, childURL, resourceType, name, description, createdBy, null);
+    return createResource(parentId, childURL, nodeType, name, description, createdBy, null);
   }
 
-  public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType resourceType,
-                                                   String name, String description, String createdBy, Map<String,
-      Object> extraProperties) {
-    return createNode(parentId, childURL, resourceType, name, description, createdBy, extraProperties);
+  public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType nodeType,
+                                                   String name, String description, String createdBy,
+                                                   Map<NodeExtraParameter, Object> extraProperties) {
+    return createNode(parentId, childURL, nodeType, name, description, createdBy, extraProperties);
   }
 
-  private static Map<String, Object> createNode(String parentId, String childId, CedarNodeType resourceType, String
-      name, String description, String createdBy, Map<String, Object> extraProperties) {
+  private static Map<String, Object> createNode(String parentId, String childId, CedarNodeType nodeType, String
+      name, String description, String createdBy, Map<NodeExtraParameter, Object> extraProperties) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -61,9 +60,10 @@ public class CypherParamBuilder {
     params.put(LAST_UPDATED_BY, createdBy);
     params.put(LAST_UPDATED_ON, nowString);
     params.put(LAST_UPDATED_ON_TS, nowTSString);
-    params.put(RESOURCE_TYPE, resourceType.getValue());
+    params.put(USER_ID, createdBy);
+    params.put(NODE_TYPE, nodeType.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach((key, value) -> params.put(key.getValue(), value));
     }
     return params;
   }
@@ -87,55 +87,62 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> getFolderContentsLookupParameters(String folderId, Collection<CedarNodeType>
-      resourceTypes, int limit, int offset) {
+      nodeTypes, int limit, int offset) {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, folderId);
-    List<String> rtl = new ArrayList<>();
-    resourceTypes.forEach(cnt -> rtl.add(cnt.getValue()));
-    params.put("resourceTypeList", rtl);
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put("nodeTypeList", ntl);
     params.put("limit", limit);
     params.put("offset", offset);
     return params;
   }
 
   public static Map<String, Object> getFolderContentsFilteredCountParameters(String folderId, Collection<CedarNodeType>
-      resourceTypes) {
+      nodeTypes) {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, folderId);
-    List<String> rtl = new ArrayList<>();
-    resourceTypes.forEach(cnt -> rtl.add(cnt.getValue()));
-    params.put("resourceTypeList", rtl);
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put("nodeTypeList", ntl);
+    return params;
+  }
+
+  private static Map<String, Object> getNodeByIdentity(String nodeId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(ID, nodeId);
+    return params;
+  }
+
+  private static Map<String, Object> getNodeByIdentityAndName(String nodeId, String nodeName) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(ID, nodeId);
+    params.put(NAME, nodeName);
     return params;
   }
 
   public static Map<String, Object> getFolderContentsCountParameters(String folderId) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(ID, folderId);
-    return params;
+    return getNodeByIdentity(folderId);
   }
 
   public static Map<String, Object> getFolderById(String folderId) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(ID, folderId);
-    return params;
+    return getNodeByIdentity(folderId);
   }
 
   public static Map<String, Object> getResourceById(String resourceURL) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(ID, resourceURL);
-    return params;
+    return getNodeByIdentity(resourceURL);
+  }
+
+  public static Map<String, Object> getUserById(String userURL) {
+    return getNodeByIdentity(userURL);
   }
 
   public static Map<String, Object> deleteFolderById(String folderId) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(ID, folderId);
-    return params;
+    return getNodeByIdentity(folderId);
   }
 
   public static Map<String, Object> deleteResourceById(String resourceURL) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(ID, resourceURL);
-    return params;
+    return getNodeByIdentity(resourceURL);
   }
 
   public static Map<String, Object> updateFolderById(String folderId, Map<String, String> updateFields, String
@@ -163,23 +170,28 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> getFolderLookupByIDParameters(IPathUtil pathUtil, String id) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(NAME, pathUtil.getRootPath());
-    params.put(ID, id);
-    return params;
+    return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
   public static Map<String, Object> getNodeLookupByIDParameters(IPathUtil pathUtil, String id) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(NAME, pathUtil.getRootPath());
-    params.put(ID, id);
-    return params;
+    return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
   public static Map<String, Object> getFolderByParentIdAndName(String parentId, String name) {
+    return getNodeByIdentityAndName(parentId, name);
+  }
+
+  public static Map<String, Object> createUser(String userURL) {
+    Instant now = Instant.now();
+    String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
+    String nowTSString = String.valueOf(now.getEpochSecond());
     Map<String, Object> params = new HashMap<>();
-    params.put(ID, parentId);
-    params.put(NAME, name);
+    params.put(ID, userURL);
+    params.put(CREATED_ON, nowString);
+    params.put(CREATED_ON_TS, nowTSString);
+    params.put(LAST_UPDATED_ON, nowString);
+    params.put(LAST_UPDATED_ON_TS, nowTSString);
+    params.put(NODE_TYPE, CedarNodeType.USER.getValue());
     return params;
   }
 }

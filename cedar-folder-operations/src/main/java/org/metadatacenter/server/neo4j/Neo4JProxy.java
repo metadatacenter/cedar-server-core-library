@@ -2,7 +2,6 @@ package org.metadatacenter.server.neo4j;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
@@ -13,6 +12,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.CedarFSFolder;
 import org.metadatacenter.model.folderserver.CedarFSNode;
 import org.metadatacenter.model.folderserver.CedarFSResource;
+import org.metadatacenter.model.folderserver.CedarFSUser;
+import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +22,11 @@ import java.util.*;
 
 public class Neo4JProxy {
 
-
   private Neo4jConfig config;
   private String folderIdPrefix;
   private IPathUtil pathUtil;
-  private static ObjectMapper MAPPER = new ObjectMapper();
 
   private static Logger log = LoggerFactory.getLogger(Neo4JProxy.class);
-
 
   public Neo4JProxy(Neo4jConfig config, String folderIdPrefix) {
     this.config = config;
@@ -76,7 +74,7 @@ public class Neo4JProxy {
 
     String requestBody = null;
     try {
-      requestBody = MAPPER.writeValueAsString(body);
+      requestBody = JsonMapper.MAPPER.writeValueAsString(body);
     } catch (JsonProcessingException e) {
       log.error("Error serializing cypher queries", e);
     }
@@ -95,7 +93,7 @@ public class Neo4JProxy {
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
       if (statusCode == HttpConstants.OK) {
-        return MAPPER.readTree(responseAsString);
+        return JsonMapper.MAPPER.readTree(responseAsString);
       } else {
         return null;
       }
@@ -239,9 +237,9 @@ public class Neo4JProxy {
   }
 
   CedarFSFolder createRootFolder(String creatorId) {
-    Map<String, Object> extraParams = new HashMap<>();
-    extraParams.put("isRoot", true);
-    extraParams.put("isSystem", true);
+    Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
+    extraParams.put(NodeExtraParameter.IS_ROOT, true);
+    extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
     String cypher = CypherQueryBuilder.createRootFolder(extraParams);
     Map<String, Object> params = CypherParamBuilder.createFolder(null, config.getRootFolderPath(), config
         .getRootFolderDescription(), creatorId, extraParams);
@@ -251,9 +249,9 @@ public class Neo4JProxy {
     return buildFolder(rootNode);
   }
 
-  CedarFSFolder createFolderAsChildOfId(String parentId, String name, String description, String creatorId, Map<String,
-      Object> extraProperties) {
-    String cypher = CypherQueryBuilder.createFolderAsChildOfId(extraProperties);
+  CedarFSFolder createFolderAsChildOfId(String parentId, String name, String description, String
+      creatorId, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    String cypher = CypherQueryBuilder.createFolderAsChildOfId(label, extraProperties);
     Map<String, Object> params = CypherParamBuilder.createFolder(parentId, name, description, creatorId,
         extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -263,10 +261,10 @@ public class Neo4JProxy {
   }
 
 
-  CedarFSResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType resourceType, String
-      name, String description, String creatorId, Map<String, Object> extraProperties) {
-    String cypher = CypherQueryBuilder.createResourceAsChildOfId(extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createResource(parentId, childURL, resourceType, name, description,
+  CedarFSResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType nodeType, String
+      name, String description, String creatorId, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+    String cypher = CypherQueryBuilder.createResourceAsChildOfId(label, extraProperties);
+    Map<String, Object> params = CypherParamBuilder.createResource(parentId, childURL, nodeType, name, description,
         creatorId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -274,12 +272,12 @@ public class Neo4JProxy {
     return buildResource(newNode);
   }
 
-  List<CedarFSNode> findFolderContents(String folderId, Collection<CedarNodeType> resourceTypes, int
+  List<CedarFSNode> findFolderContents(String folderId, Collection<CedarNodeType> nodeTypes, int
       limit, int offset, List<String> sortList) {
     List<CedarFSNode> resources = new ArrayList<>();
 
     String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList);
-    Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, resourceTypes, limit,
+    Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, nodeTypes, limit,
         offset);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -296,9 +294,10 @@ public class Neo4JProxy {
     return resources;
   }
 
-  public long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> resourceTypeList) {
+  public long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList) {
     String cypher = CypherQueryBuilder.getFolderContentsFilteredCountQuery();
-    Map<String, Object> params = CypherParamBuilder.getFolderContentsFilteredCountParameters(folderId, resourceTypeList);
+    Map<String, Object> params = CypherParamBuilder.getFolderContentsFilteredCountParameters(folderId,
+        nodeTypeList);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
@@ -367,8 +366,10 @@ public class Neo4JProxy {
   }
 
   void convertNeo4JValues(CedarFSNode r) {
-    if (r.getType() == CedarNodeType.FOLDER) {
-      r.setId(folderIdPrefix + r.getId());
+    if (r != null) {
+      if (r.getType() == CedarNodeType.FOLDER) {
+        r.setId(folderIdPrefix + r.getId());
+      }
     }
   }
 
@@ -382,7 +383,7 @@ public class Neo4JProxy {
 
   //TODO: fix this, we need to handle the prefixes based on the type
   //TODO: REALLY IMPORTANT
-  String getResourceUUID(String folderId, CedarNodeType resourceType) {
+  String getResourceUUID(String folderId, CedarNodeType nodeType) {
     if (folderId != null && folderId.startsWith(folderIdPrefix)) {
       return folderId.substring(folderIdPrefix.length());
     } else {
@@ -394,7 +395,7 @@ public class Neo4JProxy {
     CedarFSFolder cf = null;
     if (f != null && !f.isMissingNode()) {
       try {
-        cf = MAPPER.treeToValue(f, CedarFSFolder.class);
+        cf = JsonMapper.MAPPER.treeToValue(f, CedarFSFolder.class);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing folder", e);
       }
@@ -407,7 +408,7 @@ public class Neo4JProxy {
     CedarFSNode cf = null;
     if (f != null && !f.isMissingNode()) {
       try {
-        cf = MAPPER.treeToValue(f, CedarFSNode.class);
+        cf = JsonMapper.MAPPER.treeToValue(f, CedarFSNode.class);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing node", e);
       }
@@ -420,7 +421,7 @@ public class Neo4JProxy {
     CedarFSResource cr = null;
     if (r != null && !r.isMissingNode()) {
       try {
-        cr = MAPPER.treeToValue(r, CedarFSResource.class);
+        cr = JsonMapper.MAPPER.treeToValue(r, CedarFSResource.class);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing resource", e);
       }
@@ -433,7 +434,7 @@ public class Neo4JProxy {
     Map map = null;
     if (f != null && !f.isMissingNode()) {
       try {
-        map = MAPPER.treeToValue(f, Map.class);
+        map = JsonMapper.MAPPER.treeToValue(f, Map.class);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing map", e);
       }
@@ -441,4 +442,45 @@ public class Neo4JProxy {
     return map;
   }
 
+  private CedarFSUser buildUser(JsonNode f) {
+    CedarFSUser cu = null;
+    if (f != null && !f.isMissingNode()) {
+      try {
+        cu = JsonMapper.MAPPER.treeToValue(f, CedarFSUser.class);
+      } catch (JsonProcessingException e) {
+        log.error("Error deserializing user", e);
+      }
+    }
+    return cu;
+  }
+
+  CedarFSUser findUserById(String userURL) {
+    String cypher = CypherQueryBuilder.getUserById();
+    Map<String, Object> params = CypherParamBuilder.getUserById(userURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildUser(userNode);
+  }
+
+  CedarFSUser createUser(String userURL) {
+    String cypher = CypherQueryBuilder.createUser();
+    Map<String, Object> params = CypherParamBuilder.createUser(userURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildUser(userNode);
+  }
+
+  boolean wipeAllData() {
+    String cypher = CypherQueryBuilder.wipeAllData();
+    CypherQuery q = new CypherQueryLiteral(cypher);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while deleting all data:", error);
+    }
+    return errorsNode.size() == 0;
+  }
 }
