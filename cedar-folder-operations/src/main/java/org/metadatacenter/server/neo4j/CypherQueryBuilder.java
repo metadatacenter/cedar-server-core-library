@@ -233,9 +233,10 @@ public class CypherQueryBuilder {
     sb.append("MATCH (parent").append(" {id:{id} })");
     sb.append("MATCH (child)");
     sb.append("MATCH (parent)");
-    sb.append("-[:").append(RELATION_CONTAINS).append("]->");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
     sb.append("WHERE child.name = {name}");
+    sb.append(" AND (parent:").append(NodeLabel.FOLDER).append(" OR parent:").append(NodeLabel.RESOURCE).append(")");
     sb.append("RETURN child");
     return sb.toString();
   }
