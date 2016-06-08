@@ -186,6 +186,15 @@ public class Neo4JProxy {
     return buildFolder(folderNode);
   }
 
+  CedarFSNode findNodeByParentIdAndName(String parentId, String name) {
+    String cypher = CypherQueryBuilder.getNodeByParentIdAndName();
+    Map<String, Object> params = CypherParamBuilder.getNodeByParentIdAndName(parentId, name);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode node = jsonNode.at("/results/0/data/0/row/0");
+    return buildNode(node);
+  }
+
   CedarFSFolder findFolderById(String folderUUID) {
     String cypher = CypherQueryBuilder.getFolderById();
     Map<String, Object> params = CypherParamBuilder.getFolderById(folderUUID);

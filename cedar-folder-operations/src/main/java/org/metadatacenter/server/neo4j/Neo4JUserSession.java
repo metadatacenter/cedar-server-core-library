@@ -141,6 +141,10 @@ public class Neo4JUserSession {
     return neo4JProxy.findFolderByParentIdAndName(getFolderUUID(parentFolder.getId()), name);
   }
 
+  public CedarFSNode findNodeByParentIdAndName(CedarFSFolder parentFolder, String name) {
+    return neo4JProxy.findNodeByParentIdAndName(getFolderUUID(parentFolder.getId()), name);
+  }
+
   public List<CedarFSFolder> findFolderPathByPath(String path) {
     return neo4JProxy.findFolderPathByPath(path);
   }

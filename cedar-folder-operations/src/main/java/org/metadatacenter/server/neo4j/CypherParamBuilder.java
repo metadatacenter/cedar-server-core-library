@@ -194,4 +194,11 @@ public class CypherParamBuilder {
     params.put(NODE_TYPE, CedarNodeType.USER.getValue());
     return params;
   }
+
+  public static Map<String, Object> getNodeByParentIdAndName(String parentId, String name) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(ID, parentId);
+    params.put(NAME, name);
+    return params;
+  }
 }
