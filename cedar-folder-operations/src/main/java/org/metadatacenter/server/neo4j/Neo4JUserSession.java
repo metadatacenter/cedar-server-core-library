@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.PathComponent;
 import org.metadatacenter.model.folderserver.CedarFSFolder;
 import org.metadatacenter.model.folderserver.CedarFSNode;
 import org.metadatacenter.model.folderserver.CedarFSResource;
@@ -196,6 +197,7 @@ public class Neo4JUserSession {
     if (usersFolder == null) {
       Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
       extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
+      extraParams.put(NodeExtraParameter.IS_PUBLIC_READABLE, true);
       usersFolder = createFolderAsChildOfId(rootFolderURL, pathUtil.extractName(config.getUsersFolderPath()), config
           .getUsersFolderDescription(), NodeLabel.SYSTEM_FOLDER, extraParams);
     }
@@ -203,6 +205,7 @@ public class Neo4JUserSession {
     if (lostAndFoundFolder == null) {
       Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
       extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
+      extraParams.put(NodeExtraParameter.IS_PUBLIC_READABLE, true);
       lostAndFoundFolder = createFolderAsChildOfId(rootFolderURL, pathUtil.extractName(config
               .getLostAndFoundFolderPath()), config.getLostAndFoundFolderDescription(), NodeLabel.SYSTEM_FOLDER,
           extraParams);
@@ -244,6 +247,7 @@ public class Neo4JUserSession {
         folder.setPath(getPathString(path));
         folder.setParentPath(getParentPathString(path));
         folder.setParentFolderId(getParentId(path));
+        folder.setPathComponents(getPathComponentsForFolderPath(path));
       }
     }
   }
@@ -255,6 +259,7 @@ public class Neo4JUserSession {
         resource.setPath(getPathString(path));
         resource.setParentPath(getParentPathString(path));
         resource.setParentFolderId(getParentId(path));
+        resource.setPathComponents(getPathComponentsForNodePath(path));
       }
     }
   }
@@ -294,6 +299,26 @@ public class Neo4JUserSession {
       sb.append(node.getName());
     }
     return sb.length() == 0 ? null : sb.toString();
+  }
+
+  private List<PathComponent> getPathComponentsForNodePath(List<CedarFSNode> path) {
+    List<PathComponent> ret = new ArrayList<>();
+    for (CedarFSNode node : path) {
+      boolean isUserHome = false;
+      if (node instanceof CedarFSFolder) {
+        isUserHome = ((CedarFSFolder) node).isUserHome();
+      }
+      ret.add(new PathComponent(node.getName(), isUserHome));
+    }
+    return ret;
+  }
+
+  private List<PathComponent> getPathComponentsForFolderPath(List<CedarFSFolder> path) {
+    List<PathComponent> ret = new ArrayList<>();
+    for (CedarFSFolder folder : path) {
+      ret.add(new PathComponent(folder.getName(), folder.isUserHome()));
+    }
+    return ret;
   }
 
   public boolean wipeAllData() {

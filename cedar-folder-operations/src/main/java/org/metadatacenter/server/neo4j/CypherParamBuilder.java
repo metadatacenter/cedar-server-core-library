@@ -60,6 +60,7 @@ public class CypherParamBuilder {
     params.put(LAST_UPDATED_BY, createdBy);
     params.put(LAST_UPDATED_ON, nowString);
     params.put(LAST_UPDATED_ON_TS, nowTSString);
+    params.put(OWNED_BY, createdBy);
     params.put(USER_ID, createdBy);
     params.put(NODE_TYPE, nodeType.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {

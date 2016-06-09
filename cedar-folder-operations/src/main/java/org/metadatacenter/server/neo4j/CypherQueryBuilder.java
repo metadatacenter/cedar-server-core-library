@@ -53,6 +53,7 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(LAST_UPDATED_BY)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(OWNED_BY)).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
       extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key.getValue())).append(","));
     }
