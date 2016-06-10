@@ -21,15 +21,14 @@ public class Neo4JUserSession {
   private Neo4JProxy neo4JProxy;
   private String userIdPrefix;
 
-  public Neo4JUserSession(Neo4JProxy neo4JProxy, CedarUser cu, String userIdPrefix) {
+  public Neo4JUserSession(Neo4JProxy neo4JProxy, CedarUser cu) {
     this.neo4JProxy = neo4JProxy;
     this.cu = cu;
-    this.userIdPrefix = userIdPrefix;
+    this.userIdPrefix = neo4JProxy.getUserIdPrefix();
   }
 
-  public static Neo4JUserSession get(Neo4JProxy neo4JProxy, UserService userService, CedarUser cu, String
-      userIdPrefix, boolean createHome) {
-    Neo4JUserSession neo4JUserSession = new Neo4JUserSession(neo4JProxy, cu, userIdPrefix);
+  public static Neo4JUserSession get(Neo4JProxy neo4JProxy, UserService userService, CedarUser cu, boolean createHome) {
+    Neo4JUserSession neo4JUserSession = new Neo4JUserSession(neo4JProxy, cu);
     if (createHome) {
       CedarFSUser createdUser = neo4JUserSession.ensureUserExists();
       CedarFSFolder createdFolder = neo4JUserSession.ensureUserHomeExists();
@@ -75,8 +74,12 @@ public class Neo4JUserSession {
   // Convert folderId from URL style into internal representation
   // Other resource ids should not be converted
   // Add user info to calls
-  private String getFolderUUID(String folderId) {
+  public String getFolderUUID(String folderId) {
     return neo4JProxy.getFolderUUID(folderId);
+  }
+
+  public String getResourceUUID(String resourceId, CedarNodeType nodeType) {
+    return neo4JProxy.getResourceUUID(resourceId, nodeType);
   }
 
   public CedarFSFolder findFolderById(String folderURL) {

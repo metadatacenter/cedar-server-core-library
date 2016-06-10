@@ -23,14 +23,18 @@ import java.util.*;
 public class Neo4JProxy {
 
   private Neo4jConfig config;
+  private String genericIdPrefix;
   private String folderIdPrefix;
+  private String userIdPrefix;
   private IPathUtil pathUtil;
 
   private static Logger log = LoggerFactory.getLogger(Neo4JProxy.class);
 
-  public Neo4JProxy(Neo4jConfig config, String folderIdPrefix) {
+  public Neo4JProxy(Neo4jConfig config, String genericIdPrefix) {
     this.config = config;
-    this.folderIdPrefix = folderIdPrefix;
+    this.genericIdPrefix = genericIdPrefix;
+    this.folderIdPrefix = getNodeTypeFullPrefix(CedarNodeType.FOLDER);
+    this.userIdPrefix = getNodeTypeFullPrefix(CedarNodeType.USER);
     this.pathUtil = new Neo4JPathUtil(config);
   }
 
@@ -40,6 +44,10 @@ public class Neo4JProxy {
 
   Neo4jConfig getConfig() {
     return config;
+  }
+
+  public String getUserIdPrefix() {
+    return userIdPrefix;
   }
 
   private JsonNode executeCypherQueryAndCommit(CypherQuery query) {
@@ -393,12 +401,17 @@ public class Neo4JProxy {
 
   //TODO: fix this, we need to handle the prefixes based on the type
   //TODO: REALLY IMPORTANT
-  String getResourceUUID(String folderId, CedarNodeType nodeType) {
-    if (folderId != null && folderId.startsWith(folderIdPrefix)) {
-      return folderId.substring(folderIdPrefix.length());
+  String getResourceUUID(String resourceId, CedarNodeType nodeType) {
+    String prefix = getNodeTypeFullPrefix(nodeType);
+    if (resourceId != null && resourceId.startsWith(prefix)) {
+      return resourceId.substring(prefix.length());
     } else {
       return null;
     }
+  }
+
+  private String getNodeTypeFullPrefix(CedarNodeType nodeType) {
+    return genericIdPrefix + nodeType.getPrefix() + "/";
   }
 
   private CedarFSFolder buildFolder(JsonNode f) {
