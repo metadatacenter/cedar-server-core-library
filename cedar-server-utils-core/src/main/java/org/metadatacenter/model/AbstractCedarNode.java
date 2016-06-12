@@ -18,8 +18,8 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
   protected String parentFolderId;
   protected List<PathComponent> pathComponents;
   protected String ownedBy;
-  protected boolean publicReadable;
-  protected boolean publicWritable;
+  protected boolean publiclyReadable;
+  protected boolean publiclyWritable;
 
   static {
     CONTEXT = new HashMap<>();
@@ -61,24 +61,24 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
     this.ownedBy = ownedBy;
   }
 
-  @JsonProperty("isPublicReadable")
-  public boolean isPublicReadable() {
-    return publicReadable;
+  @JsonProperty("isPubliclyReadable")
+  public boolean isPubliclyReadable() {
+    return publiclyReadable;
   }
 
-  @JsonProperty("isPublicReadable")
-  public void setPublicReadable(boolean publicReadable) {
-    this.publicReadable = publicReadable;
+  @JsonProperty("isPubliclyReadable")
+  public void setPubliclyReadable(boolean publiclyReadable) {
+    this.publiclyReadable = publiclyReadable;
   }
 
-  @JsonProperty("isPublicWritable")
-  public boolean isPublicWritable() {
-    return publicWritable;
+  @JsonProperty("isPubliclyWritable")
+  public boolean isPubliclyWritable() {
+    return publiclyWritable;
   }
 
-  @JsonProperty("isPublicWritable")
-  public void setPublicWritable(boolean publicWritable) {
-    this.publicWritable = publicWritable;
+  @JsonProperty("isPubliclyWritable")
+  public void setPubliclyWritable(boolean publiclyWritable) {
+    this.publiclyWritable = publiclyWritable;
   }
 
   @JsonProperty("pathComponents")

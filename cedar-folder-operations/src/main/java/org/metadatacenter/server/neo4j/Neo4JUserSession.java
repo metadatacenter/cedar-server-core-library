@@ -200,7 +200,7 @@ public class Neo4JUserSession {
     if (usersFolder == null) {
       Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
       extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
-      extraParams.put(NodeExtraParameter.IS_PUBLIC_READABLE, true);
+      extraParams.put(NodeExtraParameter.IS_PUBLICLY_READABLE, true);
       usersFolder = createFolderAsChildOfId(rootFolderURL, pathUtil.extractName(config.getUsersFolderPath()), config
           .getUsersFolderDescription(), NodeLabel.SYSTEM_FOLDER, extraParams);
     }
@@ -208,7 +208,7 @@ public class Neo4JUserSession {
     if (lostAndFoundFolder == null) {
       Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
       extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
-      extraParams.put(NodeExtraParameter.IS_PUBLIC_READABLE, true);
+      extraParams.put(NodeExtraParameter.IS_PUBLICLY_READABLE, true);
       lostAndFoundFolder = createFolderAsChildOfId(rootFolderURL, pathUtil.extractName(config
               .getLostAndFoundFolderPath()), config.getLostAndFoundFolderDescription(), NodeLabel.SYSTEM_FOLDER,
           extraParams);

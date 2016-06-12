@@ -257,7 +257,7 @@ public class Neo4JProxy {
     Map<NodeExtraParameter, Object> extraParams = new HashMap<>();
     extraParams.put(NodeExtraParameter.IS_ROOT, true);
     extraParams.put(NodeExtraParameter.IS_SYSTEM, true);
-    extraParams.put(NodeExtraParameter.IS_PUBLIC_READABLE, true);
+    extraParams.put(NodeExtraParameter.IS_PUBLICLY_READABLE, true);
     String cypher = CypherQueryBuilder.createRootFolder(extraParams);
     Map<String, Object> params = CypherParamBuilder.createFolder(null, config.getRootFolderPath(), config
         .getRootFolderDescription(), creatorId, extraParams);
