@@ -31,6 +31,10 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_SORTABLE_CREATEDONTS_FIELD = "createdOnTS";
   public static final String ES_RESOURCE_SORTABLE_LASTUPDATEDONTS_FIELD = "lastUpdatedOnTS";
 
+  // Fields used to check access permissions
+  public static final String ES_RESOURCE_OWNER_FIELD = "ownedBy";
+  public static final String ES_RESOURCE_ISPUBLICLYREADABLE_FIELD = "isPubliclyReadable";
+
   // Other
   public static final String ES_SORT_DESC_PREFIX = "-";
 
