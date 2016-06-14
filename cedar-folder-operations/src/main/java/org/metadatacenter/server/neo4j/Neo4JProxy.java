@@ -284,7 +284,7 @@ public class Neo4JProxy {
       name, String description, String creatorId, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createResourceAsChildOfId(label, extraProperties);
     Map<String, Object> params = CypherParamBuilder.createResource(parentId, childURL, nodeType, name, description,
-        creatorId);
+        creatorId, extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");
