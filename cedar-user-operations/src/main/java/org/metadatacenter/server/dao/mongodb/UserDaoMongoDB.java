@@ -1,6 +1,7 @@
 package org.metadatacenter.server.dao.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.UpdateResult;
@@ -86,15 +87,45 @@ public class UserDaoMongoDB implements GenericUserDao {
     if (!exists(id)) {
       throw new InstanceNotFoundException();
     }
+    CedarUser cedarUser = find(id);
     // Adapts all keys not accepted by MongoDB
     modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
     Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
-    UpdateResult updateResult = entityCollection.updateOne(eq("userId", id), new Document("$set", modificationsMap));
-    if (updateResult.getMatchedCount() == 1) {
-      return find(id);
+    boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
+    if (modificationsOk) {
+      UpdateResult updateResult = entityCollection.updateOne(eq("userId", id), new Document("$set", modificationsMap));
+      if (updateResult.getMatchedCount() == 1) {
+        return find(id);
+      } else {
+        throw new InternalError();
+      }
     } else {
-      throw new InternalError();
+      throw new IllegalArgumentException();
     }
+  }
+
+  private boolean validateModifications(CedarUser cedarUser, Map<String, Object> modificationsMap) {
+    JsonNode userNode = JsonMapper.MAPPER.valueToTree(cedarUser);
+    for (String k : modificationsMap.keySet()) {
+      String pointer = "/" + k.replace(".", "/");
+      JsonNode v = userNode.at(pointer);
+      if (!v.isMissingNode()) {
+        ((ObjectNode) userNode).set(k, JsonMapper.MAPPER.valueToTree(modificationsMap.get(k)));
+      } else {
+        System.out.println("Matching missing node:" + k);
+        return false;
+      }
+      //System.out.println(k);
+      //System.out.println(modificationsMap.get(k));
+    }
+    //System.out.println(userNode);
+    CedarUser modifiedUser = null;
+    try {
+      modifiedUser = JsonMapper.MAPPER.convertValue(userNode, CedarUser.class);
+    } catch (Exception e) {
+      //DO nothing
+    }
+    return modifiedUser != null;
   }
 
 
