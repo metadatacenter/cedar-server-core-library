@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j;
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.time.Instant;
 import java.util.*;
@@ -88,7 +89,7 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> getFolderContentsLookupParameters(String folderId, Collection<CedarNodeType>
-      nodeTypes, int limit, int offset) {
+      nodeTypes, int limit, int offset, String ownerId, boolean addPermissionConditions) {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, folderId);
     List<String> ntl = new ArrayList<>();
@@ -96,6 +97,10 @@ public class CypherParamBuilder {
     params.put("nodeTypeList", ntl);
     params.put("limit", limit);
     params.put("offset", offset);
+    if (addPermissionConditions) {
+      params.put(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE, true);
+      params.put(NodeExtraParameter.Keys.OWNED_BY, ownerId);
+    }
     return params;
   }
 

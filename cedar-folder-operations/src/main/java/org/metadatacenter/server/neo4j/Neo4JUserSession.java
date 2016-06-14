@@ -166,7 +166,7 @@ public class Neo4JUserSession {
 
   public List<CedarFSNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList) {
-    return neo4JProxy.findFolderContents(getFolderUUID(folderURL), nodeTypeList, limit, offset, sortList);
+    return neo4JProxy.findFolderContents(getFolderUUID(folderURL), nodeTypeList, limit, offset, sortList, cu);
   }
 
   public long findFolderContentsCount(String folderURL) {

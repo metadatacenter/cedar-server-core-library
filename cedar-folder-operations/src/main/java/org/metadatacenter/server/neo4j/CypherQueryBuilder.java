@@ -32,11 +32,13 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolder(String folderAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  public static String createFolder(String folderAlias, NodeLabel label, Map<NodeExtraParameter, Object>
+      extraProperties) {
     return createNode(folderAlias, label, extraProperties);
   }
 
-  public static String createResource(String resourceAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  public static String createResource(String resourceAlias, NodeLabel label, Map<NodeExtraParameter, Object>
+      extraProperties) {
     return createNode(resourceAlias, label, extraProperties);
   }
 
@@ -112,7 +114,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getFolderContentsLookupQuery(List<String> sortList) {
+  public static String getFolderContentsLookupQuery(List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
     sb.append("MATCH (child)");
@@ -120,10 +122,27 @@ public class CypherQueryBuilder {
     sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
     sb.append("(child)");
     sb.append("WHERE child.nodeType in {nodeTypeList}");
+    if (addPermissionConditions) {
+      sb.append(getPermissionConditions("AND", "parent"));
+      sb.append(getPermissionConditions("AND", "child"));
+    }
     sb.append("RETURN child");
     sb.append(" ORDER BY ").append(getOrderByExpression(sortList));
     sb.append(" SKIP {offset}");
     sb.append(" LIMIT {limit}");
+    return sb.toString();
+  }
+
+  private static String getPermissionConditions(String prefix, String nodeAlias) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" ").append(prefix).append(" ");
+    sb.append("(");
+    sb.append(nodeAlias).append(".").append(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE);
+    sb.append("= {").append(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE).append("}");
+    sb.append(" OR ");
+    sb.append(nodeAlias).append(".").append(NodeExtraParameter.Keys.OWNED_BY);
+    sb.append("= {").append(NodeExtraParameter.Keys.OWNED_BY).append("}");
+    sb.append(")");
     return sb.toString();
   }
 

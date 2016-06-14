@@ -13,6 +13,7 @@ import org.metadatacenter.model.folderserver.CedarFSFolder;
 import org.metadatacenter.model.folderserver.CedarFSNode;
 import org.metadatacenter.model.folderserver.CedarFSResource;
 import org.metadatacenter.model.folderserver.CedarFSUser;
+import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -291,12 +292,14 @@ public class Neo4JProxy {
   }
 
   List<CedarFSNode> findFolderContents(String folderId, Collection<CedarNodeType> nodeTypes, int
-      limit, int offset, List<String> sortList) {
+      limit, int offset, List<String> sortList, CedarUser cu) {
     List<CedarFSNode> resources = new ArrayList<>();
 
-    String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList);
+    boolean addPermissionConditions = true;
+    String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList, addPermissionConditions);
+    String ownerId = userIdPrefix + cu.getUserId();
     Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, nodeTypes, limit,
-        offset);
+        offset, ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode resourceListJsonNode = jsonNode.at("/results/0/data");
