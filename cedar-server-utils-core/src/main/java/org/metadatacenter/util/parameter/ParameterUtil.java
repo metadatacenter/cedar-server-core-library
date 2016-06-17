@@ -1,4 +1,4 @@
-package org.metadatacenter.server.util;
+package org.metadatacenter.util.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
