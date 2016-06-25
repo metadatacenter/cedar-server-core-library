@@ -1,8 +1,9 @@
-package org.metadatacenter.provenance;
+package org.metadatacenter.server.model.provenance;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.metadatacenter.constant.CedarConstants;
 
+import java.lang.String;
 import java.time.Instant;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;

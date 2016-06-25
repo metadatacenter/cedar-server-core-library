@@ -18,11 +18,12 @@
   <description>CEDAR server utils</description>
 
   <modules>
+    <module>cedar-folder-operations</module>
+    <module>cedar-server-globals</module>
     <module>cedar-server-utils-core</module>
     <module>cedar-server-utils-play</module>
     <module>cedar-template-operations</module>
     <module>cedar-user-operations</module>
-    <module>cedar-folder-operations</module>
   </modules>
 
 </project>

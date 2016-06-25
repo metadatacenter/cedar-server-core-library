@@ -22,9 +22,9 @@ public class TemplateServiceMongoDB extends GenericTemplateServiceMongoDB<String
   private final TemplateElementService templateElementService;
 
 
-  public TemplateServiceMongoDB(@NonNull String db, @NonNull String templatesCollection, String linkedDataIdBasePath,
-                                TemplateElementService templateElementService) {
-    this.templateDao = new TemplateDaoMongoDB(db, templatesCollection, linkedDataIdBasePath);
+  public TemplateServiceMongoDB(@NonNull String db, @NonNull String templatesCollection, TemplateElementService
+      templateElementService) {
+    this.templateDao = new TemplateDaoMongoDB(db, templatesCollection);
     this.templateElementService = templateElementService;
   }
 

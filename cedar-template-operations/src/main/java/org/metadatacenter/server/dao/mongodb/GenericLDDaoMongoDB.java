@@ -38,13 +38,10 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
   protected final MongoCollection<Document> entityCollection;
   private final @NonNull JsonUtils jsonUtils;
 
-  private String linkedDataIdBasePath;
-
-  public GenericLDDaoMongoDB(@NonNull String dbName, @NonNull String collectionName, String linkedDataIdBasePath) {
+  public GenericLDDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
     MongoClient mongoClient = MongoFactory.getClient();
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     jsonUtils = new JsonUtils();
-    this.linkedDataIdBasePath = linkedDataIdBasePath;
     // TODO: close mongoClient after using it
   }
 
@@ -61,16 +58,6 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
   @Override
   @NonNull
   public JsonNode create(@NonNull JsonNode element) throws IOException {
-    if ((element.get("@id") != null) && (!NULL.equals(element.get("@id").getNodeType()))) {
-      throw new IllegalArgumentException("Specifying @id for new objects is not allowed");
-    }
-    String id = null;
-    // Generate a non-existing uuid
-    do {
-      id = linkedDataIdBasePath + UUID.randomUUID().toString();
-    } while (find(id) != null);
-    ((ObjectNode) element).put("@id", id);
-
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(element, FixMongoDirection.WRITE_TO_MONGO);
     Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);

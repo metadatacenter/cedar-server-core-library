@@ -4,8 +4,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class TemplateDaoMongoDB extends GenericLDDaoMongoDB {
 
-  public TemplateDaoMongoDB(@NonNull String dbName, @NonNull String collectionName, String linkedDataIdBasePath) {
-    super(dbName, collectionName, linkedDataIdBasePath);
+  public TemplateDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
+    super(dbName, collectionName);
   }
 
 }

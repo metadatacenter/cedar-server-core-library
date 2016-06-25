@@ -16,9 +16,8 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   @NonNull
   private final TemplateInstanceDaoMongoDB templateInstanceDao;
 
-  public TemplateInstanceServiceMongoDB(@NonNull String db, @NonNull String templateInstancesCollection, String
-      linkedDataIdBasePath) {
-    this.templateInstanceDao = new TemplateInstanceDaoMongoDB(db, templateInstancesCollection, linkedDataIdBasePath);
+  public TemplateInstanceServiceMongoDB(@NonNull String db, @NonNull String templateInstancesCollection) {
+    this.templateInstanceDao = new TemplateInstanceDaoMongoDB(db, templateInstancesCollection);
   }
 
   @Override

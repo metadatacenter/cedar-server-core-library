@@ -1,4 +1,6 @@
-package org.metadatacenter.provenance;
+package org.metadatacenter.server.model.provenance;
+
+import java.lang.String;
 
 public class ProvenanceInfo {
   private String createdOn;

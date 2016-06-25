@@ -22,6 +22,16 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-server-globals</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-project-config</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
@@ -52,13 +62,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
+      <groupId>com.github.fge</groupId>
+      <artifactId>json-schema-core</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-core</artifactId>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongo-java-driver</artifactId>
     </dependency>
 
     <dependency>

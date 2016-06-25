@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.provenance.ProvenanceTime;
+import org.metadatacenter.server.model.provenance.ProvenanceTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarFSUser extends AbstractCedarSuperNode {

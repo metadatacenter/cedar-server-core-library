@@ -1,6 +1,6 @@
 package org.metadatacenter.model;
 
-import org.metadatacenter.provenance.ProvenanceTime;
+import org.metadatacenter.server.model.provenance.ProvenanceTime;
 
 public abstract class AbstractCedarSuperNode implements CedarNode {
 

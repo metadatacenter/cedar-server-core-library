@@ -17,9 +17,8 @@ public class TemplateElementServiceMongoDB extends GenericTemplateServiceMongoDB
   @NonNull
   private final TemplateElementDaoMongoDB templateElementDao;
 
-  public TemplateElementServiceMongoDB(@NonNull String db, @NonNull String templateElementsCollection, String
-      linkedDataIdBasePath) {
-    this.templateElementDao = new TemplateElementDaoMongoDB(db, templateElementsCollection, linkedDataIdBasePath);
+  public TemplateElementServiceMongoDB(@NonNull String db, @NonNull String templateElementsCollection) {
+    this.templateElementDao = new TemplateElementDaoMongoDB(db, templateElementsCollection);
   }
 
   @Override

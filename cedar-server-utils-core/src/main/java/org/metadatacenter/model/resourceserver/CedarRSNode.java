@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNode;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.provenance.ProvenanceTime;
+import org.metadatacenter.server.model.provenance.ProvenanceTime;
 
 import java.util.Map;
 

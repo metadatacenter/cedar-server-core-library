@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.provenance.ProvenanceInfo;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
+import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
 
@@ -22,9 +22,8 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   @NonNull
   private final TemplateFieldDaoMongoDB templateFieldDao;
 
-  public TemplateFieldServiceMongoDB(@NonNull String db, @NonNull String templateFieldsCollection, String
-      linkedDataIdBasePath) {
-    this.templateFieldDao = new TemplateFieldDaoMongoDB(db, templateFieldsCollection, linkedDataIdBasePath);
+  public TemplateFieldServiceMongoDB(@NonNull String db, @NonNull String templateFieldsCollection) {
+    this.templateFieldDao = new TemplateFieldDaoMongoDB(db, templateFieldsCollection);
   }
 
   @Override

@@ -6,12 +6,12 @@ import java.lang.String;
 
 public enum CedarNodeType {
 
-  FOLDER(Types.FOLDER, Prefix.FOLDERS),
-  FIELD(Types.FIELD, Prefix.FIELDS),
-  ELEMENT(Types.ELEMENT, Prefix.ELEMENTS),
-  TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES),
-  INSTANCE(Types.INSTANCE, Prefix.INSTANCES),
-  USER(Types.USER, Prefix.USERS);
+  FOLDER(Types.FOLDER, Prefix.FOLDERS, null),
+  FIELD(Types.FIELD, Prefix.FIELDS, AtType.FIELD),
+  ELEMENT(Types.ELEMENT, Prefix.ELEMENTS, AtType.ELEMENT),
+  TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES, AtType.TEMPLATE),
+  INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
+  USER(Types.USER, Prefix.USERS, null);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -31,12 +31,21 @@ public enum CedarNodeType {
     public static final String USERS = "users";
   }
 
+  public static class AtType {
+    public static String AT_TYPE_PREFIX = "https://schema.metadatacenter.org/core/";
+    public static final String FIELD = AT_TYPE_PREFIX + "TemplateField";
+    public static final String ELEMENT = AT_TYPE_PREFIX + "TemplateElement";
+    public static final String TEMPLATE = AT_TYPE_PREFIX + "Template";
+  }
+
   private final String value;
   private final String prefix;
+  private final String atType;
 
-  CedarNodeType(String value, String prefix) {
+  CedarNodeType(String value, String prefix, String atType) {
     this.value = value;
     this.prefix = prefix;
+    this.atType = atType;
   }
 
   @JsonValue
@@ -48,10 +57,26 @@ public enum CedarNodeType {
     return prefix;
   }
 
+  public String getAtType() {
+    return atType;
+  }
+
   public static CedarNodeType forValue(String type) {
     for (CedarNodeType t : values()) {
       if (t.getValue().equals(type)) {
         return t;
+      }
+    }
+    return null;
+  }
+
+  public static CedarNodeType forAtType(String atType) {
+    if (atType != null) {
+      for (CedarNodeType t : values()) {
+        System.out.println(atType +":" + t.getAtType());
+        if (atType.equals(t.getAtType())) {
+          return t;
+        }
       }
     }
     return null;
