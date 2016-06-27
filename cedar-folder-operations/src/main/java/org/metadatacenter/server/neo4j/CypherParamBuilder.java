@@ -49,7 +49,7 @@ public class CypherParamBuilder {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
-    String nowTSString = String.valueOf(now.getEpochSecond());
+    Long nowTS = now.getEpochSecond();
     Map<String, Object> params = new HashMap<>();
     params.put(PARENT_ID, parentId);
     params.put(ID, childId);
@@ -57,10 +57,10 @@ public class CypherParamBuilder {
     params.put(DESCRIPTION, description);
     params.put(CREATED_BY, createdBy);
     params.put(CREATED_ON, nowString);
-    params.put(CREATED_ON_TS, nowTSString);
+    params.put(CREATED_ON_TS, nowTS);
     params.put(LAST_UPDATED_BY, createdBy);
     params.put(LAST_UPDATED_ON, nowString);
-    params.put(LAST_UPDATED_ON_TS, nowTSString);
+    params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(OWNED_BY, createdBy);
     params.put(USER_ID, createdBy);
     params.put(NODE_TYPE, nodeType.getValue());
@@ -165,11 +165,11 @@ public class CypherParamBuilder {
       updatedBy) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
-    String nowTSString = String.valueOf(now.getEpochSecond());
+    Long nowTS = now.getEpochSecond();
     Map<String, Object> params = new HashMap<>();
     params.put(LAST_UPDATED_BY, updatedBy);
     params.put(LAST_UPDATED_ON, nowString);
-    params.put(LAST_UPDATED_ON_TS, nowTSString);
+    params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(ID, nodeId);
     params.putAll(updateFields);
     return params;
@@ -190,13 +190,13 @@ public class CypherParamBuilder {
   public static Map<String, Object> createUser(String userURL) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
-    String nowTSString = String.valueOf(now.getEpochSecond());
+    Long nowTS = now.getEpochSecond();
     Map<String, Object> params = new HashMap<>();
     params.put(ID, userURL);
     params.put(CREATED_ON, nowString);
-    params.put(CREATED_ON_TS, nowTSString);
+    params.put(CREATED_ON_TS, nowTS);
     params.put(LAST_UPDATED_ON, nowString);
-    params.put(LAST_UPDATED_ON_TS, nowTSString);
+    params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.USER.getValue());
     return params;
   }
