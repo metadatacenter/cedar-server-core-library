@@ -8,6 +8,7 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public interface UserService extends IUserService {
 
@@ -20,5 +21,7 @@ public interface UserService extends IUserService {
 
   public CedarUser updateUser(@NonNull String userId, JsonNode modifications) throws IOException, ProcessingException,
       InstanceNotFoundException;
+
+  public List<CedarUser> findAll() throws IOException, ProcessingException;
 
 }

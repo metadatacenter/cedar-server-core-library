@@ -9,6 +9,7 @@ import org.metadatacenter.server.service.UserService;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public class UserServiceMongoDB implements UserService {
 
@@ -39,6 +40,11 @@ public class UserServiceMongoDB implements UserService {
   public CedarUser updateUser(@NonNull String userId, JsonNode modifications) throws IOException, ProcessingException,
       InstanceNotFoundException {
     return userDao.update(userId, modifications);
+  }
+
+  @Override
+  public List<CedarUser> findAll() throws IOException, ProcessingException {
+    return userDao.findAll();
   }
 
 }

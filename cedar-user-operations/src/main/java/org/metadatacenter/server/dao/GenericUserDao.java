@@ -6,6 +6,7 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public interface GenericUserDao {
 
@@ -13,5 +14,8 @@ public interface GenericUserDao {
 
   CedarUser find(@NonNull String id) throws IOException;
 
-  @NonNull CedarUser update(@NonNull String userId, JsonNode modification) throws IOException, InstanceNotFoundException;
+  @NonNull List<CedarUser> findAll() throws IOException;
+
+  @NonNull CedarUser update(@NonNull String userId, JsonNode modification) throws IOException,
+      InstanceNotFoundException;
 }

@@ -3,9 +3,13 @@ package org.metadatacenter.server.dao.mongodb;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.GenericUserDao;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -16,6 +20,8 @@ import org.metadatacenter.util.json.JsonUtils;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -126,6 +132,23 @@ public class UserDaoMongoDB implements GenericUserDao {
       //DO nothing
     }
     return modifiedUser != null;
+  }
+
+  @Override
+  public List<CedarUser> findAll() throws IOException {
+    FindIterable<Document> findIterable = entityCollection.find();
+    MongoCursor<Document> cursor = findIterable.iterator();
+    List<CedarUser> users = new ArrayList<>();
+    try {
+      while (cursor.hasNext()) {
+        JsonNode readUser = JsonMapper.MAPPER.readTree(cursor.next().toJson());
+        JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
+        users.add(JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class));
+      }
+    } finally {
+      cursor.close();
+    }
+    return users;
   }
 
 
