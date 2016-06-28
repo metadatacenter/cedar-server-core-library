@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<String, JsonNode> implements
     TemplateFieldService<String, JsonNode> {
@@ -61,7 +62,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance, ProvenanceInfo pi) throws IOException {
+  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws IOException {
 
     JsonNode properties = genericInstance.get("properties");
     if (properties != null) {
@@ -74,21 +75,23 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
           String type = fieldCandidate.get("type").asText();
           // single fields
           if ("object".equals(type)) {
-            saveFieldIfValid(fieldCandidate);
+            saveFieldIfValid(fieldCandidate, linkedDataIdBasePath);
             // multiple instance
           } else if ("array".equals(type)) {
-            saveFieldIfValid(fieldCandidate.get("items"));
+            saveFieldIfValid(fieldCandidate.get("items"), linkedDataIdBasePath);
           }
         }
       }
     }
   }
 
-  private void saveFieldIfValid(JsonNode fieldCandidate) throws IOException {
+  private void saveFieldIfValid(JsonNode fieldCandidate, String linkedDataIdBasePath) throws IOException {
     if (fieldCandidate.get("@id") != null) {
       String id = fieldCandidate.get("@id").asText();
       if (id != null && id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
         JsonNode removeId = ((ObjectNode) fieldCandidate).remove("@id");
+        String newId = linkedDataIdBasePath + UUID.randomUUID().toString();
+        ((ObjectNode) fieldCandidate).put("@id", newId);
         templateFieldDao.create(fieldCandidate);
       }
     }

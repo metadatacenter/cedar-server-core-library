@@ -27,5 +27,6 @@ public interface TemplateFieldService<K, T> {
 
   public long count();
 
-  public void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi) throws IOException;
+  public void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws
+      IOException;
 }
