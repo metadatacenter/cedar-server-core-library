@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.config.CedarConfig;
+
 public class Neo4jConfig {
 
   private String transactionUrl;
@@ -76,5 +78,19 @@ public class Neo4jConfig {
 
   public void setLostAndFoundFolderDescription(String lostAndFoundFolderDescription) {
     this.lostAndFoundFolderDescription = lostAndFoundFolderDescription;
+  }
+
+  public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
+    Neo4jConfig neoConfig = new Neo4jConfig();
+    neoConfig.setTransactionUrl(cedarConfig.getNeo4jConfig().getRest().getTransactionUrl());
+    neoConfig.setAuthString(cedarConfig.getNeo4jConfig().getRest().getAuthString());
+    neoConfig.setRootFolderPath(cedarConfig.getFolderStructureConfig().getRootFolder().getPath());
+    neoConfig.setRootFolderDescription(cedarConfig.getFolderStructureConfig().getRootFolder().getDescription());
+    neoConfig.setUsersFolderPath(cedarConfig.getFolderStructureConfig().getUsersFolder().getPath());
+    neoConfig.setUsersFolderDescription(cedarConfig.getFolderStructureConfig().getUsersFolder().getDescription());
+    neoConfig.setLostAndFoundFolderPath(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder().getPath());
+    neoConfig.setLostAndFoundFolderDescription(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder()
+        .getDescription());
+    return neoConfig;
   }
 }

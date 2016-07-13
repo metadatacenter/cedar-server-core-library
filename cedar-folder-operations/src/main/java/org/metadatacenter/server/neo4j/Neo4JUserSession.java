@@ -327,4 +327,10 @@ public class Neo4JUserSession {
   public boolean wipeAllData() {
     return neo4JProxy.wipeAllData();
   }
+
+  public String getHomeFolderPath() {
+    Neo4jConfig config = this.neo4JProxy.getConfig();
+    IPathUtil pathUtil = this.neo4JProxy.getPathUtil();
+    return config.getUsersFolderPath() + pathUtil.getSeparator() + this.cu.getUserId();
+  }
 }
