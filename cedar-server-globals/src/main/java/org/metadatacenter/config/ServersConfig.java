@@ -9,4 +9,6 @@ public interface ServersConfig {
   UserServerConfig getUser();
 
   ResourceServerConfig getResource();
+
+  SchemaServerConfig getSchema();
 }

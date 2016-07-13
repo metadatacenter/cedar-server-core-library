@@ -13,6 +13,10 @@ public abstract class CedarUserRolePermissionUtil {
   private static final List<String> instantiatorPermissions;
   private static final List<String> builtInSystemAdministratorPermissions;
   private static final List<String> administratorPermissions;
+  private static final List<String> roleAdministratorPermissions;
+  private static final List<String> userAdministratorPermissions;
+  private static final List<String> groupAdministratorPermissions;
+  private static final List<String> filesystemAdministratorPermissions;
 
   static {
     creatorPermissions = new ArrayList<>();
@@ -33,7 +37,6 @@ public abstract class CedarUserRolePermissionUtil {
     creatorPermissions.add(CedarPermission.FOLDER_READ.getPermissionName());
     creatorPermissions.add(CedarPermission.FOLDER_UPDATE.getPermissionName());
     creatorPermissions.add(CedarPermission.FOLDER_DELETE.getPermissionName());
-    creatorPermissions.add(CedarPermission.USER_PROFILE_OWN_READ.getPermissionName());
 
     instantiatorPermissions = new ArrayList<>();
     instantiatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
@@ -41,7 +44,6 @@ public abstract class CedarUserRolePermissionUtil {
     instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_READ.getPermissionName());
     instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_UPDATE.getPermissionName());
     instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_DELETE.getPermissionName());
-    instantiatorPermissions.add(CedarPermission.USER_PROFILE_OWN_READ.getPermissionName());
 
     builtInSystemAdministratorPermissions = new ArrayList<>();
     builtInSystemAdministratorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
@@ -52,11 +54,35 @@ public abstract class CedarUserRolePermissionUtil {
     administratorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     administratorPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
 
+    roleAdministratorPermissions = new ArrayList<>();
+    roleAdministratorPermissions.add(CedarPermission.USER_ROLE_UPDATE.getPermissionName());
+
+    userAdministratorPermissions = new ArrayList<>();
+    userAdministratorPermissions.add(CedarPermission.USER_READ.getPermissionName());
+    userAdministratorPermissions.add(CedarPermission.USER_UPDATE.getPermissionName());
+
+    groupAdministratorPermissions = new ArrayList<>();
+    groupAdministratorPermissions.add(CedarPermission.GROUP_CREATE.getPermissionName());
+    groupAdministratorPermissions.add(CedarPermission.GROUP_READ.getPermissionName());
+    groupAdministratorPermissions.add(CedarPermission.GROUP_UPDATE.getPermissionName());
+    groupAdministratorPermissions.add(CedarPermission.GROUP_DELETE.getPermissionName());
+
+    filesystemAdministratorPermissions = new ArrayList<>();
+    filesystemAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_OWNED_NODE.getPermissionName());
+    filesystemAdministratorPermissions.add(CedarPermission.FOLDER_CREATE_IN_NON_WRITABLE_FOLDER.getPermissionName());
+
     roleToPermissions = new HashMap<>();
     roleToPermissions.put(CedarUserRole.TEMPLATE_CREATOR, creatorPermissions);
     roleToPermissions.put(CedarUserRole.TEMPLATE_INSTANTIATOR, instantiatorPermissions);
     roleToPermissions.put(CedarUserRole.BUILT_IN_SYSTEM_ADMINISTRATOR, builtInSystemAdministratorPermissions);
-    roleToPermissions.put(CedarUserRole.ADMINISTRATOR, administratorPermissions);
+    roleToPermissions.put(CedarUserRole.FILESYSTEM_ADMINISTRATOR, filesystemAdministratorPermissions);
+
+    List<String> adminRoles = new ArrayList<>();
+    adminRoles.addAll(administratorPermissions);
+    adminRoles.addAll(roleAdministratorPermissions);
+    adminRoles.addAll(userAdministratorPermissions);
+    adminRoles.addAll(groupAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.ADMINISTRATOR, adminRoles);
   }
 
   public static void expandRolesIntoPermissions(CedarUser u) {

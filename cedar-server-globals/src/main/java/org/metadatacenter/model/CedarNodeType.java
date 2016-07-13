@@ -20,6 +20,7 @@ public enum CedarNodeType {
     public static final String TEMPLATE = "template";
     public static final String INSTANCE = "instance";
     public static final String USER = "user";
+    public static final String GROUP = "group";
   }
 
   public static class Prefix {

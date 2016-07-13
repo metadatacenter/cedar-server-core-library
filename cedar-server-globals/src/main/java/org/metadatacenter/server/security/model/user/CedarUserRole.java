@@ -8,6 +8,7 @@ public enum CedarUserRole {
   TEMPLATE_CREATOR("templateCreator"),
   TEMPLATE_INSTANTIATOR("templateInstantiator"),
   BUILT_IN_SYSTEM_ADMINISTRATOR("builtInSystemAdministrator"),
+  FILESYSTEM_ADMINISTRATOR("filesystemAdministrator"),
   ADMINISTRATOR("administrator");
 
   private final String value;
