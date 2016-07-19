@@ -9,6 +9,7 @@ public enum NodeLabel {
   USER_HOME_FOLDER(ComposedLabels.USER_HOME_FOLDER),
   RESOURCE(ComposedLabels.RESOURCE),
   USER(ComposedLabels.USER),
+  GROUP(ComposedLabels.GROUP),
   FIELD(ComposedLabels.FIELD),
   ELEMENT(ComposedLabels.ELEMENT),
   TEMPLATE(ComposedLabels.TEMPLATE),
@@ -22,6 +23,7 @@ public enum NodeLabel {
     public static final String USER_HOME_FOLDER = "UserHomeFolder";
     public static final String RESOURCE = "Resource";
     public static final String USER = "User";
+    public static final String GROUP = "Group";
     public static final String FIELD = "Field";
     public static final String ELEMENT = "Element";
     public static final String TEMPLATE = "Template";
@@ -31,9 +33,10 @@ public enum NodeLabel {
   public static class ComposedLabels {
     public static final String FOLDER = PlainLabels.FOLDER + ":" + PlainLabels.SCOPE;
     public static final String SYSTEM_FOLDER = PlainLabels.SYSTEM_FOLDER + ":" + FOLDER;
-    public static final String USER_HOME_FOLDER = PlainLabels.USER_HOME_FOLDER + ":" + SYSTEM_FOLDER;
+    public static final String USER_HOME_FOLDER = PlainLabels.USER_HOME_FOLDER + ":" + FOLDER;
     public static final String RESOURCE = PlainLabels.RESOURCE + ":" + PlainLabels.SCOPE;
     public static final String USER = PlainLabels.USER + ":" + PlainLabels.SCOPE;
+    public static final String GROUP = PlainLabels.GROUP + ":" + PlainLabels.SCOPE;
     public static final String FIELD = PlainLabels.FIELD + ":" + RESOURCE;
     public static final String ELEMENT = PlainLabels.ELEMENT + ":" + RESOURCE;
     public static final String TEMPLATE = PlainLabels.TEMPLATE + ":" + RESOURCE;

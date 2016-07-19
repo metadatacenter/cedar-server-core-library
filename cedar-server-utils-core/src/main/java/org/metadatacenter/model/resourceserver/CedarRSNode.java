@@ -25,7 +25,6 @@ public abstract class CedarRSNode extends AbstractCedarNode {
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
-  protected String displayName;
   protected String displayPath;
   protected String displayParentPath;
 
@@ -145,14 +144,6 @@ public abstract class CedarRSNode extends AbstractCedarNode {
 
   public void setOwnedByUserName(String ownedByUserName) {
     this.ownedByUserName = ownedByUserName;
-  }
-
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
   }
 
   public String getDisplayPath() {

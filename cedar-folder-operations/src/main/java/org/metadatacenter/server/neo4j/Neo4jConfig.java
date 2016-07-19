@@ -12,6 +12,8 @@ public class Neo4jConfig {
   private String usersFolderDescription;
   private String lostAndFoundFolderPath;
   private String lostAndFoundFolderDescription;
+  private String everybodyGroupName;
+  private String everybodyGroupDisplayName;
 
   public Neo4jConfig() {
   }
@@ -80,6 +82,22 @@ public class Neo4jConfig {
     this.lostAndFoundFolderDescription = lostAndFoundFolderDescription;
   }
 
+  public String getEverybodyGroupName() {
+    return everybodyGroupName;
+  }
+
+  public void setEverybodyGroupName(String everybodyGroupName) {
+    this.everybodyGroupName = everybodyGroupName;
+  }
+
+  public String getEverybodyGroupDisplayName() {
+    return everybodyGroupDisplayName;
+  }
+
+  public void setEverybodyGroupDisplayName(String everybodyGroupDisplayName) {
+    this.everybodyGroupDisplayName = everybodyGroupDisplayName;
+  }
+
   public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
     Neo4jConfig neoConfig = new Neo4jConfig();
     neoConfig.setTransactionUrl(cedarConfig.getNeo4jConfig().getRest().getTransactionUrl());
@@ -91,6 +109,8 @@ public class Neo4jConfig {
     neoConfig.setLostAndFoundFolderPath(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder().getPath());
     neoConfig.setLostAndFoundFolderDescription(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder()
         .getDescription());
+    neoConfig.setEverybodyGroupName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName());
+    neoConfig.setEverybodyGroupDisplayName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName());
     return neoConfig;
   }
 }

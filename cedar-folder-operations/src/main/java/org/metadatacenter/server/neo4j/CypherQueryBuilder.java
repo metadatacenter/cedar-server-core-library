@@ -1,11 +1,15 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.server.security.model.auth.NodePermission;
+
 import java.util.List;
 import java.util.Map;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
 public class CypherQueryBuilder {
+
+  private static String groupBySpecialValue;
 
   private CypherQueryBuilder() {
   }
@@ -22,7 +26,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createRootFolder(Map<NodeExtraParameter, Object> extraParams) {
+  public static String createRootFolder(Map<String, Object> extraParams) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append(createFolder("root", NodeLabel.SYSTEM_FOLDER, extraParams));
@@ -32,22 +36,23 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolder(String folderAlias, NodeLabel label, Map<NodeExtraParameter, Object>
+  public static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
     return createNode(folderAlias, label, extraProperties);
   }
 
-  public static String createResource(String resourceAlias, NodeLabel label, Map<NodeExtraParameter, Object>
+  public static String createResource(String resourceAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
     return createNode(resourceAlias, label, extraProperties);
   }
 
-  private static String createNode(String nodeAlias, NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  private static String createNode(String nodeAlias, NodeLabel label, Map<String, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
     sb.append("CREATE (");
     sb.append(nodeAlias).append(":").append(label).append(" {");
     sb.append(buildCreateAssignment(ID)).append(",");
     sb.append(buildCreateAssignment(NAME)).append(",");
+    sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
     sb.append(buildCreateAssignment(DESCRIPTION)).append(",");
     sb.append(buildCreateAssignment(CREATED_BY)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON)).append(",");
@@ -57,7 +62,7 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(OWNED_BY)).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key.getValue())).append(","));
+      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key)).append(","));
     }
     sb.append(buildCreateAssignment(NODE_TYPE));
     sb.append("}");
@@ -66,15 +71,15 @@ public class CypherQueryBuilder {
   }
 
 
-  public static String createFolderAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  public static String createFolderAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
     return createNodeAsChildOfId(label, extraProperties);
   }
 
-  public static String createResourceAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  public static String createResourceAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
     return createNodeAsChildOfId(label, extraProperties);
   }
 
-  private static String createNodeAsChildOfId(NodeLabel label, Map<NodeExtraParameter, Object> extraProperties) {
+  private static String createNodeAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentId} })");
@@ -137,11 +142,8 @@ public class CypherQueryBuilder {
     StringBuilder sb = new StringBuilder();
     sb.append(" ").append(prefix).append(" ");
     sb.append("(");
-    sb.append(nodeAlias).append(".").append(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE);
-    sb.append("= {").append(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE).append("}");
-    sb.append(" OR ");
-    sb.append(nodeAlias).append(".").append(NodeExtraParameter.Keys.OWNED_BY);
-    sb.append("= {").append(NodeExtraParameter.Keys.OWNED_BY).append("}");
+    sb.append(nodeAlias).append(".").append(Neo4JFields.OWNED_BY);
+    sb.append("= {").append(Neo4JFields.OWNED_BY).append("}");
     sb.append(")");
     return sb.toString();
   }
@@ -327,6 +329,8 @@ public class CypherQueryBuilder {
     sb.append("CREATE (");
     sb.append(nodeAlias).append(":").append(NodeLabel.USER).append(" {");
     sb.append(buildCreateAssignment(ID)).append(",");
+    sb.append(buildCreateAssignment(NAME)).append(",");
+    sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
@@ -334,12 +338,68 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(NODE_TYPE));
     sb.append("}");
     sb.append(")");
+    sb.append("RETURN ").append(nodeAlias);
+    return sb.toString();
+  }
+
+  public static String createGroup(Map<String, Object> extraProperties) {
+    String nodeAlias = "group";
+    StringBuilder sb = new StringBuilder();
+    sb.append("CREATE (");
+    sb.append(nodeAlias).append(":").append(NodeLabel.GROUP).append(" {");
+    sb.append(buildCreateAssignment(ID)).append(",");
+    sb.append(buildCreateAssignment(NAME)).append(",");
+    sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
+    sb.append(buildCreateAssignment(CREATED_ON)).append(",");
+    sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
+    if (extraProperties != null && !extraProperties.isEmpty()) {
+      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key)).append(","));
+    }
+    sb.append(buildCreateAssignment(NODE_TYPE));
+    sb.append("}");
+    sb.append(")");
+    sb.append("RETURN ").append(nodeAlias);
     return sb.toString();
   }
 
   public static String wipeAllData() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (n:").append(NodeLabel.PlainLabels.SCOPE).append(") DETACH DELETE n");
+    return sb.toString();
+  }
+
+  public static String getGroupBySpecialValue() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {specialGroup:{specialGroup} })");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String addGroupToUser() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("CREATE");
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("]->(group)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+  public static String addPermissionToFolderForGroup(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("CREATE");
+    sb.append("(group)-[:")
+        .append(permission == NodePermission.READ ? RelationLabel.CANREAD : RelationLabel.CANWRITE)
+        .append("]->(folder)");
+    sb.append("RETURN group");
     return sb.toString();
   }
 }

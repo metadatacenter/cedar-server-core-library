@@ -11,7 +11,8 @@ public enum CedarNodeType {
   ELEMENT(Types.ELEMENT, Prefix.ELEMENTS, AtType.ELEMENT),
   TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES, AtType.TEMPLATE),
   INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
-  USER(Types.USER, Prefix.USERS, null);
+  USER(Types.USER, Prefix.USERS, null),
+  GROUP(Types.GROUP, Prefix.GROUPS, null);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -30,6 +31,7 @@ public enum CedarNodeType {
     public static final String TEMPLATES = "templates";
     public static final String INSTANCES = "template-instances";
     public static final String USERS = "users";
+    public static final String GROUPS = "groups";
   }
 
   public static class AtType {

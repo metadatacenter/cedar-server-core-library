@@ -3,7 +3,6 @@ package org.metadatacenter.server.neo4j;
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.time.Instant;
 import java.util.*;
@@ -22,15 +21,16 @@ public class CypherParamBuilder {
     return sb.toString();
   }
 
-
-  public static Map<String, Object> createFolder(String parentId, String name, String description, String createdBy) {
-    return createFolder(parentId, name, description, createdBy, null);
+  public static Map<String, Object> createFolder(String parentId, String name, String displayName, String
+      description, String createdBy) {
+    return createFolder(parentId, name, displayName, description, createdBy, null);
   }
 
-  public static Map<String, Object> createFolder(String parentId, String name, String description, String createdBy,
-                                                 Map<NodeExtraParameter, Object> extraProperties) {
+  public static Map<String, Object> createFolder(String parentId, String name, String displayName, String
+      description, String createdBy, Map<String, Object> extraProperties) {
     String nodeId = UUID.randomUUID().toString();
-    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, description, createdBy, extraProperties);
+    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy,
+        extraProperties);
   }
 
   public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType nodeType,
@@ -40,12 +40,12 @@ public class CypherParamBuilder {
 
   public static Map<String, Object> createResource(String parentId, String childURL, CedarNodeType nodeType,
                                                    String name, String description, String createdBy,
-                                                   Map<NodeExtraParameter, Object> extraProperties) {
-    return createNode(parentId, childURL, nodeType, name, description, createdBy, extraProperties);
+                                                   Map<String, Object> extraProperties) {
+    return createNode(parentId, childURL, nodeType, name, name, description, createdBy, extraProperties);
   }
 
   private static Map<String, Object> createNode(String parentId, String childId, CedarNodeType nodeType, String
-      name, String description, String createdBy, Map<NodeExtraParameter, Object> extraProperties) {
+      name, String displayName, String description, String createdBy, Map<String, Object> extraProperties) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -54,6 +54,7 @@ public class CypherParamBuilder {
     params.put(PARENT_ID, parentId);
     params.put(ID, childId);
     params.put(NAME, name);
+    params.put(DISPLAY_NAME, displayName);
     params.put(DESCRIPTION, description);
     params.put(CREATED_BY, createdBy);
     params.put(CREATED_ON, nowString);
@@ -65,7 +66,7 @@ public class CypherParamBuilder {
     params.put(USER_ID, createdBy);
     params.put(NODE_TYPE, nodeType.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key.getValue(), value));
+      extraProperties.forEach((key, value) -> params.put(key, value));
     }
     return params;
   }
@@ -98,8 +99,7 @@ public class CypherParamBuilder {
     params.put("limit", limit);
     params.put("offset", offset);
     if (addPermissionConditions) {
-      params.put(NodeExtraParameter.Keys.IS_PUBLICLY_READABLE, true);
-      params.put(NodeExtraParameter.Keys.OWNED_BY, ownerId);
+      params.put(Neo4JFields.OWNED_BY, ownerId);
     }
     return params;
   }
@@ -187,17 +187,43 @@ public class CypherParamBuilder {
     return getNodeByIdentityAndName(parentId, name);
   }
 
-  public static Map<String, Object> createUser(String userURL) {
+  public static Map<String, Object> createUser(String userURL, String name, String displayName,
+                                               Map<String, Object> extraProperties) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
     Map<String, Object> params = new HashMap<>();
     params.put(ID, userURL);
+    params.put(NAME, name);
+    params.put(DISPLAY_NAME, displayName);
     params.put(CREATED_ON, nowString);
     params.put(CREATED_ON_TS, nowTS);
     params.put(LAST_UPDATED_ON, nowString);
     params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.USER.getValue());
+    if (extraProperties != null && !extraProperties.isEmpty()) {
+      extraProperties.forEach((key, value) -> params.put(key, value));
+    }
+    return params;
+  }
+
+  public static Map<String, Object> createGroup(String groupURL, String name, String displayName,
+                                                Map<String, Object> extraProperties) {
+    Instant now = Instant.now();
+    String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
+    Long nowTS = now.getEpochSecond();
+    Map<String, Object> params = new HashMap<>();
+    params.put(ID, groupURL);
+    params.put(NAME, name);
+    params.put(DISPLAY_NAME, displayName);
+    params.put(CREATED_ON, nowString);
+    params.put(CREATED_ON_TS, nowTS);
+    params.put(LAST_UPDATED_ON, nowString);
+    params.put(LAST_UPDATED_ON_TS, nowTS);
+    params.put(NODE_TYPE, CedarNodeType.GROUP.getValue());
+    if (extraProperties != null && !extraProperties.isEmpty()) {
+      extraProperties.forEach((key, value) -> params.put(key, value));
+    }
     return params;
   }
 
@@ -205,6 +231,26 @@ public class CypherParamBuilder {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, parentId);
     params.put(NAME, name);
+    return params;
+  }
+
+  public static Map<String, Object> getGroupBySpecialValue(String specialGroupName) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(SPECIAL_GROUP, specialGroupName);
+    return params;
+  }
+
+  public static Map<String, Object> addGroupToUser(String userId, String groupId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("userId", userId);
+    params.put("groupId", groupId);
+    return params;
+  }
+
+  public static Map<String, Object> addPermissionToFolderForGroup(String folderId, String groupId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("folderId", folderId);
+    params.put("groupId", groupId);
     return params;
   }
 }

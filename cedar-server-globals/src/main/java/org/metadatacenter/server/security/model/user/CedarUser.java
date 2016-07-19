@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarUser {
+public class CedarUser implements ICedarUserRepresentation {
 
   public static final String UI_POPULATE_A_TEMPLATE = "populateATemplate";
   public static final String UI_FOLDER_VIEW = "folderView";
@@ -19,6 +19,8 @@ public class CedarUser {
 
   private String userId;
   private String screenName;
+  private String firstName;
+  private String lastName;
   private String homeFolderId;
   private List<CedarUserApiKey> apiKeys;
   private List<CedarUserRole> roles;
@@ -50,6 +52,22 @@ public class CedarUser {
 
   public void setScreenName(String screenName) {
     this.screenName = screenName;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   public String getHomeFolderId() {
