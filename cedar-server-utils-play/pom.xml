@@ -10,7 +10,6 @@
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-server-utils-play</artifactId>
-  <version>0.5.2</version>
   <packaging>jar</packaging>
 
   <name>CEDAR Server Utils - Play</name>
