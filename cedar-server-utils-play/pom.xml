@@ -15,6 +15,7 @@
   <name>CEDAR Server Utils - Play</name>
 
   <properties>
+    <cedar.version>0.5.3-SNAPSHOT</cedar.version>
   </properties>
 
   <repositories>
@@ -34,6 +35,7 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
