@@ -17,6 +17,7 @@
   <description>CEDAR server utils</description>
 
   <modules>
+    <module>cedar-project-config</module>
     <module>cedar-folder-operations</module>
     <module>cedar-server-globals</module>
     <module>cedar-server-utils-core</module>
