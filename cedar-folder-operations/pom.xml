@@ -15,9 +15,22 @@
   <name>CEDAR Folder Server Operations</name>
 
   <properties>
+    <cedar.version>0.5.3-SNAPSHOT</cedar.version>
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-server-utils-core</artifactId>
+      <version>${cedar.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-user-operations</artifactId>
+      <version>${cedar.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.github.fge</groupId>
@@ -32,16 +45,6 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-server-utils-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-user-operations</artifactId>
     </dependency>
 
     <dependency>
