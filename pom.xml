@@ -13,6 +13,10 @@
   <version>0.5.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <cedar.version>0.5.2</cedar.version>
+  </properties>
+
   <name>CEDAR Server Utils</name>
   <description>CEDAR server utils</description>
 
