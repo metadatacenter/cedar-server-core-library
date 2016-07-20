@@ -5,6 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-utils</artifactId>
+    <version>0.5.2-SNAPSHOT</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
