@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-utils</artifactId>
-    <version>0.1.0</version>
+    <version>0.5.6-SNAPSHOT</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-server-utils-core</artifactId>
-  <version>0.1.0</version>
   <packaging>jar</packaging>
 
   <name>CEDAR Server Utils - Core</name>
 
   <properties>
+     <cedar.version>0.5.6-SNAPSHOT</cedar.version>
   </properties>
 
   <dependencies>
@@ -24,12 +23,15 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-project-config</artifactId>
+      <version>${cedar.version}</version>
     </dependency>
+
 
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
