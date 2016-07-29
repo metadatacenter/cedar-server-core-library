@@ -26,6 +26,9 @@ public class CedarConfig extends AbstractModule {
   @InjectConfig("folderStructure")
   private FolderStructureConfig folderStructureConfig;
 
+  @InjectConfig("folderRESTAPI")
+  private FolderRESTAPI folderRESTAPI;
+
   @InjectConfig("linkedData")
   private LinkedDataConfig linkedDataConfig;
 
@@ -94,6 +97,10 @@ public class CedarConfig extends AbstractModule {
     return folderStructureConfig;
   }
 
+  public FolderRESTAPI getFolderRESTAPI() {
+    return folderRESTAPI;
+  }
+
   public LinkedDataConfig getLinkedDataConfig() {
     return linkedDataConfig;
   }
@@ -114,11 +121,15 @@ public class CedarConfig extends AbstractModule {
     return getLinkedDataConfig().getBase() + nodeType.getPrefix() + "/";
   }
 
+  public String getLinkedDataAtType(CedarNodeType nodeType) {
+    return getServers().getSchema().getCoreBase() +  nodeType.getAtType();
+  }
+
   public LinkedDataUtil getLinkedDataUtil() {
     return new LinkedDataUtil(getLinkedDataConfig());
   }
 
-  public org.metadatacenter.config.ElasticsearchConfig getElasticsearchConfig() {
+  public ElasticsearchConfig getElasticsearchConfig() {
     return elasticsearchConfig;
   }
 
