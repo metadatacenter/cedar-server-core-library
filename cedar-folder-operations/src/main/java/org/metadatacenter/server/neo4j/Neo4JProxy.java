@@ -577,7 +577,7 @@ public class Neo4JProxy {
 
   boolean addPermission(CedarFSFolder folder, CedarFSGroup group, NodePermission permission) {
     String cypher = CypherQueryBuilder.addPermissionToFolderForGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.addPermissionToFolderForGroup(folder.getId(), group.getId());
+    Map<String, Object> params = CypherParamBuilder.addPermissionToFolderForGroup(folder.getUUID(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode errorsNode = jsonNode.at("/errors");

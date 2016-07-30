@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum NodePermission {
 
   READ(Type.READ),
+  READTHIS(Type.READTHIS),
   WRITE(Type.WRITE);
 
   public static class Type {
     public static final String READ = "read";
+    public static final String READTHIS = "readthis";
     public static final String WRITE = "write";
   }
 

@@ -247,9 +247,9 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> addPermissionToFolderForGroup(String folderId, String groupId) {
+  public static Map<String, Object> addPermissionToFolderForGroup(String folderUUID, String groupId) {
     Map<String, Object> params = new HashMap<>();
-    params.put("folderId", folderId);
+    params.put("folderId", folderUUID);
     params.put("groupId", groupId);
     return params;
   }

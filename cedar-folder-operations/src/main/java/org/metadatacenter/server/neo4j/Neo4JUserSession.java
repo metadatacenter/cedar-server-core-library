@@ -1,12 +1,10 @@
 package org.metadatacenter.server.neo4j;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
 import org.metadatacenter.server.security.util.CedarUserUtil;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.util.json.JsonMapper;
@@ -204,7 +202,7 @@ public class Neo4JUserSession {
     String rootFolderURL = null;
     if (rootFolder == null) {
       rootFolder = neo4JProxy.createRootFolder(userId);
-      neo4JProxy.addPermission(rootFolder, everybody, NodePermission.READ);
+      neo4JProxy.addPermission(rootFolder, everybody, NodePermission.READTHIS);
     }
     if (rootFolder != null) {
       rootFolderURL = rootFolder.getId();
@@ -217,7 +215,7 @@ public class Neo4JUserSession {
       String name = pathUtil.extractName(config.getUsersFolderPath());
       usersFolder = createFolderAsChildOfId(rootFolderURL, name, name, config.getUsersFolderDescription(), NodeLabel
           .SYSTEM_FOLDER, extraParams);
-      neo4JProxy.addPermission(usersFolder, everybody, NodePermission.READ);
+      neo4JProxy.addPermission(usersFolder, everybody, NodePermission.READTHIS);
     }
 
     CedarFSFolder lostAndFoundFolder = findFolderByPath(config.getLostAndFoundFolderPath());
@@ -228,7 +226,7 @@ public class Neo4JUserSession {
       lostAndFoundFolder = createFolderAsChildOfId(rootFolderURL, name, name, config.getLostAndFoundFolderDescription
               (), NodeLabel.SYSTEM_FOLDER,
           extraParams);
-      neo4JProxy.addPermission(lostAndFoundFolder, everybody, NodePermission.READ);
+      neo4JProxy.addPermission(lostAndFoundFolder, everybody, NodePermission.READTHIS);
     }
   }
 
@@ -248,6 +246,10 @@ public class Neo4JUserSession {
       currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), name, displayName, description, NodeLabel
           .USER_HOME_FOLDER, extraParams);
       if (currentUserHomeFolder != null) {
+        CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+        if (everybody != null) {
+          neo4JProxy.addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
+        }
         return currentUserHomeFolder;
       }
     }

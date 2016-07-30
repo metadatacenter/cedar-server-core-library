@@ -397,7 +397,7 @@ public class CypherQueryBuilder {
     sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
     sb.append("CREATE");
     sb.append("(group)-[:")
-        .append(permission == NodePermission.READ ? RelationLabel.CANREAD : RelationLabel.CANWRITE)
+        .append(RelationLabel.forNodePermission(permission))
         .append("]->(folder)");
     sb.append("RETURN group");
     return sb.toString();

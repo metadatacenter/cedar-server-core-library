@@ -76,7 +76,6 @@ public enum CedarNodeType {
   public static CedarNodeType forAtType(String atType) {
     if (atType != null) {
       for (CedarNodeType t : values()) {
-        System.out.println(atType +":" + t.getAtType());
         if (atType.equals(t.getAtType())) {
           return t;
         }
