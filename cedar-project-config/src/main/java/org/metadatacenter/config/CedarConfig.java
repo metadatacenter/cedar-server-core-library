@@ -53,6 +53,9 @@ public class CedarConfig extends AbstractModule {
   @InjectConfig("templateRESTAPISummaries")
   private TemplateRESTAPISummaries templateRESTAPISummaries;
 
+  @InjectConfig("test")
+  private TestConfig testConfig;
+
   private static CedarConfig instance;
 
   static {
@@ -141,4 +144,9 @@ public class CedarConfig extends AbstractModule {
   public TemplateRESTAPISummaries getTemplateRESTAPISummaries() {
     return templateRESTAPISummaries;
   }
+
+  public TestConfig getTestConfig() {
+    return testConfig;
+  }
+
 }
