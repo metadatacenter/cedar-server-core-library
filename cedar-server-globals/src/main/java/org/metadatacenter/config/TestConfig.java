@@ -8,4 +8,10 @@ public interface TestConfig extends ServerConfig {
 
   TemplateTestConfig getTemplate();
 
+  TemplateElementTestConfig getElement();
+
+  TemplateFieldTestConfig getField();
+
+  TemplateInstanceTestConfig getInstance();
+
 }
