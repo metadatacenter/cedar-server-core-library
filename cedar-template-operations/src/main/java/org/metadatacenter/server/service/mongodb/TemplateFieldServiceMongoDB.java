@@ -57,6 +57,11 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
+  public void deleteAllTemplateFields() {
+    templateFieldDao.deleteAll();
+  }
+
+  @Override
   public long count() {
     return templateFieldDao.count();
   }

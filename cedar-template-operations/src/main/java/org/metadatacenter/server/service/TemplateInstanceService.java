@@ -29,5 +29,7 @@ public interface TemplateInstanceService<K, T> {
 
   public void deleteTemplateInstance(@NonNull K templateInstanceId) throws InstanceNotFoundException, IOException;
 
+  public void deleteAllTemplateInstances();
+
   public long count();
 }

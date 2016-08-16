@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-utils</artifactId>
-    <version>0.5.4</version>
+    <version>0.5.6</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -15,7 +15,7 @@
   <name>CEDAR Folder Server Operations</name>
 
   <properties>
-    <cedar.version>0.5.4</cedar.version>
+    <cedar.version>0.5.6</cedar.version>
   </properties>
 
   <dependencies>

@@ -65,6 +65,11 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   }
 
   @Override
+  public void deleteAllTemplateInstances() {
+    templateInstanceDao.deleteAll();
+  }
+
+  @Override
   public long count() {
     return templateInstanceDao.count();
   }
