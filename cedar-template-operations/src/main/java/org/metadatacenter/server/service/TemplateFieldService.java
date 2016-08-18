@@ -25,6 +25,8 @@ public interface TemplateFieldService<K, T> {
 
   public void deleteTemplateField(@NonNull K templateFieldId) throws InstanceNotFoundException, IOException;
 
+  public void deleteAllTemplateFields();
+
   public long count();
 
   public void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws

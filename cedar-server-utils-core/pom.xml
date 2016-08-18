@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-utils</artifactId>
-    <version>0.5.6-SNAPSHOT</version>
+    <version>0.5.7-SNAPSHOT</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -15,7 +15,7 @@
   <name>CEDAR Server Utils - Core</name>
 
   <properties>
-     <cedar.version>0.5.6-SNAPSHOT</cedar.version>
+     <cedar.version>0.5.7-SNAPSHOT</cedar.version>
   </properties>
 
   <dependencies>

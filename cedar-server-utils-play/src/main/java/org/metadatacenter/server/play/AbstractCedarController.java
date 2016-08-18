@@ -95,4 +95,9 @@ public abstract class AbstractCedarController extends Controller {
     return forbidden(generateErrorDescription(t));
   }
 
+  protected static Result unauthorizedWithError(Throwable t) {
+    return unauthorized(generateErrorDescription(t));
+  }
+
+
 }
