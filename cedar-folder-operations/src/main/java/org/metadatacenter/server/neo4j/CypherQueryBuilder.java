@@ -121,30 +121,49 @@ public class CypherQueryBuilder {
 
   public static String getFolderContentsLookupQuery(List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
-    sb.append("MATCH (child)");
-    sb.append("MATCH (parent)");
-    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
-    sb.append("(child)");
-    sb.append("WHERE child.nodeType in {nodeTypeList}");
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("\nMATCH (child)");
+    sb.append("\nMATCH (parent)-[:").append(RelationLabel.CONTAINS).append("]->(child)");
+    sb.append("\nWHERE child.nodeType in {nodeTypeList}");
     if (addPermissionConditions) {
-      sb.append(getPermissionConditions("AND", "parent"));
-      sb.append(getPermissionConditions("AND", "child"));
+      sb.append(getResourcePermissionConditions("\nAND\n", "parent"));
+      sb.append(getResourcePermissionConditions("\nAND\n", "child"));
     }
-    sb.append("RETURN child");
-    sb.append(" ORDER BY ").append(getOrderByExpression(sortList));
-    sb.append(" SKIP {offset}");
-    sb.append(" LIMIT {limit}");
+    sb.append("\nRETURN child");
+    sb.append("\nORDER BY ").append(getOrderByExpression(sortList));
+    sb.append("\nSKIP {offset}");
+    sb.append("\nLIMIT {limit}");
     return sb.toString();
   }
 
-  private static String getPermissionConditions(String prefix, String nodeAlias) {
+  private static String getResourcePermissionConditions(String relationPrefix, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" ").append(prefix).append(" ");
+    sb.append(" ").append(relationPrefix).append(" ");
     sb.append("(");
-    sb.append(nodeAlias).append(".").append(Neo4JFields.OWNED_BY);
-    sb.append("= {").append(Neo4JFields.OWNED_BY).append("}");
+    sb.append(getUserToResourceRelationOneStep(RelationLabel.OWNS, nodeAlias));
+    sb.append("\nOR\n");
+    sb.append(getUserToResourceRelationOneStep(RelationLabel.CANREADTHIS, nodeAlias));
+    sb.append("\nOR\n");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, nodeAlias));
+    sb.append("\nOR\n");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, nodeAlias));
     sb.append(")");
+    return sb.toString();
+  }
+
+  private static String getUserToResourceRelationOneStep(RelationLabel relationLabel, String nodeAlias) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+        append("()-[:").append(relationLabel).append("]->(").append(nodeAlias).append(")");
+    return sb.toString();
+  }
+
+  private static String getUserToResourceRelationTwoSteps(RelationLabel relationLabel, String nodeAlias) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+        append("()-[:").append(relationLabel).append("]->()-[:").
+        append(RelationLabel.CONTAINS).append("*0..]->(").append(nodeAlias).append(")");
     return sb.toString();
   }
 

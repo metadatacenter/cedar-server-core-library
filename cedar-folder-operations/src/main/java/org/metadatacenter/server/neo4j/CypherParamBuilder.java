@@ -92,14 +92,14 @@ public class CypherParamBuilder {
   public static Map<String, Object> getFolderContentsLookupParameters(String folderId, Collection<CedarNodeType>
       nodeTypes, int limit, int offset, String ownerId, boolean addPermissionConditions) {
     Map<String, Object> params = new HashMap<>();
-    params.put(ID, folderId);
+    params.put(FOLDER_ID, folderId);
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put("nodeTypeList", ntl);
     params.put("limit", limit);
     params.put("offset", offset);
     if (addPermissionConditions) {
-      params.put(Neo4JFields.OWNED_BY, ownerId);
+      params.put(Neo4JFields.USER_ID, ownerId);
     }
     return params;
   }
