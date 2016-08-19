@@ -93,12 +93,18 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   private void saveFieldIfValid(JsonNode fieldCandidate, String linkedDataIdBasePath) throws IOException {
     if (fieldCandidate.get("@id") != null) {
       String id = fieldCandidate.get("@id").asText();
-      if (id != null && id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
-        JsonNode removeId = ((ObjectNode) fieldCandidate).remove("@id");
+      if (id == null || id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
+        ((ObjectNode) fieldCandidate).remove("@id");
         String newId = linkedDataIdBasePath + UUID.randomUUID().toString();
         ((ObjectNode) fieldCandidate).put("@id", newId);
         templateFieldDao.create(fieldCandidate);
       }
+    }
+    // There is no @id field
+    else {
+      String newId = linkedDataIdBasePath + UUID.randomUUID().toString();
+      ((ObjectNode) fieldCandidate).put("@id", newId);
+      templateFieldDao.create(fieldCandidate);
     }
   }
 
