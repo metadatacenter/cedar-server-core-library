@@ -9,6 +9,9 @@ import org.metadatacenter.server.model.provenance.ProvenanceTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarFSUser extends AbstractCedarSuperNode {
 
+  private String firstName;
+  private String lastName;
+
   public CedarFSUser() {
     this.nodeType = CedarNodeType.USER;
   }
@@ -63,4 +66,19 @@ public class CedarFSUser extends AbstractCedarSuperNode {
     this.createdOnTS = createdOnTS;
   }
 
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 }

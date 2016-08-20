@@ -250,6 +250,13 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getNodeById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{id} })");
+    sb.append("RETURN node");
+    return sb.toString();
+  }
+
   public static String getUserById() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{id} })");
@@ -419,6 +426,28 @@ public class CypherQueryBuilder {
         .append(RelationLabel.forNodePermission(permission))
         .append("]->(folder)");
     sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String getNodeOwner() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[:").append(RelationLabel.OWNS).append("]->");
+    sb.append("(node)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+  public static String getUsersWithPermissionOnNode(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[:").append(relationLabel).append("]->");
+    sb.append("(node)");
+    sb.append("RETURN user");
     return sb.toString();
   }
 }

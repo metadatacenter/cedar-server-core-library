@@ -21,14 +21,14 @@ public class CypherParamBuilder {
     return sb.toString();
   }
 
-  public static Map<String, Object> createFolder(String parentId, String name, String displayName, String
-      description, String createdBy) {
-    return createFolder(parentId, name, displayName, description, createdBy, null);
+  public static Map<String, Object> createFolder(String folderIdPrefix, String parentId, String name, String
+      displayName, String description, String createdBy) {
+    return createFolder(folderIdPrefix, parentId, name, displayName, description, createdBy, null);
   }
 
-  public static Map<String, Object> createFolder(String parentId, String name, String displayName, String
-      description, String createdBy, Map<String, Object> extraProperties) {
-    String nodeId = UUID.randomUUID().toString();
+  public static Map<String, Object> createFolder(String folderIdPrefix, String parentId, String name, String
+      displayName, String description, String createdBy, Map<String, Object> extraProperties) {
+    String nodeId = folderIdPrefix + UUID.randomUUID().toString();
     return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy,
         extraProperties);
   }
@@ -84,76 +84,80 @@ public class CypherParamBuilder {
 
   public static Map<String, Object> getAllNodesLookupParameters(int limit, int offset) {
     Map<String, Object> params = new HashMap<>();
-    params.put("limit", limit);
-    params.put("offset", offset);
+    params.put(LIMIT, limit);
+    params.put(OFFSET, offset);
     return params;
   }
 
-  public static Map<String, Object> getFolderContentsLookupParameters(String folderId, Collection<CedarNodeType>
+  public static Map<String, Object> getFolderContentsLookupParameters(String folderURL, Collection<CedarNodeType>
       nodeTypes, int limit, int offset, String ownerId, boolean addPermissionConditions) {
     Map<String, Object> params = new HashMap<>();
-    params.put(FOLDER_ID, folderId);
+    params.put(FOLDER_ID, folderURL);
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put("nodeTypeList", ntl);
-    params.put("limit", limit);
-    params.put("offset", offset);
+    params.put(NODE_TYPE_LIST, ntl);
+    params.put(LIMIT, limit);
+    params.put(OFFSET, offset);
     if (addPermissionConditions) {
       params.put(Neo4JFields.USER_ID, ownerId);
     }
     return params;
   }
 
-  public static Map<String, Object> getFolderContentsFilteredCountParameters(String folderId, Collection<CedarNodeType>
+  public static Map<String, Object> getFolderContentsFilteredCountParameters(String folderURL, Collection<CedarNodeType>
       nodeTypes) {
     Map<String, Object> params = new HashMap<>();
-    params.put(ID, folderId);
+    params.put(ID, folderURL);
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put("nodeTypeList", ntl);
+    params.put(NODE_TYPE_LIST, ntl);
     return params;
   }
 
-  private static Map<String, Object> getNodeByIdentity(String nodeId) {
+  private static Map<String, Object> getNodeByIdentity(String nodeURL) {
     Map<String, Object> params = new HashMap<>();
-    params.put(ID, nodeId);
+    params.put(ID, nodeURL);
     return params;
   }
 
-  private static Map<String, Object> getNodeByIdentityAndName(String nodeId, String nodeName) {
+  private static Map<String, Object> getNodeByIdentityAndName(String nodeURL, String nodeName) {
     Map<String, Object> params = new HashMap<>();
-    params.put(ID, nodeId);
+    params.put(ID, nodeURL);
     params.put(NAME, nodeName);
     return params;
   }
 
-  public static Map<String, Object> getFolderContentsCountParameters(String folderId) {
-    return getNodeByIdentity(folderId);
+  public static Map<String, Object> getFolderContentsCountParameters(String folderURL) {
+    return getNodeByIdentity(folderURL);
   }
 
-  public static Map<String, Object> getFolderById(String folderId) {
-    return getNodeByIdentity(folderId);
+  public static Map<String, Object> getFolderById(String folderURL) {
+    return getNodeByIdentity(folderURL);
   }
 
   public static Map<String, Object> getResourceById(String resourceURL) {
     return getNodeByIdentity(resourceURL);
   }
 
+  public static Map<String, Object> getNodeById(String nodeURL) {
+    return getNodeByIdentity(nodeURL);
+  }
+
   public static Map<String, Object> getUserById(String userURL) {
     return getNodeByIdentity(userURL);
   }
 
-  public static Map<String, Object> deleteFolderById(String folderId) {
-    return getNodeByIdentity(folderId);
+  public static Map<String, Object> deleteFolderById(String folderURL) {
+    return getNodeByIdentity(folderURL);
   }
 
   public static Map<String, Object> deleteResourceById(String resourceURL) {
     return getNodeByIdentity(resourceURL);
   }
 
-  public static Map<String, Object> updateFolderById(String folderId, Map<String, String> updateFields, String
+  public static Map<String, Object> updateFolderById(String folderURL, Map<String, String> updateFields, String
       updatedBy) {
-    return updateNodeById(folderId, updateFields, updatedBy);
+    return updateNodeById(folderURL, updateFields, updatedBy);
   }
 
   public static Map<String, Object> updateResourceById(String resourceURL, Map<String, String> updateFields, String
@@ -187,8 +191,8 @@ public class CypherParamBuilder {
     return getNodeByIdentityAndName(parentId, name);
   }
 
-  public static Map<String, Object> createUser(String userURL, String name, String displayName,
-                                               Map<String, Object> extraProperties) {
+  public static Map<String, Object> createUser(String userURL, String name, String displayName, String firstName,
+                                               String lastName, Map<String, Object> extraProperties) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -196,6 +200,8 @@ public class CypherParamBuilder {
     params.put(ID, userURL);
     params.put(NAME, name);
     params.put(DISPLAY_NAME, displayName);
+    params.put(FIRST_NAME, firstName);
+    params.put(LAST_NAME, lastName);
     params.put(CREATED_ON, nowString);
     params.put(CREATED_ON_TS, nowTS);
     params.put(LAST_UPDATED_ON, nowString);
@@ -242,15 +248,25 @@ public class CypherParamBuilder {
 
   public static Map<String, Object> addGroupToUser(String userId, String groupId) {
     Map<String, Object> params = new HashMap<>();
-    params.put("userId", userId);
-    params.put("groupId", groupId);
+    params.put(USER_ID, userId);
+    params.put(GROUP_ID, groupId);
     return params;
   }
 
-  public static Map<String, Object> addPermissionToFolderForGroup(String folderUUID, String groupId) {
+  public static Map<String, Object> addPermissionToFolderForGroup(String folderURL, String groupURL) {
     Map<String, Object> params = new HashMap<>();
-    params.put("folderId", folderUUID);
-    params.put("groupId", groupId);
+    params.put(FOLDER_ID, folderURL);
+    params.put(GROUP_ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> getNodeOwner(String nodeURL) {
+    return getNodeByIdentity(nodeURL);
+  }
+
+  public static Map<String, Object> getUsersWithPermissionOnNode(String nodeURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NODE_ID, nodeURL);
     return params;
   }
 }

@@ -46,7 +46,7 @@ public class CedarFSFolder extends CedarFSNode {
     this.root = root;
   }
 
-  public String getUUID() {
+  /*public String getUUID() {
     String sid = getId();
     String prefix = CedarConfig.getInstance().getLinkedDataPrefix(CedarNodeType.FOLDER);
     if (sid != null && prefix != null && sid.startsWith(prefix)) {
@@ -54,5 +54,5 @@ public class CedarFSFolder extends CedarFSNode {
     } else {
       return sid;
     }
-  }
+  }*/
 }

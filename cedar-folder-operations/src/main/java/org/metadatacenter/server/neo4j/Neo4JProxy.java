@@ -30,11 +30,11 @@ public class Neo4JProxy {
 
   private static Logger log = LoggerFactory.getLogger(Neo4JProxy.class);
 
-  public Neo4JProxy(Neo4jConfig config, String genericIdPrefix) {
+  public Neo4JProxy(Neo4jConfig config, String genericIdPrefix, String userIdPrefix) {
     this.config = config;
     this.genericIdPrefix = genericIdPrefix;
+    this.userIdPrefix = userIdPrefix;
     this.folderIdPrefix = getNodeTypeFullPrefix(CedarNodeType.FOLDER);
-    this.userIdPrefix = getNodeTypeFullPrefix(CedarNodeType.USER);
     this.groupIdPrefix = getNodeTypeFullPrefix(CedarNodeType.GROUP);
     this.pathUtil = new Neo4JPathUtil(config);
   }
@@ -263,8 +263,8 @@ public class Neo4JProxy {
     extraParams.put(Neo4JFields.IS_ROOT, true);
     extraParams.put(Neo4JFields.IS_SYSTEM, true);
     String cypher = CypherQueryBuilder.createRootFolder(extraParams);
-    Map<String, Object> params = CypherParamBuilder.createFolder(null, config.getRootFolderPath(), config
-        .getRootFolderPath(), config.getRootFolderDescription(), creatorId, extraParams);
+    Map<String, Object> params = CypherParamBuilder.createFolder(folderIdPrefix, null, config.getRootFolderPath(),
+        config.getRootFolderPath(), config.getRootFolderDescription(), creatorId, extraParams);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode rootNode = jsonNode.at("/results/0/data/0/row/0");
@@ -274,14 +274,13 @@ public class Neo4JProxy {
   CedarFSFolder createFolderAsChildOfId(String parentId, String name, String displayName, String description, String
       creatorId, NodeLabel label, Map<String, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createFolderAsChildOfId(label, extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createFolder(parentId, name, displayName, description, creatorId,
-        extraProperties);
+    Map<String, Object> params = CypherParamBuilder.createFolder(folderIdPrefix, parentId, name, displayName,
+        description, creatorId, extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");
     return buildFolder(newNode);
   }
-
 
   CedarFSResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType nodeType, String
       name, String description, String creatorId, NodeLabel label, Map<String, Object> extraProperties) {
@@ -389,14 +388,6 @@ public class Neo4JProxy {
     return buildResource(updatedNode);
   }
 
-  void convertNeo4JValues(CedarFSNode r) {
-    if (r != null) {
-      if (r.getType() == CedarNodeType.FOLDER) {
-        r.setId(folderIdPrefix + r.getId());
-      }
-    }
-  }
-
   String getFolderUUID(String folderId) {
     if (folderId != null && folderId.startsWith(folderIdPrefix)) {
       return folderId.substring(folderIdPrefix.length());
@@ -428,7 +419,6 @@ public class Neo4JProxy {
       } catch (JsonProcessingException e) {
         log.error("Error deserializing folder", e);
       }
-      convertNeo4JValues(cf);
     }
     return cf;
   }
@@ -441,7 +431,6 @@ public class Neo4JProxy {
       } catch (JsonProcessingException e) {
         log.error("Error deserializing node", e);
       }
-      convertNeo4JValues(cf);
     }
     return cf;
   }
@@ -454,7 +443,6 @@ public class Neo4JProxy {
       } catch (JsonProcessingException e) {
         log.error("Error deserializing resource", e);
       }
-      convertNeo4JValues(cr);
     }
     return cr;
   }
@@ -504,26 +492,29 @@ public class Neo4JProxy {
     return buildUser(userNode);
   }
 
-  public CedarFSUser createUser(String userURL, String name, String displayName, CedarFSGroup group) {
-    return createUser(userURL, name, displayName, null, group);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
+                         CedarFSGroup group) {
+    return createUser(userURL, name, displayName, firstName, lastName, null, group);
   }
 
-  public CedarFSUser createUser(String userURL, String name, String displayName) {
-    return createUser(userURL, name, displayName, null, null);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName) {
+    return createUser(userURL, name, displayName, firstName, lastName, null, null);
   }
 
-  CedarFSUser createUser(String userURL, String name, String displayName, Map<String, Object> extraProperties) {
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
+                         Map<String, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createUser();
-    Map<String, Object> params = CypherParamBuilder.createUser(userURL, name, displayName, extraProperties);
+    Map<String, Object> params = CypherParamBuilder.createUser(userURL, name, displayName, firstName, lastName,
+        extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
     return buildUser(userNode);
   }
 
-  public CedarFSUser createUser(String userURL, String name, String displayName, Map<String, Object> extraProperties,
-                                CedarFSGroup group) {
-    CedarFSUser newUser = createUser(userURL, name, displayName, extraProperties);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
+                         Map<String, Object> extraProperties, CedarFSGroup group) {
+    CedarFSUser newUser = createUser(userURL, name, displayName, firstName, lastName, extraProperties);
     if (group != null) {
       addGroupToUser(newUser, group);
     }
@@ -577,7 +568,7 @@ public class Neo4JProxy {
 
   boolean addPermission(CedarFSFolder folder, CedarFSGroup group, NodePermission permission) {
     String cypher = CypherQueryBuilder.addPermissionToFolderForGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.addPermissionToFolderForGroup(folder.getUUID(), group.getId());
+    Map<String, Object> params = CypherParamBuilder.addPermissionToFolderForGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode errorsNode = jsonNode.at("/errors");
@@ -586,5 +577,48 @@ public class Neo4JProxy {
       log.warn("Error while adding permission:", error);
     }
     return errorsNode.size() == 0;
+  }
+
+  CedarFSNode findNodeById(String nodeURL) {
+    String cypher = CypherQueryBuilder.getNodeById();
+    Map<String, Object> params = CypherParamBuilder.getNodeById(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode nodeNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildNode(nodeNode);
+  }
+
+  CedarFSUser getNodeOwner(String nodeURL) {
+    String cypher = CypherQueryBuilder.getNodeOwner();
+    Map<String, Object> params = CypherParamBuilder.getNodeOwner(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildUser(userNode);
+  }
+
+  List<CedarFSUser> getUsersWithPermissionOnNode(String nodeURL, NodePermission permission) {
+    List<CedarFSUser> userList = new ArrayList<>();
+    RelationLabel relationLabel = null;
+    switch (permission) {
+      case READ:
+        relationLabel = RelationLabel.CANREAD;
+        break;
+      case WRITE:
+        relationLabel = RelationLabel.CANWRITE;
+        break;
+    }
+    String cypher = CypherQueryBuilder.getUsersWithPermissionOnNode(relationLabel);
+    Map<String, Object> params = CypherParamBuilder.getUsersWithPermissionOnNode(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userListJsonNode = jsonNode.at("/results/0/data/0/row/0");
+    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
+      userListJsonNode.forEach(f -> {
+        CedarFSUser cu = buildUser(f);
+        userList.add(cu);
+      });
+    }
+    return userList;
   }
 }
