@@ -3,10 +3,7 @@ package org.metadatacenter.server.neo4j;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
-import org.metadatacenter.server.security.model.auth.CedarNodeGroupPermission;
-import org.metadatacenter.server.security.model.auth.CedarNodeUserPermission;
-import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
@@ -401,8 +398,106 @@ public class Neo4JUserSession {
     return permissions;
   }
 
-  public CedarNodePermissions updateNodePermissions(String nodeURL, CedarNodePermissions permissions) {
+  public CedarNodePermissions updateNodePermissions(String nodeURL, CedarNodePermissionsRequest permissionsRequest) {
+    CedarNodePermissions currentPermissions = getNodePermissions(nodeURL);
+    String oldOwnerId = currentPermissions.getOwner().getUserId();
+    String newOwnerId = permissionsRequest.getOwner();
+    if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
+      updateNodeOwner(nodeURL, newOwnerId);
+    }
+
+    Set<String> oldUserPermissionKeys = new HashSet<>();
+    for(CedarNodeUserPermission up : currentPermissions.getUserPermissions().values()) {
+      oldUserPermissionKeys.add(up.getKey());
+    }
+    Set<String> newUserPermissionKeys = new HashSet<>();
+    for(String userId : permissionsRequest.getUserPermissions().keySet()) {
+      NodePermission permission = permissionsRequest.getUserPermissions().get(userId);
+      newUserPermissionKeys.add(CedarNodeUserPermission.getKey(userId, permission));
+    }
+
+    Set<String> toRemoveUserPermissionKeys = new HashSet<>();
+    toRemoveUserPermissionKeys.addAll(oldUserPermissionKeys);
+    toRemoveUserPermissionKeys.removeAll(newUserPermissionKeys);
+    if (!toRemoveUserPermissionKeys.isEmpty()) {
+      removeUserPermissions(nodeURL, toRemoveUserPermissionKeys);
+    }
+
+    Set<String> toAddUserPermissionKeys = new HashSet<>();
+    toAddUserPermissionKeys.addAll(newUserPermissionKeys);
+    toAddUserPermissionKeys.removeAll(oldUserPermissionKeys);
+    if (!toAddUserPermissionKeys.isEmpty()) {
+      addUserPermissions(nodeURL, toAddUserPermissionKeys);
+    }
+
+    Set<String> oldGroupPermissionKeys = new HashSet<>();
+    for(CedarNodeGroupPermission gp : currentPermissions.getGroupPermissions().values()) {
+      oldGroupPermissionKeys.add(gp.getKey());
+    }
+    Set<String> newGroupPermissionKeys = new HashSet<>();
+    for(String groupId : permissionsRequest.getGroupPermissions().keySet()) {
+      NodePermission permission = permissionsRequest.getGroupPermissions().get(groupId);
+      newGroupPermissionKeys.add(CedarNodeGroupPermission.getKey(groupId, permission));
+    }
+
+    Set<String> toRemoveGroupPermissionKeys = new HashSet<>();
+    toRemoveGroupPermissionKeys.addAll(oldGroupPermissionKeys);
+    toRemoveGroupPermissionKeys.removeAll(newGroupPermissionKeys);
+    if (!toRemoveGroupPermissionKeys.isEmpty()) {
+      removeGroupPermissions(nodeURL, toRemoveGroupPermissionKeys);
+    }
+
+    Set<String> toAddGroupPermissionKeys = new HashSet<>();
+    toAddGroupPermissionKeys.addAll(newGroupPermissionKeys);
+    toAddGroupPermissionKeys.removeAll(oldGroupPermissionKeys);
+    if (!toAddGroupPermissionKeys.isEmpty()) {
+      addGroupPermissions(nodeURL, toAddGroupPermissionKeys);
+    }
+
     return getNodePermissions(nodeURL);
+  }
+
+  private void addGroupPermissions(String nodeURL, Set<String> toAddGroupPermissionKeys) {
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("addGroupPermissions");
+    System.out.println(nodeURL);
+    for(String key : toAddGroupPermissionKeys) {
+      System.out.println(CedarNodeUserPermission.getId(key));
+    }
+  }
+
+  private void removeGroupPermissions(String nodeURL, Set<String> toRemoveGroupPermissionKeys) {
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("removeGroupPermissions");
+    System.out.println(nodeURL);
+    for(String key : toRemoveGroupPermissionKeys) {
+      System.out.println(CedarNodeUserPermission.getId(key));
+    }
+  }
+
+  private void addUserPermissions(String nodeURL, Set<String> toAddUserPermissionKeys) {
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("addUserPermissions");
+    System.out.println(nodeURL);
+    for(String key : toAddUserPermissionKeys) {
+      System.out.println(CedarNodeUserPermission.getId(key));
+    }
+  }
+
+  private void removeUserPermissions(String nodeURL, Set<String> toRemoveUserPermissionKeys) {
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("toRemoveUserPermissionKeys");
+    System.out.println(nodeURL);
+    for(String key : toRemoveUserPermissionKeys) {
+      System.out.println(CedarNodeUserPermission.getId(key));
+    }
+  }
+
+  private void updateNodeOwner(String nodeURL, String newOwnerId) {
+    System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
+    System.out.println("updateNodeOwner");
+    System.out.println(nodeURL);
+    System.out.println(newOwnerId);
   }
 
 }

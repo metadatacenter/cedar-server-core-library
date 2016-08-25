@@ -2,10 +2,9 @@ package org.metadatacenter.server.security.model.auth;
 
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 
-public class CedarNodeGroupPermission {
+public class CedarNodeGroupPermission extends CedarNodePermission {
 
   private CedarGroupExtract group;
-  private NodePermission permission;
 
   public CedarNodeGroupPermission() {
   }
@@ -23,11 +22,9 @@ public class CedarNodeGroupPermission {
     this.group = group;
   }
 
-  public NodePermission getPermission() {
-    return permission;
+  @Override
+  protected String getObjectId() {
+    return group.getGroupId();
   }
 
-  public void setPermission(NodePermission permission) {
-    this.permission = permission;
-  }
 }
