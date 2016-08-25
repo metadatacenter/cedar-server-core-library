@@ -3,9 +3,11 @@ package org.metadatacenter.server.neo4j;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
-import org.metadatacenter.server.security.model.auth.CedarNodePermission;
+import org.metadatacenter.server.security.model.auth.CedarNodeGroupPermission;
+import org.metadatacenter.server.security.model.auth.CedarNodeUserPermission;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
 import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 import org.metadatacenter.server.security.util.CedarUserUtil;
@@ -92,6 +94,10 @@ public class Neo4JUserSession {
 
   private List<CedarFSUser> getUsersWithPermission(String nodeURL, NodePermission permission) {
     return neo4JProxy.getUsersWithPermissionOnNode(nodeURL, permission);
+  }
+
+  private List<CedarFSGroup> getGroupsWithPermission(String nodeURL, NodePermission permission) {
+    return neo4JProxy.getGroupsWithPermissionOnNode(nodeURL, permission);
   }
 
   public List<CedarFSNode> findAllNodes(int limit, int offset, List<String> sortList) {
@@ -348,29 +354,48 @@ public class Neo4JUserSession {
       CedarFSUser owner = getNodeOwner(nodeURL);
       List<CedarFSUser> readUsers = getUsersWithPermission(nodeURL, NodePermission.READ);
       List<CedarFSUser> writeUsers = getUsersWithPermission(nodeURL, NodePermission.WRITE);
-      return buildPermissions(owner, readUsers, writeUsers);
+      List<CedarFSGroup> readGroups = getGroupsWithPermission(nodeURL, NodePermission.READ);
+      List<CedarFSGroup> writeGroups = getGroupsWithPermission(nodeURL, NodePermission.WRITE);
+      return buildPermissions(owner, readUsers, writeUsers, readGroups, writeGroups);
     } else {
       return null;
     }
   }
 
-  private CedarNodePermissions buildPermissions(CedarFSUser owner, List<CedarFSUser> readUsers,
-                                                List<CedarFSUser> writeUsers) {
+  private CedarNodePermissions buildPermissions(CedarFSUser owner, List<CedarFSUser> readUsers, List<CedarFSUser>
+      writeUsers, List<CedarFSGroup> readGroups, List<CedarFSGroup> writeGroups) {
     CedarNodePermissions permissions = new CedarNodePermissions();
-    CedarUserExtract o = new CedarUserExtract(owner.getId(), owner.getFirstName(), owner.getLastName());
+    CedarUserExtract o = new CedarUserExtract(owner.getId(), owner.getFirstName(), owner.getLastName(), CedarUserUtil
+        .buildScreenName(owner));
     permissions.setOwner(o);
     if (readUsers != null) {
       for (CedarFSUser user : readUsers) {
-        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName());
-        CedarNodePermission up = new CedarNodePermission(u, NodePermission.READ);
+        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName(),
+            CedarUserUtil.buildScreenName(owner));
+        CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.READ);
         permissions.addUserPermissions(up);
       }
     }
     if (writeUsers != null) {
       for (CedarFSUser user : writeUsers) {
-        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName());
-        CedarNodePermission up = new CedarNodePermission(u, NodePermission.WRITE);
+        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName(),
+            CedarUserUtil.buildScreenName(owner));
+        CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.WRITE);
         permissions.addUserPermissions(up);
+      }
+    }
+    if (readGroups != null) {
+      for (CedarFSGroup group : readGroups) {
+        CedarGroupExtract g = new CedarGroupExtract(group.getId(), group.getDisplayName());
+        CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.READ);
+        permissions.addGroupPermissions(gp);
+      }
+    }
+    if (writeGroups != null) {
+      for (CedarFSGroup group : writeGroups) {
+        CedarGroupExtract g = new CedarGroupExtract(group.getId(), group.getDisplayName());
+        CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.WRITE);
+        permissions.addGroupPermissions(gp);
       }
     }
     return permissions;

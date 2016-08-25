@@ -9,6 +9,8 @@ import org.metadatacenter.server.model.provenance.ProvenanceTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarFSGroup extends AbstractCedarSuperNode {
 
+  private String displayName;
+
   public CedarFSGroup() {
     this.nodeType = CedarNodeType.GROUP;
   }
@@ -63,4 +65,11 @@ public class CedarFSGroup extends AbstractCedarSuperNode {
     this.createdOnTS = createdOnTS;
   }
 
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
 }

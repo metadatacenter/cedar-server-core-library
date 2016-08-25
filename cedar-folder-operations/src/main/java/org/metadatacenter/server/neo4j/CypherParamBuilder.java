@@ -261,10 +261,18 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> getNodeOwner(String nodeURL) {
-    return getNodeByIdentity(nodeURL);
+    Map<String, Object> params = new HashMap<>();
+    params.put(NODE_ID, nodeURL);
+    return params;
   }
 
   public static Map<String, Object> getUsersWithPermissionOnNode(String nodeURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NODE_ID, nodeURL);
+    return params;
+  }
+
+  public static Map<String, Object> getGroupsWithPermissionOnNode(String nodeURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(NODE_ID, nodeURL);
     return params;

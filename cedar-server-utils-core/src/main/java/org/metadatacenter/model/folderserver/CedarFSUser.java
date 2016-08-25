@@ -5,18 +5,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
+import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSUser extends AbstractCedarSuperNode {
+public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRepresentation {
 
   private String firstName;
   private String lastName;
+  private String displayName;
 
   public CedarFSUser() {
     this.nodeType = CedarNodeType.USER;
   }
 
   public String getId() {
+    return id;
+  }
+
+  public String getUserId() {
     return id;
   }
 
@@ -80,5 +86,14 @@ public class CedarFSUser extends AbstractCedarSuperNode {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  @Override
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
 }

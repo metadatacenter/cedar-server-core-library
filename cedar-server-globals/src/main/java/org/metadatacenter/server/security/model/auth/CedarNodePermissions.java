@@ -8,11 +8,13 @@ import java.util.HashMap;
 public class CedarNodePermissions {
 
   private CedarUserExtract owner;
-  private Map<String, CedarNodePermission> userPermissions;
+  private Map<String, CedarNodeUserPermission> userPermissions;
+  private Map<String, CedarNodeGroupPermission> groupPermissions;
 
 
   public CedarNodePermissions() {
     userPermissions = new HashMap<>();
+    groupPermissions = new HashMap<>();
   }
 
   public CedarUserExtract getOwner() {
@@ -23,11 +25,19 @@ public class CedarNodePermissions {
     this.owner = owner;
   }
 
-  public Map<String, CedarNodePermission> getUserPermissions() {
+  public Map<String, CedarNodeUserPermission> getUserPermissions() {
     return userPermissions;
   }
 
-  public void addUserPermissions(CedarNodePermission userPermission) {
+  public void addUserPermissions(CedarNodeUserPermission userPermission) {
     userPermissions.put(userPermission.getUser().getUserId(), userPermission);
+  }
+
+  public Map<String, CedarNodeGroupPermission> getGroupPermissions() {
+    return groupPermissions;
+  }
+
+  public void addGroupPermissions(CedarNodeGroupPermission groupPermission) {
+    groupPermissions.put(groupPermission.getGroup().getGroupId(), groupPermission);
   }
 }

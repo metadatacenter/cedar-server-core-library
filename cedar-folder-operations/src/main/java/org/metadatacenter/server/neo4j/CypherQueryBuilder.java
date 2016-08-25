@@ -450,4 +450,15 @@ public class CypherQueryBuilder {
     sb.append("RETURN user");
     return sb.toString();
   }
+
+  public static String getGroupsWithPermissionOnNode(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
+    sb.append("MATCH (group)");
+    sb.append("-[:").append(relationLabel).append("]->");
+    sb.append("(node)");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
 }

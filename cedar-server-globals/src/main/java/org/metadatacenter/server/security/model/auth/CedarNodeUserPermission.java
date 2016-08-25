@@ -2,15 +2,15 @@ package org.metadatacenter.server.security.model.auth;
 
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
-public class CedarNodePermission {
+public class CedarNodeUserPermission {
 
   private CedarUserExtract user;
   private NodePermission permission;
 
-  public CedarNodePermission() {
+  public CedarNodeUserPermission() {
   }
 
-  public CedarNodePermission(CedarUserExtract user, NodePermission permission) {
+  public CedarNodeUserPermission(CedarUserExtract user, NodePermission permission) {
     this.user = user;
     this.permission = permission;
   }

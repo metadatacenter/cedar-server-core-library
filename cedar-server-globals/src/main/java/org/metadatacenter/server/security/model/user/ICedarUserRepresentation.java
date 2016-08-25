@@ -7,4 +7,8 @@ public interface ICedarUserRepresentation {
   String getFirstName();
 
   String getLastName();
+
+  String getDisplayName();
+
+  void setDisplayName(String displayName);
 }

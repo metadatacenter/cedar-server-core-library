@@ -54,6 +54,16 @@ public class CedarUser implements ICedarUserRepresentation {
     this.screenName = screenName;
   }
 
+  @Override
+  public String getDisplayName() {
+    return screenName;
+  }
+
+  @Override
+  public void setDisplayName(String displayName) {
+    this.screenName = displayName;
+  }
+
   public String getFirstName() {
     return firstName;
   }
