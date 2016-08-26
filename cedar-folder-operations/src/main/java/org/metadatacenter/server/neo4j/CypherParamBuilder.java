@@ -139,9 +139,9 @@ public class CypherParamBuilder {
     return getNodeByIdentity(resourceURL);
   }
 
-  public static Map<String, Object> getNodeById(String nodeURL) {
+  /*public static Map<String, Object> getNodeById(String nodeURL) {
     return getNodeByIdentity(nodeURL);
-  }
+  }*/
 
   public static Map<String, Object> getUserById(String userURL) {
     return getNodeByIdentity(userURL);
@@ -247,6 +247,12 @@ public class CypherParamBuilder {
     return params;
   }
 
+  public static Map<String, Object> getGroupById(String groupURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(ID, groupURL);
+    return params;
+  }
+
   public static Map<String, Object> addGroupToUser(String userId, String groupId) {
     Map<String, Object> params = new HashMap<>();
     params.put(USER_ID, userId);
@@ -254,10 +260,31 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> addPermissionToFolderForGroup(String folderURL, String groupURL) {
+  public static Map<String, Object> matchFolderAndGroup(String folderURL, String groupURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(FOLDER_ID, folderURL);
     params.put(GROUP_ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> matchFolderAndUser(String folderURL, String userURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(FOLDER_ID, folderURL);
+    params.put(USER_ID, userURL);
+    return params;
+  }
+
+  public static Map<String, Object> matchResourceAndGroup(String resourceURL, String groupURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(RESOURCE_ID, resourceURL);
+    params.put(GROUP_ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> matchResourceAndUser(String resourceURL, String userURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(RESOURCE_ID, resourceURL);
+    params.put(USER_ID, userURL);
     return params;
   }
 
@@ -278,4 +305,17 @@ public class CypherParamBuilder {
     params.put(NODE_ID, nodeURL);
     return params;
   }
+
+  public static Map<String, Object> removeResourceOwner(String resourceURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(RESOURCE_ID, resourceURL);
+    return params;
+  }
+
+  public static Map<String, Object> removeFolderOwner(String folderURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(FOLDER_ID, folderURL);
+    return params;
+  }
+
 }

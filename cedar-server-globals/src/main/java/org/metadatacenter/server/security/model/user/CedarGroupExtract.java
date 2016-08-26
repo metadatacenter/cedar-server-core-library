@@ -2,20 +2,20 @@ package org.metadatacenter.server.security.model.user;
 
 public class CedarGroupExtract {
 
-  private String groupId;
+  private String id;
   private String displayName;
 
-  public CedarGroupExtract(String groupId, String displayName) {
-    this.groupId = groupId;
+  public CedarGroupExtract(String id, String displayName) {
+    this.id = id;
     this.displayName = displayName;
   }
 
-  public String getGroupId() {
-    return groupId;
+  public String getId() {
+    return id;
   }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getDisplayName() {

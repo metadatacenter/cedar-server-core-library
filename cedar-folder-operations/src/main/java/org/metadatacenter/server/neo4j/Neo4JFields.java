@@ -18,6 +18,7 @@ public class Neo4JFields {
   public static final String EMAIL = "email";
   public static final String ID = "id";
   public static final String FOLDER_ID = "folderId";
+  public static final String RESOURCE_ID = "resourceId";
   public static final String NODE_ID = "nodeId";
   public static final String GROUP_ID = "groupId";
   public static final String PARENT_ID = "parentId";

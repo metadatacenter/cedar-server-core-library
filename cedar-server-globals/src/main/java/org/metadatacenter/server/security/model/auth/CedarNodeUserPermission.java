@@ -1,7 +1,9 @@
 package org.metadatacenter.server.security.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
+@JsonIgnoreProperties({"asUserIdPermissionPair", "key"})
 public class CedarNodeUserPermission extends CedarNodePermission {
 
   private CedarUserExtract user;
@@ -25,5 +27,9 @@ public class CedarNodeUserPermission extends CedarNodePermission {
   @Override
   protected String getObjectId() {
     return user.getId();
+  }
+
+  public NodePermissionUserIdPair getAsUserIdPermissionPair() {
+    return new NodePermissionUserIdPair(getUser().getId(), getPermission());
   }
 }

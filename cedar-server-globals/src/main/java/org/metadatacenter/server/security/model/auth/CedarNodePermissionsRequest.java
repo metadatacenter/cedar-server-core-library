@@ -1,18 +1,18 @@
 package org.metadatacenter.server.security.model.auth;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CedarNodePermissionsRequest {
 
   private String owner;
-  private Map<String, NodePermission> userPermissions;
-  private Map<String, NodePermission> groupPermissions;
+  private List<NodePermissionUserIdPair> userPermissions;
+  private List<NodePermissionGroupIdPair> groupPermissions;
 
 
   public CedarNodePermissionsRequest() {
-    userPermissions = new HashMap<>();
-    groupPermissions = new HashMap<>();
+    userPermissions = new ArrayList<>();
+    groupPermissions = new ArrayList<>();
   }
 
   public String getOwner() {
@@ -23,12 +23,19 @@ public class CedarNodePermissionsRequest {
     this.owner = owner;
   }
 
-  public Map<String, NodePermission> getUserPermissions() {
+  public List<NodePermissionUserIdPair> getUserPermissions() {
     return userPermissions;
   }
 
-  public Map<String, NodePermission> getGroupPermissions() {
+  public void setUserPermissions(List<NodePermissionUserIdPair> userPermissions) {
+    this.userPermissions = userPermissions;
+  }
+
+  public List<NodePermissionGroupIdPair> getGroupPermissions() {
     return groupPermissions;
   }
 
+  public void setGroupPermissions(List<NodePermissionGroupIdPair> groupPermissions) {
+    this.groupPermissions = groupPermissions;
+  }
 }

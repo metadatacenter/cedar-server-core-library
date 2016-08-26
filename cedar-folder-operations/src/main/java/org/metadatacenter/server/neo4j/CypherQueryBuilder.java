@@ -250,12 +250,12 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getNodeById() {
+/*  public static String getNodeById() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{id} })");
     sb.append("RETURN node");
     return sb.toString();
-  }
+  }*/
 
   public static String getUserById() {
     StringBuilder sb = new StringBuilder();
@@ -406,6 +406,13 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getGroupById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{id} })");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
   public static String addGroupToUser() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH");
@@ -429,6 +436,108 @@ public class CypherQueryBuilder {
         .append(RelationLabel.forNodePermission(permission))
         .append("]->(folder)");
     sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String addPermissionToFolderForUser(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("CREATE");
+    sb.append("(user)-[:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(folder)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+  public static String addPermissionToResourceForGroup(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("CREATE");
+    sb.append("(group)-[:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(resource)");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String addPermissionToResourceForUser(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("CREATE");
+    sb.append("(user)-[:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(resource)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+  public static String removePermissionForFolderFromUser(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("MATCH");
+    sb.append("(user)-[relation:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(folder)");
+    sb.append("DELETE (relation)");
+    sb.append("RETURN folder");
+    return sb.toString();
+  }
+
+  public static String removePermissionForFolderFromGroup(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("MATCH");
+    sb.append("(group)-[relation:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(folder)");
+    sb.append("DELETE (relation)");
+    sb.append("RETURN folder");
+    return sb.toString();
+  }
+
+  public static String removePermissionForResourceFromUser(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("MATCH");
+    sb.append("(user)-[relation:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(resource)");
+    sb.append("DELETE (relation)");
+    sb.append("RETURN resource");
+    return sb.toString();
+  }
+
+  public static String removePermissionForResourceFromGroup(NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("MATCH");
+    sb.append("(group)-[relation:")
+        .append(RelationLabel.forNodePermission(permission))
+        .append("]->(resource)");
+    sb.append("DELETE (relation)");
+    sb.append("RETURN resource");
     return sb.toString();
   }
 
@@ -462,6 +571,62 @@ public class CypherQueryBuilder {
     sb.append("-[:").append(relationLabel).append("]->");
     sb.append("(node)");
     sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String removeResourceOwner() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[relation:").append(RelationLabel.OWNS).append("]->");
+    sb.append("(node)");
+    sb.append("DELETE relation");
+    sb.append(" SET resource.ownedBy = null");
+    sb.append(" RETURN resource");
+    return sb.toString();
+  }
+
+  public static String removeFolderOwner() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[relation:").append(RelationLabel.OWNS).append("]->");
+    sb.append("(node)");
+    sb.append("DELETE (relation)");
+    sb.append(" SET folder.ownedBy = null");
+    sb.append(" RETURN folder");
+    return sb.toString();
+  }
+
+  public static String setResourceOwner() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("CREATE");
+    sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(resource)");
+    sb.append(" SET resource.ownedBy = {userId}");
+    sb.append(" RETURN resource");
+    return sb.toString();
+  }
+
+  public static String setFolderOwner() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.RESOURCE).append(" {id:{folderId} })");
+    sb.append("CREATE");
+    sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(folder)");
+    sb.append(" SET folder.ownedBy = {userId}");
+    sb.append(" RETURN folder");
     return sb.toString();
   }
 }

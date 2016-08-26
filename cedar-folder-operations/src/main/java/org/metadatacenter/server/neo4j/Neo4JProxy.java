@@ -552,10 +552,18 @@ public class Neo4JProxy {
     return buildGroup(groupNode);
   }
 
+  CedarFSGroup findGroupById(String groupURL) {
+    String cypher = CypherQueryBuilder.getGroupById();
+    Map<String, Object> params = CypherParamBuilder.getGroupById(groupURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildGroup(groupNode);
+  }
+
+
   boolean addGroupToUser(CedarFSUser user, CedarFSGroup group) {
     String cypher = CypherQueryBuilder.addGroupToUser();
-    System.out.println(user);
-    System.out.println(group);
     Map<String, Object> params = CypherParamBuilder.addGroupToUser(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -569,7 +577,7 @@ public class Neo4JProxy {
 
   boolean addPermission(CedarFSFolder folder, CedarFSGroup group, NodePermission permission) {
     String cypher = CypherQueryBuilder.addPermissionToFolderForGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.addPermissionToFolderForGroup(folder.getId(), group.getId());
+    Map<String, Object> params = CypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode errorsNode = jsonNode.at("/errors");
@@ -580,13 +588,163 @@ public class Neo4JProxy {
     return errorsNode.size() == 0;
   }
 
-  CedarFSNode findNodeById(String nodeURL) {
-    String cypher = CypherQueryBuilder.getNodeById();
-    Map<String, Object> params = CypherParamBuilder.getNodeById(nodeURL);
+  boolean addPermission(CedarFSFolder folder, CedarFSUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilder.addPermissionToFolderForUser(permission);
+    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode nodeNode = jsonNode.at("/results/0/data/0/row/0");
-    return buildNode(nodeNode);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while adding permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean addPermission(CedarFSResource resource, CedarFSGroup group, NodePermission permission) {
+    String cypher = CypherQueryBuilder.addPermissionToResourceForGroup(permission);
+    Map<String, Object> params = CypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while adding permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean addPermission(CedarFSResource resource, CedarFSUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilder.addPermissionToResourceForUser(permission);
+    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while adding permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removePermission(CedarFSFolder folder, CedarFSUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilder.removePermissionForFolderFromUser(permission);
+    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removePermission(CedarFSFolder folder, CedarFSGroup group, NodePermission permission) {
+    String cypher = CypherQueryBuilder.removePermissionForFolderFromGroup(permission);
+    Map<String, Object> params = CypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removePermission(CedarFSResource resource, CedarFSUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilder.removePermissionForResourceFromUser(permission);
+    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removePermission(CedarFSResource resource, CedarFSGroup group, NodePermission permission) {
+    String cypher = CypherQueryBuilder.removePermissionForResourceFromGroup(permission);
+    Map<String, Object> params = CypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing permission:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean updateOwner(CedarFSFolder folder, CedarFSUser user) {
+    boolean removed = removeOwner(folder);
+    if (removed) {
+      return setOwner(folder, user);
+    }
+    return false;
+  }
+
+  boolean updateOwner(CedarFSResource resource, CedarFSUser user) {
+    boolean removed = removeOwner(resource);
+    if (removed) {
+      return setOwner(resource, user);
+    }
+    return false;
+  }
+
+  boolean removeOwner(CedarFSResource resource) {
+    String cypher = CypherQueryBuilder.removeResourceOwner();
+    Map<String, Object> params = CypherParamBuilder.removeResourceOwner(resource.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing owner:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removeOwner(CedarFSFolder folder) {
+    String cypher = CypherQueryBuilder.removeFolderOwner();
+    Map<String, Object> params = CypherParamBuilder.removeFolderOwner(folder.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing owner:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean setOwner(CedarFSResource resource, CedarFSUser user) {
+    String cypher = CypherQueryBuilder.setResourceOwner();
+    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while setting owner:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean setOwner(CedarFSFolder folder, CedarFSUser user) {
+    String cypher = CypherQueryBuilder.setFolderOwner();
+    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while setting owner:", error);
+    }
+    return errorsNode.size() == 0;
   }
 
   CedarFSUser getNodeOwner(String nodeURL) {
@@ -646,5 +804,92 @@ public class Neo4JProxy {
       });
     }
     return groupList;
+  }
+
+  public void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, boolean nodeIsFolder) {
+    CedarFSGroup group = findGroupById(groupURL);
+    if (group != null) {
+      if (nodeIsFolder) {
+        CedarFSFolder folder = findFolderById(nodeURL);
+        if (folder != null) {
+          addPermission(folder, group, permission);
+        }
+      } else {
+        CedarFSResource resource = findResourceById(nodeURL);
+        if (resource != null) {
+          addPermission(resource, group, permission);
+        }
+      }
+    }
+  }
+
+  public void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, boolean
+      nodeIsFolder) {
+    CedarFSGroup group = findGroupById(groupURL);
+    if (group != null) {
+      if (nodeIsFolder) {
+        CedarFSFolder folder = findFolderById(nodeURL);
+        if (folder != null) {
+          removePermission(folder, group, permission);
+        }
+      } else {
+        CedarFSResource resource = findResourceById(nodeURL);
+        if (resource != null) {
+          removePermission(resource, group, permission);
+        }
+      }
+    }
+  }
+
+  public void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, boolean nodeIsFolder) {
+    CedarFSUser user = findUserById(userURL);
+    if (user != null) {
+      if (nodeIsFolder) {
+        CedarFSFolder folder = findFolderById(nodeURL);
+        if (folder != null) {
+          addPermission(folder, user, permission);
+        }
+      } else {
+        CedarFSResource resource = findResourceById(nodeURL);
+        if (resource != null) {
+          addPermission(resource, user, permission);
+        }
+      }
+    }
+  }
+
+  public void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission, boolean
+      nodeIsFolder) {
+    CedarFSUser user = findUserById(userURL);
+    if (user != null) {
+      if (nodeIsFolder) {
+        CedarFSFolder folder = findFolderById(nodeURL);
+        if (folder != null) {
+          removePermission(folder, user, permission);
+        }
+      } else {
+        CedarFSResource resource = findResourceById(nodeURL);
+        if (resource != null) {
+          removePermission(resource, user, permission);
+        }
+      }
+    }
+  }
+
+  public void updateNodeOwner(String nodeURL, String userURL, boolean nodeIsFolder) {
+    CedarFSUser user = findUserById(userURL);
+    if (user != null) {
+      if (nodeIsFolder) {
+        CedarFSFolder folder = findFolderById(nodeURL);
+        if (folder != null) {
+          updateOwner(folder, user);
+        }
+      } else {
+        CedarFSResource resource = findResourceById(nodeURL);
+        if (resource != null) {
+          updateOwner(resource, user);
+        }
+      }
+    }
   }
 }
