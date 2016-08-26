@@ -24,6 +24,6 @@ public class CedarNodeUserPermission extends CedarNodePermission {
 
   @Override
   protected String getObjectId() {
-    return user.getUserId();
+    return user.getId();
   }
 }

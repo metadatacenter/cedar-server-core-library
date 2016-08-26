@@ -2,25 +2,25 @@ package org.metadatacenter.server.security.model.user;
 
 public class CedarUserExtract implements ICedarUserRepresentation {
 
-  private String userId;
+  private String id;
   private String firstName;
   private String lastName;
-  private String displayName;
+  private String email;
 
-  public CedarUserExtract(String userId, String firstName, String lastName, String displayName) {
-    this.userId = userId;
+  public CedarUserExtract(String id, String firstName, String lastName, String email) {
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.displayName = displayName;
+    this.email = email;
   }
 
   @Override
-  public String getUserId() {
-    return userId;
+  public String getId() {
+    return id;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public void setId(String id) {
+    this.id = id;
   }
 
   @Override
@@ -41,11 +41,12 @@ public class CedarUserExtract implements ICedarUserRepresentation {
     this.lastName = lastName;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  @Override
+  public String getEmail() {
+    return email;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setEmail(String email) {
+    this.email = email;
   }
 }

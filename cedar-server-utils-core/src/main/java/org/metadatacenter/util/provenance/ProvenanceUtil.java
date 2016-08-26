@@ -56,7 +56,7 @@ public class ProvenanceUtil {
     String id = null;
     try {
       CedarUser accountInfo = Authorization.getUser(authRequest);
-      id = accountInfo.getUserId();
+      id = accountInfo.getId();
     } catch (CedarAccessException e) {
       e.printStackTrace();
     }

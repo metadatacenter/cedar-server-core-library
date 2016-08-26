@@ -66,15 +66,15 @@ public class Neo4JProxy {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         System.out.println("Query with parameters:");
-        System.out.println("  q: " + qp.getQuery());
-        System.out.println("  p: " + qp.getParameters());
+        System.out.println("q: " + qp.getQuery());
+        System.out.println("p: " + qp.getParameters());
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", qp.getQuery());
         statement.put("parameters", qp.getParameters());
         statements.add(statement);
       } else if (q instanceof CypherQueryLiteral) {
         System.out.println("Query literal:");
-        System.out.println("  q: " + q.getQuery());
+        System.out.println("q: " + q.getQuery());
         CypherQueryLiteral qp = (CypherQueryLiteral) q;
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", qp.getQuery());
@@ -299,7 +299,7 @@ public class Neo4JProxy {
 
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList, addPermissionConditions);
-    String ownerId = userIdPrefix + cu.getUserId();
+    String ownerId = userIdPrefix + cu.getId();
     Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, nodeTypes, limit,
         offset, ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -492,19 +492,20 @@ public class Neo4JProxy {
     return buildUser(userNode);
   }
 
-  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
-                         CedarFSGroup group) {
-    return createUser(userURL, name, displayName, firstName, lastName, null, group);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
+      email, CedarFSGroup group) {
+    return createUser(userURL, name, displayName, firstName, lastName, email, null, group);
   }
 
-  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName) {
-    return createUser(userURL, name, displayName, firstName, lastName, null, null);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
+      email) {
+    return createUser(userURL, name, displayName, firstName, lastName, email, null, null);
   }
 
-  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
-                         Map<String, Object> extraProperties) {
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
+      email, Map<String, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createUser();
-    Map<String, Object> params = CypherParamBuilder.createUser(userURL, name, displayName, firstName, lastName,
+    Map<String, Object> params = CypherParamBuilder.createUser(userURL, name, displayName, firstName, lastName, email,
         extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -512,9 +513,9 @@ public class Neo4JProxy {
     return buildUser(userNode);
   }
 
-  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName,
-                         Map<String, Object> extraProperties, CedarFSGroup group) {
-    CedarFSUser newUser = createUser(userURL, name, displayName, firstName, lastName, extraProperties);
+  CedarFSUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
+      email, Map<String, Object> extraProperties, CedarFSGroup group) {
+    CedarFSUser newUser = createUser(userURL, name, displayName, firstName, lastName, email, extraProperties);
     if (group != null) {
       addGroupToUser(newUser, group);
     }

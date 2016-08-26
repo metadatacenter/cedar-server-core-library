@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
+import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarFSGroup extends AbstractCedarSuperNode {
@@ -71,5 +72,10 @@ public class CedarFSGroup extends AbstractCedarSuperNode {
 
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
+  }
+
+  public CedarGroupExtract buildExtract() {
+    CedarGroupExtract r = new CedarGroupExtract(getId(), getDisplayName());
+    return r;
   }
 }

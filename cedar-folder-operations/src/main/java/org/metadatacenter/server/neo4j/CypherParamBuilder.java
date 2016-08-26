@@ -192,7 +192,7 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> createUser(String userURL, String name, String displayName, String firstName,
-                                               String lastName, Map<String, Object> extraProperties) {
+                                               String lastName, String email, Map<String, Object> extraProperties) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -202,6 +202,7 @@ public class CypherParamBuilder {
     params.put(DISPLAY_NAME, displayName);
     params.put(FIRST_NAME, firstName);
     params.put(LAST_NAME, lastName);
+    params.put(EMAIL, email);
     params.put(CREATED_ON, nowString);
     params.put(CREATED_ON_TS, nowTS);
     params.put(LAST_UPDATED_ON, nowString);

@@ -30,7 +30,7 @@ public class CedarNodePermissions {
   }
 
   public void addUserPermissions(CedarNodeUserPermission userPermission) {
-    userPermissions.put(userPermission.getUser().getUserId(), userPermission);
+    userPermissions.put(userPermission.getUser().getId(), userPermission);
   }
 
   public Map<String, CedarNodeGroupPermission> getGroupPermissions() {

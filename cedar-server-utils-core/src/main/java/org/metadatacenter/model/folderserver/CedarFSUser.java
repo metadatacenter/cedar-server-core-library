@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
+import org.metadatacenter.server.security.model.user.CedarUserExtract;
+import org.metadatacenter.util.CedarUserNameUtil;
 import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,7 +14,7 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
 
   private String firstName;
   private String lastName;
-  private String displayName;
+  private String email;
 
   public CedarFSUser() {
     this.nodeType = CedarNodeType.USER;
@@ -89,11 +91,15 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
   }
 
   @Override
-  public String getDisplayName() {
-    return displayName;
+  public String getEmail() {
+    return email;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public CedarUserExtract buildExtract() {
+    return new CedarUserExtract(getId(), getFirstName(), getLastName(), getEmail());
   }
 }

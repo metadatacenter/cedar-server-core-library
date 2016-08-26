@@ -15,6 +15,7 @@ public class Neo4JFields {
   public static final String DISPLAY_NAME = "displayName";
   public static final String FIRST_NAME = "firstName";
   public static final String LAST_NAME = "lastName";
+  public static final String EMAIL = "email";
   public static final String ID = "id";
   public static final String FOLDER_ID = "folderId";
   public static final String NODE_ID = "nodeId";

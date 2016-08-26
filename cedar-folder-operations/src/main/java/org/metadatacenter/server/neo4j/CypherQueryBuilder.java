@@ -359,6 +359,7 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
     sb.append(buildCreateAssignment(FIRST_NAME)).append(",");
     sb.append(buildCreateAssignment(LAST_NAME)).append(",");
+    sb.append(buildCreateAssignment(EMAIL)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");

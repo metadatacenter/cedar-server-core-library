@@ -7,7 +7,7 @@ import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.server.security.util.CedarUserUtil;
+import org.metadatacenter.util.CedarUserNameUtil;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.util.json.JsonMapper;
 
@@ -36,7 +36,7 @@ public class Neo4JUserSession {
         homeModification.put("homeFolderId", createdFolder.getId());
         System.out.println("homeModification: " + homeModification);
         try {
-          userService.updateUser(cu.getUserId(), homeModification);
+          userService.updateUser(cu.getId(), homeModification);
           System.out.println("User updated");
         } catch (Exception e) {
           System.out.println("Error while updating the user:");
@@ -49,7 +49,7 @@ public class Neo4JUserSession {
 
   private String getUserId() {
     // let the NPE, something is really wrong if that happens
-    return userIdPrefix + cu.getUserId();
+    return userIdPrefix + cu.getId();
   }
 
   private String buildGroupId(String groupUUID) {
@@ -205,8 +205,9 @@ public class Neo4JUserSession {
 
     CedarFSUser cedarAdmin = neo4JProxy.findUserById(userId);
     if (cedarAdmin == null) {
-      cedarAdmin = neo4JProxy.createUser(userId, cu.getScreenName(), cu.getScreenName(), cu.getFirstName(), cu
-          .getLastName(), everybody);
+      String displayName = CedarUserNameUtil.getDisplayName(cu);
+      cedarAdmin = neo4JProxy.createUser(userId, displayName, displayName, cu.getFirstName(), cu
+          .getLastName(), cu.getEmail(), everybody);
     }
 
     CedarFSFolder rootFolder = findFolderByPath(config.getRootFolderPath());
@@ -244,17 +245,17 @@ public class Neo4JUserSession {
   public CedarFSFolder ensureUserHomeExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
     IPathUtil pathUtil = neo4JProxy.getPathUtil();
-    String userHomePath = config.getUsersFolderPath() + pathUtil.getSeparator() + cu.getUserId();
+    String userHomePath = config.getUsersFolderPath() + pathUtil.getSeparator() + cu.getId();
     CedarFSFolder currentUserHomeFolder = findFolderByPath(userHomePath);
     if (currentUserHomeFolder == null) {
       CedarFSFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
       // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
       Map<String, Object> extraParams = new HashMap<>();
       extraParams.put(Neo4JFields.IS_USER_HOME, true);
-      String name = cu.getUserId();
-      String displayName = CedarUserUtil.buildScreenName(cu);
-      String description = CedarUserUtil.buildHomeFolderDescription(cu);
-      currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), name, displayName, description, NodeLabel
+      String userId = cu.getId();
+      String displayName = CedarUserNameUtil.getDisplayName(cu);
+      String description = CedarUserNameUtil.getHomeFolderDescription(cu);
+      currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), userId, displayName, description, NodeLabel
           .USER_HOME_FOLDER, extraParams);
       if (currentUserHomeFolder != null) {
         CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
@@ -270,8 +271,9 @@ public class Neo4JUserSession {
   public CedarFSUser ensureUserExists() {
     CedarFSUser currentUser = neo4JProxy.findUserById(getUserId());
     if (currentUser == null) {
-      currentUser = neo4JProxy.createUser(getUserId(), cu.getScreenName(), cu.getScreenName(), cu.getFirstName(), cu
-          .getLastName());
+      String displayName = CedarUserNameUtil.getDisplayName(cu);
+      currentUser = neo4JProxy.createUser(getUserId(), displayName, displayName, cu.getFirstName(), cu.getLastName(),
+          cu.getEmail());
       CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       neo4JProxy.addGroupToUser(currentUser, everybody);
     }
@@ -342,7 +344,7 @@ public class Neo4JUserSession {
   public String getHomeFolderPath() {
     Neo4jConfig config = this.neo4JProxy.getConfig();
     IPathUtil pathUtil = this.neo4JProxy.getPathUtil();
-    return config.getUsersFolderPath() + pathUtil.getSeparator() + this.cu.getUserId();
+    return config.getUsersFolderPath() + pathUtil.getSeparator() + this.cu.getId();
   }
 
   public CedarNodePermissions getNodePermissions(String nodeURL) {
@@ -362,35 +364,32 @@ public class Neo4JUserSession {
   private CedarNodePermissions buildPermissions(CedarFSUser owner, List<CedarFSUser> readUsers, List<CedarFSUser>
       writeUsers, List<CedarFSGroup> readGroups, List<CedarFSGroup> writeGroups) {
     CedarNodePermissions permissions = new CedarNodePermissions();
-    CedarUserExtract o = new CedarUserExtract(owner.getId(), owner.getFirstName(), owner.getLastName(), CedarUserUtil
-        .buildScreenName(owner));
+    CedarUserExtract o = owner.buildExtract();
     permissions.setOwner(o);
     if (readUsers != null) {
       for (CedarFSUser user : readUsers) {
-        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName(),
-            CedarUserUtil.buildScreenName(owner));
+        CedarUserExtract u = user.buildExtract();
         CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.READ);
         permissions.addUserPermissions(up);
       }
     }
     if (writeUsers != null) {
       for (CedarFSUser user : writeUsers) {
-        CedarUserExtract u = new CedarUserExtract(user.getId(), user.getFirstName(), user.getLastName(),
-            CedarUserUtil.buildScreenName(owner));
+        CedarUserExtract u = user.buildExtract();
         CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.WRITE);
         permissions.addUserPermissions(up);
       }
     }
     if (readGroups != null) {
       for (CedarFSGroup group : readGroups) {
-        CedarGroupExtract g = new CedarGroupExtract(group.getId(), group.getDisplayName());
+        CedarGroupExtract g = group.buildExtract();
         CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.READ);
         permissions.addGroupPermissions(gp);
       }
     }
     if (writeGroups != null) {
       for (CedarFSGroup group : writeGroups) {
-        CedarGroupExtract g = new CedarGroupExtract(group.getId(), group.getDisplayName());
+        CedarGroupExtract g = group.buildExtract();
         CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.WRITE);
         permissions.addGroupPermissions(gp);
       }
@@ -400,18 +399,18 @@ public class Neo4JUserSession {
 
   public CedarNodePermissions updateNodePermissions(String nodeURL, CedarNodePermissionsRequest permissionsRequest) {
     CedarNodePermissions currentPermissions = getNodePermissions(nodeURL);
-    String oldOwnerId = currentPermissions.getOwner().getUserId();
+    String oldOwnerId = currentPermissions.getOwner().getId();
     String newOwnerId = permissionsRequest.getOwner();
     if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
       updateNodeOwner(nodeURL, newOwnerId);
     }
 
     Set<String> oldUserPermissionKeys = new HashSet<>();
-    for(CedarNodeUserPermission up : currentPermissions.getUserPermissions().values()) {
+    for (CedarNodeUserPermission up : currentPermissions.getUserPermissions().values()) {
       oldUserPermissionKeys.add(up.getKey());
     }
     Set<String> newUserPermissionKeys = new HashSet<>();
-    for(String userId : permissionsRequest.getUserPermissions().keySet()) {
+    for (String userId : permissionsRequest.getUserPermissions().keySet()) {
       NodePermission permission = permissionsRequest.getUserPermissions().get(userId);
       newUserPermissionKeys.add(CedarNodeUserPermission.getKey(userId, permission));
     }
@@ -431,11 +430,11 @@ public class Neo4JUserSession {
     }
 
     Set<String> oldGroupPermissionKeys = new HashSet<>();
-    for(CedarNodeGroupPermission gp : currentPermissions.getGroupPermissions().values()) {
+    for (CedarNodeGroupPermission gp : currentPermissions.getGroupPermissions().values()) {
       oldGroupPermissionKeys.add(gp.getKey());
     }
     Set<String> newGroupPermissionKeys = new HashSet<>();
-    for(String groupId : permissionsRequest.getGroupPermissions().keySet()) {
+    for (String groupId : permissionsRequest.getGroupPermissions().keySet()) {
       NodePermission permission = permissionsRequest.getGroupPermissions().get(groupId);
       newGroupPermissionKeys.add(CedarNodeGroupPermission.getKey(groupId, permission));
     }
@@ -461,7 +460,7 @@ public class Neo4JUserSession {
     System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
     System.out.println("addGroupPermissions");
     System.out.println(nodeURL);
-    for(String key : toAddGroupPermissionKeys) {
+    for (String key : toAddGroupPermissionKeys) {
       System.out.println(CedarNodeUserPermission.getId(key));
     }
   }
@@ -470,7 +469,7 @@ public class Neo4JUserSession {
     System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
     System.out.println("removeGroupPermissions");
     System.out.println(nodeURL);
-    for(String key : toRemoveGroupPermissionKeys) {
+    for (String key : toRemoveGroupPermissionKeys) {
       System.out.println(CedarNodeUserPermission.getId(key));
     }
   }
@@ -479,7 +478,7 @@ public class Neo4JUserSession {
     System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
     System.out.println("addUserPermissions");
     System.out.println(nodeURL);
-    for(String key : toAddUserPermissionKeys) {
+    for (String key : toAddUserPermissionKeys) {
       System.out.println(CedarNodeUserPermission.getId(key));
     }
   }
@@ -488,7 +487,7 @@ public class Neo4JUserSession {
     System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%");
     System.out.println("toRemoveUserPermissionKeys");
     System.out.println(nodeURL);
-    for(String key : toRemoveUserPermissionKeys) {
+    for (String key : toRemoveUserPermissionKeys) {
       System.out.println(CedarNodeUserPermission.getId(key));
     }
   }

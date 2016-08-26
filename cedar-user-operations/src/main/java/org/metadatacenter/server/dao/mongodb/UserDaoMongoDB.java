@@ -30,6 +30,7 @@ public class UserDaoMongoDB implements GenericUserDao {
 
   protected final @NonNull MongoCollection<Document> entityCollection;
   protected final @NonNull JsonUtils jsonUtils;
+  protected final static String USER_PK_FIELD = "id";
 
   public UserDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
     MongoClient mongoClient = MongoFactory.getClient();
@@ -57,7 +58,7 @@ public class UserDaoMongoDB implements GenericUserDao {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
-    Document doc = entityCollection.find(eq("userId", id)).first();
+    Document doc = entityCollection.find(eq(USER_PK_FIELD, id)).first();
     if (doc == null) {
       return null;
     }
@@ -99,7 +100,7 @@ public class UserDaoMongoDB implements GenericUserDao {
     Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
     boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
     if (modificationsOk) {
-      UpdateResult updateResult = entityCollection.updateOne(eq("userId", id), new Document("$set", modificationsMap));
+      UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id), new Document("$set", modificationsMap));
       if (updateResult.getMatchedCount() == 1) {
         return find(id);
       } else {

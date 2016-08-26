@@ -17,10 +17,10 @@ public class CedarUser implements ICedarUserRepresentation {
   public static final String UI_FACETED_SEARCH = "facetedSearch";
   public static final String UI_INFO_PANEL = "infoPanel";
 
-  private String userId;
-  private String screenName;
+  private String id;
   private String firstName;
   private String lastName;
+  private String email;
   private String homeFolderId;
   private List<CedarUserApiKey> apiKeys;
   private List<CedarUserRole> roles;
@@ -38,30 +38,12 @@ public class CedarUser implements ICedarUserRepresentation {
     this.uiPreferences.put(UI_INFO_PANEL, new CedarUserUIInfoPanel());
   }
 
-  public String getUserId() {
-    return userId;
+  public String getId() {
+    return id;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public String getScreenName() {
-    return screenName;
-  }
-
-  public void setScreenName(String screenName) {
-    this.screenName = screenName;
-  }
-
-  @Override
-  public String getDisplayName() {
-    return screenName;
-  }
-
-  @Override
-  public void setDisplayName(String displayName) {
-    this.screenName = displayName;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getFirstName() {
@@ -78,6 +60,14 @@ public class CedarUser implements ICedarUserRepresentation {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public String getHomeFolderId() {
