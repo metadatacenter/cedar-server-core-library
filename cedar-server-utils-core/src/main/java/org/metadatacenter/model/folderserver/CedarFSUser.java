@@ -24,10 +24,6 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
     return id;
   }
 
-  public String getUserId() {
-    return id;
-  }
-
   public void setId(String id) {
     this.id = id;
   }

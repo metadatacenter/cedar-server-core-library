@@ -6,12 +6,14 @@ public enum NodePermission {
 
   READ(Type.READ),
   READTHIS(Type.READTHIS),
-  WRITE(Type.WRITE);
+  WRITE(Type.WRITE),
+  CHANGEOWNER(Type.CHANGEOWNER);
 
   public static class Type {
     public static final String READ = "read";
     public static final String READTHIS = "readthis";
     public static final String WRITE = "write";
+    public static final String CHANGEOWNER = "changeowner";
   }
 
   private final String value;

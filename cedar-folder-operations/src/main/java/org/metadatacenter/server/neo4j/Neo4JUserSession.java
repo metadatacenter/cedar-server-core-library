@@ -81,10 +81,6 @@ public class Neo4JUserSession {
     return neo4JProxy.findFolderById(folderURL);
   }
 
-  /*public CedarFSNode findNodeById(String nodeURL) {
-    return neo4JProxy.findNodeById(nodeURL);
-  }*/
-
   private CedarFSUser getNodeOwner(String nodeURL) {
     return neo4JProxy.getNodeOwner(nodeURL);
   }
@@ -229,17 +225,6 @@ public class Neo4JUserSession {
           .SYSTEM_FOLDER, extraParams);
       neo4JProxy.addPermission(usersFolder, everybody, NodePermission.READTHIS);
     }
-
-    CedarFSFolder lostAndFoundFolder = findFolderByPath(config.getLostAndFoundFolderPath());
-    if (lostAndFoundFolder == null) {
-      Map<String, Object> extraParams = new HashMap<>();
-      extraParams.put(Neo4JFields.IS_SYSTEM, true);
-      String name = pathUtil.extractName(config.getLostAndFoundFolderPath());
-      lostAndFoundFolder = createFolderAsChildOfId(rootFolderURL, name, name, config.getLostAndFoundFolderDescription
-              (), NodeLabel.SYSTEM_FOLDER,
-          extraParams);
-      neo4JProxy.addPermission(lostAndFoundFolder, everybody, NodePermission.READTHIS);
-    }
   }
 
   public CedarFSFolder ensureUserHomeExists() {
@@ -286,6 +271,8 @@ public class Neo4JUserSession {
       if (path != null) {
         folder.setPath(getPathString(path));
         folder.setParentPath(getParentPathString(path));
+        folder.setDisplayPath(getDisplayPathString(path));
+        folder.setDisplayParentPath(getDisplayParentPathString(path));
       }
     }
   }
@@ -296,6 +283,8 @@ public class Neo4JUserSession {
       if (path != null) {
         resource.setPath(getPathString(path));
         resource.setParentPath(getParentPathString(path));
+        resource.setDisplayPath(getDisplayPathString(path));
+        resource.setDisplayParentPath(getDisplayParentPathString(path));
       }
     }
   }
@@ -333,6 +322,34 @@ public class Neo4JUserSession {
         }
       }
       sb.append(node.getName());
+    }
+    return sb.length() == 0 ? null : sb.toString();
+  }
+
+  private String getDisplayParentPathString(List<? extends CedarFSNode> path) {
+    List<CedarFSNode> p = new ArrayList<>();
+    p.addAll(path);
+    if (path.size() > 0) {
+      p.remove(p.size() - 1);
+    } else {
+      return null;
+    }
+    return getDisplayPathString(p);
+  }
+
+  private String getDisplayPathString(List<? extends CedarFSNode> path) {
+    StringBuilder sb = new StringBuilder();
+    boolean addSeparator = false;
+    for (CedarFSNode node : path) {
+      if (addSeparator) {
+        sb.append(neo4JProxy.getPathUtil().getSeparator());
+      }
+      if (node instanceof CedarFSFolder) {
+        if (!((CedarFSFolder) node).isRoot()) {
+          addSeparator = true;
+        }
+      }
+      sb.append(node.getDisplayName());
     }
     return sb.length() == 0 ? null : sb.toString();
   }
@@ -400,6 +417,14 @@ public class Neo4JUserSession {
       }
     }
     return permissions;
+  }
+
+  public boolean isChangeOwnerRequested(String nodeURL, CedarNodePermissionsRequest permissionsRequest,
+                                        boolean nodeIsFolder) {
+    CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
+    String oldOwnerId = currentPermissions.getOwner().getId();
+    String newOwnerId = permissionsRequest.getOwner();
+    return (oldOwnerId == null && newOwnerId != null) || (oldOwnerId != null && !oldOwnerId.equals(newOwnerId));
   }
 
   public CedarNodePermissions updateNodePermissions(String nodeURL, CedarNodePermissionsRequest permissionsRequest,
@@ -500,6 +525,34 @@ public class Neo4JUserSession {
 
   private void updateNodeOwner(String nodeURL, String ownerURL, boolean nodeIsFolder) {
     neo4JProxy.updateNodeOwner(nodeURL, ownerURL, nodeIsFolder);
+  }
+
+  public boolean userIsOwnerOfFolder(String folderURL) {
+    CedarFSUser owner = getNodeOwner(folderURL);
+    return owner != null && owner.getId().equals(getUserId());
+  }
+
+  public boolean userHasReadAccessToFolder(String folderURL) {
+    return neo4JProxy.userHasReadAccessToFolder(getUserId(), folderURL) || neo4JProxy.userHasWriteAccessToFolder(cu
+        .getId(), folderURL);
+  }
+
+  public boolean userHasWriteAccessToFolder(String folderURL) {
+    return neo4JProxy.userHasWriteAccessToFolder(getUserId(), folderURL);
+  }
+
+  public boolean userIsOwnerOfResource(String resourceURL) {
+    CedarFSUser owner = getNodeOwner(resourceURL);
+    return owner != null && owner.getId().equals(getUserId());
+  }
+
+  public boolean userHasReadAccessToResource(String resourceURL) {
+    return neo4JProxy.userHasReadAccessToResource(getUserId(), resourceURL) || neo4JProxy.userHasWriteAccessToFolder(cu
+        .getId(), resourceURL);
+  }
+
+  public boolean userHasWriteAccessToResource(String resourceURL) {
+    return neo4JProxy.userHasWriteAccessToResource(getUserId(), resourceURL);
   }
 
 }

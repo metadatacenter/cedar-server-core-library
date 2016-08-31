@@ -10,8 +10,6 @@ public class Neo4jConfig {
   private String rootFolderDescription;
   private String usersFolderPath;
   private String usersFolderDescription;
-  private String lostAndFoundFolderPath;
-  private String lostAndFoundFolderDescription;
   private String everybodyGroupName;
   private String everybodyGroupDisplayName;
 
@@ -66,22 +64,6 @@ public class Neo4jConfig {
     this.usersFolderDescription = usersFolderDescription;
   }
 
-  public String getLostAndFoundFolderPath() {
-    return lostAndFoundFolderPath;
-  }
-
-  public void setLostAndFoundFolderPath(String lostAndFoundFolderPath) {
-    this.lostAndFoundFolderPath = lostAndFoundFolderPath;
-  }
-
-  public String getLostAndFoundFolderDescription() {
-    return lostAndFoundFolderDescription;
-  }
-
-  public void setLostAndFoundFolderDescription(String lostAndFoundFolderDescription) {
-    this.lostAndFoundFolderDescription = lostAndFoundFolderDescription;
-  }
-
   public String getEverybodyGroupName() {
     return everybodyGroupName;
   }
@@ -106,9 +88,6 @@ public class Neo4jConfig {
     neoConfig.setRootFolderDescription(cedarConfig.getFolderStructureConfig().getRootFolder().getDescription());
     neoConfig.setUsersFolderPath(cedarConfig.getFolderStructureConfig().getUsersFolder().getPath());
     neoConfig.setUsersFolderDescription(cedarConfig.getFolderStructureConfig().getUsersFolder().getDescription());
-    neoConfig.setLostAndFoundFolderPath(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder().getPath());
-    neoConfig.setLostAndFoundFolderDescription(cedarConfig.getFolderStructureConfig().getLostAndFoundFolder()
-        .getDescription());
     neoConfig.setEverybodyGroupName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName());
     neoConfig.setEverybodyGroupDisplayName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName());
     return neoConfig;

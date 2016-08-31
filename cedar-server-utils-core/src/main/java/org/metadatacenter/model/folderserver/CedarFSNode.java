@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
+import org.metadatacenter.server.security.model.auth.NodePermission;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @JsonTypeInfo(
@@ -22,8 +25,11 @@ import java.util.Map;
 })
 public abstract class CedarFSNode extends AbstractCedarNode {
 
+  private List<NodePermission> currentUserPermissions;
+
   protected CedarFSNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
+    this.currentUserPermissions = new ArrayList<>();
   }
 
   @JsonProperty("@id")
@@ -137,5 +143,23 @@ public abstract class CedarFSNode extends AbstractCedarNode {
         return new CedarFSInstance();
     }
     return null;
+  }
+
+  public List<NodePermission> getCurrentUserPermissions() {
+    return currentUserPermissions;
+  }
+
+  public void setCurrentUserPermissions(List<NodePermission> currentUserPermissions) {
+    this.currentUserPermissions = currentUserPermissions;
+  }
+
+  public void addCurrentUserPermission(NodePermission permission) {
+    if (!currentUserPermissions.contains(permission)) {
+      currentUserPermissions.add(permission);
+    }
+  }
+
+  public boolean currentUserCan(NodePermission permission) {
+    return currentUserPermissions.contains(permission);
   }
 }

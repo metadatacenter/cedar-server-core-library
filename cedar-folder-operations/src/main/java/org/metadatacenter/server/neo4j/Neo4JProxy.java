@@ -60,27 +60,27 @@ public class Neo4JProxy {
   }
 
   private JsonNode executeCypherQueriesAndCommit(List<CypherQuery> queries) {
-    System.out.println("Execute cypher queries --------------------------:");
+    System.out.println("\nExecute cypher queries --------------------------:\n\n");
     List<Map<String, Object>> statements = new ArrayList<>();
     for (CypherQuery q : queries) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        System.out.println("Query with parameters:");
         System.out.println("q: " + qp.getQuery());
         System.out.println("p: " + qp.getParameters());
+        System.out.println("i: " + qp.getLiteralCypher());
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", qp.getQuery());
         statement.put("parameters", qp.getParameters());
         statements.add(statement);
       } else if (q instanceof CypherQueryLiteral) {
-        System.out.println("Query literal:");
-        System.out.println("q: " + q.getQuery());
+        System.out.println("s: " + q.getQuery());
         CypherQueryLiteral qp = (CypherQueryLiteral) q;
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", qp.getQuery());
         statements.add(statement);
       }
     }
+    System.out.println("\n\n");
 
     Map<String, Object> body = new HashMap<>();
     body.put("statements", statements);
@@ -892,4 +892,46 @@ public class Neo4JProxy {
       }
     }
   }
+
+  public boolean userHasReadAccessToFolder(String userURL, String folderURL) {
+    String cypher = CypherQueryBuilder.userCanReadNode(folderURL, true);
+    Map<String, Object> params = CypherParamBuilder.userCanReadNode(userURL, folderURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    CedarFSUser cedarFSUser = buildUser(userNode);
+    return cedarFSUser != null;
+  }
+
+  public boolean userHasWriteAccessToFolder(String userURL, String folderURL) {
+    String cypher = CypherQueryBuilder.userCanWriteNode(folderURL, true);
+    Map<String, Object> params = CypherParamBuilder.userCanWriteNode(userURL, folderURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    CedarFSUser cedarFSUser = buildUser(userNode);
+    return cedarFSUser != null;
+  }
+
+  public boolean userHasReadAccessToResource(String userURL, String resourceURL) {
+    String cypher = CypherQueryBuilder.userCanReadNode(resourceURL, false);
+    Map<String, Object> params = CypherParamBuilder.userCanReadNode(userURL, resourceURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    CedarFSUser cedarFSUser = buildUser(userNode);
+    return cedarFSUser != null;
+  }
+
+  public boolean userHasWriteAccessToResource(String userURL, String resourceURL) {
+    String cypher = CypherQueryBuilder.userCanWriteNode(resourceURL, false);
+    Map<String, Object> params = CypherParamBuilder.userCanWriteNode(userURL, resourceURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    CedarFSUser cedarFSUser = buildUser(userNode);
+    return cedarFSUser != null;
+  }
+
+
 }

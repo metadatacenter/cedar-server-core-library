@@ -318,4 +318,17 @@ public class CypherParamBuilder {
     return params;
   }
 
+  public static Map<String, Object> userCanReadNode( String userURL, String nodeURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NODE_ID, nodeURL);
+    params.put(USER_ID, userURL);
+    return params;
+  }
+
+  public static Map<String, Object> userCanWriteNode( String userURL, String nodeURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NODE_ID, nodeURL);
+    params.put(USER_ID, userURL);
+    return params;
+  }
 }
