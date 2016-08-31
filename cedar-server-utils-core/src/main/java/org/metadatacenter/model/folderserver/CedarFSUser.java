@@ -15,6 +15,7 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
   private String firstName;
   private String lastName;
   private String email;
+  private String displayName;
 
   public CedarFSUser() {
     this.nodeType = CedarNodeType.USER;
@@ -93,6 +94,14 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
 
   public CedarUserExtract buildExtract() {

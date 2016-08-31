@@ -662,4 +662,21 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String findUsers() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+    sb.append(" RETURN user");
+    sb.append(" ORDER BY user.displayName");
+    return sb.toString();
+  }
+
+  public static String findGroups() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
+    sb.append(" RETURN group");
+    sb.append(" ORDER BY group.displayName");
+    return sb.toString();
+  }
+
+
 }

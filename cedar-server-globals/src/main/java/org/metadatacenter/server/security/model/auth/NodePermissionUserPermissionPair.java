@@ -1,24 +1,24 @@
 package org.metadatacenter.server.security.model.auth;
 
-public class NodePermissionGroupIdPair {
+public class NodePermissionUserPermissionPair {
 
-  private String groupId;
+  private NodePermissionUser user;
   private NodePermission permission;
 
-  public NodePermissionGroupIdPair() {
+  public NodePermissionUserPermissionPair() {
   }
 
-  public NodePermissionGroupIdPair(String groupId, NodePermission permission) {
-    this.groupId = groupId;
+  public NodePermissionUserPermissionPair(NodePermissionUser user, NodePermission permission) {
+    this.user = user;
     this.permission = permission;
   }
 
-  public String getGroupId() {
-    return groupId;
+  public NodePermissionUser getUser() {
+    return user;
   }
 
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
+  public void setUser(NodePermissionUser user) {
+    this.user = user;
   }
 
   public NodePermission getPermission() {
@@ -38,9 +38,9 @@ public class NodePermissionGroupIdPair {
       return false;
     }
 
-    NodePermissionGroupIdPair that = (NodePermissionGroupIdPair) o;
+    NodePermissionUserPermissionPair that = (NodePermissionUserPermissionPair) o;
 
-    if (getGroupId() != null ? !getGroupId().equals(that.getGroupId()) : that.getGroupId() != null) {
+    if (getUser() != null ? !getUser().equals(that.getUser()) : that.getUser() != null) {
       return false;
     }
     return getPermission() == that.getPermission();
@@ -49,7 +49,7 @@ public class NodePermissionGroupIdPair {
 
   @Override
   public int hashCode() {
-    int result = getGroupId() != null ? getGroupId().hashCode() : 0;
+    int result = getUser() != null ? getUser().hashCode() : 0;
     result = 31 * result + (getPermission() != null ? getPermission().hashCode() : 0);
     return result;
   }

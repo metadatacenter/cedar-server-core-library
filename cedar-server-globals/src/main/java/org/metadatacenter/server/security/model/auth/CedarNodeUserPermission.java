@@ -29,7 +29,7 @@ public class CedarNodeUserPermission extends CedarNodePermission {
     return user.getId();
   }
 
-  public NodePermissionUserIdPair getAsUserIdPermissionPair() {
-    return new NodePermissionUserIdPair(getUser().getId(), getPermission());
+  public NodePermissionUserPermissionPair getAsUserIdPermissionPair() {
+    return new NodePermissionUserPermissionPair(new NodePermissionUser(getUser().getId()), getPermission());
   }
 }

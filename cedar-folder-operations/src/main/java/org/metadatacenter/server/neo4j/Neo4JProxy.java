@@ -771,11 +771,14 @@ public class Neo4JProxy {
     Map<String, Object> params = CypherParamBuilder.getUsersWithPermissionOnNode(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode userListJsonNode = jsonNode.at("/results/0/data/0/row");
+    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
     if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
       userListJsonNode.forEach(f -> {
-        CedarFSUser cu = buildUser(f);
-        userList.add(cu);
+        JsonNode userNode = f.at("/row/0");
+        if (userNode != null && !userNode.isMissingNode()) {
+          CedarFSUser cu = buildUser(userNode);
+          userList.add(cu);
+        }
       });
     }
     return userList;
@@ -796,11 +799,14 @@ public class Neo4JProxy {
     Map<String, Object> params = CypherParamBuilder.getGroupsWithPermissionOnNode(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode groupListJsonNode = jsonNode.at("/results/0/data/0/row");
+    JsonNode groupListJsonNode = jsonNode.at("/results/0/data");
     if (groupListJsonNode != null && !groupListJsonNode.isMissingNode()) {
       groupListJsonNode.forEach(f -> {
-        CedarFSGroup g = buildGroup(f);
-        groupList.add(g);
+        JsonNode groupNode = f.at("/row/0");
+        if (groupNode != null && !groupNode.isMissingNode()) {
+          CedarFSGroup g = buildGroup(groupNode);
+          groupList.add(g);
+        }
       });
     }
     return groupList;
@@ -931,6 +937,42 @@ public class Neo4JProxy {
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
     CedarFSUser cedarFSUser = buildUser(userNode);
     return cedarFSUser != null;
+  }
+
+  List<CedarFSUser> findUsers() {
+    List<CedarFSUser> userList = new ArrayList<>();
+    String cypher = CypherQueryBuilder.findUsers();
+    CypherQuery q = new CypherQueryLiteral(cypher);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
+    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
+      userListJsonNode.forEach(f -> {
+        JsonNode userNode = f.at("/row/0");
+        if (userNode != null && !userNode.isMissingNode()) {
+          CedarFSUser cu = buildUser(userNode);
+          userList.add(cu);
+        }
+      });
+    }
+    return userList;
+  }
+
+  List<CedarFSGroup> findGroups() {
+    List<CedarFSGroup> groupList = new ArrayList<>();
+    String cypher = CypherQueryBuilder.findGroups();
+    CypherQuery q = new CypherQueryLiteral(cypher);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
+    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
+      userListJsonNode.forEach(f -> {
+        JsonNode groupNode = f.at("/row/0");
+        if (groupNode != null && !groupNode.isMissingNode()) {
+          CedarFSGroup cg = buildGroup(groupNode);
+          groupList.add(cg);
+        }
+      });
+    }
+    return groupList;
   }
 
 

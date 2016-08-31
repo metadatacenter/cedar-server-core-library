@@ -7,8 +7,8 @@ import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.util.CedarUserNameUtil;
 import org.metadatacenter.server.service.UserService;
+import org.metadatacenter.util.CedarUserNameUtil;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.util.*;
@@ -423,7 +423,7 @@ public class Neo4JUserSession {
                                         boolean nodeIsFolder) {
     CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
     String oldOwnerId = currentPermissions.getOwner().getId();
-    String newOwnerId = permissionsRequest.getOwner();
+    String newOwnerId = permissionsRequest.getOwner().getId();
     return (oldOwnerId == null && newOwnerId != null) || (oldOwnerId != null && !oldOwnerId.equals(newOwnerId));
   }
 
@@ -432,51 +432,51 @@ public class Neo4JUserSession {
     System.out.println("~~~~~~~~~~~~ ENTER updateNodePermissions");
     CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
     String oldOwnerId = currentPermissions.getOwner().getId();
-    String newOwnerId = permissionsRequest.getOwner();
+    String newOwnerId = permissionsRequest.getOwner().getId();
     if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
       updateNodeOwner(nodeURL, newOwnerId, nodeIsFolder);
     }
 
-    Set<NodePermissionUserIdPair> oldUserPermissions = new HashSet<>();
+    Set<NodePermissionUserPermissionPair> oldUserPermissions = new HashSet<>();
     for (CedarNodeUserPermission up : currentPermissions.getUserPermissions()) {
       oldUserPermissions.add(up.getAsUserIdPermissionPair());
     }
-    Set<NodePermissionUserIdPair> newUserPermissions = new HashSet<>();
-    for (NodePermissionUserIdPair userIdPermission : permissionsRequest.getUserPermissions()) {
+    Set<NodePermissionUserPermissionPair> newUserPermissions = new HashSet<>();
+    for (NodePermissionUserPermissionPair userIdPermission : permissionsRequest.getUserPermissions()) {
       newUserPermissions.add(userIdPermission);
     }
 
-    Set<NodePermissionUserIdPair> toRemoveUserPermissions = new HashSet<>();
+    Set<NodePermissionUserPermissionPair> toRemoveUserPermissions = new HashSet<>();
     toRemoveUserPermissions.addAll(oldUserPermissions);
     toRemoveUserPermissions.removeAll(newUserPermissions);
     if (!toRemoveUserPermissions.isEmpty()) {
       removeUserPermissions(nodeURL, toRemoveUserPermissions, nodeIsFolder);
     }
 
-    Set<NodePermissionUserIdPair> toAddUserPermissions = new HashSet<>();
+    Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
     toAddUserPermissions.addAll(newUserPermissions);
     toAddUserPermissions.removeAll(oldUserPermissions);
     if (!toAddUserPermissions.isEmpty()) {
       addUserPermissions(nodeURL, toAddUserPermissions, nodeIsFolder);
     }
 
-    Set<NodePermissionGroupIdPair> oldGroupPermissions = new HashSet<>();
+    Set<NodePermissionGroupPermissionPair> oldGroupPermissions = new HashSet<>();
     for (CedarNodeGroupPermission gp : currentPermissions.getGroupPermissions()) {
       oldGroupPermissions.add(gp.getAsGroupIdPermissionPair());
     }
-    Set<NodePermissionGroupIdPair> newGroupPermissions = new HashSet<>();
-    for (NodePermissionGroupIdPair groupIdPermission : permissionsRequest.getGroupPermissions()) {
+    Set<NodePermissionGroupPermissionPair> newGroupPermissions = new HashSet<>();
+    for (NodePermissionGroupPermissionPair groupIdPermission : permissionsRequest.getGroupPermissions()) {
       newGroupPermissions.add(groupIdPermission);
     }
 
-    Set<NodePermissionGroupIdPair> toRemoveGroupPermissions = new HashSet<>();
+    Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions = new HashSet<>();
     toRemoveGroupPermissions.addAll(oldGroupPermissions);
     toRemoveGroupPermissions.removeAll(newGroupPermissions);
     if (!toRemoveGroupPermissions.isEmpty()) {
       removeGroupPermissions(nodeURL, toRemoveGroupPermissions, nodeIsFolder);
     }
 
-    Set<NodePermissionGroupIdPair> toAddGroupPermissions = new HashSet<>();
+    Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
     toAddGroupPermissions.addAll(newGroupPermissions);
     toAddGroupPermissions.removeAll(oldGroupPermissions);
     if (!toAddGroupPermissions.isEmpty()) {
@@ -495,31 +495,31 @@ public class Neo4JUserSession {
     return getNodePermissions(nodeURL, nodeIsFolder);
   }
 
-  private void addGroupPermissions(String nodeURL, Set<NodePermissionGroupIdPair> toAddGroupPermissions,
+  private void addGroupPermissions(String nodeURL, Set<NodePermissionGroupPermissionPair> toAddGroupPermissions,
                                    boolean nodeIsFolder) {
-    for (NodePermissionGroupIdPair pair : toAddGroupPermissions) {
-      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroupId(), pair.getPermission(), nodeIsFolder);
+    for (NodePermissionGroupPermissionPair pair : toAddGroupPermissions) {
+      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), nodeIsFolder);
     }
   }
 
-  private void removeGroupPermissions(String nodeURL, Set<NodePermissionGroupIdPair> toRemoveGroupPermissions,
+  private void removeGroupPermissions(String nodeURL, Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions,
                                       boolean nodeIsFolder) {
-    for (NodePermissionGroupIdPair pair : toRemoveGroupPermissions) {
-      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroupId(), pair.getPermission(), nodeIsFolder);
+    for (NodePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
+      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), nodeIsFolder);
     }
   }
 
-  private void addUserPermissions(String nodeURL, Set<NodePermissionUserIdPair> toAddUserPermissions,
+  private void addUserPermissions(String nodeURL, Set<NodePermissionUserPermissionPair> toAddUserPermissions,
                                   boolean nodeIsFolder) {
-    for (NodePermissionUserIdPair pair : toAddUserPermissions) {
-      neo4JProxy.addPermissionToUser(nodeURL, pair.getUserId(), pair.getPermission(), nodeIsFolder);
+    for (NodePermissionUserPermissionPair pair : toAddUserPermissions) {
+      neo4JProxy.addPermissionToUser(nodeURL, pair.getUser().getId(), pair.getPermission(), nodeIsFolder);
     }
   }
 
-  private void removeUserPermissions(String nodeURL, Set<NodePermissionUserIdPair> toRemoveUserPermissions,
+  private void removeUserPermissions(String nodeURL, Set<NodePermissionUserPermissionPair> toRemoveUserPermissions,
                                      boolean nodeIsFolder) {
-    for (NodePermissionUserIdPair pair : toRemoveUserPermissions) {
-      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUserId(), pair.getPermission(), nodeIsFolder);
+    for (NodePermissionUserPermissionPair pair : toRemoveUserPermissions) {
+      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUser().getId(), pair.getPermission(), nodeIsFolder);
     }
   }
 
@@ -555,4 +555,11 @@ public class Neo4JUserSession {
     return neo4JProxy.userHasWriteAccessToResource(getUserId(), resourceURL);
   }
 
+  public List<CedarFSUser> findUsers() {
+    return neo4JProxy.findUsers();
+  }
+
+  public List<CedarFSGroup> findGroups() {
+    return neo4JProxy.findGroups();
+  }
 }

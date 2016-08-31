@@ -5,9 +5,9 @@ import java.util.List;
 
 public class CedarNodePermissionsRequest {
 
-  private String owner;
-  private List<NodePermissionUserIdPair> userPermissions;
-  private List<NodePermissionGroupIdPair> groupPermissions;
+  private NodePermissionUser owner;
+  private List<NodePermissionUserPermissionPair> userPermissions;
+  private List<NodePermissionGroupPermissionPair> groupPermissions;
 
 
   public CedarNodePermissionsRequest() {
@@ -15,27 +15,27 @@ public class CedarNodePermissionsRequest {
     groupPermissions = new ArrayList<>();
   }
 
-  public String getOwner() {
+  public NodePermissionUser getOwner() {
     return owner;
   }
 
-  public void setOwner(String owner) {
+  public void setOwner(NodePermissionUser owner) {
     this.owner = owner;
   }
 
-  public List<NodePermissionUserIdPair> getUserPermissions() {
+  public List<NodePermissionUserPermissionPair> getUserPermissions() {
     return userPermissions;
   }
 
-  public void setUserPermissions(List<NodePermissionUserIdPair> userPermissions) {
+  public void setUserPermissions(List<NodePermissionUserPermissionPair> userPermissions) {
     this.userPermissions = userPermissions;
   }
 
-  public List<NodePermissionGroupIdPair> getGroupPermissions() {
+  public List<NodePermissionGroupPermissionPair> getGroupPermissions() {
     return groupPermissions;
   }
 
-  public void setGroupPermissions(List<NodePermissionGroupIdPair> groupPermissions) {
+  public void setGroupPermissions(List<NodePermissionGroupPermissionPair> groupPermissions) {
     this.groupPermissions = groupPermissions;
   }
 }

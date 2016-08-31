@@ -29,7 +29,7 @@ public class CedarNodeGroupPermission extends CedarNodePermission {
     return group.getId();
   }
 
-  public NodePermissionGroupIdPair getAsGroupIdPermissionPair() {
-    return new NodePermissionGroupIdPair(getGroup().getId(), getPermission());
+  public NodePermissionGroupPermissionPair getAsGroupIdPermissionPair() {
+    return new NodePermissionGroupPermissionPair(new NodePermissionGroup(getGroup().getId()), getPermission());
   }
 }
