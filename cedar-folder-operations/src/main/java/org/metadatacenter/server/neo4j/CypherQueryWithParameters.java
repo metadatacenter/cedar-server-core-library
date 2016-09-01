@@ -23,13 +23,17 @@ public class CypherQueryWithParameters implements CypherQuery {
 
   public String getLiteralCypher() {
     String q = this.query;
-    for (String key : parameters.keySet()) {
-      Object o = parameters.get(key);
-      String v = null;
-      if (o != null) {
-        v = "\"" + o.toString().replace("\"", "\\\"") + "\"";
+    if (q != null) {
+      for (String key : parameters.keySet()) {
+        Object o = parameters.get(key);
+        String v = null;
+        if (o == null) {
+          v = "null";
+        } else {
+          v = "\"" + o.toString().replace("\"", "\\\"") + "\"";
+        }
+        q = q.replace("{" + key + "}", v);
       }
-      q = q.replace("{" + key + "}", v);
     }
     return q;
   }

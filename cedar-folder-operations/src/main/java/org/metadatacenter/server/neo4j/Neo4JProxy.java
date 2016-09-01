@@ -60,7 +60,7 @@ public class Neo4JProxy {
   }
 
   private JsonNode executeCypherQueriesAndCommit(List<CypherQuery> queries) {
-    System.out.println("\nExecute cypher queries --------------------------:\n\n");
+    System.out.println("\nExecute cypher queries --------------------------:");
     List<Map<String, Object>> statements = new ArrayList<>();
     for (CypherQuery q : queries) {
       if (q instanceof CypherQueryWithParameters) {
@@ -80,7 +80,7 @@ public class Neo4JProxy {
         statements.add(statement);
       }
     }
-    System.out.println("\n\n");
+    System.out.println();
 
     Map<String, Object> body = new HashMap<>();
     body.put("statements", statements);
