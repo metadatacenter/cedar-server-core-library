@@ -31,10 +31,22 @@ public enum CedarPermission {
   FOLDER_UPDATE(CedarNodeType.Types.FOLDER, CedarObjectConstants.ACCESS_UPDATE),
   FOLDER_DELETE(CedarNodeType.Types.FOLDER, CedarObjectConstants.ACCESS_DELETE),
 
+  GROUP_CREATE(CedarNodeType.Types.GROUP, CedarObjectConstants.ACCESS_CREATE),
+  GROUP_READ(CedarNodeType.Types.GROUP, CedarObjectConstants.ACCESS_READ),
+  GROUP_UPDATE(CedarNodeType.Types.GROUP, CedarObjectConstants.ACCESS_UPDATE),
+  GROUP_DELETE(CedarNodeType.Types.GROUP, CedarObjectConstants.ACCESS_DELETE),
+
+  USER_READ(CedarNodeType.Types.USER, CedarObjectConstants.ACCESS_READ),
+  USER_UPDATE(CedarNodeType.Types.USER, CedarObjectConstants.ACCESS_UPDATE),
+
+  USER_ROLE_UPDATE(CedarObjectConstants.USER_ROLE, CedarObjectConstants.ACCESS_UPDATE),
+
   LOGGED_IN(CedarObjectConstants.LOGGED_IN, CedarObjectConstants.ACCESS_READ),
   SEARCH_INDEX_REINDEX(CedarObjectConstants.SEARCH_INDEX, CedarObjectConstants.ACCESS_CREATE),
   SYSTEM_FOLDER_CREATE(CedarObjectConstants.SYSTEM_FOLDER, CedarObjectConstants.ACCESS_CREATE),
-  USER_PROFILE_OWN_READ(CedarObjectConstants.USER_PROFILE_OWN, CedarObjectConstants.ACCESS_READ);
+
+  UPDATE_PERMISSION_NOT_OWNED_NODE(CedarObjectConstants.NOT_OWNED_NODE, CedarObjectConstants.ACCESS_UPDATE),
+  FOLDER_CREATE_IN_NON_WRITABLE_FOLDER(CedarObjectConstants.NON_WRITABLE_FOLDER, CedarObjectConstants.ACCESS_CREATE);
 
   private final String resourceType;
   private final String accessType;

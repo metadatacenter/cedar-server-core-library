@@ -3,23 +3,21 @@ package org.metadatacenter.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
 
   protected String name;
   protected String description;
+  protected String displayName;
   protected String createdBy;
   protected String lastUpdatedBy;
   protected static Map<String, String> CONTEXT;
   protected String path;
   protected String parentPath;
-  protected String parentFolderId;
-  protected List<PathComponent> pathComponents;
+  protected String displayPath;
+  protected String displayParentPath;
   protected String ownedBy;
-  protected boolean publiclyReadable;
-  protected boolean publiclyWritable;
 
   static {
     CONTEXT = new HashMap<>();
@@ -43,12 +41,28 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
     this.parentPath = parentPath;
   }
 
-  public String getParentFolderId() {
-    return parentFolderId;
+  public String getDisplayPath() {
+    return displayPath;
   }
 
-  public void setParentFolderId(String parentFolderId) {
-    this.parentFolderId = parentFolderId;
+  public void setDisplayPath(String displayPath) {
+    this.displayPath = displayPath;
+  }
+
+  public String getDisplayParentPath() {
+    return displayParentPath;
+  }
+
+  public void setDisplayParentPath(String displayParentPath) {
+    this.displayParentPath = displayParentPath;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
   }
 
   @JsonProperty("ownedBy")
@@ -61,33 +75,4 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
     this.ownedBy = ownedBy;
   }
 
-  @JsonProperty("isPubliclyReadable")
-  public boolean isPubliclyReadable() {
-    return publiclyReadable;
-  }
-
-  @JsonProperty("isPubliclyReadable")
-  public void setPubliclyReadable(boolean publiclyReadable) {
-    this.publiclyReadable = publiclyReadable;
-  }
-
-  @JsonProperty("isPubliclyWritable")
-  public boolean isPubliclyWritable() {
-    return publiclyWritable;
-  }
-
-  @JsonProperty("isPubliclyWritable")
-  public void setPubliclyWritable(boolean publiclyWritable) {
-    this.publiclyWritable = publiclyWritable;
-  }
-
-  @JsonProperty("pathComponents")
-  public List<PathComponent> getPathComponents() {
-    return pathComponents;
-  }
-
-  @JsonProperty("pathComponents")
-  public void setPathComponents(List<PathComponent> pathComponents) {
-    this.pathComponents = pathComponents;
-  }
 }

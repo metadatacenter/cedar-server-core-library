@@ -1,9 +1,5 @@
 package org.metadatacenter.constant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public final class ElasticsearchConstants {
 
   private ElasticsearchConstants() {
@@ -33,7 +29,6 @@ public final class ElasticsearchConstants {
 
   // Fields used to check access permissions
   public static final String ES_RESOURCE_OWNER_FIELD = "ownedBy";
-  public static final String ES_RESOURCE_ISPUBLICLYREADABLE_FIELD = "isPubliclyReadable";
 
   // Other
   public static final String ES_SORT_DESC_PREFIX = "-";

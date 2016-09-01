@@ -1,13 +1,18 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.user;
 
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
-
-public class AuthorisedUser implements ICedarUserRepresentation {
+public class CedarUserExtract implements ICedarUserRepresentation {
 
   private String id;
   private String firstName;
   private String lastName;
   private String email;
+
+  public CedarUserExtract(String id, String firstName, String lastName, String email) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+  }
 
   @Override
   public String getId() {
@@ -18,6 +23,7 @@ public class AuthorisedUser implements ICedarUserRepresentation {
     this.id = id;
   }
 
+  @Override
   public String getFirstName() {
     return firstName;
   }
@@ -26,6 +32,7 @@ public class AuthorisedUser implements ICedarUserRepresentation {
     this.firstName = firstName;
   }
 
+  @Override
   public String getLastName() {
     return lastName;
   }

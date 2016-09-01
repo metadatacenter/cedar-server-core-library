@@ -32,7 +32,6 @@
       <version>${cedar.version}</version>
     </dependency>
 
-
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -76,6 +75,11 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jmob</groupId>
+      <artifactId>guice.conf</artifactId>
     </dependency>
 
   </dependencies>

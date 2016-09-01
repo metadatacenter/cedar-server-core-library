@@ -5,20 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
-import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.util.CedarUserNameUtil;
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
+import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRepresentation {
+public class CedarFSGroup extends AbstractCedarSuperNode {
 
-  private String firstName;
-  private String lastName;
-  private String email;
   private String displayName;
 
-  public CedarFSUser() {
-    this.nodeType = CedarNodeType.USER;
+  public CedarFSGroup() {
+    this.nodeType = CedarNodeType.GROUP;
   }
 
   public String getId() {
@@ -71,31 +66,6 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
     this.createdOnTS = createdOnTS;
   }
 
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  @Override
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
   public String getDisplayName() {
     return displayName;
   }
@@ -104,7 +74,8 @@ public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRep
     this.displayName = displayName;
   }
 
-  public CedarUserExtract buildExtract() {
-    return new CedarUserExtract(getId(), getFirstName(), getLastName(), getEmail());
+  public CedarGroupExtract buildExtract() {
+    CedarGroupExtract r = new CedarGroupExtract(getId(), getDisplayName());
+    return r;
   }
 }

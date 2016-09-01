@@ -6,7 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
+import org.metadatacenter.server.security.model.auth.NodePermission;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @JsonTypeInfo(
@@ -22,15 +25,17 @@ import java.util.Map;
 })
 public abstract class CedarRSNode extends AbstractCedarNode {
 
+  private List<NodePermission> currentUserPermissions;
+
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
-  protected String displayName;
   protected String displayPath;
   protected String displayParentPath;
 
   protected CedarRSNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
+    this.currentUserPermissions = new ArrayList<>();
   }
 
   @JsonProperty("@id")
@@ -147,14 +152,6 @@ public abstract class CedarRSNode extends AbstractCedarNode {
     this.ownedByUserName = ownedByUserName;
   }
 
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
   public String getDisplayPath() {
     return displayPath;
   }
@@ -191,4 +188,13 @@ public abstract class CedarRSNode extends AbstractCedarNode {
     }
     return null;
   }
+
+  public List<NodePermission> getCurrentUserPermissions() {
+    return currentUserPermissions;
+  }
+
+  public void setCurrentUserPermissions(List<NodePermission> currentUserPermissions) {
+    this.currentUserPermissions = currentUserPermissions;
+  }
+
 }
