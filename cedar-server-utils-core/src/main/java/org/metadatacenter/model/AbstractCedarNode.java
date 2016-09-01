@@ -22,7 +22,8 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
   static {
     CONTEXT = new HashMap<>();
     CONTEXT.put("pav", "http://purl.org/pav/");
-    CONTEXT.put("cedar", "https://schema.metadatacenter.org/core/");
+    CONTEXT.put("oslc", "http://open-services.net/ns/core#");
+    CONTEXT.put("schema", "http://schema.org/");
   }
 
   public String getPath() {
