@@ -1,9 +1,5 @@
 package org.metadatacenter.constant;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 public final class ElasticsearchConstants {
 
   private ElasticsearchConstants() {

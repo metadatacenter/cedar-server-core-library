@@ -19,7 +19,7 @@ public enum NodeLabel {
   private static final String S = ":";
 
   public static class PlainLabels {
-    public static final String SCOPE = "XCEDAR";
+    public static final String SCOPE = "CEDAR";
 
     public static final String FOLDER = "Folder";
     public static final String SYSTEM_FOLDER = "SystemFolder";
