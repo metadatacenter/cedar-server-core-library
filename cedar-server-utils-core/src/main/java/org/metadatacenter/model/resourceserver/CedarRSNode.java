@@ -97,12 +97,12 @@ public abstract class CedarRSNode extends AbstractCedarNode {
     this.createdBy = createdBy;
   }
 
-  @JsonProperty("cedar:lastUpdatedBy")
+  @JsonProperty("oslc:modifiedBy")
   public String getLastUpdatedBy() {
     return lastUpdatedBy;
   }
 
-  @JsonProperty("cedar:lastUpdatedBy")
+  @JsonProperty("oslc:modifiedBy")
   public void setLastUpdatedBy(String lastUpdatedBy) {
     this.lastUpdatedBy = lastUpdatedBy;
   }
