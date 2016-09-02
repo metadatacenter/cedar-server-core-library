@@ -581,7 +581,7 @@ public class CypherQueryBuilder {
     sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
     sb.append("MATCH (user)");
     sb.append("-[relation:").append(RelationLabel.OWNS).append("]->");
-    sb.append("(node)");
+    sb.append("(resource)");
     sb.append("DELETE relation");
     sb.append(" SET resource.ownedBy = null");
     sb.append(" RETURN resource");
@@ -596,7 +596,7 @@ public class CypherQueryBuilder {
     sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
     sb.append("MATCH (user)");
     sb.append("-[relation:").append(RelationLabel.OWNS).append("]->");
-    sb.append("(node)");
+    sb.append("(folder)");
     sb.append("DELETE (relation)");
     sb.append(" SET folder.ownedBy = null");
     sb.append(" RETURN folder");
