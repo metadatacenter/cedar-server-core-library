@@ -222,7 +222,7 @@ public class CypherQueryBuilder {
     if (FolderContentSortOptions.isTextual(fieldName)) {
       return new StringBuilder().append("LOWER(").append("child.").append(fieldName).append(")").toString();
     } else {
-      return fieldName;
+      return new StringBuilder().append("child.").append(fieldName).toString();
     }
   }
 
