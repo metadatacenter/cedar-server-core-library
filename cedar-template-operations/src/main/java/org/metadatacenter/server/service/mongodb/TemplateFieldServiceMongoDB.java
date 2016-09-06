@@ -9,6 +9,7 @@ import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
+import org.metadatacenter.util.provenance.ProvenanceUtil;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
@@ -80,9 +81,13 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
           String type = fieldCandidate.get("type").asText();
           // single fields
           if ("object".equals(type)) {
+            // Add provenance information
+            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
             saveFieldIfValid(fieldCandidate, linkedDataIdBasePath);
             // multiple instance
           } else if ("array".equals(type)) {
+            // Add provenance information
+            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
             saveFieldIfValid(fieldCandidate.get("items"), linkedDataIdBasePath);
           }
         }
