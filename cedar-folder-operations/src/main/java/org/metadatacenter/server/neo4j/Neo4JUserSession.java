@@ -564,7 +564,7 @@ public class Neo4JUserSession {
 
   public boolean userIsOwnerOfNode(CedarFSNode node) {
     CedarFSUser nodeOwner = getNodeOwner(node.getId());
-    return nodeOwner != null && nodeOwner.getId().equals(cu.getId());
+    return nodeOwner != null && nodeOwner.getId().equals(getUserId());
   }
 
   public CedarFSUser findUserById(String userURL) {

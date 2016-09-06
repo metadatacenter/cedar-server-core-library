@@ -621,7 +621,7 @@ public class CypherQueryBuilder {
     sb.append("MATCH");
     sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("MATCH");
-    sb.append("(folder:").append(NodeLabel.RESOURCE).append(" {id:{folderId} })");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
     sb.append("CREATE");
     sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(folder)");
     sb.append(" SET folder.ownedBy = {userId}");
