@@ -207,16 +207,23 @@ public class CypherQueryBuilder {
   private static String getOrderByExpression(String s) {
     StringBuilder sb = new StringBuilder();
     if (s != null) {
-      sb.append("child.");
       if (s.startsWith("-")) {
-        sb.append(s.substring(1));
+        sb.append(getCaseInsensitiveSortExpression(s.substring(1)));
         sb.append(" DESC");
       } else {
-        sb.append(s);
+        sb.append(getCaseInsensitiveSortExpression(s));
         sb.append(" ASC");
       }
     }
     return sb.toString();
+  }
+
+  private static String getCaseInsensitiveSortExpression(String fieldName) {
+    if (FolderContentSortOptions.isTextual(fieldName)) {
+      return new StringBuilder().append("LOWER(").append("child.").append(fieldName).append(")").toString();
+    } else {
+      return fieldName;
+    }
   }
 
   public static String getFolderContentsFilteredCountQuery() {
@@ -666,7 +673,7 @@ public class CypherQueryBuilder {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
     sb.append(" RETURN user");
-    sb.append(" ORDER BY user.displayName");
+    sb.append(" ORDER BY LOWER(user.displayName)");
     return sb.toString();
   }
 
@@ -674,7 +681,7 @@ public class CypherQueryBuilder {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
     sb.append(" RETURN group");
-    sb.append(" ORDER BY group.displayName");
+    sb.append(" ORDER BY LOWER(group.displayName)");
     return sb.toString();
   }
 
