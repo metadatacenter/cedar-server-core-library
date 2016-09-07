@@ -688,4 +688,61 @@ public class CypherQueryBuilder {
   }
 
 
+  public static String unlinkResourceFromParent() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(parent:").append(NodeLabel.FOLDER).append(")");
+    sb.append("MATCH");
+    sb.append("(resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("MATCH (parent)");
+    sb.append("-[relation:").append(RelationLabel.CONTAINS).append("]->");
+    sb.append("(resource)");
+    sb.append(" DELETE relation");
+    sb.append(" RETURN resource");
+    return sb.toString();
+  }
+
+  public static String linkResourceUnderFolder() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentFolderId} })");
+    sb.append("MATCH (resource:").append(NodeLabel.RESOURCE).append(" {id:{resourceId} })");
+    sb.append("CREATE");
+    sb.append("(parent)-[:").append(RelationLabel.CONTAINS).append("]->(resource)");
+    sb.append(" RETURN resource");
+    return sb.toString();
+  }
+
+  public static String unlinkFolderFromParent() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH");
+    sb.append("(parent:").append(NodeLabel.FOLDER).append(")");
+    sb.append("MATCH");
+    sb.append("(folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("MATCH (parent)");
+    sb.append("-[relation:").append(RelationLabel.CONTAINS).append("]->");
+    sb.append("(folder)");
+    sb.append(" DELETE relation");
+    sb.append(" RETURN folder");
+    return sb.toString();
+  }
+
+  public static String linkFolderUnderFolder() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentFolderId} })");
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("CREATE");
+    sb.append("(parent)-[:").append(RelationLabel.CONTAINS).append("]->(folder)");
+    sb.append(" RETURN folder");
+    return sb.toString();
+  }
+
+  public static String folderIsAncestorOf() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentFolderId} })");
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
+    sb.append("MATCH");
+    sb.append("(parent)-[:").append(RelationLabel.CONTAINS).append("*0..]->(folder)");
+    sb.append(" RETURN parent");
+    return sb.toString();
+  }
 }

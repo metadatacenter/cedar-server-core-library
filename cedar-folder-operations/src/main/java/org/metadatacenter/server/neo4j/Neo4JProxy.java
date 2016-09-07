@@ -10,6 +10,7 @@ import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.json.JsonMapper;
@@ -697,7 +698,7 @@ public class Neo4JProxy {
 
   boolean removeOwner(CedarFSResource resource) {
     String cypher = CypherQueryBuilder.removeResourceOwner();
-    Map<String, Object> params = CypherParamBuilder.removeResourceOwner(resource.getId());
+    Map<String, Object> params = CypherParamBuilder.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode errorsNode = jsonNode.at("/errors");
@@ -710,7 +711,7 @@ public class Neo4JProxy {
 
   boolean removeOwner(CedarFSFolder folder) {
     String cypher = CypherQueryBuilder.removeFolderOwner();
-    Map<String, Object> params = CypherParamBuilder.removeFolderOwner(folder.getId());
+    Map<String, Object> params = CypherParamBuilder.matchFolderId(folder.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode errorsNode = jsonNode.at("/errors");
@@ -749,7 +750,7 @@ public class Neo4JProxy {
 
   CedarFSUser getNodeOwner(String nodeURL) {
     String cypher = CypherQueryBuilder.getNodeOwner();
-    Map<String, Object> params = CypherParamBuilder.getNodeOwner(nodeURL);
+    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -768,7 +769,7 @@ public class Neo4JProxy {
         break;
     }
     String cypher = CypherQueryBuilder.getUsersWithPermissionOnNode(relationLabel);
-    Map<String, Object> params = CypherParamBuilder.getUsersWithPermissionOnNode(nodeURL);
+    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userListJsonNode = jsonNode.at("/results/0/data");
@@ -796,7 +797,7 @@ public class Neo4JProxy {
         break;
     }
     String cypher = CypherQueryBuilder.getGroupsWithPermissionOnNode(relationLabel);
-    Map<String, Object> params = CypherParamBuilder.getGroupsWithPermissionOnNode(nodeURL);
+    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode groupListJsonNode = jsonNode.at("/results/0/data");
@@ -901,7 +902,7 @@ public class Neo4JProxy {
 
   public boolean userHasReadAccessToFolder(String userURL, String folderURL) {
     String cypher = CypherQueryBuilder.userCanReadNode(folderURL, true);
-    Map<String, Object> params = CypherParamBuilder.userCanReadNode(userURL, folderURL);
+    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -911,7 +912,7 @@ public class Neo4JProxy {
 
   public boolean userHasWriteAccessToFolder(String userURL, String folderURL) {
     String cypher = CypherQueryBuilder.userCanWriteNode(folderURL, true);
-    Map<String, Object> params = CypherParamBuilder.userCanWriteNode(userURL, folderURL);
+    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -921,7 +922,7 @@ public class Neo4JProxy {
 
   public boolean userHasReadAccessToResource(String userURL, String resourceURL) {
     String cypher = CypherQueryBuilder.userCanReadNode(resourceURL, false);
-    Map<String, Object> params = CypherParamBuilder.userCanReadNode(userURL, resourceURL);
+    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -931,7 +932,7 @@ public class Neo4JProxy {
 
   public boolean userHasWriteAccessToResource(String userURL, String resourceURL) {
     String cypher = CypherQueryBuilder.userCanWriteNode(resourceURL, false);
-    Map<String, Object> params = CypherParamBuilder.userCanWriteNode(userURL, resourceURL);
+    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -973,6 +974,95 @@ public class Neo4JProxy {
       });
     }
     return groupList;
+  }
+
+
+  public boolean moveResource(CedarFSResource sourceResource, CedarFSFolder targetFolder) {
+    boolean unlink = unlinkResourceFromParent(sourceResource);
+    if (unlink) {
+      return linkResourceUnderFolder(sourceResource, targetFolder);
+    }
+    return false;
+  }
+
+  public boolean moveFolder(CedarFSFolder sourceFolder, CedarFSFolder targetFolder) {
+    if (sourceFolder.getId().equals(targetFolder.getId())) {
+      return false;
+    }
+    if (folderIsAncestorOf(sourceFolder, targetFolder)) {
+      return false;
+    }
+    boolean unlink = unlinkFolderFromParent(sourceFolder);
+    if (unlink) {
+      return linkFolderUnderFolder(sourceFolder, targetFolder);
+    }
+    return false;
+  }
+
+  private boolean unlinkResourceFromParent(CedarFSResource resource) {
+    String cypher = CypherQueryBuilder.unlinkResourceFromParent();
+    Map<String, Object> params = CypherParamBuilder.matchResourceId(resource.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while unlinking resource:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  private boolean linkResourceUnderFolder(CedarFSResource resource, CedarFSFolder parentFolder) {
+    String cypher = CypherQueryBuilder.linkResourceUnderFolder();
+    Map<String, Object> params = CypherParamBuilder.matchResourceIdAndParentFolderId(resource.getId(), parentFolder
+        .getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while linking resource:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+
+  private boolean unlinkFolderFromParent(CedarFSFolder folder) {
+    String cypher = CypherQueryBuilder.unlinkFolderFromParent();
+    Map<String, Object> params = CypherParamBuilder.matchFolderId(folder.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while unlinking folder:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  private boolean linkFolderUnderFolder(CedarFSFolder folder, CedarFSFolder parentFolder) {
+    String cypher = CypherQueryBuilder.linkFolderUnderFolder();
+    Map<String, Object> params = CypherParamBuilder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
+        ());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while linking folder:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  private boolean folderIsAncestorOf(CedarFSFolder parentFolder, CedarFSFolder folder) {
+    String cypher = CypherQueryBuilder.folderIsAncestorOf();
+    Map<String, Object> params = CypherParamBuilder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
+        ());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode folderNode = jsonNode.at("/results/0/data/0/row/0");
+    CedarFSFolder parent = buildFolder(folderNode);
+    return parent != null;
   }
 
 

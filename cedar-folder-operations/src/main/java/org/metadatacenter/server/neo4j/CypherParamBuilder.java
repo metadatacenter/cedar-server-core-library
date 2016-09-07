@@ -288,47 +288,42 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> getNodeOwner(String nodeURL) {
+  public static Map<String, Object> matchNodeId(String nodeURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(NODE_ID, nodeURL);
     return params;
   }
 
-  public static Map<String, Object> getUsersWithPermissionOnNode(String nodeURL) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(NODE_ID, nodeURL);
-    return params;
-  }
-
-  public static Map<String, Object> getGroupsWithPermissionOnNode(String nodeURL) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(NODE_ID, nodeURL);
-    return params;
-  }
-
-  public static Map<String, Object> removeResourceOwner(String resourceURL) {
+  public static Map<String, Object> matchResourceId(String resourceURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(RESOURCE_ID, resourceURL);
     return params;
   }
 
-  public static Map<String, Object> removeFolderOwner(String folderURL) {
+  public static Map<String, Object> matchFolderId(String folderURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(FOLDER_ID, folderURL);
     return params;
   }
 
-  public static Map<String, Object> userCanReadNode( String userURL, String nodeURL) {
+  public static Map<String, Object> matchUserIdAndNodeId(String userURL, String nodeURL) {
     Map<String, Object> params = new HashMap<>();
-    params.put(NODE_ID, nodeURL);
     params.put(USER_ID, userURL);
+    params.put(NODE_ID, nodeURL);
     return params;
   }
 
-  public static Map<String, Object> userCanWriteNode( String userURL, String nodeURL) {
+  public static Map<String, Object> matchResourceIdAndParentFolderId(String resourceId, String parentFolderId) {
     Map<String, Object> params = new HashMap<>();
-    params.put(NODE_ID, nodeURL);
-    params.put(USER_ID, userURL);
+    params.put(RESOURCE_ID, resourceId);
+    params.put(PARENT_FOLDER_ID, parentFolderId);
+    return params;
+  }
+
+  public static Map<String,Object> matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(FOLDER_ID, folderId);
+    params.put(PARENT_FOLDER_ID, parentFolderId);
     return params;
   }
 }

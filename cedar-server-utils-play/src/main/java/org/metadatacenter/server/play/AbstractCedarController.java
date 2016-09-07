@@ -88,22 +88,33 @@ public abstract class AbstractCedarController extends Controller {
   private static ObjectNode generateErrorDescription(BackendCallResult backendCallResult) {
     ObjectNode wrapper = JsonNodeFactory.instance.objectNode();
     ArrayNode errors = wrapper.putArray("errors");
+    int idx = 0;
     for (BackendCallError e : backendCallResult.getErrors()) {
       ObjectNode error = JsonNodeFactory.instance.objectNode();
-      error.put("code", e.getCode());
-      error.put("message", e.getMessage());
-      error.put("type", e.getType().getValue());
-      error.put("subType", e.getSubType());
-      error.put("suggestedAction", e.getSuggestedAction());
-      ObjectNode params = JsonNodeFactory.instance.objectNode();
-      error.put("params", params);
-      for (String paramName : e.getParams().keySet()) {
-        Object param = e.getParams().get(paramName);
-        params.set(paramName, JsonMapper.MAPPER.valueToTree(param));
-      }
+      putErrorDetails(e, error);
       errors.add(error);
+      if (idx == 0) {
+        putErrorDetails(e, wrapper);
+      }
+      idx++;
     }
     return wrapper;
+  }
+
+  private static void putErrorDetails(BackendCallError e, ObjectNode wrapper) {
+    wrapper.put("errorType", e.getType().getValue());
+    wrapper.put("message", e.getMessage());
+    wrapper.put("localizedMessage", e.getMessage());
+    wrapper.put("string", "");
+    wrapper.put("errorSubType", e.getSubType());
+    wrapper.put("errorCode", e.getCode());
+    wrapper.put("suggestedAction", e.getSuggestedAction());
+    ObjectNode params = JsonNodeFactory.instance.objectNode();
+    for (String paramName : e.getParams().keySet()) {
+      Object param = e.getParams().get(paramName);
+      params.set(paramName, JsonMapper.MAPPER.valueToTree(param));
+    }
+    wrapper.set("errorParams", params);
   }
 
   protected static ObjectNode generateErrorDescription(String errorSubType, String message) {

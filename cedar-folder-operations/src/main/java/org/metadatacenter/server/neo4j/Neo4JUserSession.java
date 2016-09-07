@@ -574,4 +574,13 @@ public class Neo4JUserSession {
   public CedarFSGroup findGroupById(String groupURL) {
     return neo4JProxy.findGroupById(groupURL);
   }
+
+  public boolean moveResource(CedarFSResource sourceResource, CedarFSFolder targetFolder) {
+    return neo4JProxy.moveResource(sourceResource, targetFolder);
+  }
+
+  public boolean moveFolder(CedarFSFolder sourceFolder, CedarFSFolder targetFolder) {
+    return neo4JProxy.moveFolder(sourceFolder, targetFolder);
+  }
+
 }
