@@ -9,6 +9,7 @@ import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
+import org.metadatacenter.util.ModelUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 
 import javax.management.InstanceNotFoundException;
@@ -79,16 +80,20 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
         // If the entry is an object
         if (fieldCandidate.isObject() && fieldCandidate.get("type") != null) {
           String type = fieldCandidate.get("type").asText();
-          // single fields
-          if ("object".equals(type)) {
-            // Add provenance information
-            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
-            saveFieldIfValid(fieldCandidate, linkedDataIdBasePath);
-            // multiple instance
-          } else if ("array".equals(type)) {
-            // Add provenance information
-            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
-            saveFieldIfValid(fieldCandidate.get("items"), linkedDataIdBasePath);
+          if (type.equals("object") || type.equals("array")) {
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            System.out.println("Field name: " + entry.getKey());
+            // It if it not a special field, add provenance info
+            if (!ModelUtil.isSpecialField(entry.getKey())) {
+              System.out.println("Adding provenance info");
+              ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
+            }
+            if ("object".equals(type)) {
+              saveFieldIfValid(fieldCandidate, linkedDataIdBasePath);
+              // multiple instance
+            } else if ("array".equals(type)) {
+              saveFieldIfValid(fieldCandidate.get("items"), linkedDataIdBasePath);
+            }
           }
         }
       }
