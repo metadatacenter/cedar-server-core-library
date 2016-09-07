@@ -346,7 +346,7 @@ public class Neo4JProxy {
   }
 
   boolean deleteFolderById(String folderId) {
-    String cypher = CypherQueryBuilder.deleteFolderById();
+    String cypher = CypherQueryBuilder.deleteFolderContentsRecursivelyById();
     Map<String, Object> params = CypherParamBuilder.deleteFolderById(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

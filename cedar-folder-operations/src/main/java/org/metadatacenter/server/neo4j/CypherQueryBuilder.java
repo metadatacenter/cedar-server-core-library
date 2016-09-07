@@ -304,6 +304,15 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String deleteFolderContentsRecursivelyById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (folder)-[relation:").append(RelationLabel.CONTAINS).append("*0..]->(child)");
+    sb.append(" DETACH DELETE child");
+    sb.append(" DETACH DELETE folder");
+    return sb.toString();
+  }
+
   public static String deleteResourceById() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (resource:").append(NodeLabel.RESOURCE).append(" {id:{id} })");
@@ -740,8 +749,7 @@ public class CypherQueryBuilder {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentFolderId} })");
     sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{folderId} })");
-    sb.append("MATCH");
-    sb.append("(parent)-[:").append(RelationLabel.CONTAINS).append("*0..]->(folder)");
+    sb.append("MATCH (parent)-[:").append(RelationLabel.CONTAINS).append("*0..]->(folder)");
     sb.append(" RETURN parent");
     return sb.toString();
   }
