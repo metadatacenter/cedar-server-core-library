@@ -1,6 +1,7 @@
 package org.metadatacenter.server.result;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BackendCallResult {
@@ -23,5 +24,9 @@ public class BackendCallResult {
     BackendCallError e = new BackendCallError(type);
     errors.add(e);
     return e;
+  }
+
+  public List<BackendCallError> getErrors() {
+    return Collections.unmodifiableList(errors);
   }
 }
