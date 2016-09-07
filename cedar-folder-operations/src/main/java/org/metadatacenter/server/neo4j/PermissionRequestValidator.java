@@ -64,7 +64,7 @@ public class PermissionRequestValidator {
       folder = neo4JUserSession.findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.NOT_FOUND)
             .subType("folderNotFound")
             .message("Folder not found by id")
             .param("folderId", nodeURL);
@@ -73,7 +73,7 @@ public class PermissionRequestValidator {
       resource = neo4JUserSession.findResourceById(nodeURL);
       node = resource;
       if (resource == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.NOT_FOUND)
             .subType("resourceNotFound")
             .message("Resource not found by id")
             .param("resourceId", nodeURL);
@@ -84,14 +84,14 @@ public class PermissionRequestValidator {
   private void validateWritePermission() {
     if (nodeIsFolder) {
       if (!neo4JUserSession.userHasWriteAccessToFolder(nodeURL)) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the folder")
             .param("folderId", nodeURL);
       }
     } else {
       if (!neo4JUserSession.userHasWriteAccessToResource(nodeURL)) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the resource")
             .param("resourceId", nodeURL);
@@ -109,7 +109,7 @@ public class PermissionRequestValidator {
       String newOwnerId = owner.getId();
       CedarFSUser newOwner = neo4JUserSession.findUserById(newOwnerId);
       if (newOwner == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.NOT_FOUND)
             .subType("userNotFound")
             .message("The new owner can not be found")
             .param("userId", newOwnerId);
@@ -137,7 +137,7 @@ public class PermissionRequestValidator {
           String userURL = permissionUser.getId();
           CedarFSUser user = neo4JUserSession.findUserById(userURL);
           if (user == null) {
-            callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+            callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("userNotFound")
                 .message("The user from request can not be found")
                 .param("userId", userURL);
@@ -168,7 +168,7 @@ public class PermissionRequestValidator {
           String groupURL = permissionGroup.getId();
           CedarFSGroup group = neo4JUserSession.findGroupById(groupURL);
           if (group == null) {
-            callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+            callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("groupNotFound")
                 .message("The group from request can not be found")
                 .param("groupId", groupURL);
@@ -228,7 +228,7 @@ public class PermissionRequestValidator {
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       if (!neo4JUserSession.userIsOwnerOfNode(node)) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userNotOwner")
             .message("Only the owner of a node can change the ownership")
             .param("nodeId", nodeURL);

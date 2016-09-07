@@ -38,15 +38,16 @@ public class CypherQueryBuilder {
 
   public static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
-    return createNode(folderAlias, label, extraProperties);
+    return createNode(folderAlias, label, extraProperties, true);
   }
 
   public static String createResource(String resourceAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
-    return createNode(resourceAlias, label, extraProperties);
+    return createNode(resourceAlias, label, extraProperties, false);
   }
 
-  private static String createNode(String nodeAlias, NodeLabel label, Map<String, Object> extraProperties) {
+  private static String createNode(String nodeAlias, NodeLabel label, Map<String, Object> extraProperties, boolean
+      isFolder) {
     StringBuilder sb = new StringBuilder();
     sb.append("CREATE (");
     sb.append(nodeAlias).append(":").append(label).append(" {");
@@ -61,6 +62,7 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(OWNED_BY)).append(",");
+    sb.append(NODE_SORT_ORDER).append(":").append(isFolder ? 1 : 2).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
       extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key)).append(","));
     }
@@ -72,18 +74,18 @@ public class CypherQueryBuilder {
 
 
   public static String createFolderAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
-    return createNodeAsChildOfId(label, extraProperties);
+    return createNodeAsChildOfId(label, extraProperties, true);
   }
 
   public static String createResourceAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
-    return createNodeAsChildOfId(label, extraProperties);
+    return createNodeAsChildOfId(label, extraProperties, false);
   }
 
-  private static String createNodeAsChildOfId(NodeLabel label, Map<String, Object> extraProperties) {
+  private static String createNodeAsChildOfId(NodeLabel label, Map<String, Object> extraProperties, boolean isFolder) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{parentId} })");
-    sb.append(CypherQueryBuilder.createNode("child", label, extraProperties));
+    sb.append(CypherQueryBuilder.createNode("child", label, extraProperties, isFolder));
     sb.append("CREATE");
     sb.append("(user)-[:").append(RelationLabel.OWNS).append("]->(child)");
     sb.append("CREATE");
@@ -131,7 +133,7 @@ public class CypherQueryBuilder {
       sb.append(getResourcePermissionConditions("\nAND\n", "child"));
     }
     sb.append("\nRETURN child");
-    sb.append("\nORDER BY ").append(getOrderByExpression(sortList));
+    sb.append("\nORDER BY child.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression(sortList));
     sb.append("\nSKIP {offset}");
     sb.append("\nLIMIT {limit}");
     return sb.toString();

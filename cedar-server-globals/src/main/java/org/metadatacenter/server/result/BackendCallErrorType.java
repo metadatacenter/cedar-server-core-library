@@ -1,9 +1,10 @@
 package org.metadatacenter.server.result;
 
 public enum BackendCallErrorType {
+  NOT_FOUND("notFound"),
   INVALID_ARGUMENT("invalidArgument"),
   AUTHENTICATION("authentication"),
-  PERMISSION("permission"),
+  AUTHORIZATION("authorization"),
   SERVER_ERROR("server");
 
   private String value;
