@@ -9,6 +9,7 @@ import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
+import org.metadatacenter.util.ModelUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 
 import javax.management.InstanceNotFoundException;
@@ -68,8 +69,8 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws IOException {
-
+  public void saveNewFieldsAndReplaceIds(JsonNode genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath)
+      throws IOException {
     JsonNode properties = genericInstance.get("properties");
     if (properties != null) {
       Iterator<Map.Entry<String, JsonNode>> it = properties.fields();
@@ -77,25 +78,22 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
         Map.Entry<String, JsonNode> entry = it.next();
         JsonNode fieldCandidate = entry.getValue();
         // If the entry is an object
-        if (fieldCandidate.isObject() && fieldCandidate.get("type") != null) {
+        if (fieldCandidate.isObject() && fieldCandidate.get("type") != null
+            && !ModelUtil.isSpecialField(entry.getKey())) {
           String type = fieldCandidate.get("type").asText();
-          // single fields
           if ("object".equals(type)) {
-            // Add provenance information
-            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
-            saveFieldIfValid(fieldCandidate, linkedDataIdBasePath);
+            saveFieldIfValid(fieldCandidate, pi, linkedDataIdBasePath);
             // multiple instance
           } else if ("array".equals(type)) {
-            // Add provenance information
-            ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
-            saveFieldIfValid(fieldCandidate.get("items"), linkedDataIdBasePath);
+            saveFieldIfValid(fieldCandidate.get("items"), pi, linkedDataIdBasePath);
           }
         }
       }
     }
   }
 
-  private void saveFieldIfValid(JsonNode fieldCandidate, String linkedDataIdBasePath) throws IOException {
+  private void saveFieldIfValid(JsonNode fieldCandidate, ProvenanceInfo pi, String linkedDataIdBasePath) throws IOException {
+    ProvenanceUtil.addProvenanceInfo(fieldCandidate, pi);
     if (fieldCandidate.get("@id") != null) {
       String id = fieldCandidate.get("@id").asText();
       if (id == null || id.indexOf(CedarConstants.TEMP_ID_PREFIX) == 0) {
