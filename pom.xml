@@ -23,8 +23,12 @@
   </scm>
 
   <modules>
-    <module>cedar-project-config</module>
+    <module>cedar-auth-operations</module>
+    <module>cedar-auth-operations-keycloak</module>
+    <module>cedar-auth-operations-noauth</module>
+    <module>cedar-auth-operations-play</module>    
     <module>cedar-folder-operations</module>
+    <module>cedar-project-config</module>
     <module>cedar-server-globals</module>
     <module>cedar-server-utils-core</module>
     <module>cedar-server-utils-play</module>
