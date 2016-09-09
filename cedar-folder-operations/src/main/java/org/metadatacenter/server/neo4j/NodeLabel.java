@@ -9,35 +9,42 @@ public enum NodeLabel {
   USER_HOME_FOLDER(ComposedLabels.USER_HOME_FOLDER),
   RESOURCE(ComposedLabels.RESOURCE),
   USER(ComposedLabels.USER),
+  GROUP(ComposedLabels.GROUP),
   FIELD(ComposedLabels.FIELD),
   ELEMENT(ComposedLabels.ELEMENT),
   TEMPLATE(ComposedLabels.TEMPLATE),
-  INSTANCE(ComposedLabels.INSTANCE);
+  INSTANCE(ComposedLabels.INSTANCE),
+  FSNODE(PlainLabels.FSNODE);
+
+  private static final String S = ":";
 
   public static class PlainLabels {
-    public static final String SCOPE = "XCEDAR";
+    public static final String SCOPE = "CEDAR";
 
     public static final String FOLDER = "Folder";
     public static final String SYSTEM_FOLDER = "SystemFolder";
     public static final String USER_HOME_FOLDER = "UserHomeFolder";
     public static final String RESOURCE = "Resource";
     public static final String USER = "User";
+    public static final String GROUP = "Group";
     public static final String FIELD = "Field";
     public static final String ELEMENT = "Element";
     public static final String TEMPLATE = "Template";
     public static final String INSTANCE = "Instance";
+    public static final String FSNODE = "FSNode";
   }
 
   public static class ComposedLabels {
-    public static final String FOLDER = PlainLabels.FOLDER + ":" + PlainLabels.SCOPE;
-    public static final String SYSTEM_FOLDER = PlainLabels.SYSTEM_FOLDER + ":" + FOLDER;
-    public static final String USER_HOME_FOLDER = PlainLabels.USER_HOME_FOLDER + ":" + SYSTEM_FOLDER;
-    public static final String RESOURCE = PlainLabels.RESOURCE + ":" + PlainLabels.SCOPE;
-    public static final String USER = PlainLabels.USER + ":" + PlainLabels.SCOPE;
-    public static final String FIELD = PlainLabels.FIELD + ":" + RESOURCE;
-    public static final String ELEMENT = PlainLabels.ELEMENT + ":" + RESOURCE;
-    public static final String TEMPLATE = PlainLabels.TEMPLATE + ":" + RESOURCE;
-    public static final String INSTANCE = PlainLabels.INSTANCE + ":" + RESOURCE;
+    public static final String FOLDER = PlainLabels.FOLDER + S + PlainLabels.FSNODE + S + PlainLabels.SCOPE;
+    public static final String SYSTEM_FOLDER = PlainLabels.SYSTEM_FOLDER + S + FOLDER;
+    public static final String USER_HOME_FOLDER = PlainLabels.USER_HOME_FOLDER + S + FOLDER;
+    public static final String RESOURCE = PlainLabels.RESOURCE + S + PlainLabels.FSNODE + S + PlainLabels.SCOPE;
+    public static final String USER = PlainLabels.USER + S + PlainLabels.SCOPE;
+    public static final String GROUP = PlainLabels.GROUP + S + PlainLabels.SCOPE;
+    public static final String FIELD = PlainLabels.FIELD + S + RESOURCE;
+    public static final String ELEMENT = PlainLabels.ELEMENT + S + RESOURCE;
+    public static final String TEMPLATE = PlainLabels.TEMPLATE + S + RESOURCE;
+    public static final String INSTANCE = PlainLabels.INSTANCE + S + RESOURCE;
   }
 
   private final String value;

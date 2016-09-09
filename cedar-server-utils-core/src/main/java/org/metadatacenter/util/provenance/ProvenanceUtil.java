@@ -18,7 +18,7 @@ public class ProvenanceUtil {
   public static final String PAV_CREATED_ON = "pav:createdOn";
   public static final String PAV_CREATED_BY = "pav:createdBy";
   public static final String PAV_LAST_UPDATED_ON = "pav:lastUpdatedOn";
-  public static final String CEDAR_LAST_UPDATED_BY = "cedar:lastUpdatedBy";
+  public static final String LAST_UPDATED_BY = "oslc:modifiedBy";
 
   private ProvenanceUtil() {
   }
@@ -30,7 +30,7 @@ public class ProvenanceUtil {
       resource.put(PAV_CREATED_BY, pi.getCreatedBy());
     }
     resource.put(PAV_LAST_UPDATED_ON, pi.getLastUpdatedOn());
-    resource.put(CEDAR_LAST_UPDATED_BY, pi.getLastUpdatedBy());
+    resource.put(LAST_UPDATED_BY, pi.getLastUpdatedBy());
   }
 
   public static void addProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
@@ -56,7 +56,7 @@ public class ProvenanceUtil {
     String id = null;
     try {
       CedarUser accountInfo = Authorization.getUser(authRequest);
-      id = accountInfo.getUserId();
+      id = accountInfo.getId();
     } catch (CedarAccessException e) {
       e.printStackTrace();
     }

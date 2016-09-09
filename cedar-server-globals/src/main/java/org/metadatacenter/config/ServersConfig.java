@@ -4,9 +4,11 @@ public interface ServersConfig {
 
   ServerConfig getTemplate();
 
-  ServerConfig getFolder();
+  FolderServerConfig getFolder();
 
   UserServerConfig getUser();
 
   ResourceServerConfig getResource();
+
+  SchemaServerConfig getSchema();
 }

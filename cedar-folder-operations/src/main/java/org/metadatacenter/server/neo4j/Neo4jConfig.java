@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.config.CedarConfig;
+
 public class Neo4jConfig {
 
   private String transactionUrl;
@@ -8,8 +10,8 @@ public class Neo4jConfig {
   private String rootFolderDescription;
   private String usersFolderPath;
   private String usersFolderDescription;
-  private String lostAndFoundFolderPath;
-  private String lostAndFoundFolderDescription;
+  private String everybodyGroupName;
+  private String everybodyGroupDisplayName;
 
   public Neo4jConfig() {
   }
@@ -62,19 +64,32 @@ public class Neo4jConfig {
     this.usersFolderDescription = usersFolderDescription;
   }
 
-  public String getLostAndFoundFolderPath() {
-    return lostAndFoundFolderPath;
+  public String getEverybodyGroupName() {
+    return everybodyGroupName;
   }
 
-  public void setLostAndFoundFolderPath(String lostAndFoundFolderPath) {
-    this.lostAndFoundFolderPath = lostAndFoundFolderPath;
+  public void setEverybodyGroupName(String everybodyGroupName) {
+    this.everybodyGroupName = everybodyGroupName;
   }
 
-  public String getLostAndFoundFolderDescription() {
-    return lostAndFoundFolderDescription;
+  public String getEverybodyGroupDisplayName() {
+    return everybodyGroupDisplayName;
   }
 
-  public void setLostAndFoundFolderDescription(String lostAndFoundFolderDescription) {
-    this.lostAndFoundFolderDescription = lostAndFoundFolderDescription;
+  public void setEverybodyGroupDisplayName(String everybodyGroupDisplayName) {
+    this.everybodyGroupDisplayName = everybodyGroupDisplayName;
+  }
+
+  public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
+    Neo4jConfig neoConfig = new Neo4jConfig();
+    neoConfig.setTransactionUrl(cedarConfig.getNeo4jConfig().getRest().getTransactionUrl());
+    neoConfig.setAuthString(cedarConfig.getNeo4jConfig().getRest().getAuthString());
+    neoConfig.setRootFolderPath(cedarConfig.getFolderStructureConfig().getRootFolder().getPath());
+    neoConfig.setRootFolderDescription(cedarConfig.getFolderStructureConfig().getRootFolder().getDescription());
+    neoConfig.setUsersFolderPath(cedarConfig.getFolderStructureConfig().getUsersFolder().getPath());
+    neoConfig.setUsersFolderDescription(cedarConfig.getFolderStructureConfig().getUsersFolder().getDescription());
+    neoConfig.setEverybodyGroupName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName());
+    neoConfig.setEverybodyGroupDisplayName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName());
+    return neoConfig;
   }
 }

@@ -1,12 +1,15 @@
 package org.metadatacenter.server.security.model.auth;
 
-public class AuthorisedUser {
+import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
+
+public class AuthorisedUser implements ICedarUserRepresentation {
 
   private String id;
   private String firstName;
-  private String middleName;
   private String lastName;
+  private String email;
 
+  @Override
   public String getId() {
     return id;
   }
@@ -23,19 +26,20 @@ public class AuthorisedUser {
     this.firstName = firstName;
   }
 
-  public String getMiddleName() {
-    return middleName;
-  }
-
-  public void setMiddleName(String middleName) {
-    this.middleName = middleName;
-  }
-
   public String getLastName() {
     return lastName;
   }
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  @Override
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 }

@@ -2,6 +2,7 @@ package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -44,4 +45,14 @@ public class CedarFSFolder extends CedarFSNode {
   public void setRoot(boolean root) {
     this.root = root;
   }
+
+  /*public String getUUID() {
+    String sid = getId();
+    String prefix = CedarConfig.getInstance().getLinkedDataPrefix(CedarNodeType.FOLDER);
+    if (sid != null && prefix != null && sid.startsWith(prefix)) {
+      return sid.substring(prefix.length());
+    } else {
+      return sid;
+    }
+  }*/
 }

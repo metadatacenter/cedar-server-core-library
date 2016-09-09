@@ -3,13 +3,17 @@ package org.metadatacenter.server.play;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.metadatacenter.server.result.BackendCallError;
+import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.exception.CedarAccessException;
 import org.metadatacenter.server.security.exception.MissingPermissionException;
+import org.metadatacenter.util.json.JsonMapper;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public abstract class AbstractCedarController extends Controller {
 
@@ -57,6 +61,62 @@ public abstract class AbstractCedarController extends Controller {
     return errorDescription;
   }
 
+  public static Result backendCallError(BackendCallResult backendCallResult) {
+    if (backendCallResult != null) {
+      List<BackendCallError> errors = backendCallResult.getErrors();
+      if (errors != null && errors.size() > 0) {
+        BackendCallError firstError = errors.get(0);
+        if (firstError != null) {
+          switch (firstError.getType()) {
+            case AUTHENTICATION:
+              return unauthorized(generateErrorDescription(backendCallResult));
+            case AUTHORIZATION:
+              return forbidden(generateErrorDescription(backendCallResult));
+            case INVALID_ARGUMENT:
+              return badRequest(generateErrorDescription(backendCallResult));
+            case NOT_FOUND:
+              return notFound(generateErrorDescription(backendCallResult));
+            case SERVER_ERROR:
+              return internalServerError(generateErrorDescription(backendCallResult));
+          }
+        }
+      }
+    }
+    throw new IllegalArgumentException("backendErrorCall was requested with a non-error backendCallResult");
+  }
+
+  private static ObjectNode generateErrorDescription(BackendCallResult backendCallResult) {
+    ObjectNode wrapper = JsonNodeFactory.instance.objectNode();
+    ArrayNode errors = wrapper.putArray("errors");
+    int idx = 0;
+    for (BackendCallError e : backendCallResult.getErrors()) {
+      ObjectNode error = JsonNodeFactory.instance.objectNode();
+      putErrorDetails(e, error);
+      errors.add(error);
+      if (idx == 0) {
+        putErrorDetails(e, wrapper);
+      }
+      idx++;
+    }
+    return wrapper;
+  }
+
+  private static void putErrorDetails(BackendCallError e, ObjectNode wrapper) {
+    wrapper.put("errorType", e.getType().getValue());
+    wrapper.put("message", e.getMessage());
+    wrapper.put("localizedMessage", e.getMessage());
+    wrapper.put("string", "");
+    wrapper.put("errorSubType", e.getSubType());
+    wrapper.put("errorCode", e.getCode());
+    wrapper.put("suggestedAction", e.getSuggestedAction());
+    ObjectNode params = JsonNodeFactory.instance.objectNode();
+    for (String paramName : e.getParams().keySet()) {
+      Object param = e.getParams().get(paramName);
+      params.set(paramName, JsonMapper.MAPPER.valueToTree(param));
+    }
+    wrapper.set("errorParams", params);
+  }
+
   protected static ObjectNode generateErrorDescription(String errorSubType, String message) {
     return generateErrorDescription(errorSubType, message, null, null, null);
   }
@@ -98,6 +158,5 @@ public abstract class AbstractCedarController extends Controller {
   protected static Result unauthorizedWithError(Throwable t) {
     return unauthorized(generateErrorDescription(t));
   }
-
 
 }

@@ -85,7 +85,7 @@ public class JsonUtils {
   public static @NonNull JsonNode localizeAtIdsAndTemplateId(@NonNull JsonNode node, @NonNull LinkedDataUtil
       linkedDataUtil) {
     ObjectNode object = (ObjectNode) node;
-    localizeFieldValueAsId(object, "_templateId", linkedDataUtil, CedarNodeType.TEMPLATE);
+    localizeFieldValueAsId(object, "schema:isBasedOn", linkedDataUtil, CedarNodeType.TEMPLATE);
     localizeAtIdRecursively(object, linkedDataUtil);
     return object;
   }

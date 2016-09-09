@@ -5,5 +5,5 @@ public interface FolderStructureConfig {
 
   GraphFolder getUsersFolder();
 
-  GraphFolder getLostAndFoundFolder();
+  GraphGroup getEverybodyGroup();
 }
