@@ -22,6 +22,8 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_DESCRIPTION_FIELD = "description";
   public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "nodeType";
 
+  public static final String ES_TEMPLATEID_FIELD = "templateId";
+
   // Sortable fields
   public static final String ES_RESOURCE_SORTABLE_NAME_FIELD = "name.raw";
   public static final String ES_RESOURCE_SORTABLE_CREATEDONTS_FIELD = "createdOnTS";
