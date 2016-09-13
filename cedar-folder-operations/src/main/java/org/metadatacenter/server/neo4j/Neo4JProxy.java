@@ -10,7 +10,6 @@ import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
-import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.json.JsonMapper;
@@ -1065,5 +1064,43 @@ public class Neo4JProxy {
     return parent != null;
   }
 
+  public Map<String, String> findAccessibleNodeIds(String userURL) {
+    Map<String, String> map = new HashMap<>();
 
+    String cypherOwned = CypherQueryBuilder.findOwnedNodes();
+    Map<String, Object> params = CypherParamBuilder.matchUserId(userURL);
+    CypherQuery qOwned = new CypherQueryWithParameters(cypherOwned, params);
+    JsonNode jsonNodeOwned = executeCypherQueryAndCommit(qOwned);
+    mergeAccessibleNodesIntoMap(map, jsonNodeOwned, RelationLabel.OWNS);
+
+    String cypherWrite = CypherQueryBuilder.findWritableNodes();
+    CypherQuery qWrite = new CypherQueryWithParameters(cypherWrite, params);
+    JsonNode jsonNodeWritable = executeCypherQueryAndCommit(qWrite);
+    mergeAccessibleNodesIntoMap(map, jsonNodeWritable, RelationLabel.CANWRITE);
+
+    String cypherRead = CypherQueryBuilder.findReadableNodes();
+    CypherQuery qRead = new CypherQueryWithParameters(cypherRead, params);
+    JsonNode jsonNodeReadable = executeCypherQueryAndCommit(qRead);
+    mergeAccessibleNodesIntoMap(map, jsonNodeReadable, RelationLabel.CANREAD);
+
+    return map;
+  }
+
+  private void mergeAccessibleNodesIntoMap(Map<String, String> map, JsonNode jsonNode, RelationLabel label) {
+    JsonNode nodeListJsonNode = jsonNode.at("/results/0/data");
+    if (nodeListJsonNode != null && !nodeListJsonNode.isMissingNode()) {
+      nodeListJsonNode.forEach(f -> {
+        JsonNode nodeNode = f.at("/row/0");
+        if (nodeNode != null && !nodeNode.isMissingNode()) {
+          CedarFSNode node = buildNode(nodeNode);
+          if (node != null) {
+            String key = node.getId();
+            if (!map.containsKey(key)) {
+              map.put(key, label.getValue());
+            }
+          }
+        }
+      });
+    }
+  }
 }

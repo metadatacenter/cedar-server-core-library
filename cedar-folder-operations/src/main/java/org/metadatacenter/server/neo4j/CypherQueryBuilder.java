@@ -753,4 +753,33 @@ public class CypherQueryBuilder {
     sb.append(" RETURN parent");
     return sb.toString();
   }
+
+  public static String findOwnedNodes() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(")");
+    sb.append("MATCH (user)-[:").append(RelationLabel.OWNS).append("]->(node)");
+    sb.append("RETURN node");
+    return sb.toString();
+  }
+
+  public static String findWritableNodes() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(")");
+    sb.append(" WHERE");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, "node"));
+    sb.append(" RETURN node");
+    return sb.toString();
+  }
+
+  public static String findReadableNodes() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(")");
+    sb.append(" WHERE");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, "node"));
+    sb.append(" RETURN node");
+    return sb.toString();
+  }
 }

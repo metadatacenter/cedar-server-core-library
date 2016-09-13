@@ -123,11 +123,7 @@ public class CedarConfig extends AbstractModule {
   public String getLinkedDataPrefix(CedarNodeType nodeType) {
     return getLinkedDataConfig().getBase() + nodeType.getPrefix() + "/";
   }
-
-  public String getLinkedDataAtType(CedarNodeType nodeType) {
-    return getServers().getSchema().getCoreBase() +  nodeType.getAtType();
-  }
-
+  
   public LinkedDataUtil getLinkedDataUtil() {
     return new LinkedDataUtil(getLinkedDataConfig());
   }

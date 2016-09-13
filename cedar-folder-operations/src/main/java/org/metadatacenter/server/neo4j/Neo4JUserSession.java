@@ -583,4 +583,8 @@ public class Neo4JUserSession {
     return neo4JProxy.moveFolder(sourceFolder, targetFolder);
   }
 
+  public Map<String, String> findAccessibleNodeIds() {
+    return neo4JProxy.findAccessibleNodeIds(getUserId());
+  }
+
 }

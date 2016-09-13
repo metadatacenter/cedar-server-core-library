@@ -139,10 +139,6 @@ public class CypherParamBuilder {
     return getNodeByIdentity(resourceURL);
   }
 
-  /*public static Map<String, Object> getNodeById(String nodeURL) {
-    return getNodeByIdentity(nodeURL);
-  }*/
-
   public static Map<String, Object> getUserById(String userURL) {
     return getNodeByIdentity(userURL);
   }
@@ -324,6 +320,12 @@ public class CypherParamBuilder {
     Map<String, Object> params = new HashMap<>();
     params.put(FOLDER_ID, folderId);
     params.put(PARENT_FOLDER_ID, parentFolderId);
+    return params;
+  }
+
+  public static Map<String, Object> matchUserId(String userURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(USER_ID, userURL);
     return params;
   }
 }
