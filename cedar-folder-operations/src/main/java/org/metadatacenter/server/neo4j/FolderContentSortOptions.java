@@ -11,10 +11,10 @@ public class FolderContentSortOptions {
 
   static {
     knownSortKeys = new HashMap<>();
-    DEFAULT_SORT_FIELD = new FolderContentSortField("name", true);
+    DEFAULT_SORT_FIELD = new FolderContentSortField("name", "displayName", true);
     addField(DEFAULT_SORT_FIELD);
-    addField(new FolderContentSortField("createdOnTS", false));
-    addField(new FolderContentSortField("lastUpdatedOnTS", false));
+    addField(new FolderContentSortField("createdOnTS", "createdOnTS", false));
+    addField(new FolderContentSortField("lastUpdatedOnTS", "lastUpdatedOnTS", false));
   }
 
   private static void addField(FolderContentSortField field) {
@@ -35,5 +35,9 @@ public class FolderContentSortOptions {
 
   public static boolean isTextual(String name) {
     return knownSortKeys.get(name) != null && knownSortKeys.get(name).isTextual();
+  }
+
+  public static String getFieldName(String name) {
+    return knownSortKeys.get(name) != null ? knownSortKeys.get(name).getFieldName() : name;
   }
 }

@@ -222,9 +222,11 @@ public class CypherQueryBuilder {
 
   private static String getCaseInsensitiveSortExpression(String fieldName) {
     if (FolderContentSortOptions.isTextual(fieldName)) {
-      return new StringBuilder().append("LOWER(").append("child.").append(fieldName).append(")").toString();
+      return new StringBuilder().append("LOWER(").append("child.")
+          .append(FolderContentSortOptions.getFieldName(fieldName)).append(")").toString();
     } else {
-      return new StringBuilder().append("child.").append(fieldName).toString();
+      return new StringBuilder().append("child.")
+          .append(FolderContentSortOptions.getFieldName(fieldName)).toString();
     }
   }
 
