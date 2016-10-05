@@ -8,7 +8,7 @@ branches:
 notifications:
   email:
     recipients:
-    - cedar-core-developers@lists.stanford.edu
+       - martin.oconnor@stanford.edu
     on_success: never
     on_failure: always
 script: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn clean deploy --settings .m2/travis-settings.xml'
