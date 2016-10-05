@@ -398,8 +398,11 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(ID)).append(",");
     sb.append(buildCreateAssignment(NAME)).append(",");
     sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
+    sb.append(buildCreateAssignment(DESCRIPTION)).append(",");
+    sb.append(buildCreateAssignment(CREATED_BY)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_BY)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
@@ -408,7 +411,16 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(NODE_TYPE));
     sb.append("}");
     sb.append(")");
-    sb.append("RETURN ").append(nodeAlias);
+
+    sb.append("WITH ").append(nodeAlias);
+
+    sb.append(" MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+
+    sb.append(" MERGE (user)-[:").append(RelationLabel.OWNSGROUP).append("]->(").append(nodeAlias).append(")");
+    sb.append(" MERGE (user)-[:").append(RelationLabel.MEMBEROF).append("]->(").append(nodeAlias).append(")");
+
+    sb.append(" RETURN ").append(nodeAlias);
     return sb.toString();
   }
 
@@ -432,13 +444,20 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getGroupByName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {name:{name} })");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
   public static String addGroupToUser() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH");
     sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("MATCH");
     sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
-    sb.append("CREATE");
+    sb.append("MERGE");
     sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("]->(group)");
     sb.append("RETURN user");
     return sb.toString();

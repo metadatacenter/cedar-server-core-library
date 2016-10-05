@@ -9,7 +9,8 @@ public enum RelationLabel {
   MEMBEROF(PlainLabels.MEMBEROF, null),
   CANREAD(PlainLabels.CANREAD, NodePermission.READ),
   CANREADTHIS(PlainLabels.CANREADTHIS, NodePermission.READTHIS),
-  CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE);
+  CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE),
+  OWNSGROUP(PlainLabels.OWNSGROUP, null);
 
   public static class PlainLabels {
     public static final String OWNS = "OWNS";
@@ -18,6 +19,7 @@ public enum RelationLabel {
     public static final String CANREAD = "CANREAD";
     public static final String CANREADTHIS = "CANREADTHIS";
     public static final String CANWRITE = "CANWRITE";
+    public static final String OWNSGROUP = "OWNSGROUP";
   }
 
   private final String value;

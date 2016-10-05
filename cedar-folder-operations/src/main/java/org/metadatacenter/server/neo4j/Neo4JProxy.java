@@ -522,9 +522,11 @@ public class Neo4JProxy {
     return newUser;
   }
 
-  CedarFSGroup createGroup(String groupURL, String name, String displayName, Map<String, Object> extraProperties) {
+  CedarFSGroup createGroup(String groupURL, String name, String displayName, String description, String ownerURL,
+                           Map<String, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createGroup(extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createGroup(groupURL, name, displayName, extraProperties);
+    Map<String, Object> params = CypherParamBuilder.createGroup(groupURL, name, displayName, description, ownerURL,
+        extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");
@@ -561,6 +563,14 @@ public class Neo4JProxy {
     return buildGroup(groupNode);
   }
 
+  CedarFSGroup findGroupByName(String groupName) {
+    String cypher = CypherQueryBuilder.getGroupByName();
+    Map<String, Object> params = CypherParamBuilder.getGroupByName(groupName);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildGroup(groupNode);
+  }
 
   boolean addGroupToUser(CedarFSUser user, CedarFSGroup group) {
     String cypher = CypherQueryBuilder.addGroupToUser();

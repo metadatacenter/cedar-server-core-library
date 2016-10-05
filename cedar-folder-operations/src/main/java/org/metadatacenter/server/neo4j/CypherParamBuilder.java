@@ -210,8 +210,8 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> createGroup(String groupURL, String name, String displayName,
-                                                Map<String, Object> extraProperties) {
+  public static Map<String, Object> createGroup(String groupURL, String name, String displayName, String description,
+                                                String ownerURL, Map<String, Object> extraProperties) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -219,11 +219,15 @@ public class CypherParamBuilder {
     params.put(ID, groupURL);
     params.put(NAME, name);
     params.put(DISPLAY_NAME, displayName);
+    params.put(DESCRIPTION, description);
+    params.put(CREATED_BY, ownerURL);
     params.put(CREATED_ON, nowString);
     params.put(CREATED_ON_TS, nowTS);
+    params.put(LAST_UPDATED_BY, ownerURL);
     params.put(LAST_UPDATED_ON, nowString);
     params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.GROUP.getValue());
+    params.put(USER_ID, ownerURL);
     if (extraProperties != null && !extraProperties.isEmpty()) {
       extraProperties.forEach((key, value) -> params.put(key, value));
     }
@@ -246,6 +250,12 @@ public class CypherParamBuilder {
   public static Map<String, Object> getGroupById(String groupURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> getGroupByName(String groupName) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NAME, groupName);
     return params;
   }
 
@@ -316,7 +326,7 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String,Object> matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
+  public static Map<String, Object> matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
     Map<String, Object> params = new HashMap<>();
     params.put(FOLDER_ID, folderId);
     params.put(PARENT_FOLDER_ID, parentFolderId);
