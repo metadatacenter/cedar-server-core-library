@@ -15,6 +15,20 @@
   <name>CEDAR Server Utils</name>
   <description>CEDAR server utils</description>
 
+  <distributionManagement>
+
+    <snapshotRepository>
+      <id>bmir-nexus-snapshots</id>
+      <url>https://nexus.bmir.stanford.edu/content/repositories/snapshots</url>
+    </snapshotRepository>
+
+    <repository>
+      <id>bmir-nexus-releases</id>
+      <url>https://nexus.bmir.stanford.edu/content/repositories/releases</url>
+    </repository>
+
+  </distributionManagement>
+
   <scm>
     <connection>scm:git:git@github.com:metadatacenter/cedar-server-utils.git</connection>
     <developerConnection>scm:git:git@github.com:metadatacenter/cedar-server-utils.git</developerConnection>
