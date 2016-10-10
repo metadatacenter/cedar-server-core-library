@@ -591,9 +591,8 @@ public class Neo4JUserSession {
     return neo4JProxy.findGroupByName(groupName);
   }
 
-  public CedarFSGroup createGroup(String groupName, String groupDisplayName, String
-      groupDescription, String creatorURL) {
+  public CedarFSGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
     String groupURL = buildGroupId(UUID.randomUUID().toString());
-    return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, creatorURL, null);
+    return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
   }
 }
