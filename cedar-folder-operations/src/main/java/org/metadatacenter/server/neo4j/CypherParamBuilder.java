@@ -338,4 +338,10 @@ public class CypherParamBuilder {
     params.put(USER_ID, userURL);
     return params;
   }
+
+  public static Map<String, Object> updateGroupById(String groupURL, Map<String, String> updateFields, String
+      updatedBy) {
+    return updateNodeById(groupURL, updateFields, updatedBy);
+  }
+
 }

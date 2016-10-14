@@ -595,4 +595,10 @@ public class Neo4JUserSession {
     String groupURL = buildGroupId(UUID.randomUUID().toString());
     return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
   }
+
+  public CedarFSGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
+    return neo4JProxy.updateGroupById(groupURL, updateFields, getUserId());
+  }
+
+
 }

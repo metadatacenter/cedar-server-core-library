@@ -1113,4 +1113,14 @@ public class Neo4JProxy {
       });
     }
   }
+
+  CedarFSGroup updateGroupById(String groupId, Map<String, String> updateFields, String updatedBy) {
+    String cypher = CypherQueryBuilder.updateGroupById(updateFields);
+    Map<String, Object> params = CypherParamBuilder.updateGroupById(groupId, updateFields, updatedBy);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode updatedNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildGroup(updatedNode);
+  }
+
 }

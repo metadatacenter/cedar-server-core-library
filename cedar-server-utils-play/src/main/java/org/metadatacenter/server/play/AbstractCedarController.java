@@ -1,5 +1,6 @@
 package org.metadatacenter.server.play;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -157,6 +158,10 @@ public abstract class AbstractCedarController extends Controller {
 
   protected static Result unauthorizedWithError(Throwable t) {
     return unauthorized(generateErrorDescription(t));
+  }
+
+  protected static JsonNode asJson(Object object) {
+    return JsonMapper.MAPPER.valueToTree(object);
   }
 
 }

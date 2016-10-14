@@ -803,4 +803,18 @@ public class CypherQueryBuilder {
     sb.append(" RETURN node");
     return sb.toString();
   }
+
+  public static String updateGroupById(Map<String, String> updateFields) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{id} })");
+    sb.append("SET group.lastUpdatedBy= {lastUpdatedBy}");
+    sb.append("SET group.lastUpdatedOn= {lastUpdatedOn}");
+    sb.append("SET group.lastUpdatedOnTS= {lastUpdatedOnTS}");
+    for (String propertyName : updateFields.keySet()) {
+      sb.append("SET group.").append(buildUpdateAssignment(propertyName));
+    }
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
 }
