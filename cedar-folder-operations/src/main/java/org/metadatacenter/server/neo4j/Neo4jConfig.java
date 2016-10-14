@@ -12,84 +12,58 @@ public class Neo4jConfig {
   private String usersFolderDescription;
   private String everybodyGroupName;
   private String everybodyGroupDisplayName;
+  private String everybodyGroupDescription;
 
-  public Neo4jConfig() {
+  private Neo4jConfig() {
   }
 
   public String getTransactionUrl() {
     return transactionUrl;
   }
 
-  public void setTransactionUrl(String transactionUrl) {
-    this.transactionUrl = transactionUrl;
-  }
-
   public String getAuthString() {
     return authString;
-  }
-
-  public void setAuthString(String authString) {
-    this.authString = authString;
   }
 
   public String getRootFolderPath() {
     return rootFolderPath;
   }
 
-  public void setRootFolderPath(String rootFolderPath) {
-    this.rootFolderPath = rootFolderPath;
-  }
-
   public String getRootFolderDescription() {
     return rootFolderDescription;
-  }
-
-  public void setRootFolderDescription(String rootFolderDescription) {
-    this.rootFolderDescription = rootFolderDescription;
   }
 
   public String getUsersFolderPath() {
     return usersFolderPath;
   }
 
-  public void setUsersFolderPath(String usersFolderPath) {
-    this.usersFolderPath = usersFolderPath;
-  }
-
   public String getUsersFolderDescription() {
     return usersFolderDescription;
-  }
-
-  public void setUsersFolderDescription(String usersFolderDescription) {
-    this.usersFolderDescription = usersFolderDescription;
   }
 
   public String getEverybodyGroupName() {
     return everybodyGroupName;
   }
 
-  public void setEverybodyGroupName(String everybodyGroupName) {
-    this.everybodyGroupName = everybodyGroupName;
-  }
-
   public String getEverybodyGroupDisplayName() {
     return everybodyGroupDisplayName;
   }
 
-  public void setEverybodyGroupDisplayName(String everybodyGroupDisplayName) {
-    this.everybodyGroupDisplayName = everybodyGroupDisplayName;
+  public String getEverybodyGroupDescription() {
+    return everybodyGroupDescription;
   }
 
   public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
     Neo4jConfig neoConfig = new Neo4jConfig();
-    neoConfig.setTransactionUrl(cedarConfig.getNeo4jConfig().getRest().getTransactionUrl());
-    neoConfig.setAuthString(cedarConfig.getNeo4jConfig().getRest().getAuthString());
-    neoConfig.setRootFolderPath(cedarConfig.getFolderStructureConfig().getRootFolder().getPath());
-    neoConfig.setRootFolderDescription(cedarConfig.getFolderStructureConfig().getRootFolder().getDescription());
-    neoConfig.setUsersFolderPath(cedarConfig.getFolderStructureConfig().getUsersFolder().getPath());
-    neoConfig.setUsersFolderDescription(cedarConfig.getFolderStructureConfig().getUsersFolder().getDescription());
-    neoConfig.setEverybodyGroupName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName());
-    neoConfig.setEverybodyGroupDisplayName(cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName());
+    neoConfig.transactionUrl = cedarConfig.getNeo4jConfig().getRest().getTransactionUrl();
+    neoConfig.authString = cedarConfig.getNeo4jConfig().getRest().getAuthString();
+    neoConfig.rootFolderPath = cedarConfig.getFolderStructureConfig().getRootFolder().getPath();
+    neoConfig.rootFolderDescription = cedarConfig.getFolderStructureConfig().getRootFolder().getDescription();
+    neoConfig.usersFolderPath = cedarConfig.getFolderStructureConfig().getUsersFolder().getPath();
+    neoConfig.usersFolderDescription = cedarConfig.getFolderStructureConfig().getUsersFolder().getDescription();
+    neoConfig.everybodyGroupName = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName();
+    neoConfig.everybodyGroupDisplayName = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName();
+    neoConfig.everybodyGroupDescription = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDescription();
     return neoConfig;
   }
 }

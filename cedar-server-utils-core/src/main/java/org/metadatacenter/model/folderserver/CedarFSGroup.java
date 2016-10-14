@@ -10,7 +10,10 @@ import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarFSGroup extends AbstractCedarSuperNode {
 
+  private String name;
   private String displayName;
+  private String description;
+  private String specialGroup;
 
   public CedarFSGroup() {
     this.nodeType = CedarNodeType.GROUP;
@@ -72,6 +75,30 @@ public class CedarFSGroup extends AbstractCedarSuperNode {
 
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getSpecialGroup() {
+    return specialGroup;
+  }
+
+  public void setSpecialGroup(String specialGroup) {
+    this.specialGroup = specialGroup;
   }
 
   public CedarGroupExtract buildExtract() {

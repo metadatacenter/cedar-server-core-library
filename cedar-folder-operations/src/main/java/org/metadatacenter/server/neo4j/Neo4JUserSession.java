@@ -189,14 +189,7 @@ public class Neo4JUserSession {
     Neo4jConfig config = neo4JProxy.getConfig();
     IPathUtil pathUtil = neo4JProxy.getPathUtil();
 
-    CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
-    if (everybody == null) {
-      String everybodyURL = buildGroupId(UUID.randomUUID().toString());
-      Map<String, Object> extraParams = new HashMap<>();
-      extraParams.put(Neo4JFields.SPECIAL_GROUP, Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
-      everybody = neo4JProxy.createGroup(everybodyURL, config.getEverybodyGroupName(),
-          config.getEverybodyGroupDisplayName(), extraParams);
-    }
+    boolean addAdminToEverybody = false;
 
     String userId = getUserId();
 
@@ -204,7 +197,22 @@ public class Neo4JUserSession {
     if (cedarAdmin == null) {
       String displayName = CedarUserNameUtil.getDisplayName(cu);
       cedarAdmin = neo4JProxy.createUser(userId, displayName, displayName, cu.getFirstName(), cu
-          .getLastName(), cu.getEmail(), everybody);
+          .getLastName(), cu.getEmail());
+      addAdminToEverybody = true;
+    }
+
+    CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+    if (everybody == null) {
+      String everybodyURL = buildGroupId(UUID.randomUUID().toString());
+      Map<String, Object> extraParams = new HashMap<>();
+      extraParams.put(Neo4JFields.SPECIAL_GROUP, Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+      everybody = neo4JProxy.createGroup(everybodyURL, config.getEverybodyGroupName(),
+          config.getEverybodyGroupDisplayName(), config.getEverybodyGroupDescription(), userId, extraParams);
+      addAdminToEverybody = true;
+    }
+
+    if (addAdminToEverybody) {
+      neo4JProxy.addGroupToUser(cedarAdmin, everybody);
     }
 
     CedarFSFolder rootFolder = findFolderByPath(config.getRootFolderPath());
@@ -420,14 +428,6 @@ public class Neo4JUserSession {
     return permissions;
   }
 
-  /*public boolean isChangeOwnerRequested(String nodeURL, CedarNodePermissionsRequest permissionsRequest,
-                                        boolean nodeIsFolder) {
-    CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
-    String oldOwnerId = currentPermissions.getOwner().getId();
-    String newOwnerId = permissionsRequest.getOwner().getId();
-    return (oldOwnerId == null && newOwnerId != null) || (oldOwnerId != null && !oldOwnerId.equals(newOwnerId));
-  }*/
-
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
                                                  boolean nodeIsFolder) {
 
@@ -586,5 +586,19 @@ public class Neo4JUserSession {
   public Map<String, String> findAccessibleNodeIds() {
     return neo4JProxy.findAccessibleNodeIds(getUserId());
   }
+
+  public CedarFSGroup findGroupByName(String groupName) {
+    return neo4JProxy.findGroupByName(groupName);
+  }
+
+  public CedarFSGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
+    String groupURL = buildGroupId(UUID.randomUUID().toString());
+    return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
+  }
+
+  public CedarFSGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
+    return neo4JProxy.updateGroupById(groupURL, updateFields, getUserId());
+  }
+
 
 }
