@@ -417,7 +417,7 @@ public class CypherQueryBuilder {
     sb.append(" MATCH");
     sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
 
-    sb.append(" MERGE (user)-[:").append(RelationLabel.OWNSGROUP).append("]->(").append(nodeAlias).append(")");
+    sb.append(" MERGE (user)-[:").append(RelationLabel.ADMINISTERS).append("]->(").append(nodeAlias).append(")");
     sb.append(" MERGE (user)-[:").append(RelationLabel.MEMBEROF).append("]->(").append(nodeAlias).append(")");
 
     sb.append(" RETURN ").append(nodeAlias);
