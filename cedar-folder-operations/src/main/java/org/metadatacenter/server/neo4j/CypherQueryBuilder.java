@@ -824,4 +824,16 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getGroupUsersWithRelation(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[:").append(relationLabel).append("]->");
+    sb.append("(group)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+
 }

@@ -343,6 +343,12 @@ public class CypherParamBuilder {
     return params;
   }
 
+  public static Map<String, Object> matchGroupId(String groupURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(GROUP_ID, groupURL);
+    return params;
+  }
+
   public static Map<String, Object> updateGroupById(String groupURL, Map<String, String> updateFields, String
       updatedBy) {
     return updateNodeById(groupURL, updateFields, updatedBy);

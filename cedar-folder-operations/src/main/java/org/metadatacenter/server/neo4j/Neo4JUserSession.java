@@ -604,4 +604,28 @@ public class Neo4JUserSession {
     return neo4JProxy.deleteGroupById(groupURL);
   }
 
+  public CedarGroupUsers findGroupUsers(String groupURL) {
+    Set<String> memberIds = new HashSet<>();
+    Set<String> administratorsIds = new HashSet<>();
+    Map<String, CedarFSUser> users = new HashMap<>();
+    List<CedarFSUser> groupMembers = neo4JProxy.findGroupMembers(groupURL);
+    for (CedarFSUser member : groupMembers) {
+      memberIds.add(member.getId());
+      users.put(member.getId(), member);
+    }
+    List<CedarFSUser> groupAdministrators = neo4JProxy.findGroupAdministrators(groupURL);
+    for (CedarFSUser administrator : groupAdministrators) {
+      administratorsIds.add(administrator.getId());
+      users.put(administrator.getId(), administrator);
+    }
+    CedarGroupUsers ret = new CedarGroupUsers();
+    for (String userURL : users.keySet()) {
+      ret.addUser(new CedarGroupUser(users.get(userURL).buildExtract(),
+              memberIds.contains(userURL),
+              administratorsIds.contains(userURL))
+      );
+    }
+    return ret;
+  }
+
 }
