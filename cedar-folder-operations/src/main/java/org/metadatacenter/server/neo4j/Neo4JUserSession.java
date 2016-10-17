@@ -137,6 +137,9 @@ public class Neo4JUserSession {
     return neo4JProxy.updateResourceById(resourceURL, updateFields, getUserId());
   }
 
+  public boolean deleteFolderById(String folderURL) {
+    return neo4JProxy.deleteFolderById(folderURL);
+  }
 
   public boolean deleteResourceById(String resourceURL, CedarNodeType nodeType) {
     return neo4JProxy.deleteResourceById(resourceURL);
