@@ -1123,4 +1123,17 @@ public class Neo4JProxy {
     return buildGroup(updatedNode);
   }
 
+  boolean deleteGroupById(String groupId) {
+    String cypher = CypherQueryBuilder.deleteGroupById();
+    Map<String, Object> params = CypherParamBuilder.deleteGroupById(groupId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while deleting group:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
 }

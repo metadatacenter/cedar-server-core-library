@@ -151,6 +151,10 @@ public class CypherParamBuilder {
     return getNodeByIdentity(resourceURL);
   }
 
+  public static Map<String, Object> deleteGroupById(String groupURL) {
+    return getNodeByIdentity(groupURL);
+  }
+
   public static Map<String, Object> updateFolderById(String folderURL, Map<String, String> updateFields, String
       updatedBy) {
     return updateNodeById(folderURL, updateFields, updatedBy);

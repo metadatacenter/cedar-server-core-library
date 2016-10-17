@@ -817,4 +817,11 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String deleteGroupById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{id} })");
+    sb.append("DETACH DELETE group");
+    return sb.toString();
+  }
+
 }
