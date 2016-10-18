@@ -8,6 +8,9 @@ public class CedarGroupUser {
   private boolean administrator;
   private boolean member;
 
+  public CedarGroupUser() {
+  }
+
   public CedarGroupUser(CedarUserExtract user, boolean administrator, boolean member) {
     this.user = user;
     this.administrator = administrator;

@@ -6,6 +6,9 @@ public class CedarGroupUserRequest {
   private boolean administrator;
   private boolean member;
 
+  public CedarGroupUserRequest() {
+  }
+
   public CedarGroupUserRequest(NodePermissionUser user, boolean administrator, boolean member) {
     this.user = user;
     this.administrator = administrator;
