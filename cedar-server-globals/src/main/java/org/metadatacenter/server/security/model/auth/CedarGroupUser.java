@@ -18,6 +18,10 @@ public class CedarGroupUser {
     return user;
   }
 
+  public void setUser(CedarUserExtract user) {
+    this.user = user;
+  }
+
   public boolean isAdministrator() {
     return administrator;
   }

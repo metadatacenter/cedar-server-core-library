@@ -1137,7 +1137,7 @@ public class Neo4JProxy {
 
   List<CedarFSUser> findGroupMembers(String groupURL) {
     List<CedarFSUser> memberList = new ArrayList<>();
-    String cypher = CypherQueryBuilder.getGroupUsersWithRelation(RelationLabel.ADMINISTERS);
+    String cypher = CypherQueryBuilder.getGroupUsersWithRelation(RelationLabel.MEMBEROF);
     Map<String, Object> params = CypherParamBuilder.matchGroupId(groupURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

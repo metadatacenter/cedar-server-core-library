@@ -621,8 +621,8 @@ public class Neo4JUserSession {
     CedarGroupUsers ret = new CedarGroupUsers();
     for (String userURL : users.keySet()) {
       ret.addUser(new CedarGroupUser(users.get(userURL).buildExtract(),
-              memberIds.contains(userURL),
-              administratorsIds.contains(userURL))
+              administratorsIds.contains(userURL),
+              memberIds.contains(userURL))
       );
     }
     return ret;
