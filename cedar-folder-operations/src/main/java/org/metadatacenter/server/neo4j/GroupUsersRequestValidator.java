@@ -1,24 +1,20 @@
 package org.metadatacenter.server.neo4j;
 
-import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.model.folderserver.CedarFSGroup;
 import org.metadatacenter.server.result.BackendCallErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GroupUsersRequestValidator {
 
   private final CedarGroupUsersRequest request;
-  private Neo4JUserSession neo4JUserSession;
-  private BackendCallResult callResult;
-  private CedarGroupUsers users;
-  private String groupURL;
-
-  private CedarFSGroup group;
+  private final Neo4JUserSession neo4JUserSession;
+  private final BackendCallResult callResult;
+  private final CedarGroupUsers users;
+  private final String groupURL;
 
   public GroupUsersRequestValidator(Neo4JUserSession neo4JUserSession, String groupURL, CedarGroupUsersRequest
       request) {
@@ -36,7 +32,7 @@ public class GroupUsersRequestValidator {
   }
 
   private void validateNodeExistence() {
-    group = neo4JUserSession.findGroupById(groupURL);
+    CedarFSGroup group = neo4JUserSession.findGroupById(groupURL);
     if (group == null) {
       callResult.addError(BackendCallErrorType.NOT_FOUND)
           .subType("groupNotFound")

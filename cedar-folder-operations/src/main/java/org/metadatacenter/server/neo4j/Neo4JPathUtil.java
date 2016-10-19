@@ -5,7 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Neo4JPathUtil implements IPathUtil {
+@SuppressWarnings("IndexOfReplaceableByContains")
+class Neo4JPathUtil implements PathUtil {
 
   private final static String SEPARATOR = "/";
   private final static String FOLDER_NAME_SANITIZER_REGEX = "[^a-zA-Z0-9\\.\\-_' ]";
@@ -48,7 +49,7 @@ class Neo4JPathUtil implements IPathUtil {
           path = rootPath + path;
         }
         String ds = SEPARATOR + SEPARATOR;
-        while (path.indexOf(ds) != -1) {
+        while (path.contains(ds)) {
           path = path.replace(ds, SEPARATOR);
         }
       }

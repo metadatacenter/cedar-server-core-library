@@ -17,7 +17,7 @@ import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.constant.KeycloakConstants;
 import org.metadatacenter.server.security.exception.*;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.IUserInfo;
 import org.metadatacenter.server.security.model.KeycloakUserInfo;
 import org.metadatacenter.server.security.model.auth.AuthorisedUser;
@@ -37,7 +37,7 @@ public class KeycloakUtils {
 
   private final static String SECRET_KEY = "secret";
 
-  private static Logger log = LoggerFactory.getLogger(KeycloakUtils.class);
+  private static final Logger log = LoggerFactory.getLogger(KeycloakUtils.class);
 
   public static <T> T parseToken(String encoded, Class<T> clazz) throws IOException {
     if (encoded == null) {
@@ -59,24 +59,26 @@ public class KeycloakUtils {
   }
 
   public static String getRefreshTokenPostData(String keycloakRefreshToken) {
-    List<NameValuePair> formparams = new ArrayList<>();
-    formparams.add(new BasicNameValuePair("grant_type", "refresh_token"));
-    formparams.add(new BasicNameValuePair("refresh_token", keycloakRefreshToken));
+    List<NameValuePair> formParams = new ArrayList<>();
+    formParams.add(new BasicNameValuePair("grant_type", "refresh_token"));
+    formParams.add(new BasicNameValuePair("refresh_token", keycloakRefreshToken));
     UrlEncodedFormEntity form = null;
     try {
-      form = new UrlEncodedFormEntity(formparams, "UTF-8");
+      form = new UrlEncodedFormEntity(formParams, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
       log.error("Error while encoding form content", e);
     }
 
     String content = null;
-    try {
-      content = IOUtils.toString(form.getContent(), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      e.printStackTrace();
-      log.error("Error while converting content", e);
-      e.printStackTrace();
+    if (form != null) {
+      try {
+        content = IOUtils.toString(form.getContent(), StandardCharsets.UTF_8);
+      } catch (IOException e) {
+        e.printStackTrace();
+        log.error("Error while converting content", e);
+        e.printStackTrace();
+      }
     }
     return content;
   }
@@ -112,8 +114,6 @@ public class KeycloakUtils {
       String responseAsString = EntityUtils.toString(response.getEntity());
       if (statusCode == HttpConstants.OK) {
         userInfo = JsonMapper.MAPPER.readValue(responseAsString, KeycloakUserInfo.class);
-      } else {
-        //System.out.println("Reponse:" + responseAsString);
       }
 
     } catch (IOException ex) {
@@ -149,7 +149,7 @@ public class KeycloakUtils {
   }
 
   private static AccessToken checkIfTokenIsStillActiveByUserInfo(String token) throws CedarAccessException {
-    AccessToken accessToken = null;
+    AccessToken accessToken;
     if (token == null) {
       throw new AccessTokenMissingException();
     }
@@ -178,7 +178,7 @@ public class KeycloakUtils {
     return au;
   }
 
-  public static CedarUser getUserFromAuthRequest(IAuthRequest authRequest, IUserService userService) throws
+  public static CedarUser getUserFromAuthRequest(AuthRequest authRequest, IUserService userService) throws
       CedarAccessException {
     String token = authRequest.getAuthString();
     AccessToken accessToken = checkIfTokenIsStillActiveByUserInfo(token);
@@ -186,9 +186,7 @@ public class KeycloakUtils {
     CedarUser user = null;
     try {
       user = userService.findUser(userId);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ProcessingException e) {
+    } catch (IOException | ProcessingException e) {
       e.printStackTrace();
     }
     return user;

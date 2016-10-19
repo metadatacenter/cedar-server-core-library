@@ -21,14 +21,14 @@ import java.util.*;
 
 public class Neo4JProxy {
 
-  private Neo4jConfig config;
-  private String genericIdPrefix;
-  private String folderIdPrefix;
-  private String userIdPrefix;
-  private String groupIdPrefix;
-  private IPathUtil pathUtil;
+  private final Neo4jConfig config;
+  private final String genericIdPrefix;
+  private final String folderIdPrefix;
+  private final String userIdPrefix;
+  private final String groupIdPrefix;
+  private final PathUtil pathUtil;
 
-  private static Logger log = LoggerFactory.getLogger(Neo4JProxy.class);
+  private static final Logger log = LoggerFactory.getLogger(Neo4JProxy.class);
 
   public Neo4JProxy(Neo4jConfig config, String genericIdPrefix, String userIdPrefix) {
     this.config = config;
@@ -39,7 +39,7 @@ public class Neo4JProxy {
     this.pathUtil = new Neo4JPathUtil(config);
   }
 
-  IPathUtil getPathUtil() {
+  PathUtil getPathUtil() {
     return pathUtil;
   }
 
@@ -56,7 +56,7 @@ public class Neo4JProxy {
   }
 
   private JsonNode executeCypherQueryAndCommit(CypherQuery query) {
-    return executeCypherQueriesAndCommit(Arrays.asList(query));
+    return executeCypherQueriesAndCommit(Collections.singletonList(query));
   }
 
   private JsonNode executeCypherQueriesAndCommit(List<CypherQuery> queries) {
@@ -85,11 +85,12 @@ public class Neo4JProxy {
     Map<String, Object> body = new HashMap<>();
     body.put("statements", statements);
 
-    String requestBody = null;
+    String requestBody;
     try {
       requestBody = JsonMapper.MAPPER.writeValueAsString(body);
     } catch (JsonProcessingException e) {
       log.error("Error serializing cypher queries", e);
+      return null;
     }
 
     try {
@@ -184,8 +185,7 @@ public class Neo4JProxy {
   CedarFSFolder findFolderByPath(String path) {
     List<CedarFSFolder> folderPath = findFolderPathByPath(path);
     if (folderPath != null && folderPath.size() > 0) {
-      CedarFSFolder folder = folderPath.get(folderPath.size() - 1);
-      return folder;
+      return folderPath.get(folderPath.size() - 1);
     }
     return null;
   }
@@ -910,7 +910,7 @@ public class Neo4JProxy {
   }
 
   public boolean userHasReadAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilder.userCanReadNode(folderURL, true);
+    String cypher = CypherQueryBuilder.userCanReadNode(CypherQueryBuilder.FolderOrResource.FOLDER);
     Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -920,7 +920,7 @@ public class Neo4JProxy {
   }
 
   public boolean userHasWriteAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilder.userCanWriteNode(folderURL, true);
+    String cypher = CypherQueryBuilder.userCanWriteNode(CypherQueryBuilder.FolderOrResource.FOLDER);
     Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -930,7 +930,7 @@ public class Neo4JProxy {
   }
 
   public boolean userHasReadAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilder.userCanReadNode(resourceURL, false);
+    String cypher = CypherQueryBuilder.userCanReadNode(CypherQueryBuilder.FolderOrResource.RESOURCE);
     Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -940,7 +940,7 @@ public class Neo4JProxy {
   }
 
   public boolean userHasWriteAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilder.userCanWriteNode(resourceURL, false);
+    String cypher = CypherQueryBuilder.userCanWriteNode(CypherQueryBuilder.FolderOrResource.RESOURCE);
     Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

@@ -1,8 +1,8 @@
 package org.metadatacenter.server.service.mongodb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.mongodb.TemplateDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateElementService;
@@ -18,14 +18,10 @@ public class TemplateServiceMongoDB extends GenericTemplateServiceMongoDB<String
   @NonNull
   private final TemplateDaoMongoDB templateDao;
 
-  @NonNull
-  private final TemplateElementService templateElementService;
-
 
   public TemplateServiceMongoDB(@NonNull String db, @NonNull String templatesCollection, TemplateElementService
       templateElementService) {
     this.templateDao = new TemplateDaoMongoDB(db, templatesCollection);
-    this.templateElementService = templateElementService;
   }
 
   @Override

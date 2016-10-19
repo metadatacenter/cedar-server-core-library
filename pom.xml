@@ -12,8 +12,7 @@
   <artifactId>cedar-server-core-library</artifactId>
   <version>0.8.3-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>CEDAR Server Utils</name>
-  <description>CEDAR server utils</description>
+  <name>CEDAR Server Core Library</name>
 
   <scm>
     <connection>scm:git:git@github.com:metadatacenter/cedar-server-core-library.git</connection>

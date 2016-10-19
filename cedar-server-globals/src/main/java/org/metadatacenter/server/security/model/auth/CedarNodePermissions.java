@@ -8,8 +8,8 @@ import java.util.List;
 public class CedarNodePermissions {
 
   private CedarUserExtract owner;
-  private List<CedarNodeUserPermission> userPermissions;
-  private List<CedarNodeGroupPermission> groupPermissions;
+  private final List<CedarNodeUserPermission> userPermissions;
+  private final List<CedarNodeGroupPermission> groupPermissions;
 
 
   public CedarNodePermissions() {

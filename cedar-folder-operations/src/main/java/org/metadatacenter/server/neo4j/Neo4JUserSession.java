@@ -15,10 +15,10 @@ import org.metadatacenter.util.json.JsonMapper;
 import java.util.*;
 
 public class Neo4JUserSession {
-  private CedarUser cu;
-  private Neo4JProxy neo4JProxy;
-  private String userIdPrefix;
-  private String groupIdPrefix;
+  private final CedarUser cu;
+  private final Neo4JProxy neo4JProxy;
+  private final String userIdPrefix;
+  private final String groupIdPrefix;
 
   public Neo4JUserSession(Neo4JProxy neo4JProxy, CedarUser cu) {
     this.neo4JProxy = neo4JProxy;
@@ -30,7 +30,7 @@ public class Neo4JUserSession {
   public static Neo4JUserSession get(Neo4JProxy neo4JProxy, UserService userService, CedarUser cu, boolean createHome) {
     Neo4JUserSession neo4JUserSession = new Neo4JUserSession(neo4JProxy, cu);
     if (createHome) {
-      CedarFSUser createdUser = neo4JUserSession.ensureUserExists();
+      neo4JUserSession.ensureUserExists();
       CedarFSFolder createdFolder = neo4JUserSession.ensureUserHomeExists();
       if (createdFolder != null) {
         ObjectNode homeModification = JsonMapper.MAPPER.createObjectNode();
@@ -187,7 +187,7 @@ public class Neo4JUserSession {
 
   public void ensureGlobalObjectsExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
-    IPathUtil pathUtil = neo4JProxy.getPathUtil();
+    PathUtil pathUtil = neo4JProxy.getPathUtil();
 
     boolean addAdminToEverybody = false;
 
@@ -238,7 +238,7 @@ public class Neo4JUserSession {
 
   public CedarFSFolder ensureUserHomeExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
-    IPathUtil pathUtil = neo4JProxy.getPathUtil();
+    PathUtil pathUtil = neo4JProxy.getPathUtil();
     String userHomePath = config.getUsersFolderPath() + pathUtil.getSeparator() + cu.getId();
     CedarFSFolder currentUserHomeFolder = findFolderByPath(userHomePath);
     if (currentUserHomeFolder == null) {
@@ -369,7 +369,7 @@ public class Neo4JUserSession {
 
   public String getHomeFolderPath() {
     Neo4jConfig config = this.neo4JProxy.getConfig();
-    IPathUtil pathUtil = this.neo4JProxy.getPathUtil();
+    PathUtil pathUtil = this.neo4JProxy.getPathUtil();
     return config.getUsersFolderPath() + pathUtil.getSeparator() + this.cu.getId();
   }
 
@@ -442,7 +442,7 @@ public class Neo4JUserSession {
       String oldOwnerId = currentPermissions.getOwner().getId();
       String newOwnerId = newPermissions.getOwner().getId();
       if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
-        Neo4JUserSessionGroupOperations.updateNodeOwner(neo4JProxy,nodeURL, newOwnerId, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.updateNodeOwner(neo4JProxy, nodeURL, newOwnerId, nodeIsFolder);
       }
 
       Set<NodePermissionUserPermissionPair> oldUserPermissions = new HashSet<>();
@@ -458,14 +458,15 @@ public class Neo4JUserSession {
       toRemoveUserPermissions.addAll(oldUserPermissions);
       toRemoveUserPermissions.removeAll(newUserPermissions);
       if (!toRemoveUserPermissions.isEmpty()) {
-        Neo4JUserSessionGroupOperations.removeUserPermissions(neo4JProxy,nodeURL, toRemoveUserPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.removeUserPermissions(neo4JProxy, nodeURL, toRemoveUserPermissions,
+            nodeIsFolder);
       }
 
       Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
       toAddUserPermissions.addAll(newUserPermissions);
       toAddUserPermissions.removeAll(oldUserPermissions);
       if (!toAddUserPermissions.isEmpty()) {
-        Neo4JUserSessionGroupOperations.addUserPermissions(neo4JProxy,nodeURL, toAddUserPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.addUserPermissions(neo4JProxy, nodeURL, toAddUserPermissions, nodeIsFolder);
       }
 
       Set<NodePermissionGroupPermissionPair> oldGroupPermissions = new HashSet<>();
@@ -481,14 +482,15 @@ public class Neo4JUserSession {
       toRemoveGroupPermissions.addAll(oldGroupPermissions);
       toRemoveGroupPermissions.removeAll(newGroupPermissions);
       if (!toRemoveGroupPermissions.isEmpty()) {
-        Neo4JUserSessionGroupOperations.removeGroupPermissions(neo4JProxy,nodeURL, toRemoveGroupPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.removeGroupPermissions(neo4JProxy, nodeURL, toRemoveGroupPermissions,
+            nodeIsFolder);
       }
 
       Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
       toAddGroupPermissions.addAll(newGroupPermissions);
       toAddGroupPermissions.removeAll(oldGroupPermissions);
       if (!toAddGroupPermissions.isEmpty()) {
-        Neo4JUserSessionGroupOperations.addGroupPermissions(neo4JProxy,nodeURL, toAddGroupPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.addGroupPermissions(neo4JProxy, nodeURL, toAddGroupPermissions, nodeIsFolder);
       }
       return new BackendCallResult();
     }

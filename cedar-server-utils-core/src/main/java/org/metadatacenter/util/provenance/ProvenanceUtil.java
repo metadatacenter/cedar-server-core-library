@@ -8,7 +8,7 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.exception.CedarAccessException;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.lang.String;import java.time.Instant;
@@ -52,7 +52,7 @@ public class ProvenanceUtil {
     return pi;
   }
 
-  public static ProvenanceInfo build(CedarConfig cedarConfig, IAuthRequest authRequest) {
+  public static ProvenanceInfo build(CedarConfig cedarConfig, AuthRequest authRequest) {
     String id = null;
     try {
       CedarUser accountInfo = Authorization.getUser(authRequest);

@@ -1,6 +1,6 @@
 package org.metadatacenter.server.security.model.user;
 
-public interface ICedarUserRepresentation {
+public interface CedarUserRepresentation {
 
   String getId();
 

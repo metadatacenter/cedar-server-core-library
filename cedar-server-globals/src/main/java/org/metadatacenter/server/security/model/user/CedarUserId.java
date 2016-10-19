@@ -2,7 +2,7 @@ package org.metadatacenter.server.security.model.user;
 
 public class CedarUserId {
 
-  private String id;
+  private final String id;
 
   public CedarUserId(String id) {
     this.id = id;

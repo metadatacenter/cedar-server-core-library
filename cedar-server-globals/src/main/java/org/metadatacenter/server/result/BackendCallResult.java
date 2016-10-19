@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BackendCallResult {
 
-  private List<BackendCallError> errors;
+  private final List<BackendCallError> errors;
 
   public BackendCallResult() {
     this.errors = new ArrayList<>();

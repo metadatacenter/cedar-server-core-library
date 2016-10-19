@@ -9,7 +9,7 @@ import java.util.*;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
-public class CypherParamBuilder {
+class CypherParamBuilder {
 
   private CypherParamBuilder() {
   }
@@ -66,12 +66,12 @@ public class CypherParamBuilder {
     params.put(USER_ID, createdBy);
     params.put(NODE_TYPE, nodeType.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }
 
-  public static Map<String, Object> getFolderLookupByDepthParameters(IPathUtil pathUtil, String path) {
+  public static Map<String, Object> getFolderLookupByDepthParameters(PathUtil pathUtil, String path) {
     String normalizedPath = pathUtil.normalizePath(path);
     String[] parts = StringUtils.split(normalizedPath, pathUtil.getSeparator());
     Map<String, Object> folderNames = new HashMap<>();
@@ -179,11 +179,11 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> getFolderLookupByIDParameters(IPathUtil pathUtil, String id) {
+  public static Map<String, Object> getFolderLookupByIDParameters(PathUtil pathUtil, String id) {
     return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
-  public static Map<String, Object> getNodeLookupByIDParameters(IPathUtil pathUtil, String id) {
+  public static Map<String, Object> getNodeLookupByIDParameters(PathUtil pathUtil, String id) {
     return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
@@ -209,7 +209,7 @@ public class CypherParamBuilder {
     params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.USER.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }
@@ -233,7 +233,7 @@ public class CypherParamBuilder {
     params.put(NODE_TYPE, CedarNodeType.GROUP.getValue());
     params.put(USER_ID, ownerURL);
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }

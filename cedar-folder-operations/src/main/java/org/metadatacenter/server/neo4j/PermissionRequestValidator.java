@@ -12,14 +12,12 @@ import java.util.Set;
 public class PermissionRequestValidator {
 
   private final CedarNodePermissionsRequest request;
-  private Neo4JUserSession neo4JUserSession;
-  private BackendCallResult callResult;
-  private CedarNodePermissions permissions;
-  private String nodeURL;
-  private boolean nodeIsFolder;
+  private final Neo4JUserSession neo4JUserSession;
+  private final BackendCallResult callResult;
+  private final CedarNodePermissions permissions;
+  private final String nodeURL;
+  private final boolean nodeIsFolder;
 
-  private CedarFSFolder folder;
-  private CedarFSResource resource;
   private CedarFSNode node;
 
   public PermissionRequestValidator(Neo4JUserSession neo4JUserSession, String nodeURL, CedarNodePermissionsRequest
@@ -61,7 +59,7 @@ public class PermissionRequestValidator {
 
   private void validateNodeExistence() {
     if (nodeIsFolder) {
-      folder = neo4JUserSession.findFolderById(nodeURL);
+      CedarFSFolder folder = neo4JUserSession.findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
@@ -70,7 +68,7 @@ public class PermissionRequestValidator {
             .param("folderId", nodeURL);
       }
     } else {
-      resource = neo4JUserSession.findResourceById(nodeURL);
+      CedarFSResource resource = neo4JUserSession.findResourceById(nodeURL);
       node = resource;
       if (resource == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)

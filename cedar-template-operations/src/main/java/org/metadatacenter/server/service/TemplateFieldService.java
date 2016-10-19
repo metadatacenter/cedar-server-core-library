@@ -10,25 +10,22 @@ import java.util.List;
 
 public interface TemplateFieldService<K, T> {
 
-  @NonNull
-  public T createTemplateField(@NonNull T templateField) throws IOException;
+  @NonNull T createTemplateField(@NonNull T templateField) throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldName, FieldNameInEx
+  @NonNull List<T> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldName, FieldNameInEx
       includeExclude) throws IOException;
 
-  public T findTemplateField(@NonNull String templateFieldId) throws IOException, ProcessingException;
+  T findTemplateField(@NonNull String templateFieldId) throws IOException, ProcessingException;
 
-  @NonNull
-  public T updateTemplateField(@NonNull K templateFieldId, @NonNull T modifications) throws
+  @NonNull T updateTemplateField(@NonNull K templateFieldId, @NonNull T modifications) throws
       InstanceNotFoundException, IOException;
 
-  public void deleteTemplateField(@NonNull K templateFieldId) throws InstanceNotFoundException, IOException;
+  void deleteTemplateField(@NonNull K templateFieldId) throws InstanceNotFoundException, IOException;
 
-  public void deleteAllTemplateFields();
+  void deleteAllTemplateFields();
 
-  public long count();
+  long count();
 
-  public void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws
+  void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws
       IOException;
 }

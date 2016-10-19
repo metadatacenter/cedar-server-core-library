@@ -1,6 +1,6 @@
 package org.metadatacenter.server.security.model;
 
-public interface IAuthRequest {
+public interface AuthRequest {
 
   String getAuthString();
 

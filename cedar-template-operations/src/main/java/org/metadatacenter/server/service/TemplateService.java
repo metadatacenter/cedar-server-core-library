@@ -9,31 +9,25 @@ import java.util.List;
 
 public interface TemplateService<K, T> {
 
-  @NonNull
-  public T createTemplate(@NonNull T template) throws IOException;
+  @NonNull T createTemplate(@NonNull T template) throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplates() throws IOException;
+  @NonNull List<T> findAllTemplates() throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplates(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException;
+  @NonNull List<T> findAllTemplates(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplates(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
+  @NonNull List<T> findAllTemplates(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
       includeExclude) throws IOException;
 
-  public T findTemplate(@NonNull K templateId) throws IOException, ProcessingException;
+  T findTemplate(@NonNull K templateId) throws IOException, ProcessingException;
 
-  @NonNull
-  public T updateTemplate(@NonNull K templateId, @NonNull T modifications) throws InstanceNotFoundException,
+  @NonNull T updateTemplate(@NonNull K templateId, @NonNull T modifications) throws InstanceNotFoundException,
       IOException;
 
-  public void deleteTemplate(@NonNull K templateId) throws InstanceNotFoundException, IOException;
+  void deleteTemplate(@NonNull K templateId) throws InstanceNotFoundException, IOException;
 
-  @NonNull
-  public boolean existsTemplate(@NonNull K templateId) throws IOException;
+  @NonNull boolean existsTemplate(@NonNull K templateId) throws IOException;
 
-  public void deleteAllTemplates();
+  void deleteAllTemplates();
 
-  public long count();
+  long count();
 }

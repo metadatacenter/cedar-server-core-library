@@ -9,17 +9,16 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.conversions.Bson;
 import org.metadatacenter.server.service.DiagnosticsService;
-import org.metadatacenter.util.MongoFactory;
+import org.metadatacenter.util.mongo.MongoFactory;
 
 import java.util.Date;
 
 public class DiagnosticsServiceMongoDB implements DiagnosticsService<JsonNode> {
 
-  private MongoClient mongoClient = null;
   private MongoDatabase database = null;
 
   public DiagnosticsServiceMongoDB(@NonNull String dbName) {
-    mongoClient = MongoFactory.getClient();
+    MongoClient mongoClient = MongoFactory.getClient();
     database = mongoClient.getDatabase(dbName);
   }
 

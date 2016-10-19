@@ -59,7 +59,7 @@ public class CedarConfig extends AbstractModule {
   @InjectConfig("test")
   private TestConfig testConfig;
 
-  private static CedarConfig instance;
+  private static final CedarConfig instance;
 
   static {
     instance = buildInstance();
@@ -76,8 +76,7 @@ public class CedarConfig extends AbstractModule {
 
   private static CedarConfig buildInstance() {
     Injector injector = Guice.createInjector(new CedarConfig());
-    CedarConfig cedarConfig = injector.getInstance(CedarConfig.class);
-    return cedarConfig;
+    return injector.getInstance(CedarConfig.class);
   }
 
   public static CedarConfig getInstance() {

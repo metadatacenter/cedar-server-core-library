@@ -1,7 +1,7 @@
 package org.metadatacenter.util;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
+import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
 
 public class CedarUserNameUtil {
 
@@ -9,7 +9,7 @@ public class CedarUserNameUtil {
 
   }
 
-  public static String getDisplayName(ICedarUserRepresentation ur) {
+  public static String getDisplayName(CedarUserRepresentation ur) {
     if (ur != null) {
       CedarConfig cedarConfig = CedarConfig.getInstance();
       String screenName = cedarConfig.getBlueprintUserProfile().getScreenNameTemplate();
@@ -23,7 +23,7 @@ public class CedarUserNameUtil {
     }
   }
 
-  public static String getHomeFolderDescription(ICedarUserRepresentation ur) {
+  public static String getHomeFolderDescription(CedarUserRepresentation ur) {
     CedarConfig cedarConfig = CedarConfig.getInstance();
     String homeDescription = cedarConfig.getBlueprintUserProfile().getHomeFolderDescriptionTemplate();
     homeDescription = homeDescription.replace("{firstName}", ur.getFirstName());

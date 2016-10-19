@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CedarGroupUsers {
 
-  private List<CedarGroupUser> users;
+  private final List<CedarGroupUser> users;
 
 
   public CedarGroupUsers() {

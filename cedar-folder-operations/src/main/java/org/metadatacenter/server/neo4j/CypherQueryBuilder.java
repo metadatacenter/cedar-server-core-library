@@ -7,7 +7,11 @@ import java.util.Map;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
-public class CypherQueryBuilder {
+class CypherQueryBuilder {
+
+  public enum FolderOrResource {
+    FOLDER, RESOURCE
+  }
 
   private static String groupBySpecialValue;
 
@@ -36,7 +40,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
+  private static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
     return createNode(folderAlias, label, extraProperties, true);
   }
@@ -202,7 +206,6 @@ public class CypherQueryBuilder {
       sb.append(getOrderByExpression(s));
       prefix = ", ";
     }
-    ;
     return sb.toString();
   }
 
@@ -668,18 +671,18 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String userCanReadNode(String nodeURL, boolean nodeIsFolder) {
-    return userHasPermissionOnNode(nodeURL, RelationLabel.CANREAD, nodeIsFolder);
+  public static String userCanReadNode(FolderOrResource folderOrResource) {
+    return userHasPermissionOnNode(RelationLabel.CANREAD, folderOrResource);
   }
 
-  public static String userCanWriteNode(String nodeURL, boolean nodeIsFolder) {
-    return userHasPermissionOnNode(nodeURL, RelationLabel.CANWRITE, nodeIsFolder);
+  public static String userCanWriteNode(FolderOrResource folderOrResource) {
+    return userHasPermissionOnNode(RelationLabel.CANWRITE, folderOrResource);
   }
 
-  private static String userHasPermissionOnNode(String nodeURL, RelationLabel relationLabel, boolean nodeIsFolder) {
+  private static String userHasPermissionOnNode(RelationLabel relationLabel, FolderOrResource folderOrResource) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
     } else {
       sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");

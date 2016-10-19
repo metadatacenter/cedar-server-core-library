@@ -102,7 +102,6 @@ public class CedarFSGroup extends AbstractCedarSuperNode {
   }
 
   public CedarGroupExtract buildExtract() {
-    CedarGroupExtract r = new CedarGroupExtract(getId(), getDisplayName());
-    return r;
+    return new CedarGroupExtract(getId(), getDisplayName());
   }
 }

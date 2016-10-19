@@ -4,9 +4,9 @@ import org.keycloak.adapters.KeycloakDeployment;
 
 public class KeycloakDeploymentProvider {
 
-  private static KeycloakDeploymentProvider instance = new KeycloakDeploymentProvider();
+  private static final KeycloakDeploymentProvider instance = new KeycloakDeploymentProvider();
 
-  private KeycloakDeployment keycloakDeployment;
+  private final KeycloakDeployment keycloakDeployment;
 
   private KeycloakDeploymentProvider() {
     keycloakDeployment = KeycloakUtils.buildDeployment();

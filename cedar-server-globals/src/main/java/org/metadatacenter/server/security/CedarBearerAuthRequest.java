@@ -1,10 +1,10 @@
 package org.metadatacenter.server.security;
 
 import org.metadatacenter.constant.HttpConstants;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
 
-public class CedarBearerAuthRequest implements IAuthRequest {
+public class CedarBearerAuthRequest implements AuthRequest {
 
   private String authHeader;
   private String tokenString;

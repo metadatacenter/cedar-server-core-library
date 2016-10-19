@@ -13,7 +13,7 @@ public class CedarIndexResource {
   private String templateId;
 
   // Used by Jackson
-  public CedarIndexResource() {};
+  public CedarIndexResource() {}
 
   public CedarIndexResource(CedarRSNode info, List<String> fieldName, List<String> fieldValue, String templateId) {
     this.info = info;

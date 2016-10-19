@@ -1,4 +1,4 @@
-package org.metadatacenter.util;
+package org.metadatacenter.util.mongo;
 
 public enum FixMongoDirection {
   READ_FROM_MONGO(1), WRITE_TO_MONGO(2);

@@ -5,7 +5,7 @@ import org.metadatacenter.model.CedarNodeType;
 
 public class LinkedDataUtil {
 
-  private LinkedDataConfig ldConfig;
+  private final LinkedDataConfig ldConfig;
 
   public LinkedDataUtil(LinkedDataConfig ldConfig) {
     this.ldConfig = ldConfig;

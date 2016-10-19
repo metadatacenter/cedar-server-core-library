@@ -6,17 +6,15 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.GenericUserDao;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import org.metadatacenter.util.FixMongoDirection;
-import org.metadatacenter.util.MongoFactory;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
+import org.metadatacenter.util.mongo.FixMongoDirection;
+import org.metadatacenter.util.mongo.MongoFactory;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
@@ -100,7 +98,8 @@ public class UserDaoMongoDB implements GenericUserDao {
     Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
     boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
     if (modificationsOk) {
-      UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id), new Document("$set", modificationsMap));
+      UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id), new Document("$set",
+          modificationsMap));
       if (updateResult.getMatchedCount() == 1) {
         return find(id);
       } else {

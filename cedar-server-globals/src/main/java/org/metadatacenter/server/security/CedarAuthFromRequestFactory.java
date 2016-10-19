@@ -1,12 +1,12 @@
 package org.metadatacenter.server.security;
 
 import org.metadatacenter.constant.HttpConstants;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
 
 public abstract class CedarAuthFromRequestFactory {
 
-  public static IAuthRequest fromRequest(Http.Request request) {
+  public static AuthRequest fromRequest(Http.Request request) {
     if (request != null) {
       String auth = request.getHeader(Http.HeaderNames.AUTHORIZATION);
       if (auth != null) {

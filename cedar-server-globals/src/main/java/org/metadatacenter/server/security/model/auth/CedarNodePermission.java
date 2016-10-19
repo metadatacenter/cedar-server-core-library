@@ -1,7 +1,5 @@
 package org.metadatacenter.server.security.model.auth;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public abstract class CedarNodePermission {
 
   protected NodePermission permission;

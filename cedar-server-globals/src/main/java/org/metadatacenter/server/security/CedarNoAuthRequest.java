@@ -1,8 +1,8 @@
 package org.metadatacenter.server.security;
 
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 
-public class CedarNoAuthRequest implements IAuthRequest {
+public class CedarNoAuthRequest implements AuthRequest {
 
   CedarNoAuthRequest() {
   }

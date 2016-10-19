@@ -12,7 +12,7 @@ import java.util.Set;
 public final class Neo4JUserSessionGroupOperations {
 
   enum Filter {
-    ADMINISTRATOR, MEMBER;
+    ADMINISTRATOR, MEMBER
   }
 
   private Neo4JUserSessionGroupOperations() {

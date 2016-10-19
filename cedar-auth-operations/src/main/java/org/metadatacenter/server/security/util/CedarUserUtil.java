@@ -5,7 +5,6 @@ import org.metadatacenter.config.BlueprintUserProfile;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.security.CedarUserRolePermissionUtil;
 import org.metadatacenter.server.security.model.user.*;
-import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,11 +15,11 @@ public class CedarUserUtil {
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(ICedarUserRepresentation ur) {
+  public static CedarUser createUserFromBlueprint(CedarUserRepresentation ur) {
     return createUserFromBlueprint(ur, null);
   }
 
-  public static CedarUser createUserFromBlueprint(ICedarUserRepresentation ur, List<CedarUserRole> roles) {
+  public static CedarUser createUserFromBlueprint(CedarUserRepresentation ur, List<CedarUserRole> roles) {
     CedarConfig cedarConfig = CedarConfig.getInstance();
     BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
     BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUIPreferences();

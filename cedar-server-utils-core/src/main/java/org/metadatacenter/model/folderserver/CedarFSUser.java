@@ -6,11 +6,10 @@ import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.util.CedarUserNameUtil;
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
+import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSUser extends AbstractCedarSuperNode implements ICedarUserRepresentation {
+public class CedarFSUser extends AbstractCedarSuperNode implements CedarUserRepresentation {
 
   private String firstName;
   private String lastName;

@@ -22,8 +22,6 @@ public class PropertiesManager {
     try {
       // TODO LOG ("------------------ User dir: " + System.getProperty("user.dir"));
       properties.load(new FileInputStream(configFile));
-    } catch (FileNotFoundException e) {
-      // TODO LOG
     } catch (IOException e) {
       // TODO LOG
     }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarUser implements ICedarUserRepresentation {
+public class CedarUser implements CedarUserRepresentation {
 
   public static final String UI_POPULATE_A_TEMPLATE = "populateATemplate";
   public static final String UI_FOLDER_VIEW = "folderView";

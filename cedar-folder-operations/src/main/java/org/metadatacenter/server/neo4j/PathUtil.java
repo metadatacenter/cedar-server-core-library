@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
-public interface IPathUtil {
+public interface PathUtil {
   String getSeparator();
 
   String getRootPath();
