@@ -1173,4 +1173,49 @@ public class Neo4JProxy {
     return memberList;
   }
 
+  public void addUserGroupRelation(String userURL, String groupURL, RelationLabel relation) {
+    CedarFSGroup group = findGroupById(groupURL);
+    if (group != null) {
+      CedarFSUser user = findUserById(userURL);
+      if (user != null) {
+        addRelation(user, group, relation);
+      }
+    }
+  }
+
+  public void removeUserGroupRelation(String userURL, String groupURL, RelationLabel relation) {
+    CedarFSGroup group = findGroupById(groupURL);
+    if (group != null) {
+      CedarFSUser user = findUserById(userURL);
+      if (user != null) {
+        removeRelation(user, group, relation);
+      }
+    }
+  }
+
+  boolean addRelation(CedarFSUser user, CedarFSGroup group, RelationLabel relation) {
+    String cypher = CypherQueryBuilder.addRelation(NodeLabel.USER, NodeLabel.GROUP, relation);
+    Map<String, Object> params = CypherParamBuilder.matchFromNodeToNode(user.getId(), group.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while adding relation:", error);
+    }
+    return errorsNode.size() == 0;
+  }
+
+  boolean removeRelation(CedarFSUser user, CedarFSGroup group, RelationLabel relation) {
+    String cypher = CypherQueryBuilder.removeRelation(NodeLabel.USER, NodeLabel.GROUP, relation);
+    Map<String, Object> params = CypherParamBuilder.matchFromNodeToNode(user.getId(), group.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.warn("Error while removing relation:", error);
+    }
+    return errorsNode.size() == 0;
+  }
 }

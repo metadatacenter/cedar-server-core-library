@@ -48,7 +48,7 @@ public class Neo4JUserSession {
     return neo4JUserSession;
   }
 
-  String getUserId() {
+  public String getUserId() {
     // let the NPE, something is really wrong if that happens
     return userIdPrefix + cu.getId();
   }
@@ -442,7 +442,7 @@ public class Neo4JUserSession {
       String oldOwnerId = currentPermissions.getOwner().getId();
       String newOwnerId = newPermissions.getOwner().getId();
       if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
-        updateNodeOwner(nodeURL, newOwnerId, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.updateNodeOwner(neo4JProxy,nodeURL, newOwnerId, nodeIsFolder);
       }
 
       Set<NodePermissionUserPermissionPair> oldUserPermissions = new HashSet<>();
@@ -458,14 +458,14 @@ public class Neo4JUserSession {
       toRemoveUserPermissions.addAll(oldUserPermissions);
       toRemoveUserPermissions.removeAll(newUserPermissions);
       if (!toRemoveUserPermissions.isEmpty()) {
-        removeUserPermissions(nodeURL, toRemoveUserPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.removeUserPermissions(neo4JProxy,nodeURL, toRemoveUserPermissions, nodeIsFolder);
       }
 
       Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
       toAddUserPermissions.addAll(newUserPermissions);
       toAddUserPermissions.removeAll(oldUserPermissions);
       if (!toAddUserPermissions.isEmpty()) {
-        addUserPermissions(nodeURL, toAddUserPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.addUserPermissions(neo4JProxy,nodeURL, toAddUserPermissions, nodeIsFolder);
       }
 
       Set<NodePermissionGroupPermissionPair> oldGroupPermissions = new HashSet<>();
@@ -481,49 +481,17 @@ public class Neo4JUserSession {
       toRemoveGroupPermissions.addAll(oldGroupPermissions);
       toRemoveGroupPermissions.removeAll(newGroupPermissions);
       if (!toRemoveGroupPermissions.isEmpty()) {
-        removeGroupPermissions(nodeURL, toRemoveGroupPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.removeGroupPermissions(neo4JProxy,nodeURL, toRemoveGroupPermissions, nodeIsFolder);
       }
 
       Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
       toAddGroupPermissions.addAll(newGroupPermissions);
       toAddGroupPermissions.removeAll(oldGroupPermissions);
       if (!toAddGroupPermissions.isEmpty()) {
-        addGroupPermissions(nodeURL, toAddGroupPermissions, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.addGroupPermissions(neo4JProxy,nodeURL, toAddGroupPermissions, nodeIsFolder);
       }
       return new BackendCallResult();
     }
-  }
-
-  private void addGroupPermissions(String nodeURL, Set<NodePermissionGroupPermissionPair> toAddGroupPermissions,
-                                   boolean nodeIsFolder) {
-    for (NodePermissionGroupPermissionPair pair : toAddGroupPermissions) {
-      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), nodeIsFolder);
-    }
-  }
-
-  private void removeGroupPermissions(String nodeURL, Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions,
-                                      boolean nodeIsFolder) {
-    for (NodePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
-      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), nodeIsFolder);
-    }
-  }
-
-  private void addUserPermissions(String nodeURL, Set<NodePermissionUserPermissionPair> toAddUserPermissions,
-                                  boolean nodeIsFolder) {
-    for (NodePermissionUserPermissionPair pair : toAddUserPermissions) {
-      neo4JProxy.addPermissionToUser(nodeURL, pair.getUser().getId(), pair.getPermission(), nodeIsFolder);
-    }
-  }
-
-  private void removeUserPermissions(String nodeURL, Set<NodePermissionUserPermissionPair> toRemoveUserPermissions,
-                                     boolean nodeIsFolder) {
-    for (NodePermissionUserPermissionPair pair : toRemoveUserPermissions) {
-      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUser().getId(), pair.getPermission(), nodeIsFolder);
-    }
-  }
-
-  private void updateNodeOwner(String nodeURL, String ownerURL, boolean nodeIsFolder) {
-    neo4JProxy.updateNodeOwner(nodeURL, ownerURL, nodeIsFolder);
   }
 
   public boolean userIsOwnerOfFolder(String folderURL) {
@@ -627,5 +595,25 @@ public class Neo4JUserSession {
     }
     return ret;
   }
+
+  public BackendCallResult updateGroupUsers(String groupURL, CedarGroupUsersRequest request) {
+
+    GroupUsersRequestValidator gurv = new GroupUsersRequestValidator(this, groupURL, request);
+    BackendCallResult bcr = gurv.getCallResult();
+    if (bcr.isError()) {
+      return bcr;
+    } else {
+      CedarGroupUsers currentGroupUsers = findGroupUsers(groupURL);
+      CedarGroupUsers newGroupUsers = gurv.getUsers();
+
+      Neo4JUserSessionGroupOperations.updateGroupUsers(neo4JProxy, groupURL, currentGroupUsers, newGroupUsers,
+          RelationLabel.ADMINISTERS, Neo4JUserSessionGroupOperations.Filter.ADMINISTRATOR);
+      Neo4JUserSessionGroupOperations.updateGroupUsers(neo4JProxy, groupURL, currentGroupUsers, newGroupUsers,
+          RelationLabel.MEMBEROF, Neo4JUserSessionGroupOperations.Filter.MEMBER);
+
+      return new BackendCallResult();
+    }
+  }
+
 
 }

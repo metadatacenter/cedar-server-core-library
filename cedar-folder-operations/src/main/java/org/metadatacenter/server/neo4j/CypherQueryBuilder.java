@@ -835,5 +835,25 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String addRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (fromNode:").append(fromLabel).append(" {id:{fromId} })");
+    sb.append(" MATCH (toNode:").append(toLabel).append(" {id:{toId} })");
+    sb.append(" CREATE");
+    sb.append(" (fromNode)-[:").append(relation).append("]->(toNode)");
+    sb.append(" RETURN fromNode");
+    return sb.toString();
+  }
+
+  public static String removeRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (fromNode:").append(fromLabel).append(" {id:{fromId} })");
+    sb.append(" MATCH (toNode:").append(toLabel).append(" {id:{toId} })");
+    sb.append(" MATCH");
+    sb.append(" (fromNode)-[relation:").append(relation).append("]->(toNode)");
+    sb.append(" DELETE relation");
+    sb.append(" RETURN fromNode");
+    return sb.toString();
+  }
 
 }

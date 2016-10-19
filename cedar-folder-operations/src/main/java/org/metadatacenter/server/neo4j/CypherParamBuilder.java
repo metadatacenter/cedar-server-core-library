@@ -354,4 +354,11 @@ public class CypherParamBuilder {
     return updateNodeById(groupURL, updateFields, updatedBy);
   }
 
+  public static Map<String, Object> matchFromNodeToNode(String fromURL, String toURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(FROM_ID, fromURL);
+    params.put(TO_ID, toURL);
+    return params;
+  }
+
 }
