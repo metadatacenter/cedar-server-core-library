@@ -3,7 +3,7 @@ package org.metadatacenter.server.neo4j;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
-import org.metadatacenter.server.GroupServiceSession;
+import org.metadatacenter.server.*;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
@@ -15,7 +15,8 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import java.util.*;
 
-public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter.server.ServiceSession {
+public class Neo4JUserSession implements GroupServiceSession, ServiceSession, FolderServiceSession,
+    PermissionServiceSession, UserServiceSession, AdminServiceSession {
   private final CedarUser cu;
   private final Neo4JProxy neo4JProxy;
   private final String userIdPrefix;
@@ -60,26 +61,32 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
   }
 
   // Expose methods of PathUtil
+  @Override
   public String sanitizeName(String name) {
     return neo4JProxy.getPathUtil().sanitizeName(name);
   }
 
+  @Override
   public String normalizePath(String path) {
     return neo4JProxy.getPathUtil().normalizePath(path);
   }
 
+  @Override
   public String getChildPath(String path, String name) {
     return neo4JProxy.getPathUtil().getChildPath(path, name);
   }
 
+  @Override
   public String getRootPath() {
     return neo4JProxy.getPathUtil().getRootPath();
   }
 
+  @Override
   public String getResourceUUID(String resourceId, CedarNodeType nodeType) {
     return neo4JProxy.getResourceUUID(resourceId, nodeType);
   }
 
+  @Override
   public FolderServerFolder findFolderById(String folderURL) {
     return neo4JProxy.findFolderById(folderURL);
   }
@@ -96,74 +103,90 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return neo4JProxy.getGroupsWithPermissionOnNode(nodeURL, permission);
   }
 
+  @Override
   public List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList) {
     return neo4JProxy.findAllNodes(limit, offset, sortList);
   }
 
+  @Override
   public long findAllNodesCount() {
     return neo4JProxy.findAllNodesCount();
   }
 
+  @Override
   public FolderServerResource findResourceById(String resourceURL) {
     return neo4JProxy.findResourceById(resourceURL);
   }
 
+  @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
       description, NodeLabel label) {
     return createFolderAsChildOfId(parentFolderURL, name, displayName, description, label, null);
   }
 
+  @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
       description, NodeLabel label, Map<String, Object> extraProperties) {
     return neo4JProxy.createFolderAsChildOfId(parentFolderURL, name, displayName, description,
         getUserId(), label, extraProperties);
   }
 
+  @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label) {
     return createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, label, null);
   }
 
+  @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties) {
     return neo4JProxy.createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name,
         description, getUserId(), label, extraProperties);
   }
 
+  @Override
   public FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields) {
     return neo4JProxy.updateFolderById(folderURL, updateFields, getUserId());
   }
 
+  @Override
   public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
       String> updateFields) {
     return neo4JProxy.updateResourceById(resourceURL, updateFields, getUserId());
   }
 
+  @Override
   public boolean deleteFolderById(String folderURL) {
     return neo4JProxy.deleteFolderById(folderURL);
   }
 
+  @Override
   public boolean deleteResourceById(String resourceURL, CedarNodeType nodeType) {
     return neo4JProxy.deleteResourceById(resourceURL);
   }
 
+  @Override
   public FolderServerFolder findFolderByPath(String path) {
     return neo4JProxy.findFolderByPath(path);
   }
 
+  @Override
   public FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name) {
     return neo4JProxy.findFolderByParentIdAndName(parentFolder.getId(), name);
   }
 
+  @Override
   public FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name) {
     return neo4JProxy.findNodeByParentIdAndName(parentFolder.getId(), name);
   }
 
+  @Override
   public List<FolderServerFolder> findFolderPathByPath(String path) {
     return neo4JProxy.findFolderPathByPath(path);
   }
 
 
+  @Override
   public List<FolderServerFolder> findFolderPath(FolderServerFolder folder) {
     if (folder.isRoot()) {
       List<FolderServerFolder> pathInfo = new ArrayList<>();
@@ -174,19 +197,23 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     }
   }
 
+  @Override
   public List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList) {
     return neo4JProxy.findFolderContents(folderURL, nodeTypeList, limit, offset, sortList, cu);
   }
 
+  @Override
   public long findFolderContentsCount(String folderURL) {
     return neo4JProxy.findFolderContentsCount(folderURL);
   }
 
+  @Override
   public long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList) {
     return neo4JProxy.findFolderContentsFilteredCount(folderURL, nodeTypeList);
   }
 
+  @Override
   public void ensureGlobalObjectsExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
     PathUtil pathUtil = neo4JProxy.getPathUtil();
@@ -238,6 +265,7 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     }
   }
 
+  @Override
   public FolderServerFolder ensureUserHomeExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
     PathUtil pathUtil = neo4JProxy.getPathUtil();
@@ -264,6 +292,7 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return null;
   }
 
+  @Override
   public FolderServerUser ensureUserExists() {
     FolderServerUser currentUser = neo4JProxy.findUserById(getUserId());
     if (currentUser == null) {
@@ -276,6 +305,7 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return currentUser;
   }
 
+  @Override
   public void addPathAndParentId(FolderServerFolder folder) {
     if (folder != null) {
       List<FolderServerFolder> path = findFolderPath(folder);
@@ -288,6 +318,7 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     }
   }
 
+  @Override
   public void addPathAndParentId(FolderServerResource resource) {
     if (resource != null) {
       List<FolderServerNode> path = neo4JProxy.findNodePathById(resource.getId());
@@ -365,16 +396,19 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return sb.length() == 0 ? null : sb.toString();
   }
 
+  @Override
   public boolean wipeAllData() {
     return neo4JProxy.wipeAllData();
   }
 
+  @Override
   public String getHomeFolderPath() {
     Neo4jConfig config = this.neo4JProxy.getConfig();
     PathUtil pathUtil = this.neo4JProxy.getPathUtil();
     return config.getUsersFolderPath() + pathUtil.getSeparator() + this.cu.getId();
   }
 
+  @Override
   public CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder) {
     FolderServerNode node;
     if (nodeIsFolder) {
@@ -394,8 +428,10 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     }
   }
 
-  private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers, List<FolderServerUser>
-      writeUsers, List<FolderServerGroup> readGroups, List<FolderServerGroup> writeGroups) {
+  private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers,
+                                                List<FolderServerUser>
+                                                    writeUsers, List<FolderServerGroup> readGroups,
+                                                List<FolderServerGroup> writeGroups) {
     CedarNodePermissions permissions = new CedarNodePermissions();
     CedarUserExtract o = owner.buildExtract();
     permissions.setOwner(o);
@@ -430,6 +466,7 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return permissions;
   }
 
+  @Override
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
                                                  boolean nodeIsFolder) {
 
@@ -498,34 +535,41 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     }
   }
 
+  @Override
   public boolean userIsOwnerOfFolder(String folderURL) {
     FolderServerUser owner = getNodeOwner(folderURL);
     return owner != null && owner.getId().equals(getUserId());
   }
 
+  @Override
   public boolean userHasReadAccessToFolder(String folderURL) {
     return neo4JProxy.userHasReadAccessToFolder(getUserId(), folderURL) || neo4JProxy.userHasWriteAccessToFolder(cu
         .getId(), folderURL);
   }
 
+  @Override
   public boolean userHasWriteAccessToFolder(String folderURL) {
     return neo4JProxy.userHasWriteAccessToFolder(getUserId(), folderURL);
   }
 
+  @Override
   public boolean userIsOwnerOfResource(String resourceURL) {
     FolderServerUser owner = getNodeOwner(resourceURL);
     return owner != null && owner.getId().equals(getUserId());
   }
 
+  @Override
   public boolean userHasReadAccessToResource(String resourceURL) {
     return neo4JProxy.userHasReadAccessToResource(getUserId(), resourceURL) || neo4JProxy.userHasWriteAccessToFolder(cu
         .getId(), resourceURL);
   }
 
+  @Override
   public boolean userHasWriteAccessToResource(String resourceURL) {
     return neo4JProxy.userHasWriteAccessToResource(getUserId(), resourceURL);
   }
 
+  @Override
   public List<FolderServerUser> findUsers() {
     return neo4JProxy.findUsers();
   }
@@ -535,11 +579,13 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return neo4JProxy.findGroups();
   }
 
+  @Override
   public boolean userIsOwnerOfNode(FolderServerNode node) {
     FolderServerUser nodeOwner = getNodeOwner(node.getId());
     return nodeOwner != null && nodeOwner.getId().equals(getUserId());
   }
 
+  @Override
   public FolderServerUser findUserById(String userURL) {
     return neo4JProxy.findUserById(userURL);
   }
@@ -549,14 +595,17 @@ public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter
     return neo4JProxy.findGroupById(groupURL);
   }
 
+  @Override
   public boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
     return neo4JProxy.moveResource(sourceResource, targetFolder);
   }
 
+  @Override
   public boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder) {
     return neo4JProxy.moveFolder(sourceFolder, targetFolder);
   }
 
+  @Override
   public Map<String, String> findAccessibleNodeIds() {
     return neo4JProxy.findAccessibleNodeIds(getUserId());
   }
