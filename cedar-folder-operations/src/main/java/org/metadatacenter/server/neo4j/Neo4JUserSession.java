@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.server.GroupServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
@@ -14,7 +15,7 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import java.util.*;
 
-public class Neo4JUserSession {
+public class Neo4JUserSession implements GroupServiceSession, org.metadatacenter.server.ServiceSession {
   private final CedarUser cu;
   private final Neo4JProxy neo4JProxy;
   private final String userIdPrefix;
@@ -48,6 +49,7 @@ public class Neo4JUserSession {
     return neo4JUserSession;
   }
 
+  @Override
   public String getUserId() {
     // let the NPE, something is really wrong if that happens
     return userIdPrefix + cu.getId();
@@ -528,6 +530,7 @@ public class Neo4JUserSession {
     return neo4JProxy.findUsers();
   }
 
+  @Override
   public List<FolderServerGroup> findGroups() {
     return neo4JProxy.findGroups();
   }
@@ -541,6 +544,7 @@ public class Neo4JUserSession {
     return neo4JProxy.findUserById(userURL);
   }
 
+  @Override
   public FolderServerGroup findGroupById(String groupURL) {
     return neo4JProxy.findGroupById(groupURL);
   }
@@ -557,23 +561,28 @@ public class Neo4JUserSession {
     return neo4JProxy.findAccessibleNodeIds(getUserId());
   }
 
+  @Override
   public FolderServerGroup findGroupByName(String groupName) {
     return neo4JProxy.findGroupByName(groupName);
   }
 
+  @Override
   public FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
     String groupURL = buildGroupId(UUID.randomUUID().toString());
     return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
   }
 
+  @Override
   public FolderServerGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
     return neo4JProxy.updateGroupById(groupURL, updateFields, getUserId());
   }
 
+  @Override
   public boolean deleteGroupById(String groupURL) {
     return neo4JProxy.deleteGroupById(groupURL);
   }
 
+  @Override
   public CedarGroupUsers findGroupUsers(String groupURL) {
     Set<String> memberIds = new HashSet<>();
     Set<String> administratorsIds = new HashSet<>();
@@ -598,6 +607,7 @@ public class Neo4JUserSession {
     return ret;
   }
 
+  @Override
   public BackendCallResult updateGroupUsers(String groupURL, CedarGroupUsersRequest request) {
 
     GroupUsersRequestValidator gurv = new GroupUsersRequestValidator(this, groupURL, request);
