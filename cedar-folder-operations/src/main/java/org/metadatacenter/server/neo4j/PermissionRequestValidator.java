@@ -18,7 +18,7 @@ public class PermissionRequestValidator {
   private final String nodeURL;
   private final boolean nodeIsFolder;
 
-  private CedarFSNode node;
+  private FolderServerNode node;
 
   public PermissionRequestValidator(Neo4JUserSession neo4JUserSession, String nodeURL, CedarNodePermissionsRequest
       request, boolean nodeIsFolder) {
@@ -59,7 +59,7 @@ public class PermissionRequestValidator {
 
   private void validateNodeExistence() {
     if (nodeIsFolder) {
-      CedarFSFolder folder = neo4JUserSession.findFolderById(nodeURL);
+      FolderServerFolder folder = neo4JUserSession.findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
@@ -68,7 +68,7 @@ public class PermissionRequestValidator {
             .param("folderId", nodeURL);
       }
     } else {
-      CedarFSResource resource = neo4JUserSession.findResourceById(nodeURL);
+      FolderServerResource resource = neo4JUserSession.findResourceById(nodeURL);
       node = resource;
       if (resource == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
@@ -105,7 +105,7 @@ public class PermissionRequestValidator {
           .message("The owner should be present in the request");
     } else {
       String newOwnerId = owner.getId();
-      CedarFSUser newOwner = neo4JUserSession.findUserById(newOwnerId);
+      FolderServerUser newOwner = neo4JUserSession.findUserById(newOwnerId);
       if (newOwner == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
             .subType("userNotFound")
@@ -133,7 +133,7 @@ public class PermissionRequestValidator {
               .message("The permission is missing from the request");
         } else {
           String userURL = permissionUser.getId();
-          CedarFSUser user = neo4JUserSession.findUserById(userURL);
+          FolderServerUser user = neo4JUserSession.findUserById(userURL);
           if (user == null) {
             callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("userNotFound")
@@ -164,7 +164,7 @@ public class PermissionRequestValidator {
               .message("The permission is missing from the request");
         } else {
           String groupURL = permissionGroup.getId();
-          CedarFSGroup group = neo4JUserSession.findGroupById(groupURL);
+          FolderServerGroup group = neo4JUserSession.findGroupById(groupURL);
           if (group == null) {
             callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("groupNotFound")

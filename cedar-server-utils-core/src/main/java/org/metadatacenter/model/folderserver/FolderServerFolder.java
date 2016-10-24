@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSFolder extends CedarFSNode {
+public class FolderServerFolder extends FolderServerNode {
 
   private boolean userHome;
   private boolean system;
   private boolean root;
 
-  public CedarFSFolder() {
+  public FolderServerFolder() {
     super(CedarNodeType.FOLDER);
   }
 

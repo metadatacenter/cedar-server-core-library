@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserver;
+package org.metadatacenter.model.resourceserver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -17,17 +17,23 @@ import java.util.Map;
     include = JsonTypeInfo.As.PROPERTY,
     property = "nodeType")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = CedarFSFolder.class, name = CedarNodeType.Types.FOLDER),
-    @JsonSubTypes.Type(value = CedarFSField.class, name = CedarNodeType.Types.FIELD),
-    @JsonSubTypes.Type(value = CedarFSElement.class, name = CedarNodeType.Types.ELEMENT),
-    @JsonSubTypes.Type(value = CedarFSTemplate.class, name = CedarNodeType.Types.TEMPLATE),
-    @JsonSubTypes.Type(value = CedarFSInstance.class, name = CedarNodeType.Types.INSTANCE)
+    @JsonSubTypes.Type(value = ResourceServerFolder.class, name = CedarNodeType.Types.FOLDER),
+    @JsonSubTypes.Type(value = ResourceServerField.class, name = CedarNodeType.Types.FIELD),
+    @JsonSubTypes.Type(value = ResourceServerElement.class, name = CedarNodeType.Types.ELEMENT),
+    @JsonSubTypes.Type(value = ResourceServerTemplate.class, name = CedarNodeType.Types.TEMPLATE),
+    @JsonSubTypes.Type(value = ResourceServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class CedarFSNode extends AbstractCedarNode {
+public abstract class ResourceServerNode extends AbstractCedarNode {
 
   private List<NodePermission> currentUserPermissions;
 
-  protected CedarFSNode(CedarNodeType nodeType) {
+  protected String createdByUserName;
+  protected String lastUpdatedByUserName;
+  protected String ownedByUserName;
+  protected String displayPath;
+  protected String displayParentPath;
+
+  protected ResourceServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
     this.currentUserPermissions = new ArrayList<>();
   }
@@ -37,17 +43,15 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     return id;
   }
 
-  @JsonProperty("id")
+  @JsonProperty("@id")
   public void setId(String id) {
     this.id = id;
   }
 
-  @JsonProperty("nodeType")
   public CedarNodeType getType() {
     return nodeType;
   }
 
-  @JsonProperty("type")
   public void setType(CedarNodeType nodeType) {
     this.nodeType = nodeType;
   }
@@ -73,7 +77,7 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     return createdOn;
   }
 
-  @JsonProperty("createdOn")
+  @JsonProperty("pav:createdOn")
   public void setCreatedOn(ProvenanceTime createdOn) {
     this.createdOn = createdOn;
   }
@@ -83,7 +87,7 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     return lastUpdatedOn;
   }
 
-  @JsonProperty("lastUpdatedOn")
+  @JsonProperty("pav:lastUpdatedOn")
   public void setLastUpdatedOn(ProvenanceTime lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
   }
@@ -93,7 +97,7 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     return createdBy;
   }
 
-  @JsonProperty("createdBy")
+  @JsonProperty("pav:createdBy")
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
   }
@@ -103,9 +107,25 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     return lastUpdatedBy;
   }
 
-  @JsonProperty("lastUpdatedBy")
+  @JsonProperty("oslc:modifiedBy")
   public void setLastUpdatedBy(String lastUpdatedBy) {
     this.lastUpdatedBy = lastUpdatedBy;
+  }
+
+  public String getCreatedByUserName() {
+    return createdByUserName;
+  }
+
+  public void setCreatedByUserName(String createdByUserName) {
+    this.createdByUserName = createdByUserName;
+  }
+
+  public String getLastUpdatedByUserName() {
+    return lastUpdatedByUserName;
+  }
+
+  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
+    this.lastUpdatedByUserName = lastUpdatedByUserName;
   }
 
   public long getLastUpdatedOnTS() {
@@ -124,23 +144,47 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     this.createdOnTS = createdOnTS;
   }
 
+  public String getOwnedByUserName() {
+    return ownedByUserName;
+  }
+
+  public void setOwnedByUserName(String ownedByUserName) {
+    this.ownedByUserName = ownedByUserName;
+  }
+
+  public String getDisplayPath() {
+    return displayPath;
+  }
+
+  public void setDisplayPath(String displayPath) {
+    this.displayPath = displayPath;
+  }
+
+  public String getDisplayParentPath() {
+    return displayParentPath;
+  }
+
+  public void setDisplayParentPath(String displayParentPath) {
+    this.displayParentPath = displayParentPath;
+  }
+
   @JsonProperty("@context")
   public Map<String, String> getContext() {
     return CONTEXT;
   }
 
-  public static CedarFSNode forType(CedarNodeType t) {
+  public static ResourceServerNode forType(CedarNodeType t) {
     switch (t) {
       case FOLDER:
-        return new CedarFSFolder();
+        return new ResourceServerFolder();
       case FIELD:
-        return new CedarFSField();
+        return new ResourceServerField();
       case ELEMENT:
-        return new CedarFSElement();
+        return new ResourceServerElement();
       case TEMPLATE:
-        return new CedarFSTemplate();
+        return new ResourceServerTemplate();
       case INSTANCE:
-        return new CedarFSInstance();
+        return new ResourceServerInstance();
     }
     return null;
   }
@@ -153,13 +197,4 @@ public abstract class CedarFSNode extends AbstractCedarNode {
     this.currentUserPermissions = currentUserPermissions;
   }
 
-  public void addCurrentUserPermission(NodePermission permission) {
-    if (!currentUserPermissions.contains(permission)) {
-      currentUserPermissions.add(permission);
-    }
-  }
-
-  public boolean currentUserCan(NodePermission permission) {
-    return currentUserPermissions.contains(permission);
-  }
 }

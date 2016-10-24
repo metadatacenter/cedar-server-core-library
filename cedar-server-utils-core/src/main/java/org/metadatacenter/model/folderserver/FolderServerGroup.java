@@ -8,14 +8,14 @@ import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSGroup extends AbstractCedarSuperNode {
+public class FolderServerGroup extends AbstractCedarSuperNode {
 
   private String name;
   private String displayName;
   private String description;
   private String specialGroup;
 
-  public CedarFSGroup() {
+  public FolderServerGroup() {
     this.nodeType = CedarNodeType.GROUP;
   }
 

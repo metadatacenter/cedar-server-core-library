@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
-import org.metadatacenter.model.folderserver.CedarFSGroup;
+import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.server.result.BackendCallErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
@@ -32,7 +32,7 @@ public class GroupUsersRequestValidator {
   }
 
   private void validateNodeExistence() {
-    CedarFSGroup group = neo4JUserSession.findGroupById(groupURL);
+    FolderServerGroup group = neo4JUserSession.findGroupById(groupURL);
     if (group == null) {
       callResult.addError(BackendCallErrorType.NOT_FOUND)
           .subType("groupNotFound")

@@ -31,7 +31,7 @@ public class Neo4JUserSession {
     Neo4JUserSession neo4JUserSession = new Neo4JUserSession(neo4JProxy, cu);
     if (createHome) {
       neo4JUserSession.ensureUserExists();
-      CedarFSFolder createdFolder = neo4JUserSession.ensureUserHomeExists();
+      FolderServerFolder createdFolder = neo4JUserSession.ensureUserHomeExists();
       if (createdFolder != null) {
         ObjectNode homeModification = JsonMapper.MAPPER.createObjectNode();
         homeModification.put("homeFolderId", createdFolder.getId());
@@ -78,23 +78,23 @@ public class Neo4JUserSession {
     return neo4JProxy.getResourceUUID(resourceId, nodeType);
   }
 
-  public CedarFSFolder findFolderById(String folderURL) {
+  public FolderServerFolder findFolderById(String folderURL) {
     return neo4JProxy.findFolderById(folderURL);
   }
 
-  private CedarFSUser getNodeOwner(String nodeURL) {
+  private FolderServerUser getNodeOwner(String nodeURL) {
     return neo4JProxy.getNodeOwner(nodeURL);
   }
 
-  private List<CedarFSUser> getUsersWithPermission(String nodeURL, NodePermission permission) {
+  private List<FolderServerUser> getUsersWithPermission(String nodeURL, NodePermission permission) {
     return neo4JProxy.getUsersWithPermissionOnNode(nodeURL, permission);
   }
 
-  private List<CedarFSGroup> getGroupsWithPermission(String nodeURL, NodePermission permission) {
+  private List<FolderServerGroup> getGroupsWithPermission(String nodeURL, NodePermission permission) {
     return neo4JProxy.getGroupsWithPermissionOnNode(nodeURL, permission);
   }
 
-  public List<CedarFSNode> findAllNodes(int limit, int offset, List<String> sortList) {
+  public List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList) {
     return neo4JProxy.findAllNodes(limit, offset, sortList);
   }
 
@@ -102,37 +102,37 @@ public class Neo4JUserSession {
     return neo4JProxy.findAllNodesCount();
   }
 
-  public CedarFSResource findResourceById(String resourceURL) {
+  public FolderServerResource findResourceById(String resourceURL) {
     return neo4JProxy.findResourceById(resourceURL);
   }
 
-  public CedarFSFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
+  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
       description, NodeLabel label) {
     return createFolderAsChildOfId(parentFolderURL, name, displayName, description, label, null);
   }
 
-  public CedarFSFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
+  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
       description, NodeLabel label, Map<String, Object> extraProperties) {
     return neo4JProxy.createFolderAsChildOfId(parentFolderURL, name, displayName, description,
         getUserId(), label, extraProperties);
   }
 
-  public CedarFSResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
+  public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label) {
     return createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, label, null);
   }
 
-  public CedarFSResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
+  public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties) {
     return neo4JProxy.createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name,
         description, getUserId(), label, extraProperties);
   }
 
-  public CedarFSFolder updateFolderById(String folderURL, Map<String, String> updateFields) {
+  public FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields) {
     return neo4JProxy.updateFolderById(folderURL, updateFields, getUserId());
   }
 
-  public CedarFSResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
+  public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
       String> updateFields) {
     return neo4JProxy.updateResourceById(resourceURL, updateFields, getUserId());
   }
@@ -145,26 +145,26 @@ public class Neo4JUserSession {
     return neo4JProxy.deleteResourceById(resourceURL);
   }
 
-  public CedarFSFolder findFolderByPath(String path) {
+  public FolderServerFolder findFolderByPath(String path) {
     return neo4JProxy.findFolderByPath(path);
   }
 
-  public CedarFSFolder findFolderByParentIdAndName(CedarFSFolder parentFolder, String name) {
+  public FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name) {
     return neo4JProxy.findFolderByParentIdAndName(parentFolder.getId(), name);
   }
 
-  public CedarFSNode findNodeByParentIdAndName(CedarFSFolder parentFolder, String name) {
+  public FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name) {
     return neo4JProxy.findNodeByParentIdAndName(parentFolder.getId(), name);
   }
 
-  public List<CedarFSFolder> findFolderPathByPath(String path) {
+  public List<FolderServerFolder> findFolderPathByPath(String path) {
     return neo4JProxy.findFolderPathByPath(path);
   }
 
 
-  public List<CedarFSFolder> findFolderPath(CedarFSFolder folder) {
+  public List<FolderServerFolder> findFolderPath(FolderServerFolder folder) {
     if (folder.isRoot()) {
-      List<CedarFSFolder> pathInfo = new ArrayList<>();
+      List<FolderServerFolder> pathInfo = new ArrayList<>();
       pathInfo.add(folder);
       return pathInfo;
     } else {
@@ -172,7 +172,7 @@ public class Neo4JUserSession {
     }
   }
 
-  public List<CedarFSNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
+  public List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList) {
     return neo4JProxy.findFolderContents(folderURL, nodeTypeList, limit, offset, sortList, cu);
   }
@@ -193,7 +193,7 @@ public class Neo4JUserSession {
 
     String userId = getUserId();
 
-    CedarFSUser cedarAdmin = neo4JProxy.findUserById(userId);
+    FolderServerUser cedarAdmin = neo4JProxy.findUserById(userId);
     if (cedarAdmin == null) {
       String displayName = CedarUserNameUtil.getDisplayName(cu);
       cedarAdmin = neo4JProxy.createUser(userId, displayName, displayName, cu.getFirstName(), cu
@@ -201,7 +201,7 @@ public class Neo4JUserSession {
       addAdminToEverybody = true;
     }
 
-    CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+    FolderServerGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (everybody == null) {
       String everybodyURL = buildGroupId(UUID.randomUUID().toString());
       Map<String, Object> extraParams = new HashMap<>();
@@ -215,7 +215,7 @@ public class Neo4JUserSession {
       neo4JProxy.addGroupToUser(cedarAdmin, everybody);
     }
 
-    CedarFSFolder rootFolder = findFolderByPath(config.getRootFolderPath());
+    FolderServerFolder rootFolder = findFolderByPath(config.getRootFolderPath());
     String rootFolderURL = null;
     if (rootFolder == null) {
       rootFolder = neo4JProxy.createRootFolder(userId);
@@ -225,7 +225,7 @@ public class Neo4JUserSession {
       rootFolderURL = rootFolder.getId();
     }
 
-    CedarFSFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
+    FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
     if (usersFolder == null) {
       Map<String, Object> extraParams = new HashMap<>();
       extraParams.put(Neo4JFields.IS_SYSTEM, true);
@@ -236,13 +236,13 @@ public class Neo4JUserSession {
     }
   }
 
-  public CedarFSFolder ensureUserHomeExists() {
+  public FolderServerFolder ensureUserHomeExists() {
     Neo4jConfig config = neo4JProxy.getConfig();
     PathUtil pathUtil = neo4JProxy.getPathUtil();
     String userHomePath = config.getUsersFolderPath() + pathUtil.getSeparator() + cu.getId();
-    CedarFSFolder currentUserHomeFolder = findFolderByPath(userHomePath);
+    FolderServerFolder currentUserHomeFolder = findFolderByPath(userHomePath);
     if (currentUserHomeFolder == null) {
-      CedarFSFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
+      FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
       // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
       Map<String, Object> extraParams = new HashMap<>();
       extraParams.put(Neo4JFields.IS_USER_HOME, true);
@@ -252,7 +252,7 @@ public class Neo4JUserSession {
       currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), userId, displayName, description, NodeLabel
           .USER_HOME_FOLDER, extraParams);
       if (currentUserHomeFolder != null) {
-        CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+        FolderServerGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
         if (everybody != null) {
           neo4JProxy.addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
         }
@@ -262,21 +262,21 @@ public class Neo4JUserSession {
     return null;
   }
 
-  public CedarFSUser ensureUserExists() {
-    CedarFSUser currentUser = neo4JProxy.findUserById(getUserId());
+  public FolderServerUser ensureUserExists() {
+    FolderServerUser currentUser = neo4JProxy.findUserById(getUserId());
     if (currentUser == null) {
       String displayName = CedarUserNameUtil.getDisplayName(cu);
       currentUser = neo4JProxy.createUser(getUserId(), displayName, displayName, cu.getFirstName(), cu.getLastName(),
           cu.getEmail());
-      CedarFSGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+      FolderServerGroup everybody = neo4JProxy.findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       neo4JProxy.addGroupToUser(currentUser, everybody);
     }
     return currentUser;
   }
 
-  public void addPathAndParentId(CedarFSFolder folder) {
+  public void addPathAndParentId(FolderServerFolder folder) {
     if (folder != null) {
-      List<CedarFSFolder> path = findFolderPath(folder);
+      List<FolderServerFolder> path = findFolderPath(folder);
       if (path != null) {
         folder.setPath(getPathString(path));
         folder.setParentPath(getParentPathString(path));
@@ -286,9 +286,9 @@ public class Neo4JUserSession {
     }
   }
 
-  public void addPathAndParentId(CedarFSResource resource) {
+  public void addPathAndParentId(FolderServerResource resource) {
     if (resource != null) {
-      List<CedarFSNode> path = neo4JProxy.findNodePathById(resource.getId());
+      List<FolderServerNode> path = neo4JProxy.findNodePathById(resource.getId());
       if (path != null) {
         resource.setPath(getPathString(path));
         resource.setParentPath(getParentPathString(path));
@@ -298,7 +298,7 @@ public class Neo4JUserSession {
     }
   }
 
-  private String getParentId(List<? extends CedarFSNode> path) {
+  private String getParentId(List<? extends FolderServerNode> path) {
     if (path != null) {
       if (path.size() > 1) {
         return path.get(path.size() - 2).getId();
@@ -307,8 +307,8 @@ public class Neo4JUserSession {
     return null;
   }
 
-  private String getParentPathString(List<? extends CedarFSNode> path) {
-    List<CedarFSNode> p = new ArrayList<>();
+  private String getParentPathString(List<? extends FolderServerNode> path) {
+    List<FolderServerNode> p = new ArrayList<>();
     p.addAll(path);
     if (path.size() > 0) {
       p.remove(p.size() - 1);
@@ -318,15 +318,15 @@ public class Neo4JUserSession {
     return getPathString(p);
   }
 
-  private String getPathString(List<? extends CedarFSNode> path) {
+  private String getPathString(List<? extends FolderServerNode> path) {
     StringBuilder sb = new StringBuilder();
     boolean addSeparator = false;
-    for (CedarFSNode node : path) {
+    for (FolderServerNode node : path) {
       if (addSeparator) {
         sb.append(neo4JProxy.getPathUtil().getSeparator());
       }
-      if (node instanceof CedarFSFolder) {
-        if (!((CedarFSFolder) node).isRoot()) {
+      if (node instanceof FolderServerFolder) {
+        if (!((FolderServerFolder) node).isRoot()) {
           addSeparator = true;
         }
       }
@@ -335,8 +335,8 @@ public class Neo4JUserSession {
     return sb.length() == 0 ? null : sb.toString();
   }
 
-  private String getDisplayParentPathString(List<? extends CedarFSNode> path) {
-    List<CedarFSNode> p = new ArrayList<>();
+  private String getDisplayParentPathString(List<? extends FolderServerNode> path) {
+    List<FolderServerNode> p = new ArrayList<>();
     p.addAll(path);
     if (path.size() > 0) {
       p.remove(p.size() - 1);
@@ -346,15 +346,15 @@ public class Neo4JUserSession {
     return getDisplayPathString(p);
   }
 
-  private String getDisplayPathString(List<? extends CedarFSNode> path) {
+  private String getDisplayPathString(List<? extends FolderServerNode> path) {
     StringBuilder sb = new StringBuilder();
     boolean addSeparator = false;
-    for (CedarFSNode node : path) {
+    for (FolderServerNode node : path) {
       if (addSeparator) {
         sb.append(neo4JProxy.getPathUtil().getSeparator());
       }
-      if (node instanceof CedarFSFolder) {
-        if (!((CedarFSFolder) node).isRoot()) {
+      if (node instanceof FolderServerFolder) {
+        if (!((FolderServerFolder) node).isRoot()) {
           addSeparator = true;
         }
       }
@@ -374,52 +374,52 @@ public class Neo4JUserSession {
   }
 
   public CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder) {
-    CedarFSNode node;
+    FolderServerNode node;
     if (nodeIsFolder) {
       node = findFolderById(nodeURL);
     } else {
       node = findResourceById(nodeURL);
     }
     if (node != null) {
-      CedarFSUser owner = getNodeOwner(nodeURL);
-      List<CedarFSUser> readUsers = getUsersWithPermission(nodeURL, NodePermission.READ);
-      List<CedarFSUser> writeUsers = getUsersWithPermission(nodeURL, NodePermission.WRITE);
-      List<CedarFSGroup> readGroups = getGroupsWithPermission(nodeURL, NodePermission.READ);
-      List<CedarFSGroup> writeGroups = getGroupsWithPermission(nodeURL, NodePermission.WRITE);
+      FolderServerUser owner = getNodeOwner(nodeURL);
+      List<FolderServerUser> readUsers = getUsersWithPermission(nodeURL, NodePermission.READ);
+      List<FolderServerUser> writeUsers = getUsersWithPermission(nodeURL, NodePermission.WRITE);
+      List<FolderServerGroup> readGroups = getGroupsWithPermission(nodeURL, NodePermission.READ);
+      List<FolderServerGroup> writeGroups = getGroupsWithPermission(nodeURL, NodePermission.WRITE);
       return buildPermissions(owner, readUsers, writeUsers, readGroups, writeGroups);
     } else {
       return null;
     }
   }
 
-  private CedarNodePermissions buildPermissions(CedarFSUser owner, List<CedarFSUser> readUsers, List<CedarFSUser>
-      writeUsers, List<CedarFSGroup> readGroups, List<CedarFSGroup> writeGroups) {
+  private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers, List<FolderServerUser>
+      writeUsers, List<FolderServerGroup> readGroups, List<FolderServerGroup> writeGroups) {
     CedarNodePermissions permissions = new CedarNodePermissions();
     CedarUserExtract o = owner.buildExtract();
     permissions.setOwner(o);
     if (readUsers != null) {
-      for (CedarFSUser user : readUsers) {
+      for (FolderServerUser user : readUsers) {
         CedarUserExtract u = user.buildExtract();
         CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.READ);
         permissions.addUserPermissions(up);
       }
     }
     if (writeUsers != null) {
-      for (CedarFSUser user : writeUsers) {
+      for (FolderServerUser user : writeUsers) {
         CedarUserExtract u = user.buildExtract();
         CedarNodeUserPermission up = new CedarNodeUserPermission(u, NodePermission.WRITE);
         permissions.addUserPermissions(up);
       }
     }
     if (readGroups != null) {
-      for (CedarFSGroup group : readGroups) {
+      for (FolderServerGroup group : readGroups) {
         CedarGroupExtract g = group.buildExtract();
         CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.READ);
         permissions.addGroupPermissions(gp);
       }
     }
     if (writeGroups != null) {
-      for (CedarFSGroup group : writeGroups) {
+      for (FolderServerGroup group : writeGroups) {
         CedarGroupExtract g = group.buildExtract();
         CedarNodeGroupPermission gp = new CedarNodeGroupPermission(g, NodePermission.WRITE);
         permissions.addGroupPermissions(gp);
@@ -497,7 +497,7 @@ public class Neo4JUserSession {
   }
 
   public boolean userIsOwnerOfFolder(String folderURL) {
-    CedarFSUser owner = getNodeOwner(folderURL);
+    FolderServerUser owner = getNodeOwner(folderURL);
     return owner != null && owner.getId().equals(getUserId());
   }
 
@@ -511,7 +511,7 @@ public class Neo4JUserSession {
   }
 
   public boolean userIsOwnerOfResource(String resourceURL) {
-    CedarFSUser owner = getNodeOwner(resourceURL);
+    FolderServerUser owner = getNodeOwner(resourceURL);
     return owner != null && owner.getId().equals(getUserId());
   }
 
@@ -524,32 +524,32 @@ public class Neo4JUserSession {
     return neo4JProxy.userHasWriteAccessToResource(getUserId(), resourceURL);
   }
 
-  public List<CedarFSUser> findUsers() {
+  public List<FolderServerUser> findUsers() {
     return neo4JProxy.findUsers();
   }
 
-  public List<CedarFSGroup> findGroups() {
+  public List<FolderServerGroup> findGroups() {
     return neo4JProxy.findGroups();
   }
 
-  public boolean userIsOwnerOfNode(CedarFSNode node) {
-    CedarFSUser nodeOwner = getNodeOwner(node.getId());
+  public boolean userIsOwnerOfNode(FolderServerNode node) {
+    FolderServerUser nodeOwner = getNodeOwner(node.getId());
     return nodeOwner != null && nodeOwner.getId().equals(getUserId());
   }
 
-  public CedarFSUser findUserById(String userURL) {
+  public FolderServerUser findUserById(String userURL) {
     return neo4JProxy.findUserById(userURL);
   }
 
-  public CedarFSGroup findGroupById(String groupURL) {
+  public FolderServerGroup findGroupById(String groupURL) {
     return neo4JProxy.findGroupById(groupURL);
   }
 
-  public boolean moveResource(CedarFSResource sourceResource, CedarFSFolder targetFolder) {
+  public boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
     return neo4JProxy.moveResource(sourceResource, targetFolder);
   }
 
-  public boolean moveFolder(CedarFSFolder sourceFolder, CedarFSFolder targetFolder) {
+  public boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder) {
     return neo4JProxy.moveFolder(sourceFolder, targetFolder);
   }
 
@@ -557,16 +557,16 @@ public class Neo4JUserSession {
     return neo4JProxy.findAccessibleNodeIds(getUserId());
   }
 
-  public CedarFSGroup findGroupByName(String groupName) {
+  public FolderServerGroup findGroupByName(String groupName) {
     return neo4JProxy.findGroupByName(groupName);
   }
 
-  public CedarFSGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
+  public FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
     String groupURL = buildGroupId(UUID.randomUUID().toString());
     return neo4JProxy.createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
   }
 
-  public CedarFSGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
+  public FolderServerGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
     return neo4JProxy.updateGroupById(groupURL, updateFields, getUserId());
   }
 
@@ -577,14 +577,14 @@ public class Neo4JUserSession {
   public CedarGroupUsers findGroupUsers(String groupURL) {
     Set<String> memberIds = new HashSet<>();
     Set<String> administratorsIds = new HashSet<>();
-    Map<String, CedarFSUser> users = new HashMap<>();
-    List<CedarFSUser> groupMembers = neo4JProxy.findGroupMembers(groupURL);
-    for (CedarFSUser member : groupMembers) {
+    Map<String, FolderServerUser> users = new HashMap<>();
+    List<FolderServerUser> groupMembers = neo4JProxy.findGroupMembers(groupURL);
+    for (FolderServerUser member : groupMembers) {
       memberIds.add(member.getId());
       users.put(member.getId(), member);
     }
-    List<CedarFSUser> groupAdministrators = neo4JProxy.findGroupAdministrators(groupURL);
-    for (CedarFSUser administrator : groupAdministrators) {
+    List<FolderServerUser> groupAdministrators = neo4JProxy.findGroupAdministrators(groupURL);
+    for (FolderServerUser administrator : groupAdministrators) {
       administratorsIds.add(administrator.getId());
       users.put(administrator.getId(), administrator);
     }

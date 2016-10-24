@@ -9,14 +9,14 @@ import org.metadatacenter.server.security.model.user.CedarUserExtract;
 import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CedarFSUser extends AbstractCedarSuperNode implements CedarUserRepresentation {
+public class FolderServerUser extends AbstractCedarSuperNode implements CedarUserRepresentation {
 
   private String firstName;
   private String lastName;
   private String email;
   private String displayName;
 
-  public CedarFSUser() {
+  public FolderServerUser() {
     this.nodeType = CedarNodeType.USER;
   }
 
