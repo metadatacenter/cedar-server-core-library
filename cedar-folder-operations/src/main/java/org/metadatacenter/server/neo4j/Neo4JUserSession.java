@@ -676,5 +676,18 @@ public class Neo4JUserSession implements GroupServiceSession, ServiceSession, Fo
     }
   }
 
+  @Override
+  public boolean userAdministersGroup(String groupURL) {
+    CedarGroupUsers groupUsers = findGroupUsers(groupURL);
+    if (groupUsers != null) {
+      String currentUserId = getUserId();
+      for (CedarGroupUser user : groupUsers.getUsers()) {
+        if (currentUserId.equals(user.getUser().getId()) && user.isAdministrator()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
 }

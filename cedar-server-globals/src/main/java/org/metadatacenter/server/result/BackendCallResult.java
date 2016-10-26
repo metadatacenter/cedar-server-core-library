@@ -29,4 +29,13 @@ public class BackendCallResult {
   public List<BackendCallError> getErrors() {
     return Collections.unmodifiableList(errors);
   }
+
+  public String getFirstErrorMessage() {
+    if (errors != null) {
+      if (errors.get(0) != null) {
+        return errors.get(0).getMessage();
+      }
+    }
+    return null;
+  }
 }

@@ -7,9 +7,6 @@ import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest
 
 import java.util.Map;
 
-/**
- * Created by egyedia on 10/24/16.
- */
 public interface PermissionServiceSession {
   CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder);
 
@@ -31,4 +28,6 @@ public interface PermissionServiceSession {
   boolean userIsOwnerOfNode(FolderServerNode node);
 
   Map<String, String> findAccessibleNodeIds();
+
+  boolean userAdministersGroup(String groupURL);
 }

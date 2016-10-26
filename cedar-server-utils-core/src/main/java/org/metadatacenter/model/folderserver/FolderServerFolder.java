@@ -44,14 +44,4 @@ public class FolderServerFolder extends FolderServerNode {
   public void setRoot(boolean root) {
     this.root = root;
   }
-
-  /*public String getUUID() {
-    String sid = getId();
-    String prefix = CedarConfig.getInstance().getLinkedDataPrefix(CedarNodeType.FOLDER);
-    if (sid != null && prefix != null && sid.startsWith(prefix)) {
-      return sid.substring(prefix.length());
-    } else {
-      return sid;
-    }
-  }*/
 }
