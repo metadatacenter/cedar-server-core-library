@@ -1,8 +1,6 @@
 package org.metadatacenter.model.folderserver;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import org.metadatacenter.model.AbstractCedarNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
@@ -27,27 +25,38 @@ public abstract class FolderServerNode extends AbstractCedarNode {
 
   private List<NodePermission> currentUserPermissions;
 
+  protected String createdByUserName;
+  protected String lastUpdatedByUserName;
+  protected String ownedByUserName;
+  protected String displayPath;
+  protected String displayParentPath;
+
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
     this.currentUserPermissions = new ArrayList<>();
   }
 
-  @JsonProperty("@id")
+  @JsonGetter("@id")
   public String getId() {
     return id;
   }
 
-  @JsonProperty("id")
-  public void setId(String id) {
+  @JsonSetter("id")
+  public void setId1(String id) {
     this.id = id;
   }
 
-  @JsonProperty("nodeType")
+  @JsonSetter("@id")
+  public void setId2(String id) {
+    this.id = id;
+  }
+
+  @JsonGetter("nodeType")
   public CedarNodeType getType() {
     return nodeType;
   }
 
-  @JsonProperty("type")
+  @JsonSetter("type")
   public void setType(CedarNodeType nodeType) {
     this.nodeType = nodeType;
   }
@@ -68,43 +77,63 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.description = description;
   }
 
-  @JsonProperty("pav:createdOn")
+  @JsonGetter("pav:createdOn")
   public ProvenanceTime getCreatedOn() {
     return createdOn;
   }
 
-  @JsonProperty("createdOn")
-  public void setCreatedOn(ProvenanceTime createdOn) {
+  @JsonSetter("createdOn")
+  public void setCreatedOn1(ProvenanceTime createdOn) {
     this.createdOn = createdOn;
   }
 
-  @JsonProperty("pav:lastUpdatedOn")
+  @JsonSetter("pav:createdOn")
+  public void setCreatedOn2(ProvenanceTime createdOn) {
+    this.createdOn = createdOn;
+  }
+
+  @JsonGetter("pav:lastUpdatedOn")
   public ProvenanceTime getLastUpdatedOn() {
     return lastUpdatedOn;
   }
 
-  @JsonProperty("lastUpdatedOn")
-  public void setLastUpdatedOn(ProvenanceTime lastUpdatedOn) {
+  @JsonSetter("lastUpdatedOn")
+  public void setLastUpdatedOn1(ProvenanceTime lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonProperty("pav:createdBy")
+  @JsonSetter("pav:lastUpdatedOn")
+  public void setLastUpdatedOn2(ProvenanceTime lastUpdatedOn) {
+    this.lastUpdatedOn = lastUpdatedOn;
+  }
+
+  @JsonGetter("pav:createdBy")
   public String getCreatedBy() {
     return createdBy;
   }
 
-  @JsonProperty("createdBy")
-  public void setCreatedBy(String createdBy) {
+  @JsonSetter("createdBy")
+  public void setCreatedBy1(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @JsonProperty("oslc:modifiedBy")
+  @JsonSetter("pav:createdBy")
+  public void setCreatedBy2(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  @JsonGetter("oslc:modifiedBy")
   public String getLastUpdatedBy() {
     return lastUpdatedBy;
   }
 
-  @JsonProperty("lastUpdatedBy")
-  public void setLastUpdatedBy(String lastUpdatedBy) {
+  @JsonSetter("lastUpdatedBy")
+  public void setLastUpdatedBy1(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
+
+  @JsonSetter("oslc:modifiedBy")
+  public void setLastUpdatedBy2(String lastUpdatedBy) {
     this.lastUpdatedBy = lastUpdatedBy;
   }
 
@@ -122,6 +151,34 @@ public abstract class FolderServerNode extends AbstractCedarNode {
 
   public void setCreatedOnTS(long createdOnTS) {
     this.createdOnTS = createdOnTS;
+  }
+
+  public void setOwnedByUserName(String ownedByUserName) {
+    this.ownedByUserName = ownedByUserName;
+  }
+
+  public String getDisplayPath() {
+    return displayPath;
+  }
+
+  public void setDisplayPath(String displayPath) {
+    this.displayPath = displayPath;
+  }
+
+  public String getDisplayParentPath() {
+    return displayParentPath;
+  }
+
+  public void setDisplayParentPath(String displayParentPath) {
+    this.displayParentPath = displayParentPath;
+  }
+
+  public void setCreatedByUserName(String createdByUserName) {
+    this.createdByUserName = createdByUserName;
+  }
+
+  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
+    this.lastUpdatedByUserName = lastUpdatedByUserName;
   }
 
   @JsonProperty("@context")

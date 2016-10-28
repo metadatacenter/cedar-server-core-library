@@ -66,12 +66,10 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
     this.displayName = displayName;
   }
 
-  @JsonProperty("ownedBy")
   public String getOwnedBy() {
     return ownedBy;
   }
 
-  @JsonProperty("ownedBy")
   public void setOwnedBy(String ownedBy) {
     this.ownedBy = ownedBy;
   }

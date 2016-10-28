@@ -1,32 +1,33 @@
 package org.metadatacenter.model.index;
 
-import org.metadatacenter.model.resourceserver.ResourceServerNode;
+import org.metadatacenter.model.folderserver.FolderServerNode;
 
 import java.util.List;
 
 public class CedarIndexResource {
 
-  private ResourceServerNode info;
+  private FolderServerNode info;
   private List<String> fieldName;
   private List<String> fieldValue;
   // Only for template instances
   private String templateId;
 
   // Used by Jackson
-  public CedarIndexResource() {}
+  public CedarIndexResource() {
+  }
 
-  public CedarIndexResource(ResourceServerNode info, List<String> fieldName, List<String> fieldValue, String templateId) {
+  public CedarIndexResource(FolderServerNode info, List<String> fieldName, List<String> fieldValue, String templateId) {
     this.info = info;
     this.fieldName = fieldName;
     this.fieldValue = fieldValue;
     this.templateId = templateId;
   }
 
-  public ResourceServerNode getInfo() {
+  public FolderServerNode getInfo() {
     return info;
   }
 
-  public void setInfo(ResourceServerNode info) {
+  public void setInfo(FolderServerNode info) {
     this.info = info;
   }
 
