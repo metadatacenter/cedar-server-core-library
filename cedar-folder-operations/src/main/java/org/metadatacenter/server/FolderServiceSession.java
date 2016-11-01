@@ -4,6 +4,7 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.NodeLabel;
 
 import java.util.List;
@@ -76,4 +77,6 @@ public interface FolderServiceSession {
   boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder);
 
   boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder);
+
+  FolderServerFolder ensureUserHomeExists();
 }

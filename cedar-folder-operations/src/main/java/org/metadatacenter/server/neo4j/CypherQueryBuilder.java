@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
-class CypherQueryBuilder {
+public class CypherQueryBuilder {
 
   public enum FolderOrResource {
     FOLDER, RESOURCE

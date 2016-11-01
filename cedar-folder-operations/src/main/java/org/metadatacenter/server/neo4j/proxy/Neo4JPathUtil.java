@@ -1,12 +1,14 @@
-package org.metadatacenter.server.neo4j;
+package org.metadatacenter.server.neo4j.proxy;
 
 import org.apache.commons.lang3.StringUtils;
+import org.metadatacenter.server.neo4j.Neo4jConfig;
+import org.metadatacenter.server.neo4j.PathUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("IndexOfReplaceableByContains")
-class Neo4JPathUtil implements PathUtil {
+public class Neo4JPathUtil implements PathUtil {
 
   private final static String SEPARATOR = "/";
   private final static String FOLDER_NAME_SANITIZER_REGEX = "[^a-zA-Z0-9\\.\\-_' ]";

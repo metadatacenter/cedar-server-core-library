@@ -1,6 +1,7 @@
-package org.metadatacenter.server.neo4j;
+package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
@@ -12,7 +13,8 @@ import java.util.Set;
 public class PermissionRequestValidator {
 
   private final CedarNodePermissionsRequest request;
-  private final Neo4JUserSession neo4JUserSession;
+  private final PermissionServiceSession permissionService;
+  private final Neo4JProxies proxies;
   private final BackendCallResult callResult;
   private final CedarNodePermissions permissions;
   private final String nodeURL;
@@ -20,9 +22,10 @@ public class PermissionRequestValidator {
 
   private FolderServerNode node;
 
-  public PermissionRequestValidator(Neo4JUserSession neo4JUserSession, String nodeURL, CedarNodePermissionsRequest
-      request, boolean nodeIsFolder) {
-    this.neo4JUserSession = neo4JUserSession;
+  public PermissionRequestValidator(PermissionServiceSession permissionService, Neo4JProxies proxies, String nodeURL,
+                                    CedarNodePermissionsRequest request, boolean nodeIsFolder) {
+    this.permissionService = permissionService;
+    this.proxies = proxies;
     this.callResult = new BackendCallResult();
     this.request = request;
     this.nodeURL = nodeURL;
@@ -59,7 +62,7 @@ public class PermissionRequestValidator {
 
   private void validateNodeExistence() {
     if (nodeIsFolder) {
-      FolderServerFolder folder = neo4JUserSession.findFolderById(nodeURL);
+      FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
@@ -68,7 +71,7 @@ public class PermissionRequestValidator {
             .param("folderId", nodeURL);
       }
     } else {
-      FolderServerResource resource = neo4JUserSession.findResourceById(nodeURL);
+      FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
       node = resource;
       if (resource == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
@@ -81,14 +84,14 @@ public class PermissionRequestValidator {
 
   private void validateWritePermission() {
     if (nodeIsFolder) {
-      if (!neo4JUserSession.userHasWriteAccessToFolder(nodeURL)) {
+      if (!permissionService.userHasWriteAccessToFolder(nodeURL)) {
         callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the folder")
             .param("folderId", nodeURL);
       }
     } else {
-      if (!neo4JUserSession.userHasWriteAccessToResource(nodeURL)) {
+      if (!permissionService.userHasWriteAccessToResource(nodeURL)) {
         callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the resource")
@@ -105,7 +108,7 @@ public class PermissionRequestValidator {
           .message("The owner should be present in the request");
     } else {
       String newOwnerId = owner.getId();
-      FolderServerUser newOwner = neo4JUserSession.findUserById(newOwnerId);
+      FolderServerUser newOwner = proxies.user().findUserById(newOwnerId);
       if (newOwner == null) {
         callResult.addError(BackendCallErrorType.NOT_FOUND)
             .subType("userNotFound")
@@ -133,7 +136,7 @@ public class PermissionRequestValidator {
               .message("The permission is missing from the request");
         } else {
           String userURL = permissionUser.getId();
-          FolderServerUser user = neo4JUserSession.findUserById(userURL);
+          FolderServerUser user = proxies.user().findUserById(userURL);
           if (user == null) {
             callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("userNotFound")
@@ -164,7 +167,7 @@ public class PermissionRequestValidator {
               .message("The permission is missing from the request");
         } else {
           String groupURL = permissionGroup.getId();
-          FolderServerGroup group = neo4JUserSession.findGroupById(groupURL);
+          FolderServerGroup group = proxies.group().findGroupById(groupURL);
           if (group == null) {
             callResult.addError(BackendCallErrorType.NOT_FOUND)
                 .subType("groupNotFound")
@@ -222,10 +225,10 @@ public class PermissionRequestValidator {
 
   private void validateOwnerSetPermission() {
     String newOwnerId = permissions.getOwner().getId();
-    CedarNodePermissions currentPermissions = neo4JUserSession.getNodePermissions(nodeURL, nodeIsFolder);
+    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL, nodeIsFolder);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
-      if (!neo4JUserSession.userIsOwnerOfNode(node)) {
+      if (!permissionService.userIsOwnerOfNode(node)) {
         callResult.addError(BackendCallErrorType.AUTHORIZATION)
             .subType("userNotOwner")
             .message("Only the owner of a node can change the ownership")

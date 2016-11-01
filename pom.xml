@@ -33,6 +33,7 @@
     <module>cedar-server-utils-play</module>
     <module>cedar-template-operations</module>
     <module>cedar-user-operations</module>
+    <module>cedar-server-rest</module>
   </modules>
 
 </project>

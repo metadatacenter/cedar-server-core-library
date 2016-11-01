@@ -1,5 +1,5 @@
 package org.metadatacenter.server.neo4j;
 
-interface CypherQuery {
+public interface CypherQuery {
   String getQuery();
 }

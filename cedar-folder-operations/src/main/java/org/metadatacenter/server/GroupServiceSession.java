@@ -24,4 +24,6 @@ public interface GroupServiceSession extends ServiceSession {
   CedarGroupUsers findGroupUsers(String groupURL);
 
   BackendCallResult updateGroupUsers(String groupURL, CedarGroupUsersRequest request);
+
+  boolean userAdministersGroup(String groupURL);
 }

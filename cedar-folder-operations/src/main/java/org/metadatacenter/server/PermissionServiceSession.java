@@ -28,6 +28,4 @@ public interface PermissionServiceSession {
   boolean userIsOwnerOfNode(FolderServerNode node);
 
   Map<String, String> findAccessibleNodeIds();
-
-  boolean userAdministersGroup(String groupURL);
 }

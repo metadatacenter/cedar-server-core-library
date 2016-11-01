@@ -9,7 +9,7 @@ import java.util.*;
 
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
-class CypherParamBuilder {
+public class CypherParamBuilder {
 
   private CypherParamBuilder() {
   }
