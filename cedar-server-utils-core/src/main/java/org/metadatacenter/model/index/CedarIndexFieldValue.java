@@ -27,9 +27,17 @@ public class CedarIndexFieldValue {
   // For instances based on controlled terms, it corresponds to the @value field. It is set to null otherwise
   // (e.g., http://purl.bioontology.org/ontology/MESH/D008099)
   private String fieldValueSemanticType;
+  private String fieldValueAndSemanticType;
 
   // Used by Jackson
   public CedarIndexFieldValue() {};
+
+  // Generate fieldValueAndSemanticType
+  public void generateFieldValueAndSemanticType() {
+    String separator = "[[ST]]";
+    if ()
+    fieldValueAndSemanticType = fieldValue_string + separator + fieldValueSemanticType;
+  }
 
   public String getFieldName() {
     return fieldName;
@@ -119,6 +127,14 @@ public class CedarIndexFieldValue {
     this.fieldValueSemanticType = fieldValueSemanticType;
   }
 
+  public String getFieldValueAndSemanticType() {
+    return fieldValueAndSemanticType;
+  }
+
+  public void setFieldValueAndSemanticType(String fieldValueAndSemanticType) {
+    this.fieldValueAndSemanticType = fieldValueAndSemanticType;
+  }
+
   @Override
   public String toString() {
     return "CedarIndexFieldValue{" +
@@ -133,6 +149,7 @@ public class CedarIndexFieldValue {
         ", fieldValue_date='" + fieldValue_date + '\'' +
         ", fieldValue_boolean='" + fieldValue_boolean + '\'' +
         ", fieldValueSemanticType='" + fieldValueSemanticType + '\'' +
+        ", fieldValueAndSemanticType='" + fieldValueAndSemanticType + '\'' +
         '}';
   }
 }
