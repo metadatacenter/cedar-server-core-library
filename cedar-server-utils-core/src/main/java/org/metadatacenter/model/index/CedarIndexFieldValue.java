@@ -14,6 +14,7 @@ public class CedarIndexFieldValue {
   // For instances based on controlled terms, it corresponds to the @type field. It is set to null otherwise
   private String fieldSemanticType;
   // Elasticsearch data types
+  // In the case of ontology terms, fieldValue_string will store the term's preferred name (e.g., liver)
   private String fieldValue_string;
   private String fieldValue_long;
   private String fieldValue_integer;
@@ -24,29 +25,11 @@ public class CedarIndexFieldValue {
   private String fieldValue_boolean;
 
   // For instances based on controlled terms, it corresponds to the @value field. It is set to null otherwise
+  // (e.g., http://purl.bioontology.org/ontology/MESH/D008099)
   private String fieldValueSemanticType;
-  private boolean useForValueRecommendation;
 
   // Used by Jackson
   public CedarIndexFieldValue() {};
-
-  public CedarIndexFieldValue(String fieldName, String fieldSemanticType, String fieldValue_string, String
-      fieldValue_long, String fieldValue_integer, String fieldValue_short, String fieldValue_double,
-                         String fieldValue_float, String fieldValue_date, String fieldValue_boolean,
-                         String fieldValueSemanticType, boolean useForValueRecommendation) {
-    this.fieldName = fieldName;
-    this.fieldSemanticType = fieldSemanticType;
-    this.fieldValue_string = fieldValue_string;
-    this.fieldValue_long = fieldValue_long;
-    this.fieldValue_integer = fieldValue_integer;
-    this.fieldValue_short = fieldValue_short;
-    this.fieldValue_double = fieldValue_double;
-    this.fieldValue_float = fieldValue_float;
-    this.fieldValue_date = fieldValue_date;
-    this.fieldValue_boolean = fieldValue_boolean;
-    this.fieldValueSemanticType = fieldValueSemanticType;
-    this.useForValueRecommendation = useForValueRecommendation;
-  }
 
   public String getFieldName() {
     return fieldName;
@@ -136,17 +119,9 @@ public class CedarIndexFieldValue {
     this.fieldValueSemanticType = fieldValueSemanticType;
   }
 
-  public boolean getUseForValueRecommendation() {
-    return useForValueRecommendation;
-  }
-
-  public void setUseForValueRecommendation(boolean useForValueRecommendation) {
-    this.useForValueRecommendation = useForValueRecommendation;
-  }
-
   @Override
   public String toString() {
-    return "CedarIndexField{" +
+    return "CedarIndexFieldValue{" +
         "fieldName='" + fieldName + '\'' +
         ", fieldSemanticType='" + fieldSemanticType + '\'' +
         ", fieldValue_string='" + fieldValue_string + '\'' +
@@ -158,10 +133,8 @@ public class CedarIndexFieldValue {
         ", fieldValue_date='" + fieldValue_date + '\'' +
         ", fieldValue_boolean='" + fieldValue_boolean + '\'' +
         ", fieldValueSemanticType='" + fieldValueSemanticType + '\'' +
-        ", useForValueRecommendation=" + useForValueRecommendation +
         '}';
   }
-
 }
 
 

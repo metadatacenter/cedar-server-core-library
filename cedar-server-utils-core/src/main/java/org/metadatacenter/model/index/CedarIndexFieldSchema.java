@@ -15,17 +15,14 @@ public class CedarIndexFieldSchema {
   private String fieldSemanticType;
   // Field value type, following to the Elasticsearch data types
   private String fieldValueType;
-  private boolean useForValueRecommendation;
 
   // Used by Jackson
   public CedarIndexFieldSchema() {};
 
-  public CedarIndexFieldSchema(String fieldName, String fieldSemanticType, String fieldValueType, boolean
-      useForValueRecommendation) {
+  public CedarIndexFieldSchema(String fieldName, String fieldSemanticType, String fieldValueType) {
     this.fieldName = fieldName;
     this.fieldSemanticType = fieldSemanticType;
     this.fieldValueType = fieldValueType;
-    this.useForValueRecommendation = useForValueRecommendation;
   }
 
   public String getFieldName() {
@@ -52,21 +49,12 @@ public class CedarIndexFieldSchema {
     this.fieldValueType = fieldValueType;
   }
 
-  public boolean getUseForValueRecommendation() {
-    return useForValueRecommendation;
-  }
-
-  public void setUseForValueRecommendation(boolean useForValueRecommendation) {
-    this.useForValueRecommendation = useForValueRecommendation;
-  }
-
   @Override
   public String toString() {
     return "CedarIndexFieldSchema{" +
         "fieldName='" + fieldName + '\'' +
         ", fieldSemanticType='" + fieldSemanticType + '\'' +
         ", fieldValueType='" + fieldValueType + '\'' +
-        ", useForValueRecommendation=" + useForValueRecommendation +
         '}';
   }
 
@@ -75,7 +63,6 @@ public class CedarIndexFieldSchema {
     CedarIndexFieldValue fv = new CedarIndexFieldValue();
     fv.setFieldName(getFieldName());
     fv.setFieldSemanticType(getFieldSemanticType());
-    fv.setUseForValueRecommendation(getUseForValueRecommendation());
     return fv;
   }
 
