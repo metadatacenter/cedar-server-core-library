@@ -35,7 +35,6 @@ public class CedarIndexFieldValue {
   // Generate fieldValueAndSemanticType
   public void generateFieldValueAndSemanticType() {
     String separator = "[[ST]]";
-    if ()
     fieldValueAndSemanticType = fieldValue_string + separator + fieldValueSemanticType;
   }
 
