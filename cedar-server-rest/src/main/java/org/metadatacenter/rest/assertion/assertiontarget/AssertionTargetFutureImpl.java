@@ -1,5 +1,6 @@
 package org.metadatacenter.rest.assertion.assertiontarget;
 
+import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.CedarOperationDescriptor;
 import org.metadatacenter.rest.assertion.CedarAssertion;
@@ -18,32 +19,32 @@ public abstract class AssertionTargetFutureImpl<T> implements AssertionTargetFut
   @Override
   public void otherwiseBadRequest() throws CedarAssertionException {
     buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), null, null,
-        CedarAssertionResult.HTTP_BAD_REQUEST);
+        HttpConstants.HTTP_BAD_REQUEST);
   }
 
   @Override
   public void otherwiseBadRequest(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
     buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        CedarAssertionResult.HTTP_BAD_REQUEST);
+        HttpConstants.HTTP_BAD_REQUEST);
   }
 
   @Override
   public void otherwiseInternalServerError(CedarOperationDescriptor operation, String message) throws
       CedarAssertionException {
     buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        CedarAssertionResult.HTTP_INTERNAL_SERVER_ERROR);
+        HttpConstants.HTTP_INTERNAL_SERVER_ERROR);
   }
 
   @Override
   public void otherwiseNotFound(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
     buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        CedarAssertionResult.HTTP_NOT_FOUND);
+        HttpConstants.HTTP_NOT_FOUND);
   }
 
   @Override
   public void otherwiseForbidden(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
     buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        CedarAssertionResult.HTTP_FORBIDDEN);
+        HttpConstants.HTTP_FORBIDDEN);
   }
 
   @SuppressWarnings("UnusedAssignment")

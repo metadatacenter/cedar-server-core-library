@@ -2,6 +2,7 @@ package org.metadatacenter.rest.exception;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.rest.CedarOperationDescriptor;
 import org.metadatacenter.util.json.JsonMapper;
 
@@ -29,7 +30,7 @@ public class CedarAssertionException extends Exception {
 
   private CedarAssertionException(String message) {
     super(message);
-    this.code = CedarAssertionResult.HTTP_INTERNAL_SERVER_ERROR;
+    this.code = HttpConstants.HTTP_INTERNAL_SERVER_ERROR;
     this.errorType = "exception";
   }
 

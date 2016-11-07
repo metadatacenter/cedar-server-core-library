@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+import static org.metadatacenter.constant.HttpConstants.*;
+
 public abstract class AbstractNeo4JProxy {
 
   protected final Neo4JProxies proxies;
@@ -69,8 +71,8 @@ public abstract class AbstractNeo4JProxy {
 
     try {
       HttpResponse response = Request.Post(proxies.config.getTransactionUrl())
-          .addHeader(HttpConstants.HTTP_HEADER_AUTHORIZATION, proxies.config.getAuthString())
-          .addHeader(HttpConstants.HTTP_HEADER_ACCEPT, HttpConstants.CONTENT_TYPE_APPLICATION_JSON)
+          .addHeader(HTTP_HEADER_AUTHORIZATION, proxies.config.getAuthString())
+          .addHeader(HTTP_HEADER_ACCEPT, CONTENT_TYPE_APPLICATION_JSON)
           .addHeader("X-stream", "true")
           .bodyString(requestBody, ContentType.APPLICATION_JSON)
           .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
@@ -80,7 +82,7 @@ public abstract class AbstractNeo4JProxy {
 
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
-      if (statusCode == HttpConstants.OK) {
+      if (statusCode == HTTP_OK) {
         return JsonMapper.MAPPER.readTree(responseAsString);
       } else {
         return null;

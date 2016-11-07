@@ -33,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.metadatacenter.constant.HttpConstants.*;
+
 public class KeycloakUtils {
 
   private final static String SECRET_KEY = "secret";
@@ -97,13 +99,13 @@ public class KeycloakUtils {
     IUserInfo userInfo = null;
 
     String url = deployment.getRealmInfoUrl() + KeycloakConstants.USERINFO_URL_SUFFIX;
-    String authString = HttpConstants.HTTP_AUTH_HEADER_BEARER_PREFIX + token;
+    String authString = HTTP_AUTH_HEADER_BEARER_PREFIX + token;
 
     try {
       HttpResponse response = Request.Get(url)
-          .addHeader(HttpConstants.HTTP_HEADER_CONTENT_TYPE, HttpConstants.CONTENT_TYPE_FORM)
-          .addHeader(HttpConstants.HTTP_HEADER_AUTHORIZATION, authString)
-          .addHeader(HttpConstants.HTTP_HEADER_ACCEPT, HttpConstants.CONTENT_TYPE_APPLICATION_JSON)
+          .addHeader(HTTP_HEADER_CONTENT_TYPE, CONTENT_TYPE_FORM)
+          .addHeader(HTTP_HEADER_AUTHORIZATION, authString)
+          .addHeader(HTTP_HEADER_ACCEPT, CONTENT_TYPE_APPLICATION_JSON)
           .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
           .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
           .execute()
@@ -112,7 +114,7 @@ public class KeycloakUtils {
       int statusCode = response.getStatusLine().getStatusCode();
       //System.out.println("Status code:" + statusCode);
       String responseAsString = EntityUtils.toString(response.getEntity());
-      if (statusCode == HttpConstants.OK) {
+      if (statusCode == HTTP_OK) {
         userInfo = JsonMapper.MAPPER.readValue(responseAsString, KeycloakUserInfo.class);
       }
 

@@ -5,13 +5,9 @@ import org.metadatacenter.server.result.BackendCallResult;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CedarAssertionResult {
+import static org.metadatacenter.constant.HttpConstants.*;
 
-  public static final int HTTP_BAD_REQUEST = 400;
-  public static final int HTTP_UNAUTHORIZED = 401;
-  public static final int HTTP_FORBIDDEN = 403;
-  public static final int HTTP_NOT_FOUND = 404;
-  public static final int HTTP_INTERNAL_SERVER_ERROR = 500;
+public class CedarAssertionResult {
 
   private int code;
   private String message;

@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.metadatacenter.server.result.BackendCallErrorType.*;
+
 public class PermissionRequestValidator {
 
   private final CedarNodePermissionsRequest request;
@@ -65,7 +67,7 @@ public class PermissionRequestValidator {
       FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
-        callResult.addError(BackendCallErrorType.NOT_FOUND)
+        callResult.addError(NOT_FOUND)
             .subType("folderNotFound")
             .message("Folder not found by id")
             .param("folderId", nodeURL);
@@ -74,7 +76,7 @@ public class PermissionRequestValidator {
       FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
       node = resource;
       if (resource == null) {
-        callResult.addError(BackendCallErrorType.NOT_FOUND)
+        callResult.addError(NOT_FOUND)
             .subType("resourceNotFound")
             .message("Resource not found by id")
             .param("resourceId", nodeURL);
@@ -85,14 +87,14 @@ public class PermissionRequestValidator {
   private void validateWritePermission() {
     if (nodeIsFolder) {
       if (!permissionService.userHasWriteAccessToFolder(nodeURL)) {
-        callResult.addError(BackendCallErrorType.AUTHORIZATION)
+        callResult.addError(AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the folder")
             .param("folderId", nodeURL);
       }
     } else {
       if (!permissionService.userHasWriteAccessToResource(nodeURL)) {
-        callResult.addError(BackendCallErrorType.AUTHORIZATION)
+        callResult.addError(AUTHORIZATION)
             .subType("userHasNoWriteAccess")
             .message("The current user has no write access to the resource")
             .param("resourceId", nodeURL);
@@ -103,14 +105,14 @@ public class PermissionRequestValidator {
   private void validateAndSetOwner() {
     NodePermissionUser owner = request.getOwner();
     if (owner == null) {
-      callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+      callResult.addError(INVALID_ARGUMENT)
           .subType("ownerMissing")
           .message("The owner should be present in the request");
     } else {
       String newOwnerId = owner.getId();
       FolderServerUser newOwner = proxies.user().findUserById(newOwnerId);
       if (newOwner == null) {
-        callResult.addError(BackendCallErrorType.NOT_FOUND)
+        callResult.addError(NOT_FOUND)
             .subType("userNotFound")
             .message("The new owner can not be found")
             .param("userId", newOwnerId);
@@ -125,20 +127,20 @@ public class PermissionRequestValidator {
     for (NodePermissionUserPermissionPair pair : userPermissions) {
       NodePermissionUser permissionUser = pair.getUser();
       if (permissionUser == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(INVALID_ARGUMENT)
             .subType("userNodeMissing")
             .message("The user node is missing from the request");
       } else {
         NodePermission permission = pair.getPermission();
         if (permission == null) {
-          callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+          callResult.addError(INVALID_ARGUMENT)
               .subType("permissionMissing")
               .message("The permission is missing from the request");
         } else {
           String userURL = permissionUser.getId();
           FolderServerUser user = proxies.user().findUserById(userURL);
           if (user == null) {
-            callResult.addError(BackendCallErrorType.NOT_FOUND)
+            callResult.addError(NOT_FOUND)
                 .subType("userNotFound")
                 .message("The user from request can not be found")
                 .param("userId", userURL);
@@ -156,20 +158,20 @@ public class PermissionRequestValidator {
     for (NodePermissionGroupPermissionPair pair : groupPermissions) {
       NodePermissionGroup permissionGroup = pair.getGroup();
       if (permissionGroup == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(INVALID_ARGUMENT)
             .subType("groupNodeMissing")
             .message("The group node is missing from the request");
       } else {
         NodePermission permission = pair.getPermission();
         if (permission == null) {
-          callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+          callResult.addError(INVALID_ARGUMENT)
               .subType("permissionMissing")
               .message("The permission is missing from the request");
         } else {
           String groupURL = permissionGroup.getId();
           FolderServerGroup group = proxies.group().findGroupById(groupURL);
           if (group == null) {
-            callResult.addError(BackendCallErrorType.NOT_FOUND)
+            callResult.addError(NOT_FOUND)
                 .subType("groupNotFound")
                 .message("The group from request can not be found")
                 .param("groupId", groupURL);
@@ -186,7 +188,7 @@ public class PermissionRequestValidator {
     for (CedarNodeUserPermission up : permissions.getUserPermissions()) {
       String uid = up.getUser().getId();
       if (userIds.contains(uid)) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(INVALID_ARGUMENT)
             .subType("userIdNotUnique")
             .message("Each user should be listed only once in the request")
             .param("userId", uid);
@@ -201,7 +203,7 @@ public class PermissionRequestValidator {
     for (CedarNodeGroupPermission gp : permissions.getGroupPermissions()) {
       String gid = gp.getGroup().getId();
       if (groupIds.contains(gid)) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(INVALID_ARGUMENT)
             .subType("groupIdNotUnique")
             .message("Each group should be listed only once in the request")
             .param("groupId", gid);
@@ -215,7 +217,7 @@ public class PermissionRequestValidator {
     String ownerId = permissions.getOwner().getId();
     for (CedarNodeUserPermission up : permissions.getUserPermissions()) {
       if (ownerId.equals(up.getUser().getId())) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
+        callResult.addError(INVALID_ARGUMENT)
             .subType("ownerAsUser")
             .message("The owner should not be listed among the user permissions")
             .param("userId", ownerId);
@@ -229,7 +231,7 @@ public class PermissionRequestValidator {
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       if (!permissionService.userIsOwnerOfNode(node)) {
-        callResult.addError(BackendCallErrorType.AUTHORIZATION)
+        callResult.addError(AUTHORIZATION)
             .subType("userNotOwner")
             .message("Only the owner of a node can change the ownership")
             .param("nodeId", nodeURL);

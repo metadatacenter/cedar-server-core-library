@@ -1,8 +1,10 @@
 package org.metadatacenter.server.security;
 
-import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
+
+import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX;
+import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_AUTHORIZATION;
 
 public class CedarApiKeyAuthRequest implements AuthRequest {
 
@@ -14,10 +16,10 @@ public class CedarApiKeyAuthRequest implements AuthRequest {
 
   CedarApiKeyAuthRequest(Http.Request request) {
     if (request != null) {
-      authHeader = request.getHeader(Http.HeaderNames.AUTHORIZATION);
+      authHeader = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (authHeader != null) {
-        if (authHeader.startsWith(HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
-          apiKey = authHeader.substring(HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX.length());
+        if (authHeader.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
+          apiKey = authHeader.substring(HTTP_AUTH_HEADER_APIKEY_PREFIX.length());
         }
       }
     }
@@ -25,7 +27,7 @@ public class CedarApiKeyAuthRequest implements AuthRequest {
 
   public CedarApiKeyAuthRequest(String apiKey) {
     this.apiKey = apiKey;
-    this.authHeader = HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX + apiKey;
+    this.authHeader = HTTP_AUTH_HEADER_APIKEY_PREFIX + apiKey;
   }
 
   @Override
