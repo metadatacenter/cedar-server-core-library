@@ -7,6 +7,9 @@ public class CedarUserExtract implements CedarUserRepresentation {
   private String lastName;
   private String email;
 
+  public CedarUserExtract() {
+  }
+
   public CedarUserExtract(String id, String firstName, String lastName, String email) {
     this.id = id;
     this.firstName = firstName;
