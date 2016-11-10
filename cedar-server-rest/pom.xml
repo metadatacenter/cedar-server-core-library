@@ -24,13 +24,11 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-folder-operations</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>

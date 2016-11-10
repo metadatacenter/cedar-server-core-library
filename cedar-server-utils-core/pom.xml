@@ -14,22 +14,16 @@
 
   <name>CEDAR Server Utils - Core</name>
 
-  <properties>
-     <cedar.version>0.8.4-SNAPSHOT</cedar.version>
-  </properties>
-
   <dependencies>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-project-config</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>
