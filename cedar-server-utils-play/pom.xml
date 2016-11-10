@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -13,10 +13,6 @@
   <packaging>jar</packaging>
 
   <name>CEDAR Server Utils - Play</name>
-
-  <properties>
-    <cedar.version>0.8.3</cedar.version>
-  </properties>
 
   <repositories>
 
@@ -35,7 +31,6 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
     <dependency>

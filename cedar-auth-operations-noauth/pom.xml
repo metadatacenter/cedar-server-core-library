@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -14,18 +14,11 @@
 
   <name>CEDAR Auth Operations - Noauth code</name>
 
-  <properties>
-
-    <cedar.version>0.8.3</cedar.version>
-
-  </properties>
-
   <dependencies>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
-      <version>${cedar.version}</version>
     </dependency>
 
   </dependencies>
