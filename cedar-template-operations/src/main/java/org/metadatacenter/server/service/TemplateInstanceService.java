@@ -8,28 +8,23 @@ import java.util.List;
 
 public interface TemplateInstanceService<K, T> {
 
-  @NonNull
-  public T createTemplateInstance(@NonNull T templateInstance) throws IOException;
+  @NonNull T createTemplateInstance(@NonNull T templateInstance) throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplateInstances() throws IOException;
+  @NonNull List<T> findAllTemplateInstances() throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplateInstances(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException;
+  @NonNull List<T> findAllTemplateInstances(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException;
 
-  @NonNull
-  public List<T> findAllTemplateInstances(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
+  @NonNull List<T> findAllTemplateInstances(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
       includeExclude) throws IOException;
 
-  public T findTemplateInstance(@NonNull K templateInstanceId) throws IOException;
+  T findTemplateInstance(@NonNull K templateInstanceId) throws IOException;
 
-  @NonNull
-  public T updateTemplateInstance(@NonNull K templateInstanceId, @NonNull T modifications) throws
+  @NonNull T updateTemplateInstance(@NonNull K templateInstanceId, @NonNull T modifications) throws
       InstanceNotFoundException, IOException;
 
-  public void deleteTemplateInstance(@NonNull K templateInstanceId) throws InstanceNotFoundException, IOException;
+  void deleteTemplateInstance(@NonNull K templateInstanceId) throws InstanceNotFoundException, IOException;
 
-  public void deleteAllTemplateInstances();
+  void deleteAllTemplateInstances();
 
-  public long count();
+  long count();
 }

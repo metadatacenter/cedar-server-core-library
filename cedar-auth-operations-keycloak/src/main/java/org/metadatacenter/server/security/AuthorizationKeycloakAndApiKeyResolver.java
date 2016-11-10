@@ -2,7 +2,7 @@ package org.metadatacenter.server.security;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.server.security.exception.*;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
@@ -14,7 +14,7 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
   }
 
   @Override
-  public CedarUser getUserAndEnsurePermission(IAuthRequest authRequest, CedarPermission permission, IUserService
+  public CedarUser getUserAndEnsurePermission(AuthRequest authRequest, CedarPermission permission, IUserService
       userService) throws CedarAccessException {
     CedarUser user = getUser(authRequest, userService);
     if (user == null) {
@@ -28,8 +28,8 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
     return user;
   }
 
-  public CedarUser getUser(IAuthRequest authRequest, IUserService userService) throws CedarAccessException {
-    CedarUser user = null;
+  public CedarUser getUser(AuthRequest authRequest, IUserService userService) throws CedarAccessException {
+    CedarUser user;
     if (authRequest instanceof CedarBearerAuthRequest) {
       user = KeycloakUtils.getUserFromAuthRequest(authRequest, userService);
       if (user == null) {

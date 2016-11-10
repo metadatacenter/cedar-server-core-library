@@ -2,9 +2,9 @@ package org.metadatacenter.server.neo4j;
 
 public class FolderContentSortField {
 
-  private String name;
-  private String fieldName;
-  private boolean textual;
+  private final String name;
+  private final String fieldName;
+  private final boolean textual;
 
   public FolderContentSortField(String name, String fieldName, boolean textual) {
     this.name = name;

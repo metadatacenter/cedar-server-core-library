@@ -4,8 +4,8 @@
 
   <parent>
     <groupId>org.metadatacenter</groupId>
-    <artifactId>cedar-server-utils</artifactId>
-    <version>0.8.2</version>
+    <artifactId>cedar-server-core-library</artifactId>
+    <version>0.8.3</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -15,11 +15,6 @@
   <name>CEDAR Auth Operations - Generic</name>
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-server-utils-core</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>

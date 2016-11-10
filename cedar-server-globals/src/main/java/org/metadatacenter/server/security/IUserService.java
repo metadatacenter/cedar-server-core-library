@@ -7,8 +7,8 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 import java.io.IOException;
 
 public interface IUserService {
-  public CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
+  CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
 
-  public CedarUser findUser(@NonNull String id) throws IOException, ProcessingException;
+  CedarUser findUser(@NonNull String id) throws IOException, ProcessingException;
 
 }

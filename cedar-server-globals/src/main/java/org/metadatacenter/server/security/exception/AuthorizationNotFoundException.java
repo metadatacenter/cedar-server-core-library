@@ -2,7 +2,7 @@ package org.metadatacenter.server.security.exception;
 
 public class AuthorizationNotFoundException extends CedarAccessException {
 
-  private String permissionName;
+  private final String permissionName;
 
   public String getPermissionName() {
     return permissionName;

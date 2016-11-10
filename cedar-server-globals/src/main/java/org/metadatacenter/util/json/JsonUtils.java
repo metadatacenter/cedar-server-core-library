@@ -13,7 +13,7 @@ import com.github.fge.jsonschema.main.JsonValidator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
-import org.metadatacenter.util.FixMongoDirection;
+import org.metadatacenter.util.mongo.FixMongoDirection;
 
 import java.io.IOException;
 import java.io.StringWriter;

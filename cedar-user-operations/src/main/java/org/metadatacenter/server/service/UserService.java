@@ -12,16 +12,15 @@ import java.util.List;
 
 public interface UserService extends IUserService {
 
-  @NonNull
-  public CedarUser createUser(@NonNull CedarUser user) throws IOException;
+  @NonNull CedarUser createUser(@NonNull CedarUser user) throws IOException;
 
-  public CedarUser findUser(@NonNull String userId) throws IOException, ProcessingException;
+  CedarUser findUser(@NonNull String userId) throws IOException, ProcessingException;
 
-  public CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
+  CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
 
-  public CedarUser updateUser(@NonNull String userId, JsonNode modifications) throws IOException, ProcessingException,
+  CedarUser updateUser(@NonNull String userId, JsonNode modifications) throws IOException, ProcessingException,
       InstanceNotFoundException;
 
-  public List<CedarUser> findAll() throws IOException, ProcessingException;
+  List<CedarUser> findAll() throws IOException, ProcessingException;
 
 }

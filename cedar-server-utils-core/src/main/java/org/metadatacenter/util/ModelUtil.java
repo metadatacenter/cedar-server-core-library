@@ -14,11 +14,7 @@ public class ModelUtil {
     Pattern r = Pattern.compile(specialFieldPattern);
     // Now create matcher object.
     Matcher m = r.matcher(fieldName);
-    if (m.find()) {
-      return true;
-    } else {
-      return false;
-    }
+    return m.find();
   }
 
 }

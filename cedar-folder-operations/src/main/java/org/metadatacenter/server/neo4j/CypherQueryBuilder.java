@@ -9,6 +9,10 @@ import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
 public class CypherQueryBuilder {
 
+  public enum FolderOrResource {
+    FOLDER, RESOURCE
+  }
+
   private static String groupBySpecialValue;
 
   private CypherQueryBuilder() {
@@ -36,7 +40,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
+  private static String createFolder(String folderAlias, NodeLabel label, Map<String, Object>
       extraProperties) {
     return createNode(folderAlias, label, extraProperties, true);
   }
@@ -202,7 +206,6 @@ public class CypherQueryBuilder {
       sb.append(getOrderByExpression(s));
       prefix = ", ";
     }
-    ;
     return sb.toString();
   }
 
@@ -398,8 +401,11 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(ID)).append(",");
     sb.append(buildCreateAssignment(NAME)).append(",");
     sb.append(buildCreateAssignment(DISPLAY_NAME)).append(",");
+    sb.append(buildCreateAssignment(DESCRIPTION)).append(",");
+    sb.append(buildCreateAssignment(CREATED_BY)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON)).append(",");
     sb.append(buildCreateAssignment(CREATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(LAST_UPDATED_BY)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(LAST_UPDATED_ON_TS)).append(",");
     if (extraProperties != null && !extraProperties.isEmpty()) {
@@ -408,7 +414,16 @@ public class CypherQueryBuilder {
     sb.append(buildCreateAssignment(NODE_TYPE));
     sb.append("}");
     sb.append(")");
-    sb.append("RETURN ").append(nodeAlias);
+
+    sb.append("WITH ").append(nodeAlias);
+
+    sb.append(" MATCH");
+    sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
+
+    sb.append(" MERGE (user)-[:").append(RelationLabel.ADMINISTERS).append("]->(").append(nodeAlias).append(")");
+    sb.append(" MERGE (user)-[:").append(RelationLabel.MEMBEROF).append("]->(").append(nodeAlias).append(")");
+
+    sb.append(" RETURN ").append(nodeAlias);
     return sb.toString();
   }
 
@@ -432,13 +447,20 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getGroupByName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {name:{name} })");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
   public static String addGroupToUser() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH");
     sb.append("(user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("MATCH");
     sb.append("(group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
-    sb.append("CREATE");
+    sb.append("MERGE");
     sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("]->(group)");
     sb.append("RETURN user");
     return sb.toString();
@@ -649,18 +671,18 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String userCanReadNode(String nodeURL, boolean nodeIsFolder) {
-    return userHasPermissionOnNode(nodeURL, RelationLabel.CANREAD, nodeIsFolder);
+  public static String userCanReadNode(FolderOrResource folderOrResource) {
+    return userHasPermissionOnNode(RelationLabel.CANREAD, folderOrResource);
   }
 
-  public static String userCanWriteNode(String nodeURL, boolean nodeIsFolder) {
-    return userHasPermissionOnNode(nodeURL, RelationLabel.CANWRITE, nodeIsFolder);
+  public static String userCanWriteNode(FolderOrResource folderOrResource) {
+    return userHasPermissionOnNode(RelationLabel.CANWRITE, folderOrResource);
   }
 
-  private static String userHasPermissionOnNode(String nodeURL, RelationLabel relationLabel, boolean nodeIsFolder) {
+  private static String userHasPermissionOnNode(RelationLabel relationLabel, FolderOrResource folderOrResource) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
     } else {
       sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");
@@ -784,4 +806,57 @@ public class CypherQueryBuilder {
     sb.append(" RETURN node");
     return sb.toString();
   }
+
+  public static String updateGroupById(Map<String, String> updateFields) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{id} })");
+    sb.append("SET group.lastUpdatedBy= {lastUpdatedBy}");
+    sb.append("SET group.lastUpdatedOn= {lastUpdatedOn}");
+    sb.append("SET group.lastUpdatedOnTS= {lastUpdatedOnTS}");
+    for (String propertyName : updateFields.keySet()) {
+      sb.append("SET group.").append(buildUpdateAssignment(propertyName));
+    }
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String deleteGroupById() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{id} })");
+    sb.append("DETACH DELETE group");
+    return sb.toString();
+  }
+
+  public static String getGroupUsersWithRelation(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("MATCH (user)");
+    sb.append("-[:").append(relationLabel).append("]->");
+    sb.append("(group)");
+    sb.append("RETURN user");
+    return sb.toString();
+  }
+
+  public static String addRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (fromNode:").append(fromLabel).append(" {id:{fromId} })");
+    sb.append(" MATCH (toNode:").append(toLabel).append(" {id:{toId} })");
+    sb.append(" CREATE");
+    sb.append(" (fromNode)-[:").append(relation).append("]->(toNode)");
+    sb.append(" RETURN fromNode");
+    return sb.toString();
+  }
+
+  public static String removeRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (fromNode:").append(fromLabel).append(" {id:{fromId} })");
+    sb.append(" MATCH (toNode:").append(toLabel).append(" {id:{toId} })");
+    sb.append(" MATCH");
+    sb.append(" (fromNode)-[relation:").append(relation).append("]->(toNode)");
+    sb.append(" DELETE relation");
+    sb.append(" RETURN fromNode");
+    return sb.toString();
+  }
+
 }

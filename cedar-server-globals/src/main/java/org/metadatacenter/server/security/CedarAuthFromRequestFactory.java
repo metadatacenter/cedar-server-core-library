@@ -1,18 +1,19 @@
 package org.metadatacenter.server.security;
 
-import org.metadatacenter.constant.HttpConstants;
-import org.metadatacenter.server.security.model.IAuthRequest;
+import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
+
+import static org.metadatacenter.constant.HttpConstants.*;
 
 public abstract class CedarAuthFromRequestFactory {
 
-  public static IAuthRequest fromRequest(Http.Request request) {
+  public static AuthRequest fromRequest(Http.Request request) {
     if (request != null) {
-      String auth = request.getHeader(Http.HeaderNames.AUTHORIZATION);
+      String auth = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (auth != null) {
-        if (auth.startsWith(HttpConstants.HTTP_AUTH_HEADER_BEARER_PREFIX)) {
+        if (auth.startsWith(HTTP_AUTH_HEADER_BEARER_PREFIX)) {
           return new CedarBearerAuthRequest(request);
-        } else if (auth.startsWith(HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
+        } else if (auth.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
           return new CedarApiKeyAuthRequest(request);
         }
       }

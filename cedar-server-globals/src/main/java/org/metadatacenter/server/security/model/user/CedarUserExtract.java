@@ -1,11 +1,14 @@
 package org.metadatacenter.server.security.model.user;
 
-public class CedarUserExtract implements ICedarUserRepresentation {
+public class CedarUserExtract implements CedarUserRepresentation {
 
   private String id;
   private String firstName;
   private String lastName;
   private String email;
+
+  public CedarUserExtract() {
+  }
 
   public CedarUserExtract(String id, String firstName, String lastName, String email) {
     this.id = id;

@@ -1,6 +1,5 @@
 package org.metadatacenter.constant;
 
-
 public final class KeycloakConstants {
 
   private KeycloakConstants() {

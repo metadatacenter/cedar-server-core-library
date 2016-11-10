@@ -66,12 +66,12 @@ public class CypherParamBuilder {
     params.put(USER_ID, createdBy);
     params.put(NODE_TYPE, nodeType.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }
 
-  public static Map<String, Object> getFolderLookupByDepthParameters(IPathUtil pathUtil, String path) {
+  public static Map<String, Object> getFolderLookupByDepthParameters(PathUtil pathUtil, String path) {
     String normalizedPath = pathUtil.normalizePath(path);
     String[] parts = StringUtils.split(normalizedPath, pathUtil.getSeparator());
     Map<String, Object> folderNames = new HashMap<>();
@@ -151,6 +151,10 @@ public class CypherParamBuilder {
     return getNodeByIdentity(resourceURL);
   }
 
+  public static Map<String, Object> deleteGroupById(String groupURL) {
+    return getNodeByIdentity(groupURL);
+  }
+
   public static Map<String, Object> updateFolderById(String folderURL, Map<String, String> updateFields, String
       updatedBy) {
     return updateNodeById(folderURL, updateFields, updatedBy);
@@ -175,11 +179,11 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String, Object> getFolderLookupByIDParameters(IPathUtil pathUtil, String id) {
+  public static Map<String, Object> getFolderLookupByIDParameters(PathUtil pathUtil, String id) {
     return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
-  public static Map<String, Object> getNodeLookupByIDParameters(IPathUtil pathUtil, String id) {
+  public static Map<String, Object> getNodeLookupByIDParameters(PathUtil pathUtil, String id) {
     return getNodeByIdentityAndName(id, pathUtil.getRootPath());
   }
 
@@ -205,13 +209,13 @@ public class CypherParamBuilder {
     params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.USER.getValue());
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }
 
-  public static Map<String, Object> createGroup(String groupURL, String name, String displayName,
-                                                Map<String, Object> extraProperties) {
+  public static Map<String, Object> createGroup(String groupURL, String name, String displayName, String description,
+                                                String ownerURL, Map<String, Object> extraProperties) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -219,13 +223,17 @@ public class CypherParamBuilder {
     params.put(ID, groupURL);
     params.put(NAME, name);
     params.put(DISPLAY_NAME, displayName);
+    params.put(DESCRIPTION, description);
+    params.put(CREATED_BY, ownerURL);
     params.put(CREATED_ON, nowString);
     params.put(CREATED_ON_TS, nowTS);
+    params.put(LAST_UPDATED_BY, ownerURL);
     params.put(LAST_UPDATED_ON, nowString);
     params.put(LAST_UPDATED_ON_TS, nowTS);
     params.put(NODE_TYPE, CedarNodeType.GROUP.getValue());
+    params.put(USER_ID, ownerURL);
     if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> params.put(key, value));
+      extraProperties.forEach(params::put);
     }
     return params;
   }
@@ -246,6 +254,12 @@ public class CypherParamBuilder {
   public static Map<String, Object> getGroupById(String groupURL) {
     Map<String, Object> params = new HashMap<>();
     params.put(ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> getGroupByName(String groupName) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(NAME, groupName);
     return params;
   }
 
@@ -316,7 +330,7 @@ public class CypherParamBuilder {
     return params;
   }
 
-  public static Map<String,Object> matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
+  public static Map<String, Object> matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
     Map<String, Object> params = new HashMap<>();
     params.put(FOLDER_ID, folderId);
     params.put(PARENT_FOLDER_ID, parentFolderId);
@@ -328,4 +342,23 @@ public class CypherParamBuilder {
     params.put(USER_ID, userURL);
     return params;
   }
+
+  public static Map<String, Object> matchGroupId(String groupURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(GROUP_ID, groupURL);
+    return params;
+  }
+
+  public static Map<String, Object> updateGroupById(String groupURL, Map<String, String> updateFields, String
+      updatedBy) {
+    return updateNodeById(groupURL, updateFields, updatedBy);
+  }
+
+  public static Map<String, Object> matchFromNodeToNode(String fromURL, String toURL) {
+    Map<String, Object> params = new HashMap<>();
+    params.put(FROM_ID, fromURL);
+    params.put(TO_ID, toURL);
+    return params;
+  }
+
 }

@@ -35,7 +35,7 @@ public enum CedarNodeType {
   }
 
   public static class AtType {
-    public static String AT_TYPE_PREFIX = "https://schema.metadatacenter.org/core/";
+    public static final String AT_TYPE_PREFIX = "https://schema.metadatacenter.org/core/";
     public static final String FIELD = AT_TYPE_PREFIX + "TemplateField";
     public static final String ELEMENT = AT_TYPE_PREFIX + "TemplateElement";
     public static final String TEMPLATE = AT_TYPE_PREFIX + "Template";

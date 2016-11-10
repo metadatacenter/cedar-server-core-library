@@ -1,8 +1,8 @@
 package org.metadatacenter.server.security.model.auth;
 
-import org.metadatacenter.server.security.model.user.ICedarUserRepresentation;
+import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
 
-public class AuthorisedUser implements ICedarUserRepresentation {
+public class AuthorisedUser implements CedarUserRepresentation {
 
   private String id;
   private String firstName;

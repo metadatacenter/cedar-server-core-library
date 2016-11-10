@@ -1,4 +1,4 @@
-package org.metadatacenter.util;
+package org.metadatacenter.util.mongo;
 
 import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;

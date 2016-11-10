@@ -1,7 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -14,19 +13,17 @@ import org.bson.conversions.Bson;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
-import org.metadatacenter.util.FixMongoDirection;
-import org.metadatacenter.util.MongoFactory;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
+import org.metadatacenter.util.mongo.FixMongoDirection;
+import org.metadatacenter.util.mongo.MongoFactory;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import static com.fasterxml.jackson.databind.node.JsonNodeType.NULL;
 import static com.mongodb.client.model.Filters.eq;
 
 /**

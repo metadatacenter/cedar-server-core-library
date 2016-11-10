@@ -7,7 +7,7 @@ public enum BackendCallErrorType {
   AUTHORIZATION("authorization"),
   SERVER_ERROR("server");
 
-  private String value;
+  private final String value;
 
   BackendCallErrorType(String value) {
     this.value = value;

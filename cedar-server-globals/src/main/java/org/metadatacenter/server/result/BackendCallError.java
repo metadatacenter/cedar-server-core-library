@@ -5,10 +5,10 @@ import java.util.HashMap;
 
 public class BackendCallError {
 
-  private BackendCallErrorType type;
+  private final BackendCallErrorType type;
   private String subType;
   private String message;
-  private Map<String, Object> params;
+  private final Map<String, Object> params;
   private String suggestedAction;
   private String code;
 

@@ -1,6 +1,9 @@
 package org.metadatacenter.config;
 
+import java.util.HashMap;
+
 public interface ElasticsearchConfig {
+
   String getCluster();
 
   String getIndex();
@@ -14,4 +17,9 @@ public interface ElasticsearchConfig {
   int getSize();
 
   int getScrollKeepAlive();
+
+  HashMap getSettings();
+
+  HashMap getMappings();
+
 }

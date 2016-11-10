@@ -3,9 +3,8 @@ package org.metadatacenter.server.neo4j;
 import java.util.Map;
 
 public class CypherQueryWithParameters implements CypherQuery {
-  private String query;
-  private Map<String, Object> parameters;
-  private String literalCypher;
+  private final String query;
+  private final Map<String, Object> parameters;
 
   public CypherQueryWithParameters(String query, Map<String, Object> parameters) {
     this.query = query;
@@ -26,7 +25,7 @@ public class CypherQueryWithParameters implements CypherQuery {
     if (q != null) {
       for (String key : parameters.keySet()) {
         Object o = parameters.get(key);
-        String v = null;
+        String v;
         if (o == null) {
           v = "null";
         } else {
