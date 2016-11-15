@@ -181,6 +181,18 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.lastUpdatedByUserName = lastUpdatedByUserName;
   }
 
+  public String getCreatedByUserName() {
+    return createdByUserName;
+  }
+
+  public String getLastUpdatedByUserName() {
+    return lastUpdatedByUserName;
+  }
+
+  public String getOwnedByUserName() {
+    return ownedByUserName;
+  }
+
   @JsonProperty("@context")
   public Map<String, String> getContext() {
     return CONTEXT;
