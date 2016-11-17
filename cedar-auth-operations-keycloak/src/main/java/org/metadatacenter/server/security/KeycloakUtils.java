@@ -26,10 +26,10 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +58,15 @@ public class KeycloakUtils {
   public static KeycloakDeployment buildDeployment() {
     InputStream config = Thread.currentThread().getContextClassLoader().getResourceAsStream(KeycloakConstants.JSON);
     return KeycloakDeploymentBuilder.build(config);
+  }
+
+  public static KeycloakDeployment buildDeployment(String path) {
+    try {
+      return KeycloakDeploymentBuilder.build(new FileInputStream(Paths.get(path).toFile()));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   public static String getRefreshTokenPostData(String keycloakRefreshToken) {

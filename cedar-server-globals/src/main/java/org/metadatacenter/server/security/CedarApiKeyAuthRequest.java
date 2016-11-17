@@ -3,6 +3,8 @@ package org.metadatacenter.server.security;
 import org.metadatacenter.server.security.model.AuthRequest;
 import play.mvc.Http;
 
+import javax.servlet.http.HttpServletRequest;
+
 import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX;
 import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_AUTHORIZATION;
 
@@ -15,6 +17,17 @@ public class CedarApiKeyAuthRequest implements AuthRequest {
   }
 
   CedarApiKeyAuthRequest(Http.Request request) {
+    if (request != null) {
+      authHeader = request.getHeader(HTTP_HEADER_AUTHORIZATION);
+      if (authHeader != null) {
+        if (authHeader.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
+          apiKey = authHeader.substring(HTTP_AUTH_HEADER_APIKEY_PREFIX.length());
+        }
+      }
+    }
+  }
+
+  CedarApiKeyAuthRequest(HttpServletRequest request) {
     if (request != null) {
       authHeader = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (authHeader != null) {
