@@ -7,6 +7,7 @@ import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.InputStreamReader;
 
 public class NativeHttpServletRequest extends CedarRequestNoun {
 
@@ -23,7 +24,7 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   public CedarRequestBody getRequestBody() throws CedarAssertionException {
     JsonNode jsonBodyNode = null;
     try {
-      jsonBodyNode = JsonMapper.MAPPER.readTree(nativeRequest.getReader());
+      jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
     } catch (Exception e) {
       e.printStackTrace();
     }
