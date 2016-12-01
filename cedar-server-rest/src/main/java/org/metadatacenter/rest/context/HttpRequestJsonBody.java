@@ -33,6 +33,11 @@ public class HttpRequestJsonBody implements CedarRequestBody {
   }
 
   @Override
+  public JsonNode asJson() {
+    return bodyNode;
+  }
+
+  @Override
   public <T> T convert(Class<T> type) throws CedarAssertionException {
     T object;
     try {
