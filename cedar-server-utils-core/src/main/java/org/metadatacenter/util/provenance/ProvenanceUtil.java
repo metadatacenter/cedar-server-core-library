@@ -11,7 +11,7 @@ import org.metadatacenter.server.security.exception.CedarAccessException;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import java.lang.String;import java.time.Instant;
+import java.time.Instant;
 
 public class ProvenanceUtil {
 
@@ -60,6 +60,11 @@ public class ProvenanceUtil {
     } catch (CedarAccessException e) {
       e.printStackTrace();
     }
+    return buildFromUUID(cedarConfig, id);
+  }
+
+  public static ProvenanceInfo build(CedarConfig cedarConfig, CedarUser cu) {
+    String id = cu.getId();
     return buildFromUUID(cedarConfig, id);
   }
 
