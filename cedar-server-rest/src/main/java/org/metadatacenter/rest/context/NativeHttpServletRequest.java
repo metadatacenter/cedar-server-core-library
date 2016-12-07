@@ -26,7 +26,7 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
     try {
       jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new CedarAssertionException(e);
     }
 
     if (jsonBodyNode != null) {
