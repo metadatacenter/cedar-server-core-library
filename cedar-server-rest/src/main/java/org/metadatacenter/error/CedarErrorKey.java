@@ -27,8 +27,12 @@ public enum CedarErrorKey {
   TEMPLATE_INSTANCES_NOT_LISTED("templateInstancesNotListed"),
 
   NO_WRITE_ACCESS_TO_FOLDER("noWriteAccessToFolder"),
+
   NO_READ_ACCESS_TO_TEMPLATE("noReadAccessToTemplate"),
   NO_WRITE_ACCESS_TO_TEMPLATE("noWriteAccessToTemplate"),
+
+  NO_READ_ACCESS_TO_TEMPLATE_ELEMENT("noReadAccessToTemplateElement"),
+  NO_WRITE_ACCESS_TO_TEMPLATE_ELEMENT("noWriteAccessToTemplateElement"),
 
 
   ;
