@@ -60,11 +60,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.typesafe.play</groupId>
-      <artifactId>play_${play2.scala.version}</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
@@ -77,11 +72,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>scala-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

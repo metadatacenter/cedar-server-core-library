@@ -5,7 +5,6 @@ import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.CedarAuthFromRequestFactory;
 import org.metadatacenter.server.security.exception.CedarAccessException;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import play.mvc.Http;
 
 import javax.servlet.http.HttpServletRequest;
 
