@@ -34,6 +34,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_TEMPLATE_ELEMENT("noReadAccessToTemplateElement"),
   NO_WRITE_ACCESS_TO_TEMPLATE_ELEMENT("noWriteAccessToTemplateElement"),
 
+  NO_READ_ACCESS_TO_TEMPLATE_FIELD("noReadAccessToTemplateField"),
+  NO_WRITE_ACCESS_TO_TEMPLATE_FIELD("noWriteAccessToTemplateField"),
 
   ;
 
