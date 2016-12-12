@@ -1,4 +1,4 @@
-package org.metadatacenter.cedar.template.core;
+package org.metadatacenter.util.http;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;

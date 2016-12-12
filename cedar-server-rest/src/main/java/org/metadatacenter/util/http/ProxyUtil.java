@@ -8,6 +8,7 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.rest.exception.CedarAssertionException;
+import org.metadatacenter.rest.exception.CedarProcessingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ public class ProxyUtil {
 
   public static final String ZERO_LENGTH = "0";
 
-  public static HttpResponse proxyGet(String url, HttpServletRequest request) throws CedarAssertionException {
+  public static HttpResponse proxyGet(String url, HttpServletRequest request) throws CedarProcessingException {
     Request proxyRequest = Request.Get(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
@@ -25,11 +26,11 @@ public class ProxyUtil {
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
-      throw new CedarAssertionException(e);
+      throw new CedarProcessingException(e);
     }
   }
 
-  public static HttpResponse proxyDelete(String url, HttpServletRequest request) throws CedarAssertionException {
+  public static HttpResponse proxyDelete(String url, HttpServletRequest request) throws CedarProcessingException {
     Request proxyRequest = Request.Delete(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
@@ -39,11 +40,11 @@ public class ProxyUtil {
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
-      throw new CedarAssertionException(e);
+      throw new CedarProcessingException(e);
     }
   }
 
-  public static HttpResponse proxyPost(String url, HttpServletRequest request) throws CedarAssertionException {
+  public static HttpResponse proxyPost(String url, HttpServletRequest request) throws CedarProcessingException {
     Request proxyRequest = Request.Post(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
@@ -53,11 +54,11 @@ public class ProxyUtil {
       proxyRequest.bodyStream(request.getInputStream());
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
-      throw new CedarAssertionException(e);
+      throw new CedarProcessingException(e);
     }
   }
 
-  public static HttpResponse proxyPut(String url, HttpServletRequest request) throws CedarAssertionException {
+  public static HttpResponse proxyPut(String url, HttpServletRequest request) throws CedarProcessingException {
     Request proxyRequest = Request.Put(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
@@ -67,7 +68,21 @@ public class ProxyUtil {
       proxyRequest.bodyStream(request.getInputStream());
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
-      throw new CedarAssertionException(e);
+      throw new CedarProcessingException(e);
+    }
+  }
+
+  public static HttpResponse proxyPut(String url, HttpServletRequest request, String content) throws
+      CedarProcessingException {
+    Request proxyRequest = Request.Put(url)
+        .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
+        .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
+        .addHeader(HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION));
+    try {
+      proxyRequest.bodyString(content, ContentType.APPLICATION_JSON);
+      return proxyRequest.execute().returnResponse();
+    } catch (IOException e) {
+      throw new CedarProcessingException(e);
     }
   }
 

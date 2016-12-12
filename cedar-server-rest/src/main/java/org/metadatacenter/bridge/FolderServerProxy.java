@@ -1,19 +1,17 @@
 package org.metadatacenter.bridge;
 
-import org.apache.commons.codec.EncoderException;
-import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.rest.exception.CedarAssertionException;
+import org.metadatacenter.rest.exception.CedarProcessingException;
+import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
 import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 
 public class FolderServerProxy {
 
@@ -21,11 +19,10 @@ public class FolderServerProxy {
   }
 
   public static FolderServerResource getResource(String folderBaseResource, String resourceId, HttpServletRequest
-      request) throws CedarAssertionException {
+      request) throws CedarProcessingException {
     if (resourceId != null) {
       try {
-        String url = folderBaseResource + "/" + new URLCodec().encode(resourceId);
-        System.out.println("FolderServerProxy.getResource:" + url);
+        String url = folderBaseResource + "/" + CedarUrlUtil.urlEncode(resourceId);
         HttpResponse proxyResponse = ProxyUtil.proxyGet(url, request);
         int statusCode = proxyResponse.getStatusLine().getStatusCode();
         HttpEntity entity = proxyResponse.getEntity();
@@ -39,19 +36,18 @@ public class FolderServerProxy {
             return node;
           }
         }
-      } catch (EncoderException | IOException e) {
-        throw new CedarAssertionException(e);
+      } catch (Exception e) {
+        throw new CedarProcessingException(e);
       }
     }
     return null;
   }
 
   public static FolderServerFolder getFolder(String folderBaseFolders, String folderId, HttpServletRequest request)
-      throws CedarAssertionException {
+      throws CedarProcessingException {
     if (folderId != null) {
       try {
-        String url = folderBaseFolders + "/" + new URLCodec().encode(folderId);
-        System.out.println("FolderServerProxy.getFolder:" + url);
+        String url = folderBaseFolders + "/" + CedarUrlUtil.urlEncode(folderId);
         HttpResponse proxyResponse = ProxyUtil.proxyGet(url, request);
         int statusCode = proxyResponse.getStatusLine().getStatusCode();
         HttpEntity entity = proxyResponse.getEntity();
@@ -63,8 +59,8 @@ public class FolderServerProxy {
             return folder;
           }
         }
-      } catch (EncoderException | IOException e) {
-        throw new CedarAssertionException(e);
+      } catch (Exception e) {
+        throw new CedarProcessingException(e);
       }
     }
     return null;

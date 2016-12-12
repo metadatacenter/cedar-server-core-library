@@ -26,6 +26,7 @@ public enum CedarErrorKey {
   TEMPLATE_INSTANCE_NOT_UPDATED("templateInstanceNotUpdated"),
   TEMPLATE_INSTANCES_NOT_LISTED("templateInstancesNotListed"),
 
+  NO_READ_ACCESS_TO_FOLDER("noReadAccessToFolder"),
   NO_WRITE_ACCESS_TO_FOLDER("noWriteAccessToFolder"),
 
   NO_READ_ACCESS_TO_TEMPLATE("noReadAccessToTemplate"),
@@ -37,6 +38,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_TEMPLATE_FIELD("noReadAccessToTemplateField"),
   NO_WRITE_ACCESS_TO_TEMPLATE_FIELD("noWriteAccessToTemplateField"),
 
+  NO_READ_ACCESS_TO_TEMPLATE_INSTANCE("noReadAccessToTemplateInstance"),
+  NO_WRITE_ACCESS_TO_TEMPLATE_INSTANCE("noWriteAccessToTemplateInstance"),
   ;
 
   private final String errorKey;

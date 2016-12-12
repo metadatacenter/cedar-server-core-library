@@ -25,10 +25,10 @@ public class CedarAssertionException extends Exception {
   private CedarOperationDescriptor operation;
   private String errorSource;
   private final String errorType;
-  private Exception sourceException;
+  protected Exception sourceException;
   private int code;
 
-  private CedarAssertionException(String message) {
+  protected CedarAssertionException(String message) {
     super(message);
     this.code = HttpConstants.HTTP_INTERNAL_SERVER_ERROR;
     this.errorType = "exception";
@@ -58,10 +58,10 @@ public class CedarAssertionException extends Exception {
     this(null, null, sourceException);
   }
 
-  public CedarAssertionException(Exception sourceException, String errorSource) {
+  /*public CedarAssertionException(Exception sourceException, String errorSource) {
     this(null, null, sourceException);
     this.errorSource = errorSource;
-  }
+  }*/
 
   public CedarAssertionException(String errorMessage, String errorSource) {
     this(errorMessage);
