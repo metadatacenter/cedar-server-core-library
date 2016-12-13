@@ -51,6 +51,10 @@ public enum CedarErrorKey {
   MISSING_PARAMETER("missingParameter"),
 
   INVALID_INPUT("invalidInput"),
+
+  SOURCE_FOLDER_NOT_FOUND("sourceFolderNotFound"),
+  SOURCE_RESOURCE_NOT_FOUND("sourceResourceNotFound"),
+  TARGET_FOLDER_NOT_FOUND("targetFolderNotFound"),
   ;
 
   private final String errorKey;
