@@ -58,6 +58,20 @@ public class ProxyUtil {
     }
   }
 
+  public static HttpResponse proxyPost(String url, HttpServletRequest request, String content) throws
+      CedarProcessingException {
+    Request proxyRequest = Request.Post(url)
+        .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
+        .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
+        .addHeader(HttpHeaders.AUTHORIZATION, request.getHeader(HttpHeaders.AUTHORIZATION));
+    try {
+      proxyRequest.bodyString(content, ContentType.APPLICATION_JSON);
+      return proxyRequest.execute().returnResponse();
+    } catch (IOException e) {
+      throw new CedarProcessingException(e);
+    }
+  }
+
   public static HttpResponse proxyPut(String url, HttpServletRequest request) throws CedarProcessingException {
     Request proxyRequest = Request.Put(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)

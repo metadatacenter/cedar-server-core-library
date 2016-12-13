@@ -40,6 +40,17 @@ public enum CedarErrorKey {
 
   NO_READ_ACCESS_TO_TEMPLATE_INSTANCE("noReadAccessToTemplateInstance"),
   NO_WRITE_ACCESS_TO_TEMPLATE_INSTANCE("noWriteAccessToTemplateInstance"),
+
+  NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
+  NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
+
+  FOLDER_NOT_FOUND("folderNotFound"),
+
+  UNKNOWN_NODE_TYPE("unknownNodeType"),
+
+  MISSING_PARAMETER("missingParameter"),
+
+  INVALID_INPUT("invalidInput"),
   ;
 
   private final String errorKey;

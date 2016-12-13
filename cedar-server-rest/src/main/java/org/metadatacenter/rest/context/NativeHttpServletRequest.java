@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 public class NativeHttpServletRequest extends CedarRequestNoun {
 
   private final HttpServletRequest nativeRequest;
+  private JsonNode jsonBodyNode;
 
   NativeHttpServletRequest(HttpServletRequest request) {
     if (request == null) {
@@ -22,23 +23,25 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
 
   @Override
   public CedarRequestBody getRequestBody() throws CedarAssertionException {
-    JsonNode jsonBodyNode = null;
-    try {
-      jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
-    } catch (Exception e) {
-      throw new CedarAssertionException(e);
+    if (jsonBodyNode == null) {
+      try {
+        jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
+      } catch (Exception e) {
+        throw new CedarAssertionException(e);
+      }
     }
 
-    if (jsonBodyNode != null) {
-      return new HttpRequestJsonBody(jsonBodyNode);
-    } else {
+    //if (jsonBodyNode != null) {
+    return new HttpRequestJsonBody(jsonBodyNode);
+    /*} else {
       return new HttpRequestEmptyBody();
-    }
+    }*/
   }
 
   @Override
   public String getContentType() {
     if (nativeRequest != null) {
+      //TODO: use constant here
       return nativeRequest.getHeader("Content-Type");
     }
     return null;
