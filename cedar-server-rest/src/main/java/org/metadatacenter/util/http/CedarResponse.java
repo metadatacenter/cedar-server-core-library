@@ -32,7 +32,8 @@ public abstract class CedarResponse {
       if (entity != null) {
         responseBuilder.entity(entity);
       } else {
-        Map<String, Object> r = new HashMap<>(parameters);
+        Map<String, Object> r = new HashMap<>();
+        r.put("parameters", parameters);
         r.put("errorKey", errorKey);
         r.put("errorMessage", errorMessage);
 
@@ -44,7 +45,7 @@ public abstract class CedarResponse {
         }
 
         if (!r.isEmpty()) {
-          responseBuilder.entity(parameters);
+          responseBuilder.entity(r);
         }
       }
       return responseBuilder.build();
