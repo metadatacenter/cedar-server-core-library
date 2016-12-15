@@ -1,5 +1,7 @@
 package org.metadatacenter.rest.context;
 
+import org.metadatacenter.server.security.model.user.CedarUser;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class CedarRequestContextFactory {
@@ -7,7 +9,7 @@ public class CedarRequestContextFactory {
     return new HttpServletRequestContext(request);
   }
 
-  /*public static CedarRequestContext fromUser(CedarUser user) {
-    return new PlayRequestContext(user);
-  }*/
+  public static CedarRequestContext fromUser(CedarUser user) {
+    return new LocalRequestContext(user);
+  }
 }

@@ -2,7 +2,7 @@ package org.metadatacenter.util.http;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
-import org.metadatacenter.rest.exception.CedarProcessingException;
+import org.metadatacenter.exception.CedarProcessingException;
 
 import java.io.IOException;
 

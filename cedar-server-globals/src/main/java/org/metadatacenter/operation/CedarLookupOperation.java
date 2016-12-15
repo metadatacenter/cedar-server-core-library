@@ -1,17 +1,16 @@
-package org.metadatacenter.rest.operation;
+package org.metadatacenter.operation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.metadatacenter.rest.CedarOperationDescriptor;
 import org.metadatacenter.util.json.JsonMapper;
 
-public class CedarDeleteOperation implements CedarOperationDescriptor {
+public class CedarLookupOperation implements CedarOperationDescriptor {
 
   private final Class clazz;
   private final String lookupAttributeName;
   private final Object lookupAttributeValue;
 
-  public CedarDeleteOperation(Class clazz, String lookupAttributeName, Object lookupAttributeValue) {
+  public CedarLookupOperation(Class clazz, String lookupAttributeName, Object lookupAttributeValue) {
     this.clazz = clazz;
     this.lookupAttributeName = lookupAttributeName;
     this.lookupAttributeValue = lookupAttributeValue;
@@ -32,7 +31,7 @@ public class CedarDeleteOperation implements CedarOperationDescriptor {
   @Override
   public JsonNode asJson() {
     ObjectNode objectNode = JsonMapper.MAPPER.createObjectNode();
-    objectNode.put("type", "delete");
+    objectNode.put("type", "lookup");
     objectNode.put("className", clazz.getName());
     objectNode.put("simpleClassName", clazz.getSimpleName());
     objectNode.put("lookupAttributeName", lookupAttributeName);

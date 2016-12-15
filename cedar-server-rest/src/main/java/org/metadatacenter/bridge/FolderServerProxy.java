@@ -6,7 +6,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.rest.exception.CedarProcessingException;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
 import org.metadatacenter.util.json.JsonMapper;

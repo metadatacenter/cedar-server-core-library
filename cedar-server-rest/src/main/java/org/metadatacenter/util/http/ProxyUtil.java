@@ -7,8 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.metadatacenter.constant.HttpConnectionConstants;
-import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.rest.exception.CedarProcessingException;
+import org.metadatacenter.exception.CedarProcessingException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

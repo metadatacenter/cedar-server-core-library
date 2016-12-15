@@ -3,7 +3,7 @@ package org.metadatacenter.rest.assertion;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
 public class NonNullAssertion implements CedarAssertion {
 
@@ -20,13 +20,13 @@ public class NonNullAssertion implements CedarAssertion {
         if (param.isMissing()) {
           return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
               .append("' from ").append(param.getSource()).append(" should be present").toString())
-              .setParameter("name", param.getName())
-              .setParameter("source", param.getSource());
+              .parameter("name", param.getName())
+              .parameter("source", param.getSource());
         } else if (param.isNull()) {
           return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
               .append("' from ").append(param.getSource()).append(" should be not null").toString())
-              .setParameter("name", param.getName())
-              .setParameter("source", param.getSource());
+              .parameter("name", param.getName())
+              .parameter("source", param.getSource());
         } else {
           return null;
         }

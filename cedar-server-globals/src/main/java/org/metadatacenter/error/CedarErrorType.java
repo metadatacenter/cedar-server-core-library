@@ -1,6 +1,8 @@
-package org.metadatacenter.server.result;
+package org.metadatacenter.error;
 
-public enum BackendCallErrorType {
+public enum CedarErrorType {
+
+  NONE(null),
   NOT_FOUND("notFound"),
   INVALID_ARGUMENT("invalidArgument"),
   AUTHENTICATION("authentication"),
@@ -9,11 +11,7 @@ public enum BackendCallErrorType {
 
   private final String value;
 
-  BackendCallErrorType(String value) {
+  CedarErrorType(String value) {
     this.value = value;
-  }
-
-  public String getValue() {
-    return value;
   }
 }

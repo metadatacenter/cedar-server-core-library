@@ -3,7 +3,7 @@ package org.metadatacenter.rest.assertion;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarUserNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 

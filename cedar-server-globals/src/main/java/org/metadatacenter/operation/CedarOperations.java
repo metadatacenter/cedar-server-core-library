@@ -1,4 +1,4 @@
-package org.metadatacenter.rest.operation;
+package org.metadatacenter.operation;
 
 import org.metadatacenter.rest.assertion.noun.CedarParameter;
 

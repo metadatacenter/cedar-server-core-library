@@ -27,7 +27,6 @@ public class HttpRequestEmptyBody implements CedarRequestBody {
     if (type == HttpRequestEmptyBody.class) {
       return (T) (new HttpRequestEmptyBody());
     }
-    // TODO: add an enum to the source here
-    throw new CedarAssertionException("An empty body can not be converted into " + type, "cedarAssertionFramework");
+    throw new CedarAssertionException("An empty body can not be converted into " + type);
   }
 }

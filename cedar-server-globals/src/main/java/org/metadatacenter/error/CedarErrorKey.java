@@ -2,6 +2,8 @@ package org.metadatacenter.error;
 
 public enum CedarErrorKey {
 
+  NONE(null),
+
   TEMPLATE_ELEMENT_NOT_CREATED("templateElementNotCreated"),
   TEMPLATE_ELEMENT_NOT_FOUND("templateElementNotFound"),
   TEMPLATE_ELEMENT_NOT_DELETED("templateElementNotDeleted"),
@@ -46,6 +48,8 @@ public enum CedarErrorKey {
 
   FOLDER_NOT_FOUND("folderNotFound"),
 
+  RESOURCE_NOT_FOUND("resourceNotFound"),
+
   UNKNOWN_NODE_TYPE("unknownNodeType"),
 
   MISSING_PARAMETER("missingParameter"),
@@ -55,11 +59,20 @@ public enum CedarErrorKey {
   SOURCE_FOLDER_NOT_FOUND("sourceFolderNotFound"),
   SOURCE_RESOURCE_NOT_FOUND("sourceResourceNotFound"),
   TARGET_FOLDER_NOT_FOUND("targetFolderNotFound"),
+
+  NODE_NOT_MOVED("nodeNotMoved"),
+  GROUP_NOT_FOUND("groupNotFound"),
+  USER_NOT_FOUND("userNotFound"),
+
+  UNIQUE_CONSTRAINT_COLLISION("uniqueConstraintCollision"),
+  INVALID_DATA("invalidData"),
+  NOT_AUTHORIZED("notAuthorized")
+
   ;
 
-  private final String errorKey;
+  private final String value;
 
-  CedarErrorKey(String errorKey) {
-    this.errorKey = errorKey;
+  CedarErrorKey(String value) {
+    this.value = value;
   }
 }

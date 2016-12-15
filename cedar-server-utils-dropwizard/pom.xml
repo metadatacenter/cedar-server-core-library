@@ -16,10 +16,20 @@
   <name>CEDAR Server Utils - Dropwizard</name>
 
   <dependencies>
-    
+
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-auth-operations-keycloak</artifactId>
     </dependency>
 
   </dependencies>

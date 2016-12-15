@@ -5,7 +5,7 @@
 
   <parent>
     <groupId>org.metadatacenter</groupId>
-    <artifactId>cedar-parent-dw</artifactId>
+    <artifactId>cedar-parent</artifactId>
     <version>0.8.7-SNAPSHOT</version>
   </parent>
 
@@ -25,7 +25,6 @@
   <modules>
     <module>cedar-auth-operations</module>
     <module>cedar-auth-operations-keycloak</module>
-    <module>cedar-auth-operations-noauth</module>
     <module>cedar-folder-operations</module>
     <module>cedar-project-config</module>
     <module>cedar-server-globals</module>

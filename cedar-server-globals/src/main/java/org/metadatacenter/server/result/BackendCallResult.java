@@ -1,7 +1,8 @@
 package org.metadatacenter.server.result;
 
+import org.metadatacenter.error.CedarErrorType;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BackendCallResult {
@@ -20,20 +21,25 @@ public class BackendCallResult {
     return !errors.isEmpty();
   }
 
-  public BackendCallError addError(BackendCallErrorType type) {
+  public BackendCallError addError(CedarErrorType type) {
     BackendCallError e = new BackendCallError(type);
     errors.add(e);
     return e;
   }
 
-  public List<BackendCallError> getErrors() {
-    return Collections.unmodifiableList(errors);
-  }
-
   public String getFirstErrorMessage() {
     if (errors != null) {
       if (errors.get(0) != null) {
-        return errors.get(0).getMessage();
+        return errors.get(0).getErrorPack().getMessage();
+      }
+    }
+    return null;
+  }
+
+  public BackendCallError getFirstError() {
+    if (errors != null) {
+      if (errors.get(0) != null) {
+        return errors.get(0);
       }
     }
     return null;
