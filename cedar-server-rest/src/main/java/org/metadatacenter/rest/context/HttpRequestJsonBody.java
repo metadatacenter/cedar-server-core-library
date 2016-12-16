@@ -2,6 +2,7 @@ package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.assertion.noun.CedarParameterImpl;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
@@ -35,6 +36,15 @@ public class HttpRequestJsonBody implements CedarRequestBody {
   @Override
   public JsonNode asJson() {
     return bodyNode;
+  }
+
+  @Override
+  public String asJsonString() throws CedarProcessingException {
+    try {
+      return JsonMapper.MAPPER.writeValueAsString(bodyNode);
+    } catch (JsonProcessingException e) {
+      throw new CedarProcessingException(e);
+    }
   }
 
   @Override

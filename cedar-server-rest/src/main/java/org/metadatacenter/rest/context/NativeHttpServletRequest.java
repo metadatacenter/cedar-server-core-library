@@ -1,6 +1,7 @@
 package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
 import org.metadatacenter.rest.exception.CedarAssertionException;
@@ -22,12 +23,12 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   }
 
   @Override
-  public CedarRequestBody getRequestBody() throws CedarAssertionException {
+  public CedarRequestBody getRequestBody() throws CedarProcessingException {
     if (jsonBodyNode == null) {
       try {
         jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
       } catch (Exception e) {
-        throw new CedarAssertionException(e);
+        throw new CedarProcessingException(e);
       }
     }
 
@@ -45,5 +46,10 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
       return nativeRequest.getHeader("Content-Type");
     }
     return null;
+  }
+
+  @Override
+  public String getHeader(String name) {
+    return nativeRequest.getHeader(name);
   }
 }
