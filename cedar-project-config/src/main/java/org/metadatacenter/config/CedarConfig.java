@@ -59,6 +59,9 @@ public class CedarConfig extends AbstractModule {
   @InjectConfig("test")
   private TestConfig testConfig;
 
+  @InjectConfig("terminology")
+  private TerminologyConfig terminologyConfig;
+
   private static final CedarConfig instance;
 
   static {
@@ -154,5 +157,10 @@ public class CedarConfig extends AbstractModule {
   public TestConfig getTestConfig() {
     return testConfig;
   }
+
+  public TerminologyConfig getTerminologyConfig() {
+    return terminologyConfig;
+  }
+
 
 }
