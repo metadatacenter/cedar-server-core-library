@@ -15,7 +15,11 @@ public abstract class CedarException extends Exception {
     super(message, sourceException);
     errorPack = new CedarErrorPack();
     errorPack.setMessage(message);
-    errorPack.setSourceException(sourceException);
+    if (sourceException != null) {
+      errorPack.setSourceException(sourceException);
+    } else {
+      errorPack.setSourceException(new CedarHelperException());
+    }
   }
 
   protected CedarException(String message) {

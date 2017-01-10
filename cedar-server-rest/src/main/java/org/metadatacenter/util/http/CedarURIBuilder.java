@@ -1,5 +1,7 @@
 package org.metadatacenter.util.http;
 
+import org.metadatacenter.exception.CedarException;
+
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
@@ -29,13 +31,10 @@ public class CedarURIBuilder {
     return builder.build();
   }
 
-  public String getProxyUrl(String replaceBefore, String replaceWith) {
-    URI absoluteURI = builder.build();
-    String absoluteUrl = absoluteURI.toString();
-
-    int idx = absoluteUrl.indexOf(replaceBefore);
-    String suffix = absoluteUrl.substring(idx);
-
-    return replaceWith + suffix;
+  public String getProxyUrl(String newServerBase) throws CedarException {
+    String requestUri = uriInfo.getRequestUri().toString();
+    String baseUriString = uriInfo.getBaseUri().toString();
+    uriInfo.getRequestUri();
+    return newServerBase + requestUri.substring(baseUriString.length());
   }
 }

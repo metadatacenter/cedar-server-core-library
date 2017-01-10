@@ -4,6 +4,8 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 
+import java.util.Optional;
+
 public interface CedarRequest extends CedarAssertionNoun {
 
   CedarRequestBody getRequestBody() throws CedarProcessingException;
@@ -11,5 +13,7 @@ public interface CedarRequest extends CedarAssertionNoun {
   String getContentType();
 
   String getHeader(String name);
+
+  CedarParameter wrapQueryParam(String paramName, Optional<? extends Object> paramValue);
 
 }

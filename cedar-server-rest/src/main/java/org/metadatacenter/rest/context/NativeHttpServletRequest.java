@@ -2,13 +2,15 @@ package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
-import org.metadatacenter.rest.exception.CedarAssertionException;
+import org.metadatacenter.rest.assertion.noun.CedarWrappedQueryParameter;
 import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
+import java.util.Optional;
 
 public class NativeHttpServletRequest extends CedarRequestNoun {
 
@@ -51,5 +53,10 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   @Override
   public String getHeader(String name) {
     return nativeRequest.getHeader(name);
+  }
+
+  @Override
+  public CedarParameter wrapQueryParam(String paramName, Optional<? extends Object> paramValue) {
+    return new CedarWrappedQueryParameter(paramName, paramValue);
   }
 }

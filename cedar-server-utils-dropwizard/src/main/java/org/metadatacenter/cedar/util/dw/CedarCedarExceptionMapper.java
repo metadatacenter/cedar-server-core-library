@@ -9,13 +9,12 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class CedarExceptionMapper implements ExceptionMapper<Exception> {
+public class CedarCedarExceptionMapper implements ExceptionMapper<CedarException> {
 
-  public Response toResponse(Exception exception) {
-    CedarErrorPack cep = new CedarErrorPack();
-    cep.setSourceException(exception);
-    return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity(cep)
+  public Response toResponse(CedarException exception) {
+    CedarErrorPack errorPack = exception.getErrorPack();
+    return Response.status(errorPack.getStatus())
+        .entity(errorPack)
         .type(MediaType.APPLICATION_JSON)
         .build();
   }

@@ -21,6 +21,7 @@ public class CedarDropwizardApplicationUtil {
   public static void setupEnvironment(Environment environment) {
 
     // Register Exception Mapper
+    environment.jersey().register(new CedarCedarExceptionMapper());
     environment.jersey().register(new CedarExceptionMapper());
 
     // Enable CORS headers

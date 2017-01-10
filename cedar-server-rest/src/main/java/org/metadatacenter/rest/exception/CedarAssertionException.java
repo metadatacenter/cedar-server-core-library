@@ -1,7 +1,6 @@
 package org.metadatacenter.rest.exception;
 
 import org.metadatacenter.error.CedarAssertionResult;
-import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.operation.CedarOperationDescriptor;
 
