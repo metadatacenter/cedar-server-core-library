@@ -2,7 +2,10 @@ package org.metadatacenter.error;
 
 public enum CedarSuggestedAction {
 
-  NONE("none"),;
+  NONE("none"),
+  REQUEST_ROLE("requestRole"),
+  LOGOUT("logout"),
+  REFRESH_TOKEN("refreshToken");
 
   private String value;
 

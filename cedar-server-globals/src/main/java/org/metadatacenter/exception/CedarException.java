@@ -3,6 +3,7 @@ package org.metadatacenter.exception;
 
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
+import org.metadatacenter.error.CedarErrorPackException;
 
 public abstract class CedarException extends Exception {
 
@@ -22,8 +23,19 @@ public abstract class CedarException extends Exception {
     }
   }
 
+  public CedarException(String message, CedarErrorPackException errorPackException) {
+    super(message);
+    errorPack = new CedarErrorPack();
+    errorPack.setMessage(message);
+    if (errorPackException != null) {
+      errorPack.setSourceException(errorPackException);
+    } else {
+      errorPack.setSourceException(new CedarHelperException());
+    }
+  }
+
   protected CedarException(String message) {
-    this(message, null);
+    this(message, (Exception)null);
   }
 
   public CedarException(Exception sourceException) {

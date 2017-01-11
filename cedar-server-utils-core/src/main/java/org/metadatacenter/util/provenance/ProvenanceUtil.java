@@ -7,7 +7,7 @@ import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.security.Authorization;
-import org.metadatacenter.server.security.exception.CedarAccessException;
+import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
 

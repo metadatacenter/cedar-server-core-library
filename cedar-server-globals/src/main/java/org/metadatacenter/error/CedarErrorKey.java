@@ -66,9 +66,18 @@ public enum CedarErrorKey {
 
   UNIQUE_CONSTRAINT_COLLISION("uniqueConstraintCollision"),
   INVALID_DATA("invalidData"),
-  NOT_AUTHORIZED("notAuthorized")
+  NOT_AUTHORIZED("notAuthorized"),
 
-  ;
+  PERMISSION_MISSING("permissionMissing"),
+  TOKEN_INVALID("tokenInvalid"),
+  USER_INFO_LOAD_BY_TOKEN_FAILED("userInfoLoadByTokenFailed"),
+  USER_INFO_LOAD_BY_API_KEY_FAILED("userInfoLoadByApiKeyFailed"),
+  CEDAR_USER_NOT_FOUND("cedarUserNotFound"),
+  AUTHORIZATION_TYPE_NOT_FOUND("authorizationTypeNotFound"),
+  AUTHORIZATION_NOT_FOUND("authorizationNotFound"),
+  API_KEY_NOT_FOUND("apiKeyNotFound"),
+  TOKEN_MISSING("tokenMissing"),
+  TOKEN_EXPIRED("tokenExpired");
 
   private final String value;
 

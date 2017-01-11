@@ -3,7 +3,7 @@ package org.metadatacenter.rest.context;
 import org.metadatacenter.rest.assertion.noun.CedarUserNoun;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.CedarAuthFromRequestFactory;
-import org.metadatacenter.server.security.exception.CedarAccessException;
+import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import javax.servlet.http.HttpServletRequest;

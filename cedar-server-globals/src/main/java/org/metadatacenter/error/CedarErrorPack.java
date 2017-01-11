@@ -14,7 +14,7 @@ public class CedarErrorPack {
   private String message;
   private final Map<String, Object> parameters;
   private CedarSuggestedAction suggestedAction = CedarSuggestedAction.NONE;
-  private Exception sourceException;
+  private CedarErrorPackException sourceException;
   private CedarOperationDescriptor operation;
 
   public CedarErrorPack() {
@@ -83,11 +83,15 @@ public class CedarErrorPack {
     this.suggestedAction = suggestedAction;
   }
 
-  public Exception getSourceException() {
+  public CedarErrorPackException getSourceException() {
     return sourceException;
   }
 
   public void setSourceException(Exception sourceException) {
+    this.sourceException = new CedarErrorPackException(sourceException);
+  }
+
+  public void setSourceException(CedarErrorPackException sourceException) {
     this.sourceException = sourceException;
   }
 
