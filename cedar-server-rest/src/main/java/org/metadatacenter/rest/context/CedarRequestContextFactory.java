@@ -1,14 +1,20 @@
 package org.metadatacenter.rest.context;
 
+import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import play.mvc.Http;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class CedarRequestContextFactory {
-  public static CedarRequestContext fromRequest(Http.Request request) {
-    return new PlayRequestContext(request);
+  public static CedarRequestContext fromRequest(HttpServletRequest request) throws CedarAccessException {
+    HttpServletRequestContext sc = new HttpServletRequestContext(request);
+    if (sc.getUserCreationException() != null) {
+      throw sc.getUserCreationException();
+    }
+    return sc;
   }
 
   public static CedarRequestContext fromUser(CedarUser user) {
-    return new PlayRequestContext(user);
+    return new LocalRequestContext(user);
   }
 }

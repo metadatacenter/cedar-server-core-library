@@ -1,13 +1,13 @@
 package org.metadatacenter.rest.assertion.assertiontarget;
 
-import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.rest.CedarAssertionNoun;
-import org.metadatacenter.rest.CedarOperationDescriptor;
+import org.metadatacenter.operation.CedarOperationDescriptor;
 import org.metadatacenter.rest.assertion.CedarAssertion;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
+import javax.ws.rs.core.Response;
 import java.util.Collection;
 
 public abstract class AssertionTargetFutureImpl<T> implements AssertionTargetFuture {
@@ -18,36 +18,31 @@ public abstract class AssertionTargetFutureImpl<T> implements AssertionTargetFut
 
   @Override
   public void otherwiseBadRequest() throws CedarAssertionException {
-    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), null, null,
-        HttpConstants.HTTP_BAD_REQUEST);
+    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), null, null, Response.Status.BAD_REQUEST);
   }
 
   @Override
   public void otherwiseBadRequest(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
-    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        HttpConstants.HTTP_BAD_REQUEST);
+    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message, Response.Status.BAD_REQUEST);
   }
 
   @Override
   public void otherwiseInternalServerError(CedarOperationDescriptor operation, String message) throws
       CedarAssertionException {
-    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        HttpConstants.HTTP_INTERNAL_SERVER_ERROR);
+    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message, Response.Status
+        .INTERNAL_SERVER_ERROR);
   }
 
   @Override
   public void otherwiseNotFound(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
-    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        HttpConstants.HTTP_NOT_FOUND);
+    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message, Response.Status.NOT_FOUND);
   }
 
   @Override
   public void otherwiseForbidden(CedarOperationDescriptor operation, String message) throws CedarAssertionException {
-    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message,
-        HttpConstants.HTTP_FORBIDDEN);
+    buildAndThrowAssertionExceptionIfNeeded(getFirstAssertionError(), operation, message, Response.Status.FORBIDDEN);
   }
 
-  @SuppressWarnings("UnusedAssignment")
   protected CedarAssertionResult getFirstAssertionError() {
     CedarAssertionResult assertionError;
     for (T target : targets) {
@@ -67,11 +62,11 @@ public abstract class AssertionTargetFutureImpl<T> implements AssertionTargetFut
 
   private void buildAndThrowAssertionExceptionIfNeeded(CedarAssertionResult assertionResult,
                                                        CedarOperationDescriptor operation, String message,
-                                                       int errorCode) throws CedarAssertionException {
+                                                       Response.Status status) throws CedarAssertionException {
     if (assertionResult != null) {
-      assertionResult.setCode(errorCode);
+      assertionResult.status(status);
       if (message != null) {
-        assertionResult.setMessage(message);
+        assertionResult.message(message);
       }
       throw new CedarAssertionException(assertionResult, operation);
     }

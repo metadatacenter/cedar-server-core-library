@@ -10,6 +10,8 @@ import net.jmob.guice.conf.core.InjectConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 
+import java.util.List;
+
 @BindConfig(value = "cedar")
 public class CedarConfig extends AbstractModule {
 
@@ -58,6 +60,12 @@ public class CedarConfig extends AbstractModule {
 
   @InjectConfig("test")
   private TestConfig testConfig;
+
+  @InjectConfig("testUsers")
+  private TestUsers testUsers;
+
+  @InjectConfig("terminology")
+  private TerminologyConfig terminologyConfig;
 
   private static final CedarConfig instance;
 
@@ -154,5 +162,14 @@ public class CedarConfig extends AbstractModule {
   public TestConfig getTestConfig() {
     return testConfig;
   }
+
+  public TestUsers getTestUsers() {
+    return testUsers;
+  }
+
+  public TerminologyConfig getTerminologyConfig() {
+    return terminologyConfig;
+  }
+
 
 }

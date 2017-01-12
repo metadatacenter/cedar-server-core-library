@@ -1,7 +1,7 @@
 package org.metadatacenter.server.security;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import org.metadatacenter.server.security.exception.*;
+import org.metadatacenter.exception.security.*;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;

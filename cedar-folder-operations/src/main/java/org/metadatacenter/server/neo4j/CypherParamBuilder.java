@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j;
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.time.Instant;
 import java.util.*;
@@ -361,4 +362,30 @@ public class CypherParamBuilder {
     return params;
   }
 
+  public static Map<String, Object> getSharedWithMeLookupParameters(List<CedarNodeType> nodeTypes, int limit, int
+      offset, String
+      ownerId, boolean addPermissionConditions) {
+    Map<String, Object> params = new HashMap<>();
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put(NODE_TYPE_LIST, ntl);
+    params.put(LIMIT, limit);
+    params.put(OFFSET, offset);
+    if (addPermissionConditions) {
+      params.put(Neo4JFields.USER_ID, ownerId);
+    }
+    return params;
+  }
+
+  public static Map<String, Object> getSharedWithMeCountParameters(List<CedarNodeType> nodeTypes, String ownerId,
+                                                                   boolean addPermissionConditions) {
+    Map<String, Object> params = new HashMap<>();
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put(NODE_TYPE_LIST, ntl);
+    if (addPermissionConditions) {
+      params.put(Neo4JFields.USER_ID, ownerId);
+    }
+    return params;
+  }
 }

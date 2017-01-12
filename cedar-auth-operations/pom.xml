@@ -47,11 +47,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.typesafe.play</groupId>
-      <artifactId>play_${play2.scala.version}</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.github.fge</groupId>
       <artifactId>json-schema-validator</artifactId>
     </dependency>

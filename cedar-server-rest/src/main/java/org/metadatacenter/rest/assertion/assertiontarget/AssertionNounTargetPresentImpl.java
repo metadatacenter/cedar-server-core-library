@@ -4,7 +4,7 @@ import org.metadatacenter.rest.assertion.CedarAssertion;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 import java.util.Collection;

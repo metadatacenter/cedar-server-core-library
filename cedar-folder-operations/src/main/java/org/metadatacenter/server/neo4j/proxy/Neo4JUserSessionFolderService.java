@@ -289,4 +289,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     }
     return null;
   }
+
+  @Override
+  public List<FolderServerNode> findSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
+      sortList) {
+    return proxies.node().findSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long findSharedWithMeCount(List<CedarNodeType> nodeTypes) {
+    return proxies.node().findSharedWithMeFilteredCount(nodeTypes, cu);
+  }
 }

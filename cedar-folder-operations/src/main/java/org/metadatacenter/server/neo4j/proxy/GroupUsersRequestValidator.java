@@ -1,7 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
-import org.metadatacenter.server.result.BackendCallErrorType;
+import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
@@ -34,10 +35,10 @@ public class GroupUsersRequestValidator {
   private void validateNodeExistence() {
     FolderServerGroup group = neo4JUserSessionGroupService.findGroupById(groupURL);
     if (group == null) {
-      callResult.addError(BackendCallErrorType.NOT_FOUND)
-          .subType("groupNotFound")
+      callResult.addError(CedarErrorType.NOT_FOUND)
+          .errorKey(CedarErrorKey.GROUP_NOT_FOUND)
           .message("Group not found by id")
-          .param("groupId", groupURL);
+          .parameter("groupId", groupURL);
     }
   }
 
@@ -46,8 +47,9 @@ public class GroupUsersRequestValidator {
     for (CedarGroupUserRequest u : requestUsers) {
       NodePermissionUser groupUser = u.getUser();
       if (groupUser == null) {
-        callResult.addError(BackendCallErrorType.INVALID_ARGUMENT)
-            .subType("userNodeMissing")
+        callResult.addError(CedarErrorType.INVALID_ARGUMENT)
+            .errorKey(CedarErrorKey.MISSING_PARAMETER)
+            .parameter("paramName", "userNode")
             .message("The user node is missing from the request");
       } else {
         users.addUser(new CedarGroupUser(

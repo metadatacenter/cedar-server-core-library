@@ -4,7 +4,6 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.NodeLabel;
 
 import java.util.List;
@@ -79,4 +78,9 @@ public interface FolderServiceSession {
   boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder);
 
   FolderServerFolder ensureUserHomeExists();
+
+  List<FolderServerNode> findSharedWithMe(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
+      sortList);
+
+  long findSharedWithMeCount(List<CedarNodeType> nodeTypeList);
 }

@@ -3,7 +3,7 @@ package org.metadatacenter.rest.assertion;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
 public class JsonMergePatchAssertion implements CedarAssertion {
 
