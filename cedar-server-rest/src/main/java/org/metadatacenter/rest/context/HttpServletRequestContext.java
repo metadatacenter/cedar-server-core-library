@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpServletRequestContext extends AbstractRequestContext {
 
   private final HttpServletRequest httpRequest;
+  private CedarAccessException userCreationException;
 
   HttpServletRequestContext(HttpServletRequest request) {
     if (request == null) {
@@ -22,7 +23,7 @@ public class HttpServletRequestContext extends AbstractRequestContext {
       authRequest = CedarAuthFromRequestFactory.fromRequest(request);
       currentUser = Authorization.getUser(authRequest);
     } catch (CedarAccessException e) {
-      // do not do anything, currentUser will be null, meaning we were not able to match any users
+      userCreationException = e;
     }
     user = new CedarUserNoun(currentUser);
   }
@@ -34,4 +35,7 @@ public class HttpServletRequestContext extends AbstractRequestContext {
     user = new CedarUserNoun(currentUser);
   }
 
+  public CedarAccessException getUserCreationException() {
+    return userCreationException;
+  }
 }

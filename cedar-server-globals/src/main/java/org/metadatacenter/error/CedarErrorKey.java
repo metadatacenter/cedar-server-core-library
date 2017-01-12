@@ -1,5 +1,7 @@
 package org.metadatacenter.error;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CedarErrorKey {
 
   NONE(null),
@@ -84,4 +86,10 @@ public enum CedarErrorKey {
   CedarErrorKey(String value) {
     this.value = value;
   }
+
+  @JsonValue
+  public String getValue() {
+    return value;
+  }
+
 }

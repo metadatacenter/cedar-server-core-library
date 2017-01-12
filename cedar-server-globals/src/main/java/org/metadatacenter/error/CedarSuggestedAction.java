@@ -1,5 +1,7 @@
 package org.metadatacenter.error;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CedarSuggestedAction {
 
   NONE("none"),
@@ -13,6 +15,7 @@ public enum CedarSuggestedAction {
     this.value = value;
   }
 
+  @JsonValue
   public String getValue() {
     return value;
   }
