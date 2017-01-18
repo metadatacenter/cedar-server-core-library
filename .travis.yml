@@ -11,8 +11,6 @@ notifications:
     - cedar-core-developers@lists.stanford.edu
     on_success: never
     on_failure: always
-before_install:
-- export CEDAR_HOST=staging.metadatacenter.net
 install: '[ ${TRAVIS_PULL_REQUEST} = ''false'' ] && mvn clean deploy --settings .m2/travis-settings.xml'
 env:
   global:
