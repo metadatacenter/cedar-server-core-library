@@ -2,15 +2,15 @@ package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
-import org.metadatacenter.rest.assertion.noun.CedarWrappedQueryParameter;
 import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
-import java.util.Optional;
+
+import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_AUTHORIZATION;
+import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_CONTENT_TYPE;
 
 public class NativeHttpServletRequest extends CedarRequestNoun {
 
@@ -34,29 +34,20 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
       }
     }
 
-    //if (jsonBodyNode != null) {
     return new HttpRequestJsonBody(jsonBodyNode);
-    /*} else {
-      return new HttpRequestEmptyBody();
-    }*/
   }
 
   @Override
   public String getContentType() {
     if (nativeRequest != null) {
-      //TODO: use constant here
-      return nativeRequest.getHeader("Content-Type");
+      return nativeRequest.getHeader(HTTP_HEADER_CONTENT_TYPE);
     }
     return null;
   }
 
   @Override
-  public String getHeader(String name) {
-    return nativeRequest.getHeader(name);
+  public String getAuthorizationHeader() {
+    return nativeRequest.getHeader(HTTP_HEADER_AUTHORIZATION);
   }
 
-  @Override
-  public CedarParameter wrapQueryParam(String paramName, Optional<? extends Object> paramValue) {
-    return new CedarWrappedQueryParameter(paramName, paramValue);
-  }
 }

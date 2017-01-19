@@ -12,7 +12,6 @@ public abstract class AbstractRequestContext implements CedarRequestContext {
   protected CedarUser currentUser;
   protected CedarAssertionUser user;
   protected CedarRequest wrappedRequest;
-  protected AuthRequest authRequest;
 
   @Override
   public CedarAssertionUser user() {
@@ -47,11 +46,6 @@ public abstract class AbstractRequestContext implements CedarRequestContext {
   @Override
   public CedarRequest request() {
     return wrappedRequest;
-  }
-
-  @Override
-  public AuthRequest getAuthRequest() {
-    return authRequest;
   }
 
 }

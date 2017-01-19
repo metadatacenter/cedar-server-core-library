@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_APIKEY_PREFIX;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarUser implements CedarUserRepresentation {
 
@@ -135,5 +137,14 @@ public class CedarUser implements CedarUserRepresentation {
       }
     }
     return null;
+  }
+
+  public String getFirstApiKeyAuthHeader() {
+    String apiKey = this.getFirstActiveApiKey();
+    if (apiKey != null) {
+      return HTTP_AUTH_HEADER_APIKEY_PREFIX + apiKey;
+    } else {
+      return null;
+    }
   }
 }

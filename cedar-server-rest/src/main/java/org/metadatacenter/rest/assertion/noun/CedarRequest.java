@@ -12,7 +12,7 @@ public interface CedarRequest extends CedarAssertionNoun {
 
   String getContentType();
 
-  String getHeader(String name);
+  String getAuthorizationHeader();
 
   CedarParameter wrapQueryParam(String paramName, Optional<? extends Object> paramValue);
 

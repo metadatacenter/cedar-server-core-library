@@ -17,9 +17,6 @@ public interface CedarRequestContext {
 
   CedarRequest request();
 
-  //TODO: do we need this, do we use this???
-  AuthRequest getAuthRequest();
-
   CedarAssertionUser user();
 
   AssertionNounTargetFuture should(CedarAssertionNoun... nouns);

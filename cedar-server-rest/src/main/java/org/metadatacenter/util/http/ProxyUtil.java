@@ -9,9 +9,7 @@ import org.apache.http.entity.ContentType;
 import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.util.json.JsonMapper;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -23,7 +21,7 @@ public class ProxyUtil {
     Request proxyRequest = Request.Get(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getHeader(HttpHeaders.AUTHORIZATION));
+        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader());
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -35,7 +33,7 @@ public class ProxyUtil {
     Request proxyRequest = Request.Delete(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getHeader(HttpHeaders.AUTHORIZATION))
+        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
         .addHeader(HttpHeaders.CONTENT_LENGTH, ZERO_LENGTH)
         .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString());
     try {
@@ -54,7 +52,7 @@ public class ProxyUtil {
     Request proxyRequest = Request.Post(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getHeader(HttpHeaders.AUTHORIZATION))
+        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
     try {
       return proxyRequest.execute().returnResponse();
@@ -72,7 +70,7 @@ public class ProxyUtil {
     Request proxyRequest = Request.Put(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getHeader(HttpHeaders.AUTHORIZATION))
+        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
     try {
       return proxyRequest.execute().returnResponse();
