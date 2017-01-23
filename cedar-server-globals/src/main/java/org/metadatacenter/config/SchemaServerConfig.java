@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface SchemaServerConfig extends ServerConfig {
-  String getCoreBase();
+public class SchemaServerConfig extends ServerConfig {
+
+  private String coreBase;
+
+  public String getCoreBase() {
+    return coreBase;
+  }
 }

@@ -25,18 +25,27 @@
   <dependencies>
 
     <dependency>
-      <groupId>net.jmob</groupId>
-      <artifactId>guice.conf</artifactId>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-server-globals</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-server-globals</artifactId>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
 
   </dependencies>
 
   <build>
+
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+
     <plugins>
 
       <plugin>
@@ -60,7 +69,7 @@
               <resources>
                 <resource>
                   <directory>src/main/resources</directory>
-                  <filtering>true</filtering>
+                  <filtering>false</filtering>
                 </resource>
               </resources>
             </configuration>

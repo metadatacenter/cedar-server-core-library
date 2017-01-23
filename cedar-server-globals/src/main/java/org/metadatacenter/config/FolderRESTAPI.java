@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface FolderRESTAPI extends ServerConfig {
-  FolderRESTAPIPagination getPagination();
+public class FolderRESTAPI extends ServerConfig {
+
+  private FolderRESTAPIPagination pagination;
+
+  public FolderRESTAPIPagination getPagination() {
+    return pagination;
+  }
 }

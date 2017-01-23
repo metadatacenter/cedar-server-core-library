@@ -1,7 +1,10 @@
 package org.metadatacenter.config;
 
-public interface TestUser extends ServerConfig {
+public class TestUser {
 
-  String getUuid();
+  private String uuid;
 
+  public String getUuid() {
+    return uuid;
+  }
 }

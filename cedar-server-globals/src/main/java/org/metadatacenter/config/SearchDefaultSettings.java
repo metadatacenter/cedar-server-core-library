@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface SearchDefaultSettings {
-  int getDefaultLimit();
+public class SearchDefaultSettings {
 
-  int getMaxAllowedLimit();
+  private int defaultLimit;
+
+  private int maxAllowedLimit;
+
+  public int getDefaultLimit() {
+    return defaultLimit;
+  }
+
+  public int getMaxAllowedLimit() {
+    return maxAllowedLimit;
+  }
 }

@@ -11,9 +11,7 @@ import java.io.IOException;
 
 public class TestUtil {
 
-  public static String getTestUser1AuthHeader() {
-    CedarConfig cedarConfig = CedarConfig.getInstance();
-
+  public static String getTestUser1AuthHeader(CedarConfig cedarConfig) {
     String uuid = cedarConfig.getTestUsers().getTestUser1().getUuid();
 
     CedarUser user = null;

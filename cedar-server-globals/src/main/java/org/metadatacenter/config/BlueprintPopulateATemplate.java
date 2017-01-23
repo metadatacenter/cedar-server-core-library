@@ -1,11 +1,28 @@
 package org.metadatacenter.config;
 
-public interface BlueprintPopulateATemplate {
-  String getSortBy();
+public class BlueprintPopulateATemplate {
 
-  String getSortDirection();
+  private String sortBy;
 
-  String getViewMode();
+  private String sortDirection;
 
-  boolean getOpened();
+  private String viewMode;
+
+  private boolean opened;
+
+  public String getSortBy() {
+    return sortBy;
+  }
+
+  public String getSortDirection() {
+    return sortDirection;
+  }
+
+  public String getViewMode() {
+    return viewMode;
+  }
+
+  public boolean isOpened() {
+    return opened;
+  }
 }

@@ -2,10 +2,23 @@ package org.metadatacenter.config;
 
 import java.util.Map;
 
-public interface MongoConfig {
-  String getDatabaseName();
+public class MongoConfig {
 
-  String getDatabaseNameTest();
+  private String databaseName;
 
-  Map<String, String> getCollections();
+  private String databaseNameTest;
+
+  private Map<String, String> collections;
+
+  public String getDatabaseName() {
+    return databaseName;
+  }
+
+  public String getDatabaseNameTest() {
+    return databaseNameTest;
+  }
+
+  public Map<String, String> getCollections() {
+    return collections;
+  }
 }

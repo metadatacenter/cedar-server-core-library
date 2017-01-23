@@ -1,11 +1,28 @@
 package org.metadatacenter.config;
 
-public interface SearchRetrieveSettings {
-  int getLimit();
+public class SearchRetrieveSettings {
 
-  int getLimitIndexRegeneration();
+  private int limit;
 
-  int getMaxAttempts();
+  private int limitIndexRegeneration;
 
-  int getDelayAttempts();
+  private int maxAttempts;
+
+  private int delayAttempts;
+
+  public int getLimit() {
+    return limit;
+  }
+
+  public int getLimitIndexRegeneration() {
+    return limitIndexRegeneration;
+  }
+
+  public int getMaxAttempts() {
+    return maxAttempts;
+  }
+
+  public int getDelayAttempts() {
+    return delayAttempts;
+  }
 }

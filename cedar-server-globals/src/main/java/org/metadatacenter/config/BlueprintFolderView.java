@@ -1,9 +1,22 @@
 package org.metadatacenter.config;
 
-public interface BlueprintFolderView {
-  String getSortBy();
+public class BlueprintFolderView {
 
-  String getSortDirection();
+  private String sortBy;
 
-  String getViewMode();
+  private String sortDirection;
+
+  private String viewMode;
+
+  public String getSortBy() {
+    return sortBy;
+  }
+
+  public String getSortDirection() {
+    return sortDirection;
+  }
+
+  public String getViewMode() {
+    return viewMode;
+  }
 }

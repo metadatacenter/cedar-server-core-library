@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface BlueprintUIPreferences {
-  BlueprintFolderView getFolderView();
+public class BlueprintUIPreferences {
 
-  BlueprintPopulateATemplate getPopulateATemplate();
+  private BlueprintFolderView folderView;
+
+  private BlueprintPopulateATemplate populateATemplate;
+
+  public BlueprintFolderView getFolderView() {
+    return folderView;
+  }
+
+  public BlueprintPopulateATemplate getPopulateATemplate() {
+    return populateATemplate;
+  }
 }

@@ -1,17 +1,40 @@
 package org.metadatacenter.config;
 
-public interface TestConfig extends ServerConfig {
+public class TestConfig extends ServerConfig {
 
-  int getPort();
+  private int port;
 
-  int getTimeout();
+  private int timeout;
 
-  TemplateTestConfig getTemplate();
+  private TemplateTemplateTestConfig template;
 
-  TemplateElementTestConfig getElement();
+  private TemplateElementTestConfig element;
 
-  TemplateFieldTestConfig getField();
+  private TemplateFieldTestConfig field;
 
-  TemplateInstanceTestConfig getInstance();
+  private TemplateInstanceTestConfig instance;
 
+  public int getPort() {
+    return port;
+  }
+
+  public int getTimeout() {
+    return timeout;
+  }
+
+  public TemplateTemplateTestConfig getTemplate() {
+    return template;
+  }
+
+  public TemplateElementTestConfig getElement() {
+    return element;
+  }
+
+  public TemplateFieldTestConfig getField() {
+    return field;
+  }
+
+  public TemplateInstanceTestConfig getInstance() {
+    return instance;
+  }
 }

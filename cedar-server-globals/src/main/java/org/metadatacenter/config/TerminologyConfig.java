@@ -1,7 +1,10 @@
 package org.metadatacenter.config;
 
-public interface TerminologyConfig extends ServerConfig {
+public class TerminologyConfig extends ServerConfig {
 
-  BioPortal getBioPortal();
+  private BioPortal bioPortal;
 
+  public BioPortal getBioPortal() {
+    return bioPortal;
+  }
 }

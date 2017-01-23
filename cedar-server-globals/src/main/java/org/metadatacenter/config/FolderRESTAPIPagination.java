@@ -1,6 +1,16 @@
 package org.metadatacenter.config;
 
-public interface FolderRESTAPIPagination extends ServerConfig {
-  int getDefaultPageSize();
-  int getMaxPageSize();
+public class FolderRESTAPIPagination extends ServerConfig {
+
+  private int defaultPageSize;
+
+  private int maxPageSize;
+
+  public int getDefaultPageSize() {
+    return defaultPageSize;
+  }
+
+  public int getMaxPageSize() {
+    return maxPageSize;
+  }
 }

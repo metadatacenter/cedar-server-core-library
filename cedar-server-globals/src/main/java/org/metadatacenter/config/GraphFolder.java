@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface GraphFolder {
-  String getPath();
+public class GraphFolder {
 
-  String getDescription();
+  private String path;
+
+  private String description;
+
+  public String getPath() {
+    return path;
+  }
+
+  public String getDescription() {
+    return description;
+  }
 }

@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface ImportExportConfig {
-  String getExportDir();
+public class ImportExportConfig {
+
+  private String exportDir;
+
+  public String getExportDir() {
+    return exportDir;
+  }
 }

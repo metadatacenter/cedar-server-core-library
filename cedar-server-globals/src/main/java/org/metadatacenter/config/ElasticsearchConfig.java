@@ -1,25 +1,46 @@
 package org.metadatacenter.config;
 
-import java.util.HashMap;
+public class ElasticsearchConfig {
 
-public interface ElasticsearchConfig {
+  private String cluster;
 
-  String getCluster();
+  private String index;
 
-  String getIndex();
+  private String type;
 
-  String getType();
+  private String host;
 
-  String getHost();
+  private int transportPort;
 
-  int getTransportPort();
+  private int size;
 
-  int getSize();
+  private int scrollKeepAlive;
 
-  int getScrollKeepAlive();
+  public String getCluster() {
+    return cluster;
+  }
 
-  HashMap getSettings();
+  public String getIndex() {
+    return index;
+  }
 
-  HashMap getMappings();
+  public String getType() {
+    return type;
+  }
 
+  public String getHost() {
+    return host;
+  }
+
+  public int getTransportPort() {
+    return transportPort;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public int getScrollKeepAlive() {
+    return scrollKeepAlive;
+  }
 }

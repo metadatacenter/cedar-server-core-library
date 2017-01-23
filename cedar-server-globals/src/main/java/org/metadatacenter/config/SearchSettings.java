@@ -1,8 +1,16 @@
 package org.metadatacenter.config;
 
-public interface SearchSettings {
+public class SearchSettings {
 
-  SearchRetrieveSettings getSearchRetrieveSettings();
+  private SearchRetrieveSettings searchRetrieveSettings;
 
-  SearchDefaultSettings getSearchDefaultSettings();
+  private SearchDefaultSettings searchDefaultSettings;
+
+  public SearchRetrieveSettings getSearchRetrieveSettings() {
+    return searchRetrieveSettings;
+  }
+
+  public SearchDefaultSettings getSearchDefaultSettings() {
+    return searchDefaultSettings;
+  }
 }

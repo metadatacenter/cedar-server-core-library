@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface ServerConfig {
-  String getBase();
+public class ServerConfig {
+
+  private String base;
+
+  public String getBase() {
+    return base;
+  }
 }
