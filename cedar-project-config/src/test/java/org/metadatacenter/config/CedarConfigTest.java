@@ -26,7 +26,6 @@ public class CedarConfigTest {
     env.put("CEDAR_TEST_USER1_UUID", "user1-uuid1");
     env.put("CEDAR_TEST_USER2_UUID", "user1-uuid2");
     env.put("CEDAR_TEST_USER3_UUID", "user1-uuid3");
-    env.put("", "");
     TestUtil.setEnv(env);
   }
 
