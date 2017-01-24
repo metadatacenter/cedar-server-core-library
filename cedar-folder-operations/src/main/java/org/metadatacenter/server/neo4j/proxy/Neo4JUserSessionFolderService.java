@@ -162,11 +162,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public long findFolderContentsCount(String folderURL) {
-    return proxies.node().findFolderContentsCount(folderURL);
-  }
-
-  @Override
   public FolderServerResource findResourceById(String resourceURL) {
     return proxies.resource().findResourceById(resourceURL);
   }
@@ -210,11 +205,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public FolderServerFolder findFolderByPath(String path) {
     return proxies.folder().findFolderByPath(path);
-  }
-
-  @Override
-  public FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name) {
-    return proxies.folder().findFolderByParentIdAndName(parentFolder.getId(), name);
   }
 
   @Override
@@ -294,13 +284,24 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> findSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
+  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
       sortList) {
-    return proxies.node().findSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
+    return proxies.node().viewSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
   }
 
   @Override
-  public long findSharedWithMeCount(List<CedarNodeType> nodeTypes) {
-    return proxies.node().findSharedWithMeFilteredCount(nodeTypes, cu);
+  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes) {
+    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, cu);
+  }
+
+  @Override
+  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
+      sortList) {
+    return proxies.node().viewAllFiltered(nodeTypes, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long viewAllCount(List<CedarNodeType> nodeTypes) {
+    return proxies.node().viewAllFilteredCount(nodeTypes, cu);
   }
 }

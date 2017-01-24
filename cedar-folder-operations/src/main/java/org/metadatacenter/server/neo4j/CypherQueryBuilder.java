@@ -13,8 +13,6 @@ public class CypherQueryBuilder {
     FOLDER, RESOURCE
   }
 
-  private static String groupBySpecialValue;
-
   private CypherQueryBuilder() {
   }
 
@@ -277,18 +275,6 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getFolderByParentIdAndName() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
-    sb.append("MATCH (child)");
-    sb.append("MATCH (parent)");
-    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
-    sb.append("(child)");
-    sb.append("WHERE child.name = {name}");
-    sb.append("RETURN child");
-    return sb.toString();
-  }
-
   public static String getNodeByParentIdAndName() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (parent").append(" {id:{id} })");
@@ -299,13 +285,6 @@ public class CypherQueryBuilder {
     sb.append("WHERE child.name = {name}");
     sb.append(" AND (parent:").append(NodeLabel.FOLDER).append(" OR parent:").append(NodeLabel.RESOURCE).append(")");
     sb.append("RETURN child");
-    return sb.toString();
-  }
-
-  public static String deleteFolderById() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
-    sb.append("DETACH DELETE folder");
     return sb.toString();
   }
 
@@ -882,6 +861,35 @@ public class CypherQueryBuilder {
     sb.append("\nMATCH (node)");
     sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND node.ownedBy  <> {userId}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN count(node)");
+    return sb.toString();
+  }
+
+  public static String getAllLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN node");
+    sb.append("\nORDER BY node.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("node", sortList));
+    sb.append("\nSKIP {offset}");
+    sb.append("\nLIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getAllCountQuery(boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions("\nAND\n", "node"));

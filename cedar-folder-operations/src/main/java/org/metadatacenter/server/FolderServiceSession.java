@@ -52,8 +52,6 @@ public interface FolderServiceSession {
 
   FolderServerFolder findFolderByPath(String path);
 
-  FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name);
-
   FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name);
 
   List<FolderServerFolder> findFolderPathByPath(String path);
@@ -62,8 +60,6 @@ public interface FolderServiceSession {
 
   List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList);
-
-  long findFolderContentsCount(String folderURL);
 
   long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
@@ -79,8 +75,13 @@ public interface FolderServiceSession {
 
   FolderServerFolder ensureUserHomeExists();
 
-  List<FolderServerNode> findSharedWithMe(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
+  List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
       sortList);
 
-  long findSharedWithMeCount(List<CedarNodeType> nodeTypeList);
+  long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList);
+
+  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
+      sortList);
+
+  long viewAllCount(List<CedarNodeType> nodeTypeList);
 }

@@ -33,6 +33,7 @@
     <module>cedar-template-operations</module>
     <module>cedar-user-operations</module>
     <module>cedar-server-rest</module>
+    <module>cedar-search-operations</module>
   </modules>
 
 </project>

@@ -363,8 +363,7 @@ public class CypherParamBuilder {
   }
 
   public static Map<String, Object> getSharedWithMeLookupParameters(List<CedarNodeType> nodeTypes, int limit, int
-      offset, String
-      ownerId, boolean addPermissionConditions) {
+      offset, String ownerId, boolean addPermissionConditions) {
     Map<String, Object> params = new HashMap<>();
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
@@ -388,4 +387,31 @@ public class CypherParamBuilder {
     }
     return params;
   }
+
+  public static Map<String, Object> getAllLookupParameters(List<CedarNodeType> nodeTypes, int limit, int
+      offset, String ownerId, boolean addPermissionConditions) {
+    Map<String, Object> params = new HashMap<>();
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put(NODE_TYPE_LIST, ntl);
+    params.put(LIMIT, limit);
+    params.put(OFFSET, offset);
+    if (addPermissionConditions) {
+      params.put(Neo4JFields.USER_ID, ownerId);
+    }
+    return params;
+  }
+
+  public static Map<String, Object> getAllCountParameters(List<CedarNodeType> nodeTypes, String ownerId,
+                                                          boolean addPermissionConditions) {
+    Map<String, Object> params = new HashMap<>();
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    params.put(NODE_TYPE_LIST, ntl);
+    if (addPermissionConditions) {
+      params.put(Neo4JFields.USER_ID, ownerId);
+    }
+    return params;
+  }
+
 }
