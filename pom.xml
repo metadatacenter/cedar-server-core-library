@@ -10,7 +10,7 @@
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-server-core-library</artifactId>
-  <version>0.9.0</version>
+  <version>0.9.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CEDAR Server Core Library</name>
 
@@ -18,7 +18,7 @@
     <connection>scm:git:git@github.com:metadatacenter/cedar-server-core-library.git</connection>
     <developerConnection>scm:git:git@github.com:metadatacenter/cedar-server-core-library.git</developerConnection>
     <url>https://github.com/metadatacenter/cedar-server-core-library</url>
-    <tag>release-0.9.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <modules>
