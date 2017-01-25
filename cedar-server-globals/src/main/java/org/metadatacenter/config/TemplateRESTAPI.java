@@ -2,8 +2,17 @@ package org.metadatacenter.config;
 
 import java.util.List;
 
-public interface TemplateRESTAPI extends ServerConfig {
-  TemplateRESTAPIPagination getPagination();
+public class TemplateRESTAPI extends ServerConfig {
 
-  List<String> getExcludedFields();
+  private TemplateRESTAPIPagination pagination;
+
+  private List<String> excludedFields;
+
+  public TemplateRESTAPIPagination getPagination() {
+    return pagination;
+  }
+
+  public List<String> getExcludedFields() {
+    return excludedFields;
+  }
 }

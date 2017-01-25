@@ -1,9 +1,22 @@
 package org.metadatacenter.config;
 
-public interface FolderStructureConfig {
-  GraphFolder getRootFolder();
+public class FolderStructureConfig {
 
-  GraphFolder getUsersFolder();
+  private GraphFolder rootFolder;
 
-  GraphGroup getEverybodyGroup();
+  private GraphFolder usersFolder;
+
+  private GraphGroup everybodyGroup;
+
+  public GraphFolder getRootFolder() {
+    return rootFolder;
+  }
+
+  public GraphFolder getUsersFolder() {
+    return usersFolder;
+  }
+
+  public GraphGroup getEverybodyGroup() {
+    return everybodyGroup;
+  }
 }

@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.GroupServiceSession;
@@ -15,12 +16,14 @@ import java.util.*;
 
 public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession implements GroupServiceSession {
 
-  public Neo4JUserSessionGroupService(Neo4JProxies proxies, CedarUser cu, String userIdPrefix, String groupIdPrefix) {
-    super(proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
+      userIdPrefix, String groupIdPrefix) {
+    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
   }
 
-  public static GroupServiceSession get(Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionGroupService(proxies, cedarUser, proxies.getUserIdPrefix(), proxies.getGroupIdPrefix());
+  public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
+    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
+        .getGroupIdPrefix());
   }
 
   @Override
@@ -92,8 +95,8 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
     CedarGroupUsers ret = new CedarGroupUsers();
     for (String userURL : users.keySet()) {
       ret.addUser(new CedarGroupUser(users.get(userURL).buildExtract(),
-              administratorsIds.contains(userURL),
-              memberIds.contains(userURL))
+          administratorsIds.contains(userURL),
+          memberIds.contains(userURL))
       );
     }
     return ret;

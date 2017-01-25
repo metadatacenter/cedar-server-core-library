@@ -9,7 +9,12 @@ public class KeycloakDeploymentProvider {
   private final KeycloakDeployment keycloakDeployment;
 
   private KeycloakDeploymentProvider() {
-    keycloakDeployment = KeycloakUtils.buildDeployment();
+    String keycloakConfigPath = System.getProperty("keycloak.config.path");
+    if (keycloakConfigPath == null || "".equals(keycloakConfigPath)) {
+      keycloakDeployment = KeycloakUtils.buildDeployment();
+    } else {
+      keycloakDeployment = KeycloakUtils.buildDeployment(keycloakConfigPath);
+    }
   }
 
   public static KeycloakDeploymentProvider getInstance() {

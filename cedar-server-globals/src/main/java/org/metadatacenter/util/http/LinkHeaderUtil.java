@@ -31,6 +31,11 @@ public final class LinkHeaderUtil {
     return links.toString();
   }
 
+  public static Map<String, String> getPagingLinkHeaders(@NonNull URI uri, @NonNull Long total, Integer limit,
+                                                         Integer offset) {
+    return getPagingLinkHeaders(uri.toString(), total, limit, offset);
+  }
+
   public static Map<String, String> getPagingLinkHeaders(@NonNull String baseUrl, @NonNull Long total, Integer limit,
                                                          Integer offset) {
     if (limit == null) {

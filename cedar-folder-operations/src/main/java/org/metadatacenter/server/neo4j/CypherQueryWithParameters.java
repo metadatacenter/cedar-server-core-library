@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
+import java.util.List;
 import java.util.Map;
 
 public class CypherQueryWithParameters implements CypherQuery {
@@ -25,15 +26,32 @@ public class CypherQueryWithParameters implements CypherQuery {
     if (q != null) {
       for (String key : parameters.keySet()) {
         Object o = parameters.get(key);
-        String v;
-        if (o == null) {
-          v = "null";
-        } else {
-          v = "\"" + o.toString().replace("\"", "\\\"") + "\"";
-        }
+        String v = getVariableRepresentation(o);
         q = q.replace("{" + key + "}", v);
       }
     }
     return q;
+  }
+
+  private String getVariableRepresentation(Object o) {
+    StringBuilder sb = new StringBuilder();
+    if (o == null) {
+      sb.append("null");
+    } else if (o instanceof String) {
+      sb.append("\"").append(((String) o).replace("\"", "\\\"")).append("\"");
+    } else if (o instanceof Integer) {
+      sb.append(String.valueOf((Integer) o));
+    } else if (o instanceof List) {
+      sb.append("[");
+      List l = (List) o;
+      String separator = "";
+      for (Object li : l) {
+        sb.append(separator);
+        sb.append(getVariableRepresentation(li));
+        separator = ", ";
+      }
+      sb.append("]");
+    }
+    return sb.toString();
   }
 }

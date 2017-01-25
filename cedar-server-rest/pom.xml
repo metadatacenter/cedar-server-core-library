@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>0.8.6</version>
+    <version>0.9.0</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -15,11 +15,6 @@
   <name>CEDAR Server REST Assertion Framework</name>
 
   <dependencies>
-
-    <dependency>
-      <groupId>com.typesafe.play</groupId>
-      <artifactId>play_${play2.scala.version}</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
@@ -34,6 +29,16 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>fluent-hc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
     </dependency>
 
   </dependencies>

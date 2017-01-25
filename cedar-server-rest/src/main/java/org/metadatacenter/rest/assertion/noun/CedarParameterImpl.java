@@ -30,7 +30,7 @@ public class CedarParameterImpl extends CedarParameterNoun {
 
   @Override
   public String stringValue() {
-    if (jsonNode != null && !jsonNode.isMissingNode()) {
+    if (jsonNode != null && !jsonNode.isMissingNode() && !jsonNode.isNull()) {
       return jsonNode.asText();
     } else {
       return null;
@@ -39,6 +39,10 @@ public class CedarParameterImpl extends CedarParameterNoun {
 
   public boolean isNull() {
     return isMissing() || jsonNode.isNull();
+  }
+
+  public boolean isPresentAndNull() {
+    return jsonNode != null && jsonNode.isNull();
   }
 
   public boolean isMissing() {

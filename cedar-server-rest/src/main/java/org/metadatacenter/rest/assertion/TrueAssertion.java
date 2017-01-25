@@ -2,7 +2,7 @@ package org.metadatacenter.rest.assertion;
 
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
 public class TrueAssertion implements CedarAssertion {
 

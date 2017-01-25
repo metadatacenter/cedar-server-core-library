@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface Neo4JRestConfig {
-  String getTransactionUrl();
+public class Neo4JRestConfig {
 
-  String getAuthString();
+  private String transactionUrl;
+
+  private String authString;
+
+  public String getTransactionUrl() {
+    return transactionUrl;
+  }
+
+  public String getAuthString() {
+    return authString;
+  }
 }

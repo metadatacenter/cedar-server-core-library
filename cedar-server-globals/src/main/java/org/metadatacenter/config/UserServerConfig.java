@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface UserServerConfig extends ServerConfig {
-  String getUsersBase();
+public class UserServerConfig extends ServerConfig {
+
+  private String usersBase;
+
+  public String getUsersBase() {
+    return usersBase;
+  }
 }

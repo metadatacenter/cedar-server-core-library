@@ -9,10 +9,9 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 public abstract class AbstractRequestContext implements CedarRequestContext {
 
-  protected org.metadatacenter.server.security.model.user.CedarUser currentUser;
+  protected CedarUser currentUser;
   protected CedarAssertionUser user;
   protected CedarRequest wrappedRequest;
-  protected AuthRequest authRequest;
 
   @Override
   public CedarAssertionUser user() {
@@ -47,11 +46,6 @@ public abstract class AbstractRequestContext implements CedarRequestContext {
   @Override
   public CedarRequest request() {
     return wrappedRequest;
-  }
-
-  @Override
-  public AuthRequest getAuthRequest() {
-    return authRequest;
   }
 
 }

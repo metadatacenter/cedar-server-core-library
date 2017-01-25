@@ -3,7 +3,7 @@ package org.metadatacenter.rest.assertion;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
 public class NullAssertion implements CedarAssertion {
 
@@ -22,8 +22,8 @@ public class NullAssertion implements CedarAssertion {
         } else {
           return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
               .append("' from ").append(param.getSource()).append(" should be null").toString())
-              .setParameter("name", param.getName())
-              .setParameter("source", param.getSource());
+              .parameter("name", param.getName())
+              .parameter("source", param.getSource());
         }
       } else {
         return new CedarAssertionResult("The object should be null");

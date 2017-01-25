@@ -1,9 +1,20 @@
 package org.metadatacenter.config;
 
-public interface KeycloakAdminUser {
-  String getUuid();
+public class KeycloakAdminUser {
 
-  String getUserName();
+  private String uuid;
+  private String userName;
+  private String password;
 
-  String getPassword();
+  public String getUuid() {
+    return uuid;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public String getPassword() {
+    return password;
+  }
 }

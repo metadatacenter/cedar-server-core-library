@@ -1,7 +1,4 @@
 package org.metadatacenter.config;
 
-public interface TemplateElementTestConfig {
-
-  String getBaseRoute();
-
+public class TemplateElementTestConfig extends AbstractTemplateTestConfig {
 }

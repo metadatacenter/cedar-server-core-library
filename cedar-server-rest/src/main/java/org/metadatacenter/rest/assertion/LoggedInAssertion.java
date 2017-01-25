@@ -1,9 +1,10 @@
 package org.metadatacenter.rest.assertion;
 
+import org.metadatacenter.exception.CedarHelperException;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarUserNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
@@ -28,8 +29,11 @@ public class LoggedInAssertion implements CedarAssertion {
         return null;
       }
     }
-    return new CedarAssertionResult("You need to provide valid authorization data to execute REST calls")
+    CedarAssertionResult car = new CedarAssertionResult("You need to provide valid authorization data to " +
+        "execute REST calls")
         .unauthorized();
+    car.getErrorPack().setSourceException(new CedarHelperException());
+    return car;
   }
 
   @Override

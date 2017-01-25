@@ -1,82 +1,116 @@
 package org.metadatacenter.config;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import net.jmob.guice.conf.core.BindConfig;
-import net.jmob.guice.conf.core.ConfigurationModule;
-import net.jmob.guice.conf.core.InjectConfig;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.dropwizard.Configuration;
+import io.dropwizard.configuration.*;
+import io.dropwizard.jackson.Jackson;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 
-@BindConfig(value = "cedar")
-public class CedarConfig extends AbstractModule {
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.io.IOException;
+
+public class CedarConfig extends Configuration {
 
 
-  @InjectConfig("keycloak")
+  @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
-  @InjectConfig("mongo")
+  @JsonProperty("mongo")
   private MongoConfig mongoConfig;
 
-  @InjectConfig("neo4j")
+  @JsonProperty("neo4j")
   private Neo4JConfig neo4jConfig;
 
-  @InjectConfig("folderStructure")
+  @JsonProperty("folderStructure")
   private FolderStructureConfig folderStructureConfig;
 
-  @InjectConfig("folderRESTAPI")
+  @JsonProperty("folderRESTAPI")
   private FolderRESTAPI folderRESTAPI;
 
-  @InjectConfig("linkedData")
+  @JsonProperty("linkedData")
   private LinkedDataConfig linkedDataConfig;
 
-  @InjectConfig("blueprintUserProfile")
+  @JsonProperty("blueprintUserProfile")
   private BlueprintUserProfile blueprintUserProfile;
 
-  @InjectConfig("blueprintUIPreferences")
-  private BlueprintUIPreferences blueprintUIPreferences;
-
-  @InjectConfig("elasticsearch")
+  @JsonProperty("elasticsearch")
   private ElasticsearchConfig elasticsearchConfig;
 
-  @InjectConfig("servers")
+  // This is read from a different config file
+  private ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig;
+
+  @JsonProperty("servers")
   private ServersConfig servers;
 
-  @InjectConfig("searchSettings")
+  @JsonProperty("searchSettings")
   private SearchSettings searchSettings;
 
-  @InjectConfig("importExport")
+  @JsonProperty("importExport")
   private ImportExportConfig importExportConfig;
 
-  @InjectConfig("templateRESTAPI")
+  @JsonProperty("templateRESTAPI")
   private TemplateRESTAPI templateRESTAPI;
 
-  @InjectConfig("templateRESTAPISummaries")
+  @JsonProperty("templateRESTAPISummaries")
   private TemplateRESTAPISummaries templateRESTAPISummaries;
 
-  @InjectConfig("test")
+  @JsonProperty("test")
   private TestConfig testConfig;
 
-  private static final CedarConfig instance;
+  @JsonProperty("testUsers")
+  private TestUsers testUsers;
+
+  @JsonProperty("terminology")
+  private TerminologyConfig terminologyConfig;
+
+  private final static CedarConfig instance;
 
   static {
     instance = buildInstance();
   }
 
-  @Inject
-  private CedarConfig() {
-  }
-
-  @Override
-  protected void configure() {
-    install(ConfigurationModule.create());
-  }
-
   private static CedarConfig buildInstance() {
-    Injector injector = Guice.createInjector(new CedarConfig());
-    return injector.getInstance(CedarConfig.class);
+
+    CedarConfig config = null;
+
+    final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
+    final SubstitutingSourceProvider substitutingSourceProvider = new SubstitutingSourceProvider(
+        new ClasspathConfigurationSourceProvider(), new EnvironmentVariableSubstitutor());
+
+    // Read main config
+    final String mainConfigFileName = "cedar-main.yml";
+
+    final ConfigurationFactory<CedarConfig> mainConfigurationFactory = new YamlConfigurationFactory<>(
+        CedarConfig.class, validator, Jackson.newObjectMapper(), "cedar");
+
+    try {
+      config = mainConfigurationFactory.build(substitutingSourceProvider, mainConfigFileName);
+    } catch (IOException | ConfigurationException e) {
+      e.printStackTrace();
+      System.exit(-1);
+    }
+
+    // Read search config
+    final String elasticSearchSettingsMappingsConfigFileName = "cedar-search.json";
+
+    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappings = null;
+
+    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> searchConfigurationFactory = new YamlConfigurationFactory<>(
+        ElasticsearchSettingsMappingsConfig.class, validator, Jackson.newObjectMapper(), "cedar");
+
+    try {
+      elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider, elasticSearchSettingsMappingsConfigFileName);
+    } catch (IOException | ConfigurationException e) {
+      e.printStackTrace();
+      System.exit(-2);
+    }
+
+    config.elasticsearchSettingsMappingsConfig = elasticsearchSettingsMappings;
+
+    return config;
   }
 
   public static CedarConfig getInstance() {
@@ -111,24 +145,12 @@ public class CedarConfig extends AbstractModule {
     return blueprintUserProfile;
   }
 
-  public BlueprintUIPreferences getBlueprintUIPreferences() {
-    return blueprintUIPreferences;
-  }
-
-  public String getMongoCollectionName(CedarNodeType nt) {
-    return getMongoConfig().getCollections().get(nt.getValue());
-  }
-
-  public String getLinkedDataPrefix(CedarNodeType nodeType) {
-    return getLinkedDataConfig().getBase() + nodeType.getPrefix() + "/";
-  }
-  
-  public LinkedDataUtil getLinkedDataUtil() {
-    return new LinkedDataUtil(getLinkedDataConfig());
-  }
-
   public ElasticsearchConfig getElasticsearchConfig() {
     return elasticsearchConfig;
+  }
+
+  public ElasticsearchSettingsMappingsConfig getElasticsearchSettingsMappingsConfig() {
+    return elasticsearchSettingsMappingsConfig;
   }
 
   public ServersConfig getServers() {
@@ -154,5 +176,28 @@ public class CedarConfig extends AbstractModule {
   public TestConfig getTestConfig() {
     return testConfig;
   }
+
+  public TestUsers getTestUsers() {
+    return testUsers;
+  }
+
+  public TerminologyConfig getTerminologyConfig() {
+    return terminologyConfig;
+  }
+
+  // Utility methods
+
+  public String getMongoCollectionName(CedarNodeType nt) {
+    return getMongoConfig().getCollections().get(nt.getValue());
+  }
+
+  public String getLinkedDataPrefix(CedarNodeType nodeType) {
+    return getLinkedDataConfig().getBase() + nodeType.getPrefix() + "/";
+  }
+
+  public LinkedDataUtil getLinkedDataUtil() {
+    return new LinkedDataUtil(getLinkedDataConfig());
+  }
+
 
 }

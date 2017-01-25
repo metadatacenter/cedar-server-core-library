@@ -15,14 +15,14 @@ public class CedarUserUtil {
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(CedarUserRepresentation ur) {
-    return createUserFromBlueprint(ur, null);
+  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur) {
+    return createUserFromBlueprint(cedarConfig, ur, null);
   }
 
-  public static CedarUser createUserFromBlueprint(CedarUserRepresentation ur, List<CedarUserRole> roles) {
-    CedarConfig cedarConfig = CedarConfig.getInstance();
+  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur,
+                                                  List<CedarUserRole> roles) {
     BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
-    BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUIPreferences();
+    BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUserProfile().getUiPreferences();
 
     CedarUser user = new CedarUser();
     user.setId(ur.getId());
@@ -64,7 +64,7 @@ public class CedarUserUtil {
 
     // set populate-a-template view defaults
     CedarUserUIPopulateATemplate populateATemplate = user.getPopulateATemplate();
-    populateATemplate.setOpened(uiPref.getPopulateATemplate().getOpened());
+    populateATemplate.setOpened(uiPref.getPopulateATemplate().isOpened());
     populateATemplate.setSortBy(uiPref.getPopulateATemplate().getSortBy());
     populateATemplate.setSortDirection(SortDirection.forValue(uiPref.getPopulateATemplate().getSortDirection()));
     populateATemplate.setViewMode(ViewMode.forValue(uiPref.getPopulateATemplate().getViewMode()));

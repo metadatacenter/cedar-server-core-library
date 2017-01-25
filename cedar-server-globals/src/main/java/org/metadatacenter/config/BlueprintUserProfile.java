@@ -3,12 +3,35 @@ package org.metadatacenter.config;
 import java.util.List;
 import java.util.Map;
 
-public interface BlueprintUserProfile {
-  String getScreenNameTemplate();
+public class BlueprintUserProfile {
 
-  String getHomeFolderDescriptionTemplate();
+  private String screenNameTemplate;
 
-  BlueprintDefaultAPIKey getDefaultAPIKey();
+  private String homeFolderDescriptionTemplate;
 
-  Map<String, List<String>> getUserRoles();
+  private BlueprintDefaultAPIKey defaultAPIKey;
+
+  private Map<String, List<String>> userRoles;
+
+  private BlueprintUIPreferences uiPreferences;
+
+  public String getScreenNameTemplate() {
+    return screenNameTemplate;
+  }
+
+  public String getHomeFolderDescriptionTemplate() {
+    return homeFolderDescriptionTemplate;
+  }
+
+  public BlueprintDefaultAPIKey getDefaultAPIKey() {
+    return defaultAPIKey;
+  }
+
+  public Map<String, List<String>> getUserRoles() {
+    return userRoles;
+  }
+
+  public BlueprintUIPreferences getUiPreferences() {
+    return uiPreferences;
+  }
 }

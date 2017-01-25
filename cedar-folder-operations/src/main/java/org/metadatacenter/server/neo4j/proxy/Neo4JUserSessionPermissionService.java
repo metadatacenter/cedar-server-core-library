@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerUser;
@@ -18,13 +19,13 @@ import java.util.Set;
 
 public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession implements PermissionServiceSession {
 
-  public Neo4JUserSessionPermissionService(Neo4JProxies proxies, CedarUser cu, String userIdPrefix, String
-      groupIdPrefix) {
-    super(proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
+      userIdPrefix, String groupIdPrefix) {
+    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
   }
 
-  public static PermissionServiceSession get(Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionPermissionService(proxies, cedarUser, proxies.getUserIdPrefix(),
+  public static PermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
+    return new Neo4JUserSessionPermissionService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(),
         proxies.getGroupIdPrefix());
   }
 

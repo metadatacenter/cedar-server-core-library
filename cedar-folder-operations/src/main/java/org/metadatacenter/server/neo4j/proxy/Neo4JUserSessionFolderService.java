@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
@@ -18,12 +19,14 @@ import java.util.Map;
 
 public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession implements FolderServiceSession {
 
-  public Neo4JUserSessionFolderService(Neo4JProxies proxies, CedarUser cu, String userIdPrefix, String groupIdPrefix) {
-    super(proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionFolderService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
+      userIdPrefix, String groupIdPrefix) {
+    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
   }
 
-  public static FolderServiceSession get(Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionFolderService(proxies, cedarUser, proxies.getUserIdPrefix(), proxies.getGroupIdPrefix());
+  public static FolderServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
+    return new Neo4JUserSessionFolderService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
+        .getGroupIdPrefix());
   }
 
   @Override
@@ -159,11 +162,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public long findFolderContentsCount(String folderURL) {
-    return proxies.node().findFolderContentsCount(folderURL);
-  }
-
-  @Override
   public FolderServerResource findResourceById(String resourceURL) {
     return proxies.resource().findResourceById(resourceURL);
   }
@@ -207,11 +205,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public FolderServerFolder findFolderByPath(String path) {
     return proxies.folder().findFolderByPath(path);
-  }
-
-  @Override
-  public FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name) {
-    return proxies.folder().findFolderByParentIdAndName(parentFolder.getId(), name);
   }
 
   @Override
@@ -275,8 +268,8 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
       Map<String, Object> extraParams = new HashMap<>();
       extraParams.put(Neo4JFields.IS_USER_HOME, true);
       String userId = cu.getId();
-      String displayName = CedarUserNameUtil.getDisplayName(cu);
-      String description = CedarUserNameUtil.getHomeFolderDescription(cu);
+      String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
+      String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
       currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), userId, displayName, description, NodeLabel
           .USER_HOME_FOLDER, extraParams);
       if (currentUserHomeFolder != null) {
@@ -288,5 +281,27 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
       }
     }
     return null;
+  }
+
+  @Override
+  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
+      sortList) {
+    return proxies.node().viewSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes) {
+    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, cu);
+  }
+
+  @Override
+  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
+      sortList) {
+    return proxies.node().viewAllFiltered(nodeTypes, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long viewAllCount(List<CedarNodeType> nodeTypes) {
+    return proxies.node().viewAllFilteredCount(nodeTypes, cu);
   }
 }

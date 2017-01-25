@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface FolderServerConfig extends ServerConfig {
-  String getUsers();
+public class FolderServerConfig extends ServerConfig {
 
-  String getGroups();
+  private String users;
+
+  private String groups;
+
+  public String getUsers() {
+    return users;
+  }
+
+  public String getGroups() {
+    return groups;
+  }
 }

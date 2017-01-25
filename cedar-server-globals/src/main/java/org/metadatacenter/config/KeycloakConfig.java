@@ -1,7 +1,16 @@
 package org.metadatacenter.config;
 
-public interface KeycloakConfig {
-  String getClientId();
+public class KeycloakConfig {
 
-  KeycloakAdminUser getAdminUser();
+  private String clientId;
+
+  private KeycloakAdminUser adminUser;
+
+  public String getClientId() {
+    return clientId;
+  }
+
+  public KeycloakAdminUser getAdminUser() {
+    return adminUser;
+  }
 }

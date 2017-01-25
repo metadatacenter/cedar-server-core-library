@@ -1,6 +1,6 @@
 package org.metadatacenter.server.security;
 
-import org.metadatacenter.server.security.exception.CedarAccessException;
+import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;

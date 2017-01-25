@@ -3,7 +3,7 @@ package org.metadatacenter.rest.assertion.assertiontarget;
 import org.metadatacenter.rest.assertion.CedarAssertion;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.rest.exception.CedarAssertionResult;
+import org.metadatacenter.error.CedarAssertionResult;
 
 import java.util.Collection;
 import java.util.Collections;

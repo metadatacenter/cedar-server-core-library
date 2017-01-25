@@ -1,5 +1,8 @@
 package org.metadatacenter.rest.assertion.noun;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.exception.CedarException;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 
@@ -7,5 +10,10 @@ public interface CedarRequestBody extends CedarAssertionNoun {
 
   CedarParameter get(String name);
 
-  <T> T convert(Class<T> type) throws CedarAssertionException;
+  JsonNode asJson();
+
+  String asJsonString() throws CedarProcessingException;
+
+  <T> T convert(Class<T> type) throws CedarException;
+
 }

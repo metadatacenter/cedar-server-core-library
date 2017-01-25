@@ -1,8 +1,16 @@
 package org.metadatacenter.config;
 
-public interface BlueprintDefaultAPIKey {
-  String getServiceName();
+public class BlueprintDefaultAPIKey {
 
-  String getDescription();
+  private String serviceName;
 
+  private String description;
+
+  public String getServiceName() {
+    return serviceName;
+  }
+
+  public String getDescription() {
+    return description;
+  }
 }

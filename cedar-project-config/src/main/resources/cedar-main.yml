@@ -1,0 +1,190 @@
+#Keycloak server related settings.
+#These are used when the global objects are built in neo4j
+keycloak:
+  clientId: "admin-cli"
+  adminUser:
+    userName: "cedar-admin"
+    #UUID of "cedar-admin" user from Keycloak.
+    #You can find this after logging in  to the admin console of Keycloak.
+    uuid: "${CEDAR_ADMIN_USER_UUID}"
+    #Plain text password of "cedar-admin" user
+    password: "${CEDAR_ADMIN_USER_PASSWORD}"
+
+#MongoDB settings
+mongo:
+  #Database name
+  databaseName: "cedar"
+  databaseNameTest: "cedar-test"
+  #Collection names
+  collections:
+    field: "template-fields"
+    element: "template-elements"
+    template: "templates"
+    instance: "template-instances"
+    user: "users"
+
+#Neo4J settings
+neo4j:
+  #Rest API settings
+  #You can find these values from the browser interface: http://localhost:7474/browser/
+  #Sample values:
+  # transactionUrl = "http://localhost:7474/db/data/transaction/commit",
+  # authString = "Basic {base64(user:pass)}"
+  rest:
+    transactionUrl: "${CEDAR_NEO4J_TRANSACTION_URL}"
+    authString: "${CEDAR_NEO4J_AUTH_STRING}"
+
+searchSettings:
+  searchRetrieveSettings:
+    limit: 100
+    limitIndexRegeneration: 50000
+    maxAttempts: 3
+    delayAttempts: 10000
+  searchDefaultSettings:
+    defaultLimit: 100
+    maxAllowedLimit: 1000
+
+elasticsearch:
+  cluster: "elasticsearch_cedar"
+  index: "cedar-search"
+  type: "resources"
+  host: "127.0.0.1"
+  transportPort: 9300
+  size: 1000
+  scrollKeepAlive: 60000
+
+#Linked data settings
+#For ID generation
+linkedData:
+  base: "https://repo.${CEDAR_HOST}/"
+  usersBase: "https://metadatacenter.org/users/"
+
+#Folder server global structure
+folderStructure:
+  rootFolder:
+    path: "/"
+    description: "CEDAR Root Folder"
+  usersFolder:
+    path: "/Users"
+    description: "CEDAR Users"
+  everybodyGroup:
+    name: "Everybody"
+    displayName: "Everybody"
+    description: "Group holding all the users"
+
+folderRESTAPI:
+  pagination:
+    defaultPageSize: 100
+    maxPageSize: 300
+
+#Server bases
+#for inter-service REST calls
+servers:
+  template:
+    base: "https://template.${CEDAR_HOST}/"
+  folder:
+    base: "https://folder.${CEDAR_HOST}/"
+    users: "https://folder.${CEDAR_HOST}/users"
+    groups: "https://folder.${CEDAR_HOST}/groups"
+  user:
+    base: "https://user.${CEDAR_HOST}/"
+    usersBase: "https://user.${CEDAR_HOST}/users/"
+  resource:
+    base: "https://resource.${CEDAR_HOST}/"
+    regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
+  schema:
+    base: "https://schema.${CEDAR_HOST}/"
+    coreBase: "https://schema.${CEDAR_HOST}/core/"
+
+#Default values for user profile
+#Used when generating user from blueprint
+blueprintUserProfile:
+  screenNameTemplate: "{firstName} {lastName}"
+  homeFolderDescriptionTemplate: "Home folder of {firstName} {lastName}"
+  defaultAPIKey:
+    serviceName: "CEDAR"
+    description: "Auto-generated apiKey for CEDAR"
+  userRoles:
+    normal:
+      - "templateCreator"
+      - "templateInstantiator"
+    admin:
+      - "templateCreator"
+      - "templateInstantiator"
+      - "administrator"
+    builtInAdmin:
+      - "templateCreator"
+      - "templateInstantiator"
+      - "builtInSystemAdministrator"
+  uiPreferences:
+    folderView:
+      sortBy: "name"
+      sortDirection: "asc"
+      viewMode: "grid"
+    populateATemplate:
+      sortBy: "name"
+      sortDirection: "asc"
+      viewMode: "grid"
+      opened: true
+
+#Terminology server configuration
+terminology:
+  bioPortal:
+    apiKey: "${CEDAR_BIOPORTAL_API_KEY}"
+    basePath: "http://data.bioontology.org/"
+    connectTimeout: 3000
+    socketTimeout: 30000
+    defaultPageSize: 50
+
+importExport:
+  exportDir: "${CEDAR_HOME}export/"
+
+templateRESTAPI:
+  pagination:
+    defaultPageSize: 20
+    maxPageSize: 300
+  excludedFields:
+    - "_id"
+
+templateRESTAPISummaries:
+  field:
+    fields:
+      - "@id"
+      - "_ui.title"
+      - "_ui.description"
+  element:
+    fields:
+      - "@id"
+      - "_ui.title"
+      - "_ui.description"
+  template:
+    fields:
+      - "@id"
+      - "_ui.title"
+      - "_ui.description"
+  instance:
+    fields:
+      - "@id"
+      - "_ui.title"
+      - "_ui.description"
+
+test:
+  base: "http://localhost"
+  port: 3333
+  timeout: 10000
+  template:
+    baseRoute: "/templates"
+  element:
+    baseRoute: "/template-elements"
+  field:
+    baseRoute: "/template-fields"
+  instance:
+    baseRoute: "/template-instances"
+
+testUsers:
+  testUser1:
+    uuid: "${CEDAR_TEST_USER1_UUID}"
+  testUser2:
+    uuid: "${CEDAR_TEST_USER2_UUID}"
+  testUser3:
+    uuid: "${CEDAR_TEST_USER3_UUID}"

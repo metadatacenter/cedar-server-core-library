@@ -1,6 +1,6 @@
 package org.metadatacenter.rest.assertion.assertiontarget;
 
-import org.metadatacenter.rest.CedarOperationDescriptor;
+import org.metadatacenter.operation.CedarOperationDescriptor;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 
 public interface AssertionTargetFuture {

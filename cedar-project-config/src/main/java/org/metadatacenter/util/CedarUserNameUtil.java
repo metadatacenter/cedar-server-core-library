@@ -9,9 +9,8 @@ public class CedarUserNameUtil {
 
   }
 
-  public static String getDisplayName(CedarUserRepresentation ur) {
+  public static String getDisplayName(CedarConfig cedarConfig, CedarUserRepresentation ur) {
     if (ur != null) {
-      CedarConfig cedarConfig = CedarConfig.getInstance();
       String screenName = cedarConfig.getBlueprintUserProfile().getScreenNameTemplate();
       if (screenName != null) {
         screenName = screenName.replace("{firstName}", ur.getFirstName() == null ? "" : ur.getFirstName());
@@ -23,8 +22,7 @@ public class CedarUserNameUtil {
     }
   }
 
-  public static String getHomeFolderDescription(CedarUserRepresentation ur) {
-    CedarConfig cedarConfig = CedarConfig.getInstance();
+  public static String getHomeFolderDescription(CedarConfig cedarConfig, CedarUserRepresentation ur) {
     String homeDescription = cedarConfig.getBlueprintUserProfile().getHomeFolderDescriptionTemplate();
     homeDescription = homeDescription.replace("{firstName}", ur.getFirstName());
     homeDescription = homeDescription.replace("{lastName}", ur.getLastName());

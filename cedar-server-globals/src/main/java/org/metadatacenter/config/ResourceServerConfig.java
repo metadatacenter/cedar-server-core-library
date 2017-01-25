@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface ResourceServerConfig extends ServerConfig {
-  String getRegenerateIndex();
+public class ResourceServerConfig extends ServerConfig {
+
+  private String regenerateIndex;
+
+  public String getRegenerateIndex() {
+    return regenerateIndex;
+  }
 }

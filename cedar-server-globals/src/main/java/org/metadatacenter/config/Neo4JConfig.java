@@ -1,5 +1,10 @@
 package org.metadatacenter.config;
 
-public interface Neo4JConfig {
-  Neo4JRestConfig getRest();
+public class Neo4JConfig {
+
+  private Neo4JRestConfig rest;
+
+  public Neo4JRestConfig getRest() {
+    return rest;
+  }
 }

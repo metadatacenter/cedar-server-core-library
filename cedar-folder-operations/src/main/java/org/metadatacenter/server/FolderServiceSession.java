@@ -4,7 +4,6 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.NodeLabel;
 
 import java.util.List;
@@ -53,8 +52,6 @@ public interface FolderServiceSession {
 
   FolderServerFolder findFolderByPath(String path);
 
-  FolderServerFolder findFolderByParentIdAndName(FolderServerFolder parentFolder, String name);
-
   FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name);
 
   List<FolderServerFolder> findFolderPathByPath(String path);
@@ -63,8 +60,6 @@ public interface FolderServiceSession {
 
   List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList);
-
-  long findFolderContentsCount(String folderURL);
 
   long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
@@ -79,4 +74,14 @@ public interface FolderServiceSession {
   boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder);
 
   FolderServerFolder ensureUserHomeExists();
+
+  List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
+      sortList);
+
+  long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList);
+
+  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
+      sortList);
+
+  long viewAllCount(List<CedarNodeType> nodeTypeList);
 }

@@ -1,9 +1,22 @@
 package org.metadatacenter.config;
 
-public interface GraphGroup {
-  String getName();
+public class GraphGroup {
 
-  String getDisplayName();
+  private String name;
 
-  String getDescription();
+  private String displayName;
+
+  private String description;
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
+
+  public String getDescription() {
+    return description;
+  }
 }

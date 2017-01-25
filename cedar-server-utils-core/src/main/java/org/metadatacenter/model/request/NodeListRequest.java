@@ -6,12 +6,15 @@ import org.metadatacenter.model.CedarNodeType;
 import java.util.List;
 
 public class NodeListRequest {
-  
+
   @JsonProperty("resource_types")
   private List<CedarNodeType> nodeTypes;
   private long limit;
   private long offset;
   private List<String> sort;
+  private String q;
+  @JsonProperty("derived_from_id")
+  private String derivedFromId;
 
   public List<CedarNodeType> getNodeTypes() {
     return nodeTypes;
@@ -43,5 +46,21 @@ public class NodeListRequest {
 
   public void setSort(List<String> sort) {
     this.sort = sort;
+  }
+
+  public String getQ() {
+    return q;
+  }
+
+  public void setQ(String q) {
+    this.q = q;
+  }
+
+  public String getDerivedFromId() {
+    return derivedFromId;
+  }
+
+  public void setDerivedFromId(String derivedFromId) {
+    this.derivedFromId = derivedFromId;
   }
 }

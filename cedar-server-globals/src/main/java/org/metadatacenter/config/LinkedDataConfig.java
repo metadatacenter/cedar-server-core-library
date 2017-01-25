@@ -1,7 +1,15 @@
 package org.metadatacenter.config;
 
-public interface LinkedDataConfig {
-  String getBase();
+public class LinkedDataConfig {
+  private String base;
 
-  String getUsersBase();
+  private String usersBase;
+
+  public String getBase() {
+    return base;
+  }
+
+  public String getUsersBase() {
+    return usersBase;
+  }
 }

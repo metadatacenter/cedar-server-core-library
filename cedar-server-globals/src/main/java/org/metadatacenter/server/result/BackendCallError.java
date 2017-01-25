@@ -1,68 +1,46 @@
 package org.metadatacenter.server.result;
 
-import java.util.Map;
-import java.util.HashMap;
+import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.error.CedarErrorPack;
+import org.metadatacenter.error.CedarErrorType;
+import org.metadatacenter.error.CedarSuggestedAction;
+import org.metadatacenter.operation.CedarOperationDescriptor;
 
 public class BackendCallError {
 
-  private final BackendCallErrorType type;
-  private String subType;
-  private String message;
-  private final Map<String, Object> params;
-  private String suggestedAction;
-  private String code;
+  private CedarErrorPack errorPack;
 
-  BackendCallError(BackendCallErrorType type) {
-    this.type = type;
-    this.params = new HashMap<>();
-  }
-
-  public BackendCallErrorType getType() {
-    return type;
-  }
-
-  public BackendCallError subType(String subType) {
-    this.subType = subType;
-    return this;
-  }
-
-  public String getSubType() {
-    return subType;
+  BackendCallError(CedarErrorType errorType) {
+    errorPack = new CedarErrorPack();
+    errorPack.setErrorType(errorType);
   }
 
   public BackendCallError message(String message) {
-    this.message = message;
+    errorPack.setMessage(message);
     return this;
   }
 
-  public String getMessage() {
-    return message;
-  }
-
-  public BackendCallError param(String paramName, Object paramValue) {
-    this.params.put(paramName, paramValue);
+  public BackendCallError parameter(String name, Object value) {
+    errorPack.setParameter(name, value);
     return this;
   }
 
-  public Map<String, Object> getParams() {
-    return params;
-  }
-
-  public BackendCallError action(String suggestedAction) {
-    this.suggestedAction = suggestedAction;
+  public BackendCallError suggestedAction(CedarSuggestedAction suggestedAction) {
+    errorPack.setSuggestedAction(suggestedAction);
     return this;
   }
 
-  public String getSuggestedAction() {
-    return suggestedAction;
-  }
-
-  public BackendCallError code(String code) {
-    this.code = code;
+  public BackendCallError errorKey(CedarErrorKey errorKey) {
+    errorPack.setErrorKey(errorKey);
     return this;
   }
 
-  public String getCode() {
-    return code;
+  public BackendCallError operation(CedarOperationDescriptor operation) {
+    errorPack.setOperation(operation);
+    return this;
+  }
+
+  public CedarErrorPack getErrorPack() {
+    return errorPack;
   }
 }

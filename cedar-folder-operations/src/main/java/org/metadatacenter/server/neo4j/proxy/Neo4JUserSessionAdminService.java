@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
@@ -15,12 +16,14 @@ import java.util.UUID;
 
 public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession implements AdminServiceSession {
 
-  public Neo4JUserSessionAdminService(Neo4JProxies proxies, CedarUser cu, String userIdPrefix, String groupIdPrefix) {
-    super(proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
+      userIdPrefix, String groupIdPrefix) {
+    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
   }
 
-  public static AdminServiceSession get(Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionAdminService(proxies, cedarUser, proxies.getUserIdPrefix(), proxies.getGroupIdPrefix());
+  public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
+    return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
+        .getGroupIdPrefix());
   }
 
   @Override
@@ -39,7 +42,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     FolderServerUser cedarAdmin = proxies.user().findUserById(userId);
     if (cedarAdmin == null) {
-      String displayName = CedarUserNameUtil.getDisplayName(cu);
+      String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
       cedarAdmin = proxies.user().createUser(userId, displayName, displayName, cu.getFirstName(), cu.getLastName(),
           cu.getEmail());
       addAdminToEverybody = true;

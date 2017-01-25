@@ -13,8 +13,6 @@ public class CypherQueryBuilder {
     FOLDER, RESOURCE
   }
 
-  private static String groupBySpecialValue;
-
   private CypherQueryBuilder() {
   }
 
@@ -137,7 +135,7 @@ public class CypherQueryBuilder {
       sb.append(getResourcePermissionConditions("\nAND\n", "child"));
     }
     sb.append("\nRETURN child");
-    sb.append("\nORDER BY child.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression(sortList));
+    sb.append("\nORDER BY child.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("child", sortList));
     sb.append("\nSKIP {offset}");
     sb.append("\nLIMIT {limit}");
     return sb.toString();
@@ -184,7 +182,7 @@ public class CypherQueryBuilder {
     sb.append("MATCH (child)");
     sb.append(" WHERE child:").append(NodeLabel.FOLDER).append(" OR child:").append(NodeLabel.RESOURCE);
     sb.append(" RETURN child");
-    sb.append(" ORDER BY ").append(getOrderByExpression(sortList));
+    sb.append(" ORDER BY ").append(getOrderByExpression("child", sortList));
     sb.append(" SKIP {offset}");
     sb.append(" LIMIT {limit}");
     return sb.toString();
@@ -198,37 +196,37 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  private static String getOrderByExpression(List<String> sortList) {
+  private static String getOrderByExpression(String nodeAlias, List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     String prefix = "";
     for (String s : sortList) {
       sb.append(prefix);
-      sb.append(getOrderByExpression(s));
+      sb.append(getOrderByExpression(nodeAlias, s));
       prefix = ", ";
     }
     return sb.toString();
   }
 
-  private static String getOrderByExpression(String s) {
+  private static String getOrderByExpression(String nodeAlias, String s) {
     StringBuilder sb = new StringBuilder();
     if (s != null) {
       if (s.startsWith("-")) {
-        sb.append(getCaseInsensitiveSortExpression(s.substring(1)));
+        sb.append(getCaseInsensitiveSortExpression(nodeAlias, s.substring(1)));
         sb.append(" DESC");
       } else {
-        sb.append(getCaseInsensitiveSortExpression(s));
+        sb.append(getCaseInsensitiveSortExpression(nodeAlias, s));
         sb.append(" ASC");
       }
     }
     return sb.toString();
   }
 
-  private static String getCaseInsensitiveSortExpression(String fieldName) {
+  private static String getCaseInsensitiveSortExpression(String nodeAlias, String fieldName) {
     if (FolderContentSortOptions.isTextual(fieldName)) {
-      return new StringBuilder().append("LOWER(").append("child.")
+      return new StringBuilder().append("LOWER(").append(nodeAlias).append(".")
           .append(FolderContentSortOptions.getFieldName(fieldName)).append(")").toString();
     } else {
-      return new StringBuilder().append("child.")
+      return new StringBuilder().append(nodeAlias).append(".")
           .append(FolderContentSortOptions.getFieldName(fieldName)).toString();
     }
   }
@@ -277,18 +275,6 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getFolderByParentIdAndName() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
-    sb.append("MATCH (child)");
-    sb.append("MATCH (parent)");
-    sb.append("-[:").append(RelationLabel.CONTAINS).append("]->");
-    sb.append("(child)");
-    sb.append("WHERE child.name = {name}");
-    sb.append("RETURN child");
-    return sb.toString();
-  }
-
   public static String getNodeByParentIdAndName() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (parent").append(" {id:{id} })");
@@ -299,13 +285,6 @@ public class CypherQueryBuilder {
     sb.append("WHERE child.name = {name}");
     sb.append(" AND (parent:").append(NodeLabel.FOLDER).append(" OR parent:").append(NodeLabel.RESOURCE).append(")");
     sb.append("RETURN child");
-    return sb.toString();
-  }
-
-  public static String deleteFolderById() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {id:{id} })");
-    sb.append("DETACH DELETE folder");
     return sb.toString();
   }
 
@@ -856,6 +835,66 @@ public class CypherQueryBuilder {
     sb.append(" (fromNode)-[relation:").append(relation).append("]->(toNode)");
     sb.append(" DELETE relation");
     sb.append(" RETURN fromNode");
+    return sb.toString();
+  }
+
+  public static String getSharedWithMeLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
+    sb.append("\nAND node.ownedBy  <> {userId}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN node");
+    sb.append("\nORDER BY node.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("node", sortList));
+    sb.append("\nSKIP {offset}");
+    sb.append("\nLIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getSharedWithMeCountQuery(boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
+    sb.append("\nAND node.ownedBy  <> {userId}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN count(node)");
+    return sb.toString();
+  }
+
+  public static String getAllLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN node");
+    sb.append("\nORDER BY node.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("node", sortList));
+    sb.append("\nSKIP {offset}");
+    sb.append("\nLIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getAllCountQuery(boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE node.nodeType in {nodeTypeList}");
+    sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
+    }
+    sb.append("\nRETURN count(node)");
     return sb.toString();
   }
 

@@ -1,14 +1,34 @@
 package org.metadatacenter.config;
 
-public interface ServersConfig {
+public class ServersConfig {
 
-  ServerConfig getTemplate();
+  private ServerConfig template;
 
-  FolderServerConfig getFolder();
+  private FolderServerConfig folder;
 
-  UserServerConfig getUser();
+  private UserServerConfig user;
 
-  ResourceServerConfig getResource();
+  private ResourceServerConfig resource;
 
-  SchemaServerConfig getSchema();
+  private SchemaServerConfig schema;
+
+  public ServerConfig getTemplate() {
+    return template;
+  }
+
+  public FolderServerConfig getFolder() {
+    return folder;
+  }
+
+  public UserServerConfig getUser() {
+    return user;
+  }
+
+  public ResourceServerConfig getResource() {
+    return resource;
+  }
+
+  public SchemaServerConfig getSchema() {
+    return schema;
+  }
 }
