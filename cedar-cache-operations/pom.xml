@@ -9,10 +9,10 @@
   </parent>
 
   <groupId>org.metadatacenter</groupId>
-  <artifactId>cedar-search-operations</artifactId>
+  <artifactId>cedar-cache-operations</artifactId>
   <packaging>jar</packaging>
 
-  <name>CEDAR Search Operations</name>
+  <name>CEDAR Cache Operations</name>
 
   <properties>
   </properties>
