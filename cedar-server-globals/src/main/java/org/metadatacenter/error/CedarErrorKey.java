@@ -79,7 +79,22 @@ public enum CedarErrorKey {
   AUTHORIZATION_NOT_FOUND("authorizationNotFound"),
   API_KEY_NOT_FOUND("apiKeyNotFound"),
   TOKEN_MISSING("tokenMissing"),
-  TOKEN_EXPIRED("tokenExpired");
+  TOKEN_EXPIRED("tokenExpired"),
+  PARENT_FOLDER_NOT_SPECIFIED("parentFolderNotSpecified"),
+  PARENT_FOLDER_SPECIFIED_TWICE("parentFolderSpecifiedTwice"),
+  PATH_NOT_NORMALIZED("pathNotNormalized"),
+  PARENT_FOLDER_NOT_FOUND("parentFolderNotFound"),
+  INVALID_FOLDER_NAME("invalidFolderName"),
+  NODE_ALREADY_PRESENT("nodeAlreadyPresent"),
+  FOLDER_NOT_CREATED("folderNotCreated"),
+  MISSING_NAME_AND_DESCRIPTION("missingNameAndDescription"),
+  FOLDER_NOT_DELETED("folderNotDeleted"),
+  RESOURCE_NOT_DELETED("resourceNotDeleted"),
+  RESOURCE_NOT_CREATED("resourceNotCreated"),
+  INVALID_NODE_TYPE("invalidNodeType"),
+  READ_OTHER_PROFILE_FORBIDDEN("readOtherProfileForbidden"),
+  UPDATE_OTHER_PROFILE_FORBIDDEN("updateOtherProfileForbidden"),
+  FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted");
 
   private final String value;
 
