@@ -35,16 +35,24 @@ public class CedarWrappedQueryParameter extends CedarParameterNoun {
     }
   }
 
+  @Override
   public boolean isNull() {
     return isMissing() || wrapped.get() == null;
   }
 
+  @Override
   public boolean isPresentAndNull() {
     return wrapped != null && wrapped.isPresent() && wrapped.get() == null;
   }
 
+  @Override
   public boolean isMissing() {
     return wrapped == null || !wrapped.isPresent();
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return isNull() || stringValue().trim().isEmpty();
   }
 
 }
