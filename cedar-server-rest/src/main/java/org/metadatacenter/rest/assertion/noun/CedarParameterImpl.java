@@ -37,16 +37,24 @@ public class CedarParameterImpl extends CedarParameterNoun {
     }
   }
 
+  @Override
   public boolean isNull() {
     return isMissing() || jsonNode.isNull();
   }
 
+  @Override
   public boolean isPresentAndNull() {
     return jsonNode != null && jsonNode.isNull();
   }
 
+  @Override
   public boolean isMissing() {
     return jsonNode == null || jsonNode.isMissingNode();
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return isNull() || stringValue().trim().isEmpty();
   }
 
 }

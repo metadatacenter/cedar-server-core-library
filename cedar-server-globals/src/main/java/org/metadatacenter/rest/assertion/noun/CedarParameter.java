@@ -16,4 +16,6 @@ public interface CedarParameter extends CedarAssertionNoun {
   boolean isPresentAndNull();
 
   boolean isMissing();
+
+  boolean isEmpty();
 }
