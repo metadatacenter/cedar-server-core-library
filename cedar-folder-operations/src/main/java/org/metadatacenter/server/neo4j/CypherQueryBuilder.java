@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
+import javax.mail.Folder;
 import java.util.List;
 import java.util.Map;
 
@@ -572,7 +573,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getUsersWithPermissionOnNode(RelationLabel relationLabel) {
+  public static String getUsersWithDirectPermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
     sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
@@ -583,7 +584,23 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getGroupsWithPermissionOnNode(RelationLabel relationLabel) {
+  public static String getGroupsWithDirectPermissionOnNode(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
+    sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
+    sb.append("MATCH (group)");
+    sb.append("-[:").append(relationLabel).append("]->");
+    sb.append("(node)");
+    sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String getUsersWithTransitivePermissionOnNode(RelationLabel relationLabel, FolderOrResource
+      folderOrResource) {
+    return userHasPermissionOnNode(relationLabel, folderOrResource, false);
+  }
+
+  public static String getGroupsWithTransitivePermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
     sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
@@ -651,16 +668,22 @@ public class CypherQueryBuilder {
   }
 
   public static String userCanReadNode(FolderOrResource folderOrResource) {
-    return userHasPermissionOnNode(RelationLabel.CANREAD, folderOrResource);
+    return userHasPermissionOnNode(RelationLabel.CANREAD, folderOrResource, true);
   }
 
   public static String userCanWriteNode(FolderOrResource folderOrResource) {
-    return userHasPermissionOnNode(RelationLabel.CANWRITE, folderOrResource);
+    return userHasPermissionOnNode(RelationLabel.CANWRITE, folderOrResource, true);
   }
 
-  private static String userHasPermissionOnNode(RelationLabel relationLabel, FolderOrResource folderOrResource) {
+  private static String userHasPermissionOnNode(RelationLabel relationLabel, FolderOrResource folderOrResource,
+                                                boolean filterUser) {
     StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("MATCH (user:").append(NodeLabel.USER);
+    if (filterUser) {
+      sb.append(" {id:{userId} })");
+    } else {
+      sb.append(")");
+    }
     if (folderOrResource == FolderOrResource.FOLDER) {
       sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
     } else {

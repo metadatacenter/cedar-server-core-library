@@ -230,7 +230,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return cedarFSUser != null;
   }
 
-  List<FolderServerUser> getUsersWithPermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerUser> getUsersWithDirectPermissionOnNode(String nodeURL, NodePermission permission) {
     List<FolderServerUser> userList = new ArrayList<>();
     RelationLabel relationLabel = null;
     switch (permission) {
@@ -241,7 +241,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
         relationLabel = RelationLabel.CANWRITE;
         break;
     }
-    String cypher = CypherQueryBuilder.getUsersWithPermissionOnNode(relationLabel);
+    String cypher = CypherQueryBuilder.getUsersWithDirectPermissionOnNode(relationLabel);
     Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -258,7 +258,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return userList;
   }
 
-  List<FolderServerGroup> getGroupsWithPermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerGroup> getGroupsWithDirectPermissionOnNode(String nodeURL, NodePermission permission) {
     List<FolderServerGroup> groupList = new ArrayList<>();
     RelationLabel relationLabel = null;
     switch (permission) {
@@ -269,7 +269,66 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
         relationLabel = RelationLabel.CANWRITE;
         break;
     }
-    String cypher = CypherQueryBuilder.getGroupsWithPermissionOnNode(relationLabel);
+    String cypher = CypherQueryBuilder.getGroupsWithDirectPermissionOnNode(relationLabel);
+    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode groupListJsonNode = jsonNode.at("/results/0/data");
+    if (groupListJsonNode != null && !groupListJsonNode.isMissingNode()) {
+      groupListJsonNode.forEach(f -> {
+        JsonNode groupNode = f.at("/row/0");
+        if (groupNode != null && !groupNode.isMissingNode()) {
+          FolderServerGroup g = buildGroup(groupNode);
+          groupList.add(g);
+        }
+      });
+    }
+    return groupList;
+  }
+
+  List<FolderServerUser> getUsersWithTransitivePermissionOnNode(String nodeURL, NodePermission permission,
+                                                                CypherQueryBuilder.FolderOrResource folderOrResource) {
+    List<FolderServerUser> userList = new ArrayList<>();
+    RelationLabel relationLabel = null;
+    switch (permission) {
+      case READ:
+        relationLabel = RelationLabel.CANREAD;
+        break;
+      case WRITE:
+        relationLabel = RelationLabel.CANWRITE;
+        break;
+    }
+    String cypher = CypherQueryBuilder.getUsersWithTransitivePermissionOnNode(relationLabel, folderOrResource);
+    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
+    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
+      userListJsonNode.forEach(f -> {
+        JsonNode userNode = f.at("/row/0");
+        if (userNode != null && !userNode.isMissingNode()) {
+          FolderServerUser cu = buildUser(userNode);
+          userList.add(cu);
+        }
+      });
+    }
+    return userList;
+  }
+
+  List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, NodePermission permission,
+                                                                  CypherQueryBuilder.FolderOrResource
+                                                                      folderOrResource) {
+    List<FolderServerGroup> groupList = new ArrayList<>();
+    RelationLabel relationLabel = null;
+    switch (permission) {
+      case READ:
+        relationLabel = RelationLabel.CANREAD;
+        break;
+      case WRITE:
+        relationLabel = RelationLabel.CANWRITE;
+        break;
+    }
+    String cypher = CypherQueryBuilder.getGroupsWithTransitivePermissionOnNode(relationLabel);
     Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

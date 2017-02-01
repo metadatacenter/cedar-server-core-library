@@ -6,12 +6,14 @@ import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.server.neo4j.CypherQueryBuilder;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
+import javax.mail.Folder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +41,10 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     }
     if (node != null) {
       FolderServerUser owner = getNodeOwner(nodeURL);
-      List<FolderServerUser> readUsers = getUsersWithPermission(nodeURL, NodePermission.READ);
-      List<FolderServerUser> writeUsers = getUsersWithPermission(nodeURL, NodePermission.WRITE);
-      List<FolderServerGroup> readGroups = getGroupsWithPermission(nodeURL, NodePermission.READ);
-      List<FolderServerGroup> writeGroups = getGroupsWithPermission(nodeURL, NodePermission.WRITE);
+      List<FolderServerUser> readUsers = getUsersWithDirectPermission(nodeURL, NodePermission.READ);
+      List<FolderServerUser> writeUsers = getUsersWithDirectPermission(nodeURL, NodePermission.WRITE);
+      List<FolderServerGroup> readGroups = getGroupsWithDirectPermission(nodeURL, NodePermission.READ);
+      List<FolderServerGroup> writeGroups = getGroupsWithDirectPermission(nodeURL, NodePermission.WRITE);
       return buildPermissions(owner, readUsers, writeUsers, readGroups, writeGroups);
     } else {
       return null;
@@ -53,12 +55,12 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     return proxies.node().getNodeOwner(nodeURL);
   }
 
-  private List<FolderServerUser> getUsersWithPermission(String nodeURL, NodePermission permission) {
-    return proxies.permission().getUsersWithPermissionOnNode(nodeURL, permission);
+  private List<FolderServerUser> getUsersWithDirectPermission(String nodeURL, NodePermission permission) {
+    return proxies.permission().getUsersWithDirectPermissionOnNode(nodeURL, permission);
   }
 
-  private List<FolderServerGroup> getGroupsWithPermission(String nodeURL, NodePermission permission) {
-    return proxies.permission().getGroupsWithPermissionOnNode(nodeURL, permission);
+  private List<FolderServerGroup> getGroupsWithDirectPermission(String nodeURL, NodePermission permission) {
+    return proxies.permission().getGroupsWithDirectPermissionOnNode(nodeURL, permission);
   }
 
   @Override
@@ -214,4 +216,42 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   public Map<String, String> findAccessibleNodeIds() {
     return proxies.permission().findAccessibleNodeIds(getUserId());
   }
+
+  @Override
+  public CedarNodePermissions getNodeMaterializedPermission(String nodeURL, CypherQueryBuilder.FolderOrResource
+      folderOrResource) {
+    FolderServerNode node;
+    if (folderOrResource == CypherQueryBuilder.FolderOrResource.FOLDER) {
+      node = proxies.folder().findFolderById(nodeURL);
+    } else {
+      node = proxies.resource().findResourceById(nodeURL);
+    }
+    if (node != null) {
+      FolderServerUser owner = getNodeOwner(nodeURL);
+      List<FolderServerUser> readUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.READ,
+          folderOrResource);
+      List<FolderServerUser> writeUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.WRITE,
+          folderOrResource);
+      List<FolderServerGroup> readGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.READ,
+          folderOrResource);
+      List<FolderServerGroup> writeGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.WRITE,
+          folderOrResource);
+      return buildPermissions(owner, readUsers, writeUsers, readGroups, writeGroups);
+    } else {
+      return null;
+    }
+  }
+
+  private List<FolderServerUser> getUsersWithTransitivePermission(String nodeURL, NodePermission permission,
+                                                                  CypherQueryBuilder.FolderOrResource
+                                                                      folderOrResource) {
+    return proxies.permission().getUsersWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
+  }
+
+  private List<FolderServerGroup> getGroupsWithTransitivePermission(String nodeURL, NodePermission permission,
+                                                                    CypherQueryBuilder.FolderOrResource
+                                                                        folderOrResource) {
+    return proxies.permission().getGroupsWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
+  }
+
 }

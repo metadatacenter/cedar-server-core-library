@@ -168,6 +168,20 @@ templateRESTAPISummaries:
       - "_ui.title"
       - "_ui.description"
 
+cache:
+  persistent:
+    connection:
+      host: "localhost"
+      port: 6379
+      timeout: 2000
+    queueNames:
+      searchPermission: "CEDAR-QUEUE-search-permission"
+  nonPersistent:
+    connection:
+      host: "localhost"
+      port: 6380
+      timeout: 2000
+
 test:
   base: "http://localhost"
   port: 3333
