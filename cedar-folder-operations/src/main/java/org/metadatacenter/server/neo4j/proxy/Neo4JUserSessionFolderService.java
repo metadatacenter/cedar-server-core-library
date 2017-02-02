@@ -304,4 +304,19 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   public long viewAllCount(List<CedarNodeType> nodeTypes) {
     return proxies.node().viewAllFilteredCount(nodeTypes, cu);
   }
+
+  @Override
+  public List<FolderServerNode> findAllDescendantNodesById(String id) {
+    return proxies.node().findAllDescendantNodesById(id);
+  }
+
+  @Override
+  public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
+    return proxies.node().findAllNodesVisibleByUserId(id);
+  }
+
+  @Override
+  public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
+    return proxies.node().findAllNodesVisibleByGroupId(id);
+  }
 }

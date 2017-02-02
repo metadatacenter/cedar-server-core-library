@@ -1,4 +1,4 @@
-package org.metadatacenter.server.search.util;
+package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.server.cache.util.CacheService;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;

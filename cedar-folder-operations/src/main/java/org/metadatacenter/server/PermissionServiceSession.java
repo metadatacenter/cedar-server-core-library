@@ -1,8 +1,9 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.folderserver.FolderServerNode;
-import org.metadatacenter.server.neo4j.CypherQueryBuilder;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.server.result.BackendCallResult;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 public interface PermissionServiceSession {
   CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder);
 
-  CedarNodePermissions getNodeMaterializedPermission(String nodeURL, CypherQueryBuilder.FolderOrResource
+  CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL, FolderOrResource
       folderOrResource);
 
   BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,

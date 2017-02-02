@@ -6,7 +6,9 @@ public class ElasticsearchConfig {
 
   private String index;
 
-  private String type;
+  private String typeResource;
+
+  private String typePermission;
 
   private String host;
 
@@ -24,8 +26,12 @@ public class ElasticsearchConfig {
     return index;
   }
 
-  public String getType() {
-    return type;
+  public String getTypeResource() {
+    return typeResource;
+  }
+
+  public String getTypePermission() {
+    return typePermission;
   }
 
   public String getHost() {

@@ -84,4 +84,10 @@ public interface FolderServiceSession {
       sortList);
 
   long viewAllCount(List<CedarNodeType> nodeTypeList);
+
+  List<FolderServerNode> findAllDescendantNodesById(String id);
+
+  List<FolderServerNode> findAllNodesVisibleByUserId(String id);
+
+  List<FolderServerNode> findAllNodesVisibleByGroupId(String id);
 }
