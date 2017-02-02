@@ -136,6 +136,10 @@ public class CypherParamBuilder {
     return getNodeByIdentity(folderURL);
   }
 
+  public static Map<String, Object> getNodeById(String nodeURL) {
+    return getNodeByIdentity(nodeURL);
+  }
+
   public static Map<String, Object> getResourceById(String resourceURL) {
     return getNodeByIdentity(resourceURL);
   }

@@ -9,10 +9,10 @@
   </parent>
 
   <groupId>org.metadatacenter</groupId>
-  <artifactId>cedar-search-operations</artifactId>
+  <artifactId>cedar-cache-operations</artifactId>
   <packaging>jar</packaging>
 
-  <name>CEDAR Search Operations</name>
+  <name>CEDAR Cache Operations</name>
 
   <properties>
   </properties>
@@ -21,21 +21,6 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-cache-operations</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-server-globals</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-server-rest</artifactId>
     </dependency>
 
     <dependency>
@@ -59,8 +44,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
     </dependency>
 
   </dependencies>

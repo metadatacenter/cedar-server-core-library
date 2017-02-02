@@ -70,23 +70,11 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   }
 
   List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList) {
-    List<FolderServerNode> resources = new ArrayList<>();
     String cypher = CypherQueryBuilder.getAllNodesLookupQuery(sortList);
     Map<String, Object> params = CypherParamBuilder.getAllNodesLookupParameters(limit, offset);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-
-    JsonNode resourceListJsonNode = jsonNode.at("/results/0/data");
-    if (resourceListJsonNode != null && !resourceListJsonNode.isMissingNode()) {
-      resourceListJsonNode.forEach(f -> {
-        JsonNode nodeNode = f.at("/row/0");
-        FolderServerNode cf = buildNode(nodeNode);
-        if (cf != null) {
-          resources.add(cf);
-        }
-      });
-    }
-    return resources;
+    return listNodes(jsonNode);
   }
 
   long findAllNodesCount() {
@@ -103,8 +91,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   List<FolderServerNode> findFolderContents(String folderId, Collection<CedarNodeType> nodeTypes, int
       limit, int offset, List<String> sortList, CedarUser cu) {
-    List<FolderServerNode> resources = new ArrayList<>();
-
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList, addPermissionConditions);
     String ownerId = proxies.userIdPrefix + cu.getId();
@@ -112,17 +98,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
         offset, ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode resourceListJsonNode = jsonNode.at("/results/0/data");
-    if (resourceListJsonNode != null && !resourceListJsonNode.isMissingNode()) {
-      resourceListJsonNode.forEach(f -> {
-        JsonNode nodeNode = f.at("/row/0");
-        FolderServerNode cf = buildNode(nodeNode);
-        if (cf != null) {
-          resources.add(cf);
-        }
-      });
-    }
-    return resources;
+    return listNodes(jsonNode);
   }
 
   FolderServerNode findNodeByParentIdAndName(String parentId, String name) {
@@ -162,7 +138,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, int limit, int offset,
                                                          List<String> sortList, CedarUser cu) {
-    List<FolderServerNode> resources = new ArrayList<>();
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getSharedWithMeLookupQuery(sortList, addPermissionConditions);
     String ownerId = proxies.userIdPrefix + cu.getId();
@@ -170,17 +145,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
         ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode resourceListJsonNode = jsonNode.at("/results/0/data");
-    if (resourceListJsonNode != null && !resourceListJsonNode.isMissingNode()) {
-      resourceListJsonNode.forEach(f -> {
-        JsonNode nodeNode = f.at("/row/0");
-        FolderServerNode cf = buildNode(nodeNode);
-        if (cf != null) {
-          resources.add(cf);
-        }
-      });
-    }
-    return resources;
+    return listNodes(jsonNode);
   }
 
   public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
@@ -201,7 +166,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
       sortList, CedarUser cu) {
-    List<FolderServerNode> resources = new ArrayList<>();
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getAllLookupQuery(sortList, addPermissionConditions);
     String ownerId = proxies.userIdPrefix + cu.getId();
@@ -209,17 +173,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
         addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode resourceListJsonNode = jsonNode.at("/results/0/data");
-    if (resourceListJsonNode != null && !resourceListJsonNode.isMissingNode()) {
-      resourceListJsonNode.forEach(f -> {
-        JsonNode nodeNode = f.at("/row/0");
-        FolderServerNode cf = buildNode(nodeNode);
-        if (cf != null) {
-          resources.add(cf);
-        }
-      });
-    }
-    return resources;
+    return listNodes(jsonNode);
   }
 
   public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
@@ -237,4 +191,27 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     }
   }
 
+  public List<FolderServerNode> findAllDescendantNodesById(String id) {
+    String cypher = CypherQueryBuilder.getAllDescendantNodes();
+    Map<String, Object> params = CypherParamBuilder.getNodeById(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    return listNodes(jsonNode);
+  }
+
+  public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
+    String cypher = CypherQueryBuilder.getAllVisibleByUserQuery();
+    Map<String, Object> params = CypherParamBuilder.matchUserId(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    return listNodes(jsonNode);
+  }
+
+  public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
+    String cypher = CypherQueryBuilder.getAllVisibleByGroupQuery();
+    Map<String, Object> params = CypherParamBuilder.matchGroupId(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    return listNodes(jsonNode);
+  }
 }

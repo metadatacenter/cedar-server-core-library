@@ -13,7 +13,6 @@ import java.io.IOException;
 
 public class CedarConfig extends Configuration {
 
-
   @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
@@ -64,6 +63,9 @@ public class CedarConfig extends Configuration {
 
   @JsonProperty("terminology")
   private TerminologyConfig terminologyConfig;
+
+  @JsonProperty("cache")
+  private CacheConfig cacheConfig;
 
   private final static CedarConfig instance;
 
@@ -183,6 +185,10 @@ public class CedarConfig extends Configuration {
 
   public TerminologyConfig getTerminologyConfig() {
     return terminologyConfig;
+  }
+
+  public CacheConfig getCacheConfig() {
+    return cacheConfig;
   }
 
   // Utility methods
