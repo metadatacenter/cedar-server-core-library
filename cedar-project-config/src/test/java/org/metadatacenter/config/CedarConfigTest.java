@@ -73,7 +73,8 @@ public class CedarConfigTest {
         .getElasticsearchSettingsMappingsConfig();
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig);
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getSettings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappingsResource());
+    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappingsPermissions());
 
     Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");

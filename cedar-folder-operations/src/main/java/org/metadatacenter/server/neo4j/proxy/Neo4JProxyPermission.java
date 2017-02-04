@@ -121,10 +121,10 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return errorsNode.size() == 0;
   }
 
-  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, boolean nodeIsFolder) {
+  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource folderOrResource) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (nodeIsFolder) {
+      if (folderOrResource == FolderOrResource.FOLDER) {
         FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
         if (folder != null) {
           addPermission(folder, user, permission);
@@ -138,11 +138,11 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission, boolean
-      nodeIsFolder) {
+  void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource
+      folderOrResource) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (nodeIsFolder) {
+      if (folderOrResource == FolderOrResource.FOLDER) {
         FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
         if (folder != null) {
           removePermission(folder, user, permission);
@@ -156,10 +156,10 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, boolean nodeIsFolder) {
+  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource folderOrResource) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      if (nodeIsFolder) {
+      if (folderOrResource == FolderOrResource.FOLDER) {
         FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
         if (folder != null) {
           proxies.permission().addPermission(folder, group, permission);
@@ -173,11 +173,10 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, boolean
-      nodeIsFolder) {
+  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource folderOrResource) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      if (nodeIsFolder) {
+      if (folderOrResource == FolderOrResource.FOLDER) {
         FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
         if (folder != null) {
           proxies.permission().removePermission(folder, group, permission);

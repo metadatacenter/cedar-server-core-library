@@ -47,8 +47,8 @@ searchSettings:
 elasticsearch:
   cluster: "elasticsearch_cedar"
   index: "cedar-search"
-  typeResource: "resources"
-  typePermission: "permissions"
+  typeResource: "resource"
+  typePermissions: "permissions"
   host: "127.0.0.1"
   transportPort: 9300
   size: 1000

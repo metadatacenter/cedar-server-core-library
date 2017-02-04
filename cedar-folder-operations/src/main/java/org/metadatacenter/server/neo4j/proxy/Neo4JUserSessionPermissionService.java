@@ -31,9 +31,9 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder) {
+  public CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource) {
     FolderServerNode node;
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       node = proxies.folder().findFolderById(nodeURL);
     } else {
       node = proxies.resource().findResourceById(nodeURL);
@@ -64,20 +64,20 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
 
   @Override
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
-                                                 boolean nodeIsFolder) {
+                                                 FolderOrResource folderOrResource) {
 
-    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, nodeIsFolder);
+    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, folderOrResource);
     BackendCallResult bcr = prv.getCallResult();
     if (bcr.isError()) {
       return bcr;
     } else {
-      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
+      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, folderOrResource);
       CedarNodePermissions newPermissions = prv.getPermissions();
 
       String oldOwnerId = currentPermissions.getOwner().getId();
       String newOwnerId = newPermissions.getOwner().getId();
       if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
-        Neo4JUserSessionGroupOperations.updateNodeOwner(proxies.node(), nodeURL, newOwnerId, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.updateNodeOwner(proxies.node(), nodeURL, newOwnerId, folderOrResource);
       }
 
       Set<NodePermissionUserPermissionPair> oldUserPermissions = new HashSet<>();
@@ -94,7 +94,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toRemoveUserPermissions.removeAll(newUserPermissions);
       if (!toRemoveUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeUserPermissions(proxies.permission(), nodeURL, toRemoveUserPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
@@ -102,7 +102,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toAddUserPermissions.removeAll(oldUserPermissions);
       if (!toAddUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addUserPermissions(proxies.permission(), nodeURL, toAddUserPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionGroupPermissionPair> oldGroupPermissions = new HashSet<>();
@@ -119,7 +119,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toRemoveGroupPermissions.removeAll(newGroupPermissions);
       if (!toRemoveGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeGroupPermissions(proxies.permission(), nodeURL, toRemoveGroupPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
@@ -127,7 +127,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toAddGroupPermissions.removeAll(oldGroupPermissions);
       if (!toAddGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addGroupPermissions(proxies.permission(), nodeURL, toAddGroupPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
       return new BackendCallResult();
     }

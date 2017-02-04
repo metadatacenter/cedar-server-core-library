@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.server.search.elasticsearch.ElasticsearchService;
-import org.metadatacenter.server.search.util.IndexUtils;
+import org.metadatacenter.server.search.elasticsearch.IndexedDocumentId;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -27,38 +27,36 @@ public class PermissionSearchService {
     this.esType = esType;
   }
 
-
-  public void indexResource(CedarNodeMaterializedPermissions permissions, String indexName, String documentType)
-      throws CedarProcessingException {
-    log.debug("Indexing permissions (id = " + permissions.getId() + ")");
-    CedarPermissionIndexResource ir = new CedarPermissionIndexResource(permissions);
-    JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-    esService.addToIndex(jsonResource, indexName, documentType);
+  public IndexedDocumentId indexResource(CedarNodeMaterializedPermissions permissions, String indexName,
+                                         IndexedDocumentId parent) throws CedarProcessingException {
+    if (permissions != null) {
+      log.debug("Indexing permissions (id = " + permissions.getId() + ")");
+      CedarPermissionIndexResource ir = new CedarPermissionIndexResource(permissions);
+      JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
+      return esService.addToIndex(jsonResource, indexName, esType, parent);
+    }
+    return null;
   }
 
-  public void indexResource(CedarNodeMaterializedPermissions permissions) throws
+  public IndexedDocumentId indexResource(CedarNodeMaterializedPermissions permissions, IndexedDocumentId parent) throws
       CedarProcessingException {
-    indexResource(permissions, esIndex, esType);
-  }
-
-  public void removeResourceFromIndex(String resourceId, String indexName, String documentType) throws
-      CedarProcessingException {
-    log.debug("Removing resource from index (id = " + resourceId);
-    esService.removeFromIndex(resourceId, indexName, documentType);
+    return indexResource(permissions, esIndex, parent);
   }
 
   public void removeResourceFromIndex(String resourceId) throws CedarProcessingException {
-    removeResourceFromIndex(resourceId, esIndex, esType);
+    if (resourceId != null) {
+      log.debug("Removing resource from index (id = " + resourceId);
+      esService.removeFromIndex(resourceId, esIndex, esType);
+    }
   }
 
-  public void updateIndexedResource(CedarNodeMaterializedPermissions permissions, String indexName, String
-      documentType) throws CedarProcessingException {
-    log.debug("Updating resource (id = " + permissions.getId());
-    removeResourceFromIndex(permissions.getId(), indexName, documentType);
-    indexResource(permissions, indexName, documentType);
-  }
-
-  public void updateIndexedResource(CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
-    updateIndexedResource(permissions, esIndex, esType);
+  public IndexedDocumentId updateIndexedResource(CedarNodeMaterializedPermissions permissions, IndexedDocumentId
+      parent) throws CedarProcessingException {
+    if (permissions != null) {
+      log.debug("Updating resource (id = " + permissions.getId());
+      removeResourceFromIndex(permissions.getId());
+      return indexResource(permissions, parent);
+    }
+    return null;
   }
 }

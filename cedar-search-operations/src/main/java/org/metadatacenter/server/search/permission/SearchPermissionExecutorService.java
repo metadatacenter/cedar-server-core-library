@@ -14,6 +14,7 @@ import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
+import org.metadatacenter.server.search.elasticsearch.IndexedDocumentId;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
@@ -56,39 +57,41 @@ public class SearchPermissionExecutorService {
 
   // Main entry point
   public void handleEvent(SearchPermissionQueueEvent event) {
+    //TODO: REALLY IMPORTANT TO GET THE PARENT ID HERE
+    IndexedDocumentId parent = null;
     switch (event.getEventType()) {
       case RESOURCE_CREATED:
-        createOneResource(event.getId());
+        createOneResource(event.getId(), parent);
         break;
       case RESOURCE_COPIED:
-        createOneResource(event.getId());
+        createOneResource(event.getId(), parent);
         break;
       case RESOURCE_MOVED:
-        updateOneResource(event.getId());
+        updateOneResource(event.getId(), parent);
         break;
       case RESOURCE_DELETED:
         deleteOneResource(event.getId());
         break;
       case RESOURCE_PERMISSION_CHANGED:
-        updateOneResource(event.getId());
+        updateOneResource(event.getId(), parent);
         break;
       case FOLDER_CREATED:
-        createOneFolder(event.getId());
+        createOneFolder(event.getId(), parent);
         break;
       case FOLDER_MOVED:
-        updateFolderRecursively(event.getId());
+        updateFolderRecursively(event.getId(), parent);
         break;
       case FOLDER_DELETED:
         deleteRecursiveFolder(event.getId());
         break;
       case FOLDER_PERMISSION_CHANGED:
-        updateFolderRecursively(event.getId());
+        updateFolderRecursively(event.getId(), parent);
         break;
       case USER_CREATED:
-        updateAllByCreatedUser(event.getId());
+        updateAllByCreatedUser(event.getId(), parent);
         break;
       case GROUP_MEMBERS_UPDATED:
-        updateAllByUpdatedGroup(event.getId());
+        updateAllByUpdatedGroup(event.getId(), parent);
         break;
       case GROUP_DELETED:
         updateAllByDeletedGroup(event.getId());
@@ -97,21 +100,21 @@ public class SearchPermissionExecutorService {
   }
 
   //Routers for individual cases
-  private void createOneResource(String id) {
+  private void createOneResource(String id, IndexedDocumentId parent) {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
       log.debug("Create one resource:" + resource.getDisplayName());
-      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.RESOURCE);
+      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.RESOURCE, parent);
     } else {
       log.error("Resource was not found:" + id);
     }
   }
 
-  private void updateOneResource(String id) {
+  private void updateOneResource(String id, IndexedDocumentId parent) {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
       log.debug("Update one resource:" + resource.getDisplayName());
-      upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE);
+      upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE, parent);
     } else {
       log.error("Resource was not found:" + id);
     }
@@ -122,21 +125,21 @@ public class SearchPermissionExecutorService {
     deleteOnePermissions(id);
   }
 
-  private void createOneFolder(String id) {
+  private void createOneFolder(String id, IndexedDocumentId parent) {
     FolderServerFolder folder = folderSession.findFolderById(id);
     if (folder != null) {
       log.debug("Create one folder:" + folder.getDisplayName());
-      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.FOLDER);
+      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.FOLDER, parent);
     } else {
       log.error("Folder was not found:" + id);
     }
   }
 
-  private void updateFolderRecursively(String id) {
+  private void updateFolderRecursively(String id, IndexedDocumentId parent) {
     log.debug("Update recursive folder:");
     List<FolderServerNode> subtree = folderSession.findAllDescendantNodesById(id);
     for (FolderServerNode n : subtree) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType());
+      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
     }
   }
 
@@ -146,19 +149,19 @@ public class SearchPermissionExecutorService {
     // Delete them all
   }
 
-  private void updateAllByCreatedUser(String id) {
+  private void updateAllByCreatedUser(String id, IndexedDocumentId parent) {
     log.debug("Update all visible by user:");
     List<FolderServerNode> collection = folderSession.findAllNodesVisibleByUserId(id);
     for (FolderServerNode n : collection) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType());
+      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
     }
   }
 
-  private void updateAllByUpdatedGroup(String id) {
+  private void updateAllByUpdatedGroup(String id, IndexedDocumentId parent) {
     log.debug("Update all visible by group:");
     List<FolderServerNode> collection = folderSession.findAllNodesVisibleByGroupId(id);
     for (FolderServerNode n : collection) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType());
+      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
     }
   }
 
@@ -169,27 +172,23 @@ public class SearchPermissionExecutorService {
   }
 
   // Executors
-  private void upsertOnePermissions(Upsert upsert, String id, CedarNodeType nodeType) {
+  private void upsertOnePermissions(Upsert upsert, String id, CedarNodeType nodeType, IndexedDocumentId parent) {
     upsertOnePermissions(upsert, id, nodeType == CedarNodeType.FOLDER ? FolderOrResource.FOLDER : FolderOrResource
-        .RESOURCE);
+        .RESOURCE, parent);
   }
 
-  private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource) {
+  private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource, IndexedDocumentId parent) {
     log.debug("upsertOnePermissions:" + upsert.getValue() + ":" + folderOrResource + ":" + id);
     try {
       CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id, folderOrResource);
-      /*log.debug("Groups:");
-      for (String gid : perm.getGroupPermissions().keySet()) {
-        log.debug("   " + gid + " : " + perm.getGroupPermissions().get(gid).getValue());
-      }
-      log.debug("Users:");
-      for (String uid : perm.getUserPermissions().keySet()) {
-        log.debug("   " + uid + " : " + perm.getUserPermissions().get(uid).getValue());
-      }*/
-      if (upsert == Upsert.INSERT) {
-        permissionSearchService.indexResource(perm);
+      if (perm != null) {
+        if (upsert == Upsert.INSERT) {
+          permissionSearchService.indexResource(perm, parent);
+        } else {
+          permissionSearchService.updateIndexedResource(perm, parent);
+        }
       } else {
-        permissionSearchService.updateIndexedResource(perm);
+        log.error("Permissions not found for " + folderOrResource + ":" + id);
       }
     } catch (Exception e) {
       log.error("Error while upserting permissions", e);

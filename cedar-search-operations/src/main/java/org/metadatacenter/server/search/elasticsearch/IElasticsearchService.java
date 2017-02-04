@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface IElasticsearchService {
 
-  void createIndex(String indexName, String documentType) throws CedarProcessingException;
+  void createIndex(String indexName, String documentTypeResource, String documentTypePermissions) throws
+      CedarProcessingException;
 
-  void createIndex(String indexName) throws CedarProcessingException;
-
-  void addToIndex(JsonNode json, String indexName, String documentType) throws CedarProcessingException;
+  IndexedDocumentId addToIndex(JsonNode json, String indexName, String documentType, IndexedDocumentId parent) throws
+      CedarProcessingException;
 
   void removeFromIndex(String id, String indexName, String documentType) throws CedarProcessingException;
 

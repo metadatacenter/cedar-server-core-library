@@ -39,7 +39,7 @@ public abstract class AbstractNeo4JProxy {
     for (CypherQuery q : queries) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        log.debug("c.query : " + qp.getQuery());
+        log.debug("c.query : " + qp.getFlatQuery());
         log.debug("c.params: " + qp.getParameters());
         log.debug("c.interp: " + qp.getLiteralCypher());
         Map<String, Object> statement = new HashMap<>();
@@ -47,7 +47,7 @@ public abstract class AbstractNeo4JProxy {
         statement.put("parameters", qp.getParameters());
         statements.add(statement);
       } else if (q instanceof CypherQueryLiteral) {
-        log.debug("c.string: " + q.getQuery());
+        log.debug("c.string: " + q.getFlatQuery());
         CypherQueryLiteral qp = (CypherQueryLiteral) q;
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", qp.getQuery());

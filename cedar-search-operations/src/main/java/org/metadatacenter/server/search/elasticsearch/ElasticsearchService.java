@@ -7,6 +7,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -26,6 +27,8 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.config.ElasticsearchSettingsMappingsConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -35,13 +38,16 @@ import static org.metadatacenter.constant.ElasticsearchConstants.*;
 
 public class ElasticsearchService implements IElasticsearchService {
 
+  private static final Logger log = LoggerFactory.getLogger(ElasticsearchService.class);
+
   private Settings settings;
   private String esHost;
   private int esTransportPort;
   private int esSize;
   private int scrollKeepAlive;
   private HashMap<String, Object> indexSettings;
-  private HashMap<String, Object> indexMappings;
+  private HashMap<String, Object> indexMappingsResource;
+  private HashMap<String, Object> indexMappingsPermissions;
   private Client client = null;
 
   public ElasticsearchService(ElasticsearchConfig esc, ElasticsearchSettingsMappingsConfig essmc) {
@@ -50,13 +56,14 @@ public class ElasticsearchService implements IElasticsearchService {
     this.esSize = esc.getSize();
     this.scrollKeepAlive = esc.getScrollKeepAlive();
     this.indexSettings = essmc.getSettings();
-    this.indexMappings = essmc.getMappings();
+    this.indexMappingsResource = essmc.getMappingsResource();
+    this.indexMappingsPermissions = essmc.getMappingsPermissions();
 
     settings = Settings.settingsBuilder()
         .put("cluster.name", esc.getCluster()).build();
   }
 
-  public void createIndex(String indexName, String documentType)
+  public void createIndex(String indexName, String documentTypeResource, String documentTypePermissions)
       throws CedarProcessingException {
     try {
       client = getClient();
@@ -66,25 +73,26 @@ public class ElasticsearchService implements IElasticsearchService {
         createIndexRequestBuilder.setSettings(indexSettings);
       }
       // Put mapping
-      if (indexMappings != null) {
-        createIndexRequestBuilder.addMapping(documentType, indexMappings);
+      if (indexMappingsResource != null) {
+        createIndexRequestBuilder.addMapping(documentTypeResource, indexMappingsResource);
+      }
+      if (indexMappingsPermissions != null) {
+        createIndexRequestBuilder.addMapping(documentTypePermissions, indexMappingsPermissions);
       }
       // Create index
       CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();
       if (!response.isAcknowledged()) {
         throw new CedarProcessingException("Failed to create the index " + indexName);
       }
-      System.out.println("The index " + indexName + " has been created");
+      log.info("The index " + indexName + " has been created");
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
-  public void createIndex(String indexName) throws CedarProcessingException {
-    createIndex(indexName, null);
-  }
-
-  public void addToIndex(JsonNode json, String indexName, String documentType) throws CedarProcessingException {
+  public IndexedDocumentId addToIndex(JsonNode json, String indexName, String documentType, IndexedDocumentId parent) throws
+      CedarProcessingException {
+    IndexedDocumentId newId = null;
     try {
       boolean again = true;
       int maxAttempts = 20;
@@ -92,10 +100,16 @@ public class ElasticsearchService implements IElasticsearchService {
       while (again) {
         try {
           client = getClient();
-          IndexResponse response = client.prepareIndex(indexName, documentType).setSource(json.toString()).get();
+          IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, documentType).setSource(json
+              .toString());
+          if (parent != null && parent.getId() != null) {
+            indexRequestBuilder.setParent(parent.getId());
+          }
+          IndexResponse response = indexRequestBuilder.get();
           if (response.isCreated()) {
-            System.out.println("The resource has been indexed");
+            log.debug("The resource has been indexed");
             again = false;
+            newId = new IndexedDocumentId(response.getId());
           } else {
             throw new CedarProcessingException("Failed to index resource");
           }
@@ -108,11 +122,12 @@ public class ElasticsearchService implements IElasticsearchService {
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
+    return newId;
   }
 
   public void removeFromIndex(String resourceId, String indexName, String documentType) throws
       CedarProcessingException {
-    System.out.println("Removing resource @id=" + resourceId + "from the index");
+    log.debug("Removing resource @id=" + resourceId + "from the index");
     try {
       client = getClient();
       // Get resources by resource id
@@ -129,7 +144,7 @@ public class ElasticsearchService implements IElasticsearchService {
         if (!responseDelete.isFound()) {
           throw new CedarProcessingException("Failed to remove resource " + resourceId + " from the index");
         }
-        System.out.println("The resource " + resourceId + " has been removed from the index");
+        log.debug("The resource " + resourceId + " has been removed from the index");
       }
     } catch (Exception e) {
       throw new CedarProcessingException(e);
@@ -247,7 +262,7 @@ public class ElasticsearchService implements IElasticsearchService {
     if (!deleteIndexResponse.isAcknowledged()) {
       throw new CedarProcessingException("Failed to delete index '" + indexName + "'");
     }
-    System.out.println("The index '" + indexName + "' has been deleted");
+    log.info("The index '" + indexName + "' has been deleted");
   }
 
   public void addAlias(String indexName, String aliasName) throws CedarProcessingException {
@@ -258,7 +273,7 @@ public class ElasticsearchService implements IElasticsearchService {
     if (!response.isAcknowledged()) {
       throw new CedarProcessingException("Failed to add alias '" + aliasName + "' to index '" + indexName + "'");
     }
-    System.out.println("The alias '" + aliasName + "' has been added to index '" + indexName + "'");
+    log.info("The alias '" + aliasName + "' has been added to index '" + indexName + "'");
   }
 
   public void deleteAlias(String indexName, String aliasName) throws CedarProcessingException {
@@ -268,7 +283,7 @@ public class ElasticsearchService implements IElasticsearchService {
     if (!response.isAcknowledged()) {
       throw new CedarProcessingException("Failed to remove alias '" + aliasName + "' from index '" + indexName + "'");
     }
-    System.out.println("The alias '" + aliasName + "' has been removed from the index '" + indexName + "'");
+    log.info("The alias '" + aliasName + "' has been removed from the index '" + indexName + "'");
   }
 
   public List<String> getIndexesByAlias(String aliasName) throws CedarProcessingException {

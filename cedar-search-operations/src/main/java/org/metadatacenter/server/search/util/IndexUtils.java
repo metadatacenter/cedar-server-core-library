@@ -8,19 +8,24 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.index.CedarIndexFieldSchema;
 import org.metadatacenter.model.index.CedarIndexFieldValue;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.util.http.CedarEntityUtil;
 import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
 import org.metadatacenter.util.json.JsonMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +34,9 @@ import java.util.Map;
 import static org.metadatacenter.constant.ResourceConstants.FOLDER_ALL_NODES;
 
 public class IndexUtils {
+
+  protected static final Logger log = LoggerFactory.getLogger(IndexUtils.class);
+
 
   private final String FIELD_SUFFIX = "_field";
 
@@ -59,7 +67,7 @@ public class IndexUtils {
    * resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
-    System.out.println("Retrieving all resources:");
+    log.info("Retrieving all resources:");
     List<FolderServerNode> resources = new ArrayList<>();
     boolean finished = false;
     String baseUrl = folderBase + FOLDER_ALL_NODES;
@@ -67,7 +75,7 @@ public class IndexUtils {
     int countSoFar = 0;
     while (!finished) {
       String url = baseUrl + "?offset=" + offset + "&limit=" + limit;
-      System.out.println("Retrieving resources from Folder Server. Url: " + url);
+      log.info("Retrieving resources from Folder Server. Url: " + url);
       int statusCode = -1;
       int attemp = 1;
       HttpResponse response = null;
@@ -77,7 +85,7 @@ public class IndexUtils {
         if ((statusCode != HttpStatus.SC_BAD_GATEWAY) || (attemp > maxAttempts)) {
           break;
         } else {
-          System.out.println("Failed to retrieve resource. The Folder Server might have not been started yet. " +
+          log.error("Failed to retrieve resource. The Folder Server might have not been started yet. " +
               "Retrying... (attemp " + attemp + "/" + maxAttempts + ")");
           attemp++;
           try {
@@ -98,24 +106,26 @@ public class IndexUtils {
         int count = resultJson.get("resources").size();
         int totalCount = resultJson.get("totalCount").asInt();
         countSoFar += count;
-        System.out.println("Retrieved " + countSoFar + "/" + totalCount + " resources");
+        log.info("Retrieved " + countSoFar + "/" + totalCount + " resources");
         int currentOffset = resultJson.get("currentOffset").asInt();
         for (JsonNode resource : resultJson.get("resources")) {
           boolean indexResource = true;
           // Check if the resource has to be indexed. System and user home folders are ignored
           String nodeType = resource.get("nodeType").asText();
           if (nodeType.equals(CedarNodeType.FOLDER.getValue())) {
-            if (resource.get("isSystem").asBoolean() || resource.get("isUserHome").asBoolean()) {
+            if (resource.get("isSystem").asBoolean()) {
+              log.info("Skipping system folder node: " + resource.get("@id").asText());
               indexResource = false;
             }
-          }
-          if (nodeType.equals(CedarNodeType.USER.getValue())) {
-            indexResource = false;
+            if (resource.get("isUserHome").asBoolean()) {
+              log.info("Skipping user home folder node: " + resource.get("@id").asText());
+              indexResource = false;
+            }
           }
           if (indexResource) {
             resources.add(JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class));
           } else {
-            System.out.println("The resource '" + resource.get("name").asText() + "' has been ignored");
+            log.info("The node '" + resource.get("name").asText() + "' has been ignored");
           }
         }
         if (currentOffset + count >= totalCount) {
@@ -158,7 +168,8 @@ public class IndexUtils {
 
   // Returns summary of resourceContent. There is no need to index the full JSON for each resource. Only the
   // information necessary to satisfy search and value recommendation use cases is kept.
-  public JsonNode extractSummarizedContent(CedarNodeType nodeType, JsonNode resourceContent, CedarRequestContext context)
+  public JsonNode extractSummarizedContent(CedarNodeType nodeType, JsonNode resourceContent, CedarRequestContext
+      context)
       throws CedarProcessingException {
     try {
       // Templates and Elements
@@ -247,8 +258,7 @@ public class IndexUtils {
           templateJson = findResourceContent(templateId, CedarNodeType.TEMPLATE, context);
           results = extractSchemaSummary(CedarNodeType.TEMPLATE, templateJson, results, context);
         } catch (CedarProcessingException e) {
-          System.out.println("Error while accessing the reference template for the instance. It may have been " +
-              "removed");
+          log.error("Error while accessing the reference template for the instance. It may have been removed");
         }
       }
     }
@@ -351,6 +361,15 @@ public class IndexUtils {
       // Do nothing. Null values will not be indexed
     }
     return fv;
+  }
+
+  public String getNewIndexName(String prefix) {
+    Instant now = Instant.now();
+    String dateTimeFormatterString = "uuuu-MM-dd't'HH:mm:ss";
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatterString).withZone(ZoneId
+        .systemDefault());
+    String nowString = dateTimeFormatter.format(now);
+    return prefix + "-" + nowString;
   }
 
 

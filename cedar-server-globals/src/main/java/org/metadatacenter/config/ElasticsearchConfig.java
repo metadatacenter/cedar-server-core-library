@@ -8,7 +8,7 @@ public class ElasticsearchConfig {
 
   private String typeResource;
 
-  private String typePermission;
+  private String typePermissions;
 
   private String host;
 
@@ -30,8 +30,8 @@ public class ElasticsearchConfig {
     return typeResource;
   }
 
-  public String getTypePermission() {
-    return typePermission;
+  public String getTypePermissions() {
+    return typePermissions;
   }
 
   public String getHost() {

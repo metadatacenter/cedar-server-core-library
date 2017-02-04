@@ -24,8 +24,6 @@ public final class CedarConstants {
   public static final String TEMP_ID_PREFIX = "tmp-";
 
   // Date formats
-  //public static String xsdDateTimeFormatString = "yyyy-MM-dd\'T\'HH:mm:ss\'Z\'";
-  //public static DateFormat xsdDateTimeFormat = new SimpleDateFormat(xsdDateTimeFormatString);
   public static final String xsdDateTimeFormatterString = "uuuu-MM-dd'T'HH:mm:ssZ";
   public static final DateTimeFormatter xsdDateTimeFormatter = DateTimeFormatter.ofPattern(xsdDateTimeFormatterString)
       .withZone(ZoneId.systemDefault());

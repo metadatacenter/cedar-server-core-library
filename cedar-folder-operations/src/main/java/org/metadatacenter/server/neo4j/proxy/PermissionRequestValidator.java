@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -20,18 +21,18 @@ public class PermissionRequestValidator {
   private final BackendCallResult callResult;
   private final CedarNodePermissions permissions;
   private final String nodeURL;
-  private final boolean nodeIsFolder;
+  private final FolderOrResource folderOrResource;
 
   private FolderServerNode node;
 
   public PermissionRequestValidator(PermissionServiceSession permissionService, Neo4JProxies proxies, String nodeURL,
-                                    CedarNodePermissionsRequest request, boolean nodeIsFolder) {
+                                    CedarNodePermissionsRequest request, FolderOrResource folderOrResource) {
     this.permissionService = permissionService;
     this.proxies = proxies;
     this.callResult = new BackendCallResult();
     this.request = request;
     this.nodeURL = nodeURL;
-    this.nodeIsFolder = nodeIsFolder;
+    this.folderOrResource = folderOrResource;
     this.permissions = new CedarNodePermissions();
 
     validateNodeExistence();
@@ -63,7 +64,7 @@ public class PermissionRequestValidator {
   }
 
   private void validateNodeExistence() {
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
       node = folder;
       if (folder == null) {
@@ -85,7 +86,7 @@ public class PermissionRequestValidator {
   }
 
   private void validateWritePermission() {
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       if (!permissionService.userHasWriteAccessToFolder(nodeURL)) {
         callResult.addError(AUTHORIZATION)
             .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_FOLDER)
@@ -234,7 +235,7 @@ public class PermissionRequestValidator {
 
   private void validateOwnerSetPermission() {
     String newOwnerId = permissions.getOwner().getId();
-    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL, nodeIsFolder);
+    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL, folderOrResource);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       if (!permissionService.userIsOwnerOfNode(node)) {

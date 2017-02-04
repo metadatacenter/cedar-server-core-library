@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
@@ -110,10 +111,10 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return buildNode(node);
   }
 
-  void updateNodeOwner(String nodeURL, String userURL, boolean nodeIsFolder) {
+  void updateNodeOwner(String nodeURL, String userURL, FolderOrResource folderOrResource) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (nodeIsFolder) {
+      if (folderOrResource == FolderOrResource.FOLDER) {
         FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
         if (folder != null) {
           proxies.folder().updateOwner(folder, user);
