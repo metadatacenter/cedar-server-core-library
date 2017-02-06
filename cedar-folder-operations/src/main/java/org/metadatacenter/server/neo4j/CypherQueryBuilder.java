@@ -153,6 +153,19 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  private static String getSharedWithMeConditions(String relationPrefix, String nodeAlias) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" ").append(relationPrefix).append(" ");
+    sb.append("(");
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
+        append("()-[:").append(RelationLabel.CANREAD).append("]->(").append(nodeAlias).append(")");
+    sb.append("\nOR\n");
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
+        append("()-[:").append(RelationLabel.CANWRITE).append("]->(").append(nodeAlias).append(")");
+    sb.append(")");
+    return sb.toString();
+  }
+
   private static String getUserToResourceRelationOneStepDirectly(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
     sb.append("(user)-[:").append(relationLabel).append("]->(").append(nodeAlias).append(")");
@@ -913,16 +926,14 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getSharedWithMeLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+  public static String getSharedWithMeLookupQuery(List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("\nMATCH (node)");
     sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND node.ownedBy  <> {userId}");
     sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
-    }
+    sb.append(getSharedWithMeConditions("\nAND\n", "node"));
     sb.append("\nRETURN node");
     sb.append("\nORDER BY node.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("node", sortList));
     sb.append("\nSKIP {offset}");
@@ -930,16 +941,14 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getSharedWithMeCountQuery(boolean addPermissionConditions) {
+  public static String getSharedWithMeCountQuery() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("\nMATCH (node)");
     sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND node.ownedBy  <> {userId}");
     sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
-    }
+    sb.append(getSharedWithMeConditions("\nAND\n", "node"));
     sb.append("\nRETURN count(node)");
     return sb.toString();
   }

@@ -15,7 +15,7 @@ public class CypherQueryLiteral implements CypherQuery {
   @Override
   public String getFlatQuery() {
     if (query != null) {
-      return query.replace("\n", "").replace("\r", "");
+      return query.replace("\n", " ").replace("\r", " ");
     } else {
       return null;
     }
