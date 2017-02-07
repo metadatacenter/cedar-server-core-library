@@ -63,6 +63,8 @@ public interface FolderServiceSession {
 
   long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
+  long findFolderContentsCount(String folderURL);
+
   void addPathAndParentId(FolderServerFolder folder);
 
   void addPathAndParentId(FolderServerResource resource);

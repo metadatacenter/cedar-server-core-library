@@ -1,6 +1,7 @@
 package org.metadatacenter.util.http;
 
 import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.error.CedarErrorReasonKey;
 
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public abstract class CedarResponse {
 
     private Map<String, Object> parameters;
     private CedarErrorKey errorKey;
+    private CedarErrorReasonKey errorReasonKey;
     private String errorMessage;
     private Exception exception;
     private Response.Status status;
@@ -35,6 +37,7 @@ public abstract class CedarResponse {
         Map<String, Object> r = new HashMap<>();
         r.put("parameters", parameters);
         r.put("errorKey", errorKey);
+        r.put("errorReasonKey", errorReasonKey);
         r.put("errorMessage", errorMessage);
 
         if (exception != null) {
@@ -61,10 +64,6 @@ public abstract class CedarResponse {
       return this;
     }
 
-    /*public CedarResponseBuilder header(String name, Object value) {
-      return this;
-    }*/
-
     public CedarResponseBuilder id(Object id) {
       return this.parameter("id", id);
     }
@@ -76,6 +75,11 @@ public abstract class CedarResponse {
 
     public CedarResponseBuilder errorKey(CedarErrorKey errorKey) {
       this.errorKey = errorKey;
+      return this;
+    }
+
+    public CedarResponseBuilder errorReasonKey(CedarErrorReasonKey errorReasonKey) {
+      this.errorReasonKey = errorReasonKey;
       return this;
     }
 
@@ -117,6 +121,5 @@ public abstract class CedarResponse {
   protected static CedarResponseBuilder status(Response.Status status) {
     return newResponseBuilder().status(status);
   }
-
 
 }
