@@ -16,14 +16,12 @@ import java.util.*;
 
 public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession implements FolderServiceSession {
 
-  public Neo4JUserSessionFolderService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
-      userIdPrefix, String groupIdPrefix) {
-    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionFolderService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
+    super(cedarConfig, proxies, cu);
   }
 
   public static FolderServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionFolderService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
-        .getGroupIdPrefix());
+    return new Neo4JUserSessionFolderService(cedarConfig, proxies, cedarUser);
   }
 
   @Override
@@ -235,11 +233,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder) {
     return proxies.folder().moveFolder(sourceFolder, targetFolder);
-  }
-
-  @Override
-  public String getResourceUUID(String resourceId, CedarNodeType nodeType) {
-    return proxies.resource().getResourceUUID(resourceId, nodeType);
   }
 
   @Override

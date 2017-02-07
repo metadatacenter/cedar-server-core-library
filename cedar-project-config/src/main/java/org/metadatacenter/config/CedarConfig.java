@@ -197,13 +197,8 @@ public class CedarConfig extends Configuration {
     return getMongoConfig().getCollections().get(nt.getValue());
   }
 
-  public String getLinkedDataPrefix(CedarNodeType nodeType) {
-    return getLinkedDataConfig().getBase() + nodeType.getPrefix() + "/";
-  }
-
-  public LinkedDataUtil getLinkedDataUtil() {
+  public LinkedDataUtil buildLinkedDataUtil() {
     return new LinkedDataUtil(getLinkedDataConfig());
   }
-
 
 }

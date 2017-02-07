@@ -21,6 +21,10 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     super(proxies);
   }
 
+  private String buildUserLinkedId(CedarUser cu) {
+    return proxies.getLinkedDataUtil().getLinkedDataId(CedarNodeType.USER, cu.getId());
+  }
+
   List<FolderServerNode> findNodePathById(String id) {
     List<FolderServerNode> pathList = new ArrayList<>();
     String cypher = CypherQueryBuilder.getNodeLookupQueryById();
@@ -94,7 +98,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
       limit, int offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList, addPermissionConditions);
-    String ownerId = proxies.userIdPrefix + cu.getId();
+    String ownerId = buildUserLinkedId(cu);
     Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, nodeTypes, limit,
         offset, ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -140,7 +144,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, int limit, int offset,
                                                          List<String> sortList, CedarUser cu) {
     String cypher = CypherQueryBuilder.getSharedWithMeLookupQuery(sortList);
-    String ownerId = proxies.userIdPrefix + cu.getId();
+    String ownerId = buildUserLinkedId(cu);
     Map<String, Object> params = CypherParamBuilder.getSharedWithMeLookupParameters(nodeTypes, limit, offset, ownerId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -149,7 +153,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
     String cypher = CypherQueryBuilder.getSharedWithMeCountQuery();
-    String ownerId = proxies.userIdPrefix + cu.getId();
+    String ownerId = buildUserLinkedId(cu);
     Map<String, Object> params = CypherParamBuilder.getSharedWithMeCountParameters(nodeTypes, ownerId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -165,7 +169,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
       sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getAllLookupQuery(sortList, addPermissionConditions);
-    String ownerId = proxies.userIdPrefix + cu.getId();
+    String ownerId = buildUserLinkedId(cu);
     Map<String, Object> params = CypherParamBuilder.getAllLookupParameters(nodeTypes, limit, offset, ownerId,
         addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -176,7 +180,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
     boolean addPermissionConditions = true;
     String cypher = CypherQueryBuilder.getAllCountQuery(addPermissionConditions);
-    String ownerId = proxies.userIdPrefix + cu.getId();
+    String ownerId = buildUserLinkedId(cu);
     Map<String, Object> params = CypherParamBuilder.getAllCountParameters(nodeTypes, ownerId, addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

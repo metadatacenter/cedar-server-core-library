@@ -174,14 +174,14 @@ public class CypherQueryBuilder {
 
   private static String getUserToResourceRelationOneStepThroughGroup(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
-    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
         append("()-[:").append(relationLabel).append("]->(").append(nodeAlias).append(")");
     return sb.toString();
   }
 
   private static String getUserToResourceRelationTwoSteps(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
-    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
         append("()-[:").append(relationLabel).append("]->()-[:").
         append(RelationLabel.CONTAINS).append("*0..]->(").append(nodeAlias).append(")");
     return sb.toString();

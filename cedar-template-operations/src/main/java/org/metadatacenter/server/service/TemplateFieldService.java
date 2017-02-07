@@ -2,7 +2,9 @@ package org.metadatacenter.server.service;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
+import org.metadatacenter.util.provenance.ProvenanceUtil;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
@@ -26,6 +28,6 @@ public interface TemplateFieldService<K, T> {
 
   long count();
 
-  void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, String linkedDataIdBasePath) throws
-      IOException;
+  void saveNewFieldsAndReplaceIds(T genericInstance, ProvenanceInfo pi, ProvenanceUtil provenanceUtil, LinkedDataUtil
+      linkedDataUtil) throws IOException;
 }

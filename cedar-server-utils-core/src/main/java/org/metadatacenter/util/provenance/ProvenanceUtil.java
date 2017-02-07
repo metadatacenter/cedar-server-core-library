@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.exception.security.CedarAccessException;
@@ -20,10 +21,14 @@ public class ProvenanceUtil {
   public static final String PAV_LAST_UPDATED_ON = "pav:lastUpdatedOn";
   public static final String LAST_UPDATED_BY = "oslc:modifiedBy";
 
-  private ProvenanceUtil() {
+  private LinkedDataUtil linkedDataUtil;
+
+  public ProvenanceUtil(LinkedDataUtil linkedDataUtil) {
+    this.linkedDataUtil = linkedDataUtil;
+    this.linkedDataUtil = linkedDataUtil;
   }
 
-  private static void setProvenanceInfo(JsonNode node, ProvenanceInfo pi, boolean justModification) {
+  private void setProvenanceInfo(JsonNode node, ProvenanceInfo pi, boolean justModification) {
     ObjectNode resource = (ObjectNode) node;
     if (!justModification) {
       resource.put(PAV_CREATED_ON, pi.getCreatedOn());
@@ -33,15 +38,15 @@ public class ProvenanceUtil {
     resource.put(LAST_UPDATED_BY, pi.getLastUpdatedBy());
   }
 
-  public static void addProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
+  public void addProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
     setProvenanceInfo(node, pi, false);
   }
 
-  public static void patchProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
+  public void patchProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
     setProvenanceInfo(node, pi, true);
   }
 
-  public static ProvenanceInfo buildFromUserURLId(String userURL) {
+  public ProvenanceInfo buildFromUserURLId(String userURL) {
     ProvenanceInfo pi = new ProvenanceInfo();
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -52,7 +57,7 @@ public class ProvenanceUtil {
     return pi;
   }
 
-  public static ProvenanceInfo build(CedarConfig cedarConfig, AuthRequest authRequest) {
+  public ProvenanceInfo build(AuthRequest authRequest) {
     String id = null;
     try {
       CedarUser accountInfo = Authorization.getUser(authRequest);
@@ -60,17 +65,16 @@ public class ProvenanceUtil {
     } catch (CedarAccessException e) {
       e.printStackTrace();
     }
-    return buildFromUUID(cedarConfig, id);
+    return buildFromUUID(id);
   }
 
-  public static ProvenanceInfo build(CedarConfig cedarConfig, CedarUser cu) {
+  public ProvenanceInfo build(CedarUser cu) {
     String id = cu.getId();
-    return buildFromUUID(cedarConfig, id);
+    return buildFromUUID(id);
   }
 
-  public static ProvenanceInfo buildFromUUID(CedarConfig cedarConfig, String userUUID) {
-    String userURL = cedarConfig.getLinkedDataPrefix(CedarNodeType.USER) + userUUID;
-    return buildFromUserURLId(userURL);
+  public ProvenanceInfo buildFromUUID(String userUUID) {
+    return buildFromUserURLId(linkedDataUtil.getLinkedDataId(CedarNodeType.USER, userUUID));
   }
 
 }

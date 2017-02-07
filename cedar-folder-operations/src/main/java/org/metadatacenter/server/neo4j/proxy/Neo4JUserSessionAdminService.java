@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
@@ -16,14 +17,12 @@ import java.util.UUID;
 
 public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession implements AdminServiceSession {
 
-  public Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
-      userIdPrefix, String groupIdPrefix) {
-    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
+    super(cedarConfig, proxies, cu);
   }
 
   public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
-        .getGroupIdPrefix());
+    return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser);
   }
 
   @Override
@@ -50,7 +49,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (everybody == null) {
-      String everybodyURL = buildGroupId(UUID.randomUUID().toString());
+      String everybodyURL = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.GROUP);
       Map<String, Object> extraParams = new HashMap<>();
       extraParams.put(Neo4JFields.SPECIAL_GROUP, Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       everybody = proxies.group().createGroup(everybodyURL, config.getEverybodyGroupName(),

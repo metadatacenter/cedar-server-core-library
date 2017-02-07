@@ -34,10 +34,8 @@ public final class CedarDataServices {
         cedarConfig.getMongoCollectionName(CedarNodeType.USER));
 
     Neo4jConfig neo4jConfig = Neo4jConfig.fromCedarConfig(cedarConfig);
-    String genericIdPrefix = cedarConfig.getLinkedDataConfig().getBase();
-    String userIdPrefix = cedarConfig.getLinkedDataConfig().getUsersBase();
 
-    cds.proxies = new Neo4JProxies(neo4jConfig, genericIdPrefix, userIdPrefix);
+    cds.proxies = new Neo4JProxies(neo4jConfig, cedarConfig.buildLinkedDataUtil());
     return cds;
   }
 

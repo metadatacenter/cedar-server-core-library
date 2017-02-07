@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j;
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.time.Instant;
@@ -22,14 +23,14 @@ public class CypherParamBuilder {
     return sb.toString();
   }
 
-  public static Map<String, Object> createFolder(String folderIdPrefix, String parentId, String name, String
+  public static Map<String, Object> createFolder(LinkedDataUtil linkedDataUtil, String parentId, String name, String
       displayName, String description, String createdBy) {
-    return createFolder(folderIdPrefix, parentId, name, displayName, description, createdBy, null);
+    return createFolder(linkedDataUtil, parentId, name, displayName, description, createdBy, null);
   }
 
-  public static Map<String, Object> createFolder(String folderIdPrefix, String parentId, String name, String
+  public static Map<String, Object> createFolder(LinkedDataUtil linkedDataUtil, String parentId, String name, String
       displayName, String description, String createdBy, Map<String, Object> extraProperties) {
-    String nodeId = folderIdPrefix + UUID.randomUUID().toString();
+    String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
     return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy,
         extraProperties);
   }

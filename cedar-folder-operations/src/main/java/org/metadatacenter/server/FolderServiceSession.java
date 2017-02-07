@@ -19,8 +19,6 @@ public interface FolderServiceSession {
 
   String getRootPath();
 
-  String getResourceUUID(String resourceId, CedarNodeType nodeType);
-
   FolderServerFolder findFolderById(String folderURL);
 
   List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList);
