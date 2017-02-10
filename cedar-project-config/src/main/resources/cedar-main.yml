@@ -188,7 +188,7 @@ submission:
     sra:
       ftp:
         host: "ftp-private.ncbi.nlm.nih.gov"
-        user: "CEDAR";
+        user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
         submissionDirectory: "submit/Test"
 
