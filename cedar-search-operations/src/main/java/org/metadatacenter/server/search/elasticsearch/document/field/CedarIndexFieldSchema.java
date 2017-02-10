@@ -1,4 +1,4 @@
-package org.metadatacenter.model.index;
+package org.metadatacenter.server.search.elasticsearch.document.field;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

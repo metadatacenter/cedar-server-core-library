@@ -1,27 +1,20 @@
 package org.metadatacenter.server.security;
 
 import org.keycloak.adapters.KeycloakDeployment;
+import org.metadatacenter.config.CedarConfig;
 
 public class KeycloakDeploymentProvider {
 
   private static final KeycloakDeploymentProvider instance = new KeycloakDeploymentProvider();
 
-  private final KeycloakDeployment keycloakDeployment;
-
   private KeycloakDeploymentProvider() {
-    String keycloakConfigPath = System.getProperty("keycloak.config.path");
-    if (keycloakConfigPath == null || "".equals(keycloakConfigPath)) {
-      keycloakDeployment = KeycloakUtils.buildDeployment();
-    } else {
-      keycloakDeployment = KeycloakUtils.buildDeployment(keycloakConfigPath);
-    }
+    CedarConfig cedarConfig = CedarConfig.getInstance();
+    KeycloakDeployment keycloakDeployment = KeycloakUtils.buildDeployment(cedarConfig.getKeycloakConfig()
+        .getConfigFile());
   }
 
   public static KeycloakDeploymentProvider getInstance() {
     return instance;
   }
 
-  public KeycloakDeployment getKeycloakDeployment() {
-    return keycloakDeployment;
-  }
 }
