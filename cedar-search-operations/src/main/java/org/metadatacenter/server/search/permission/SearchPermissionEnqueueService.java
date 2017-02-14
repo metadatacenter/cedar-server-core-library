@@ -50,21 +50,12 @@ public class SearchPermissionEnqueueService {
     enqueue(id, FOLDER_PERMISSION_CHANGED);
   }
 
-  public void userCreated(String id) {
-    // TODO: this is probably the UUID here
-    // This will not be the case once we change the id in the profile.
-    enqueue(id, USER_CREATED);
-  }
-
   public void groupMembersUpdated(String id) {
-    // TODO: this is probably the UUID here
-    // This will not be the case once we change the id in the profile.
     enqueue(id, GROUP_MEMBERS_UPDATED);
   }
 
   public void groupDeleted(String id) {
     enqueue(id, GROUP_DELETED);
   }
-
 
 }

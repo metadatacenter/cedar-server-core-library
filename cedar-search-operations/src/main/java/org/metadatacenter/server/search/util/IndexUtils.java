@@ -11,6 +11,7 @@ import org.apache.http.util.EntityUtils;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldSchema;
 import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldValue;
@@ -110,21 +111,9 @@ public class IndexUtils {
         log.info("Retrieved " + countSoFar + "/" + totalCount + " resources");
         int currentOffset = resultJson.get("currentOffset").asInt();
         for (JsonNode resource : resultJson.get("resources")) {
-          boolean indexResource = true;
-          // Check if the resource has to be indexed. System and user home folders are ignored
-          String nodeType = resource.get("nodeType").asText();
-          if (nodeType.equals(CedarNodeType.FOLDER.getValue())) {
-            if (resource.get("isSystem").asBoolean()) {
-              log.info("Skipping system folder node: " + resource.get("@id").asText());
-              indexResource = false;
-            }
-            if (resource.get("isUserHome").asBoolean()) {
-              log.info("Skipping user home folder node: " + resource.get("@id").asText());
-              indexResource = false;
-            }
-          }
-          if (indexResource) {
-            resources.add(JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class));
+          FolderServerNode folderServerNode = JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class);
+          if (needsIndexing(folderServerNode)) {
+            resources.add(folderServerNode);
           } else {
             log.info("The node '" + resource.get("name").asText() + "' has been ignored");
           }
@@ -140,6 +129,19 @@ public class IndexUtils {
       }
     }
     return resources;
+  }
+
+  public boolean needsIndexing(FolderServerNode folderServerNode) {
+    boolean needsIndexing = true;
+    if (folderServerNode.getType() == CedarNodeType.FOLDER) {
+      FolderServerFolder folderServerFolder = (FolderServerFolder) folderServerNode;
+      if (folderServerFolder.isSystem()) {
+        needsIndexing = false;
+      } else if (folderServerFolder.isUserHome()) {
+        needsIndexing = false;
+      }
+    }
+    return needsIndexing;
   }
 
   /**

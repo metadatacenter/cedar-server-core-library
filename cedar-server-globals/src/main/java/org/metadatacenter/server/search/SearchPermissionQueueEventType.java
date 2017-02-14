@@ -9,8 +9,6 @@ public enum SearchPermissionQueueEventType {
   FOLDER_MOVED,
   FOLDER_PERMISSION_CHANGED,
 
-  USER_CREATED,
-
   GROUP_MEMBERS_UPDATED,
   GROUP_DELETED;
 }

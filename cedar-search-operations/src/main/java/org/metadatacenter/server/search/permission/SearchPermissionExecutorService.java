@@ -19,6 +19,7 @@ import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.service.GroupPermissionIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.search.elasticsearch.service.UserPermissionIndexingService;
+import org.metadatacenter.server.search.util.IndexUtils;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
@@ -37,12 +38,15 @@ public class SearchPermissionExecutorService {
   private final UserPermissionIndexingService userPermissionIndexingService;
   private final GroupPermissionIndexingService groupPermissionIndexingService;
   private final NodeSearchingService nodeSearchingService;
+  private final IndexUtils indexUtils;
 
   public SearchPermissionExecutorService(CedarConfig cedarConfig,
+                                         IndexUtils indexUtils,
                                          UserPermissionIndexingService userPermissionIndexingService,
                                          GroupPermissionIndexingService groupPermissionIndexingService,
                                          NodeSearchingService nodeSearchingService) {
     userService = CedarDataServices.getUserService();
+    this.indexUtils = indexUtils;
     this.userPermissionIndexingService = userPermissionIndexingService;
     this.groupPermissionIndexingService = groupPermissionIndexingService;
     this.nodeSearchingService = nodeSearchingService;
@@ -88,9 +92,6 @@ public class SearchPermissionExecutorService {
         break;
       case FOLDER_PERMISSION_CHANGED:
         updateFolderRecursively(event.getId());
-        break;
-      case USER_CREATED:
-        updateAllByCreatedUser(event.getId());
         break;
       case GROUP_MEMBERS_UPDATED:
         updateAllByUpdatedGroup(event.getId());
@@ -151,39 +152,29 @@ public class SearchPermissionExecutorService {
     }
   }
 
-  private void updateAllByCreatedUser(String id) {
-    log.debug("Update all visible by user:");
-    List<FolderServerNode> collection = folderSession.findAllNodesVisibleByUserId(id);
-    for (FolderServerNode n : collection) {
-      try {
-        IndexedDocumentId parentId = nodeSearchingService.getByCedarId(n.getId());
-        upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parentId);
-      } catch (CedarProcessingException e) {
-        log.error("There was an error while updating permissions for new user:" + id
-            + " node:" + n.getId(), e);
-      }
-    }
-  }
-
   private void updateAllByUpdatedGroup(String id) {
     log.debug("Update all visible by group:");
     List<FolderServerNode> collection = folderSession.findAllNodesVisibleByGroupId(id);
     for (FolderServerNode n : collection) {
-      try {
-        IndexedDocumentId parentId = nodeSearchingService.getByCedarId(n.getId());
-        upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parentId);
-      } catch (CedarProcessingException e) {
-        log.error("There was an error while updating permissions for updated group:" + id
-            + " node:" + n.getId(), e);
+      if (indexUtils.needsIndexing(n)) {
+        try {
+          IndexedDocumentId parentId = nodeSearchingService.getByCedarId(n.getId());
+          upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parentId);
+        } catch (CedarProcessingException e) {
+          log.error("There was an error while updating permissions for updated group:" + id
+              + " node:" + n.getId(), e);
+        }
+      } else {
+        log.info("The node was skipped from indexing:" + n.getId());
       }
-
     }
   }
 
   private void updateAllByDeletedGroup(String id) {
-    // TODO
-    // Get all the ones from Elasticsearch that have this id in their group list
-    // Update them all
+    //look up all the groups documents that contain this groupId in the
+    // groups[*].id field
+    // iterate over them, read their _parent and cid
+    // reindex permissions for all these nodes
   }
 
   // Executors
