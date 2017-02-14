@@ -36,7 +36,7 @@ public class ContentSearchingService extends AbstractSearchingService {
   }
 
 
-  public FolderServerNodeListResponse ¡search(String folderBase, String query, List<String> resourceTypes,
+  public FolderServerNodeListResponse search(String folderBase, String query, List<String> resourceTypes,
                                              String templateId, List<String> sortList, int limit, int offset, String
                                                  absoluteUrl, CedarRequestContext context) throws
       CedarProcessingException {
