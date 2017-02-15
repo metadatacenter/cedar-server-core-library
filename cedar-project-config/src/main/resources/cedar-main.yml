@@ -195,7 +195,6 @@ submission:
         submissionDirectory: "submit/Test"
 
 test:
-  base: "http://localhost"
   port: 3333
   timeout: 10000
   template:
