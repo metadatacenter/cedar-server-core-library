@@ -13,6 +13,9 @@ import java.io.IOException;
 
 public class CedarConfig extends Configuration {
 
+  @JsonProperty("adminUser")
+  private AdminUserConfig adminUserConfig;
+
   @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
@@ -24,9 +27,6 @@ public class CedarConfig extends Configuration {
 
   @JsonProperty("folderStructure")
   private FolderStructureConfig folderStructureConfig;
-
-  @JsonProperty("folderRESTAPI")
-  private FolderRESTAPI folderRESTAPI;
 
   @JsonProperty("linkedData")
   private LinkedDataConfig linkedDataConfig;
@@ -122,6 +122,10 @@ public class CedarConfig extends Configuration {
     return instance;
   }
 
+  public AdminUserConfig getAdminUserConfig() {
+    return adminUserConfig;
+  }
+
   public KeycloakConfig getKeycloakConfig() {
     return keycloakConfig;
   }
@@ -136,10 +140,6 @@ public class CedarConfig extends Configuration {
 
   public FolderStructureConfig getFolderStructureConfig() {
     return folderStructureConfig;
-  }
-
-  public FolderRESTAPI getFolderRESTAPI() {
-    return folderRESTAPI;
   }
 
   public LinkedDataConfig getLinkedDataConfig() {

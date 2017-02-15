@@ -4,13 +4,13 @@ public class KeycloakConfig {
 
   private String clientId;
 
-  private KeycloakAdminUser adminUser;
+  private String configFile;
 
   public String getClientId() {
     return clientId;
   }
 
-  public KeycloakAdminUser getAdminUser() {
-    return adminUser;
+  public String getConfigFile() {
+    return configFile;
   }
 }

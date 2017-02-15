@@ -17,6 +17,7 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_PREFIX = "info.";
 
   // Searchable fields
+  public static final String ES_DOCUMENT_CEDAR_ID = "cid";
   public static final String ES_RESOURCE_ID_FIELD = "@id";
   public static final String ES_RESOURCE_NAME_FIELD = "name";
   public static final String ES_RESOURCE_DESCRIPTION_FIELD = "description";

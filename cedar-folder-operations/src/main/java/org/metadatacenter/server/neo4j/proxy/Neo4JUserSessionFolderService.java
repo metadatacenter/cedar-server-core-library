@@ -10,6 +10,7 @@ import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.neo4j.*;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.util.CedarNodeTypeUtil;
 import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.util.*;
@@ -158,7 +159,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public long findFolderContentsCount(String folderURL) {
-    return proxies.node().findFolderContentsFilteredCount(folderURL, Arrays.asList(CedarNodeType.values()));
+    return proxies.node().findFolderContentsFilteredCount(folderURL, CedarNodeTypeUtil.getValidNodeTypesForRestCalls());
   }
 
   @Override

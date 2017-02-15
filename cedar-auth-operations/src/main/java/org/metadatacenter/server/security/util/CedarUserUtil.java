@@ -15,11 +15,11 @@ public class CedarUserUtil {
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur) {
-    return createUserFromBlueprint(cedarConfig, ur, null);
+  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey) {
+    return createUserFromBlueprint(cedarConfig, ur, apiKey, null);
   }
 
-  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur,
+  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey,
                                                   List<CedarUserRole> roles) {
     BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
     BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUserProfile().getUiPreferences();
@@ -32,14 +32,18 @@ public class CedarUserUtil {
 
     LocalDateTime now = LocalDateTime.now();
     // create a default API Key
-    CedarUserApiKey apiKey = new CedarUserApiKey();
-    apiKey.setKey(UUID.randomUUID().toString());
-    apiKey.setCreationDate(now);
-    apiKey.setEnabled(true);
-    apiKey.setServiceName(blueprint.getDefaultAPIKey().getServiceName());
-    apiKey.setDescription(blueprint.getDefaultAPIKey().getDescription());
+    CedarUserApiKey apiKeyObject = new CedarUserApiKey();
+    if (apiKey != null) {
+      apiKeyObject.setKey(apiKey);
+    } else {
+      apiKeyObject.setKey(UUID.randomUUID().toString());
+    }
+    apiKeyObject.setCreationDate(now);
+    apiKeyObject.setEnabled(true);
+    apiKeyObject.setServiceName(blueprint.getDefaultAPIKey().getServiceName());
+    apiKeyObject.setDescription(blueprint.getDefaultAPIKey().getDescription());
 
-    user.getApiKeys().add(apiKey);
+    user.getApiKeys().add(apiKeyObject);
 
     if (roles == null || roles.isEmpty()) {
       user.getRoles().add(CedarUserRole.TEMPLATE_CREATOR);
@@ -57,7 +61,7 @@ public class CedarUserUtil {
 
     // set resource type filter defaults
     CedarUserUIResourceTypeFilters resourceTypeFilters = user.getResourceTypeFilters();
-    resourceTypeFilters.setField(true);
+    resourceTypeFilters.setField(false);
     resourceTypeFilters.setElement(true);
     resourceTypeFilters.setTemplate(true);
     resourceTypeFilters.setInstance(true);

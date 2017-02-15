@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
-import org.metadatacenter.model.index.CedarIndexFieldSchema;
-import org.metadatacenter.model.index.CedarIndexFieldValue;
+import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldSchema;
+import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldValue;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.util.http.CedarEntityUtil;
@@ -54,12 +56,12 @@ public class IndexUtils {
     }
   }
 
-  public IndexUtils(String folderBase, String templateBase, int limit, int maxAttempts, int delayAttempts) {
-    this.folderBase = folderBase;
-    this.templateBase = templateBase;
-    this.limit = limit;
-    this.maxAttempts = maxAttempts;
-    this.delayAttempts = delayAttempts;
+  public IndexUtils(CedarConfig cedarConfig) {
+    this.folderBase = cedarConfig.getServers().getFolder().getBase();
+    this.templateBase = cedarConfig.getServers().getTemplate().getBase();
+    this.limit = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getLimitIndexRegeneration();
+    this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
+    this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
   }
 
   /**
@@ -109,21 +111,9 @@ public class IndexUtils {
         log.info("Retrieved " + countSoFar + "/" + totalCount + " resources");
         int currentOffset = resultJson.get("currentOffset").asInt();
         for (JsonNode resource : resultJson.get("resources")) {
-          boolean indexResource = true;
-          // Check if the resource has to be indexed. System and user home folders are ignored
-          String nodeType = resource.get("nodeType").asText();
-          if (nodeType.equals(CedarNodeType.FOLDER.getValue())) {
-            if (resource.get("isSystem").asBoolean()) {
-              log.info("Skipping system folder node: " + resource.get("@id").asText());
-              indexResource = false;
-            }
-            if (resource.get("isUserHome").asBoolean()) {
-              log.info("Skipping user home folder node: " + resource.get("@id").asText());
-              indexResource = false;
-            }
-          }
-          if (indexResource) {
-            resources.add(JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class));
+          FolderServerNode folderServerNode = JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class);
+          if (needsIndexing(folderServerNode)) {
+            resources.add(folderServerNode);
           } else {
             log.info("The node '" + resource.get("name").asText() + "' has been ignored");
           }
@@ -139,6 +129,19 @@ public class IndexUtils {
       }
     }
     return resources;
+  }
+
+  public boolean needsIndexing(FolderServerNode folderServerNode) {
+    boolean needsIndexing = true;
+    if (folderServerNode.getType() == CedarNodeType.FOLDER) {
+      FolderServerFolder folderServerFolder = (FolderServerFolder) folderServerNode;
+      if (folderServerFolder.isSystem()) {
+        needsIndexing = false;
+      } else if (folderServerFolder.isUserHome()) {
+        needsIndexing = false;
+      }
+    }
+    return needsIndexing;
   }
 
   /**
@@ -169,8 +172,7 @@ public class IndexUtils {
   // Returns summary of resourceContent. There is no need to index the full JSON for each resource. Only the
   // information necessary to satisfy search and value recommendation use cases is kept.
   public JsonNode extractSummarizedContent(CedarNodeType nodeType, JsonNode resourceContent, CedarRequestContext
-      context)
-      throws CedarProcessingException {
+      context) throws CedarProcessingException {
     try {
       // Templates and Elements
       if (nodeType.equals(CedarNodeType.TEMPLATE) || (nodeType.equals(CedarNodeType.ELEMENT))) {

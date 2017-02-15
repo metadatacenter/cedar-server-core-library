@@ -2,6 +2,7 @@ package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
@@ -14,7 +15,11 @@ import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
-import org.metadatacenter.server.search.elasticsearch.IndexedDocumentId;
+import org.metadatacenter.server.search.IndexedDocumentId;
+import org.metadatacenter.server.search.elasticsearch.service.GroupPermissionIndexingService;
+import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
+import org.metadatacenter.server.search.elasticsearch.service.UserPermissionIndexingService;
+import org.metadatacenter.server.search.util.IndexUtils;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
@@ -30,12 +35,22 @@ public class SearchPermissionExecutorService {
   private final UserService userService;
   private FolderServiceSession folderSession;
   private PermissionServiceSession permissionSession;
-  private PermissionSearchService permissionSearchService;
+  private final UserPermissionIndexingService userPermissionIndexingService;
+  private final GroupPermissionIndexingService groupPermissionIndexingService;
+  private final NodeSearchingService nodeSearchingService;
+  private final IndexUtils indexUtils;
 
-  public SearchPermissionExecutorService(CedarConfig cedarConfig, PermissionSearchService permissionSearchService) {
+  public SearchPermissionExecutorService(CedarConfig cedarConfig,
+                                         IndexUtils indexUtils,
+                                         UserPermissionIndexingService userPermissionIndexingService,
+                                         GroupPermissionIndexingService groupPermissionIndexingService,
+                                         NodeSearchingService nodeSearchingService) {
     userService = CedarDataServices.getUserService();
-    this.permissionSearchService = permissionSearchService;
-    String adminUserUUID = cedarConfig.getKeycloakConfig().getAdminUser().getUuid();
+    this.indexUtils = indexUtils;
+    this.userPermissionIndexingService = userPermissionIndexingService;
+    this.groupPermissionIndexingService = groupPermissionIndexingService;
+    this.nodeSearchingService = nodeSearchingService;
+    String adminUserUUID = cedarConfig.getAdminUserConfig().getUuid();
     CedarUser adminUser = null;
     try {
       adminUser = userService.findUser(adminUserUUID);
@@ -58,40 +73,28 @@ public class SearchPermissionExecutorService {
   // Main entry point
   public void handleEvent(SearchPermissionQueueEvent event) {
     //TODO: REALLY IMPORTANT TO GET THE PARENT ID HERE
-    IndexedDocumentId parent = null;
+    IndexedDocumentId parent = event.getParentId();
     switch (event.getEventType()) {
       case RESOURCE_CREATED:
         createOneResource(event.getId(), parent);
         break;
-      case RESOURCE_COPIED:
-        createOneResource(event.getId(), parent);
-        break;
       case RESOURCE_MOVED:
-        updateOneResource(event.getId(), parent);
-        break;
-      case RESOURCE_DELETED:
-        deleteOneResource(event.getId());
+        updateOneResource(event.getId());
         break;
       case RESOURCE_PERMISSION_CHANGED:
-        updateOneResource(event.getId(), parent);
+        updateOneResource(event.getId());
         break;
       case FOLDER_CREATED:
         createOneFolder(event.getId(), parent);
         break;
       case FOLDER_MOVED:
-        updateFolderRecursively(event.getId(), parent);
-        break;
-      case FOLDER_DELETED:
-        deleteRecursiveFolder(event.getId());
+        updateFolderRecursively(event.getId());
         break;
       case FOLDER_PERMISSION_CHANGED:
-        updateFolderRecursively(event.getId(), parent);
-        break;
-      case USER_CREATED:
-        updateAllByCreatedUser(event.getId(), parent);
+        updateFolderRecursively(event.getId());
         break;
       case GROUP_MEMBERS_UPDATED:
-        updateAllByUpdatedGroup(event.getId(), parent);
+        updateAllByUpdatedGroup(event.getId());
         break;
       case GROUP_DELETED:
         updateAllByDeletedGroup(event.getId());
@@ -110,19 +113,19 @@ public class SearchPermissionExecutorService {
     }
   }
 
-  private void updateOneResource(String id, IndexedDocumentId parent) {
+  private void updateOneResource(String id) {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
-      log.debug("Update one resource:" + resource.getDisplayName());
-      upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE, parent);
+      try {
+        log.debug("Update one resource:" + resource.getDisplayName());
+        IndexedDocumentId parentId = nodeSearchingService.getByCedarId(id);
+        upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE, parentId);
+      } catch (CedarProcessingException e) {
+        log.error("There was an error while updating permissions for resource:" + id, e);
+      }
     } else {
       log.error("Resource was not found:" + id);
     }
-  }
-
-  private void deleteOneResource(String id) {
-    log.debug("Delete one resource:" + id);
-    deleteOnePermissions(id);
   }
 
   private void createOneFolder(String id, IndexedDocumentId parent) {
@@ -135,40 +138,43 @@ public class SearchPermissionExecutorService {
     }
   }
 
-  private void updateFolderRecursively(String id, IndexedDocumentId parent) {
+  private void updateFolderRecursively(String id) {
     log.debug("Update recursive folder:");
     List<FolderServerNode> subtree = folderSession.findAllDescendantNodesById(id);
     for (FolderServerNode n : subtree) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
+      try {
+        IndexedDocumentId parentId = nodeSearchingService.getByCedarId(n.getId());
+        upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parentId);
+      } catch (CedarProcessingException e) {
+        log.error("There was an error while updating permissions recursively for folder:" + id
+            + " node:" + n.getId(), e);
+      }
     }
   }
 
-  private void deleteRecursiveFolder(String id) {
-    // TODO
-    // Get all the orphan permission type records from Elasticsearch
-    // Delete them all
-  }
-
-  private void updateAllByCreatedUser(String id, IndexedDocumentId parent) {
-    log.debug("Update all visible by user:");
-    List<FolderServerNode> collection = folderSession.findAllNodesVisibleByUserId(id);
-    for (FolderServerNode n : collection) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
-    }
-  }
-
-  private void updateAllByUpdatedGroup(String id, IndexedDocumentId parent) {
+  private void updateAllByUpdatedGroup(String id) {
     log.debug("Update all visible by group:");
     List<FolderServerNode> collection = folderSession.findAllNodesVisibleByGroupId(id);
     for (FolderServerNode n : collection) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parent);
+      if (indexUtils.needsIndexing(n)) {
+        try {
+          IndexedDocumentId parentId = nodeSearchingService.getByCedarId(n.getId());
+          upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType(), parentId);
+        } catch (CedarProcessingException e) {
+          log.error("There was an error while updating permissions for updated group:" + id
+              + " node:" + n.getId(), e);
+        }
+      } else {
+        log.info("The node was skipped from indexing:" + n.getId());
+      }
     }
   }
 
   private void updateAllByDeletedGroup(String id) {
-    // TODO
-    // Get all the ones from Elasticsearch that have this id in their group list
-    // Update them all
+    //look up all the groups documents that contain this groupId in the
+    // groups[*].id field
+    // iterate over them, read their _parent and cid
+    // reindex permissions for all these nodes
   }
 
   // Executors
@@ -177,15 +183,18 @@ public class SearchPermissionExecutorService {
         .RESOURCE, parent);
   }
 
-  private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource, IndexedDocumentId parent) {
+  private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource, IndexedDocumentId
+      parent) {
     log.debug("upsertOnePermissions:" + upsert.getValue() + ":" + folderOrResource + ":" + id);
     try {
       CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id, folderOrResource);
       if (perm != null) {
         if (upsert == Upsert.INSERT) {
-          permissionSearchService.indexResource(perm, parent);
+          userPermissionIndexingService.indexDocument(perm, parent);
+          groupPermissionIndexingService.indexDocument(perm, parent);
         } else {
-          permissionSearchService.updateIndexedResource(perm, parent);
+          userPermissionIndexingService.updateIndexedDocument(perm, parent);
+          groupPermissionIndexingService.updateIndexedDocument(perm, parent);
         }
       } else {
         log.error("Permissions not found for " + folderOrResource + ":" + id);
@@ -194,18 +203,4 @@ public class SearchPermissionExecutorService {
       log.error("Error while upserting permissions", e);
     }
   }
-
-  private void deleteOnePermissions(String id) {
-    log.debug("deleteOnePermissions:" + id);
-    try {
-      permissionSearchService.removeResourceFromIndex(id);
-    } catch (Exception e) {
-      log.error("Error while deleting permissions", e);
-    }
-  }
-
-  //TODO: add this to reindex as well
-  // Reindex can run into errors, fix that
-
-
 }
