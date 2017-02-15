@@ -36,7 +36,7 @@ public class RegenerateSearchIndexTask {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
-    ContentSearchingService contentSearchingService = esServiceFactory.contentSearchingService();
+    NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
 
     String indexName = cedarConfig.getElasticsearchConfig().getIndexName();
 
@@ -53,7 +53,7 @@ public class RegenerateSearchIndexTask {
           // Use the resource ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
           log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
-          List<String> indexResourceIds = contentSearchingService.findAllValuesForField(ES_DOCUMENT_CEDAR_ID);
+          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(ES_DOCUMENT_CEDAR_ID);
           log.info("No. of content document in the index: " + indexResourceIds.size());
           if (dbResourceIds.size() == indexResourceIds.size()) {
             // Compare the two lists

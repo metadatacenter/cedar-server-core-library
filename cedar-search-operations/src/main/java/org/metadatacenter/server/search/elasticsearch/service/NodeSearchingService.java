@@ -10,21 +10,28 @@ import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearch
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class NodeSearchingService extends AbstractSearchingService {
 
   private static final Logger log = LoggerFactory.getLogger(NodeSearchingService.class);
 
-  private final ElasticsearchSearchingWorker searchWorker;
   private final Client client;
   private final ElasticsearchConfig config;
+  private ElasticsearchSearchingWorker searchWorker;
 
   NodeSearchingService(CedarConfig cedarConfig, Client client) {
     this.client = client;
     this.config = cedarConfig.getElasticsearchConfig();
-    searchWorker = new ElasticsearchSearchingWorker(config, client, IndexedDocumentType.NODE);
+    searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client, IndexedDocumentType.NODE);
   }
 
   public IndexedDocumentId getByCedarId(String resourceId) throws CedarProcessingException {
     return getByCedarId(client, resourceId, config.getIndexName(), config.getType(IndexedDocumentType.NODE));
   }
+
+  public List<String> findAllValuesForField(String fieldName) throws CedarProcessingException {
+    return searchWorker.findAllValuesForField(fieldName);
+  }
+
 }
