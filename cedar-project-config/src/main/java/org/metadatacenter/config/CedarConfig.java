@@ -55,6 +55,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("templateRESTAPISummaries")
   private TemplateRESTAPISummaries templateRESTAPISummaries;
 
+  @JsonProperty("submission")
+  private SubmissionConfig submissionConfig;
+
   @JsonProperty("test")
   private TestConfig testConfig;
 
@@ -174,6 +177,8 @@ public class CedarConfig extends Configuration {
   public TemplateRESTAPISummaries getTemplateRESTAPISummaries() {
     return templateRESTAPISummaries;
   }
+
+  public SubmissionConfig getSubmissionConfig() { return submissionConfig; }
 
   public TestConfig getTestConfig() {
     return testConfig;

@@ -1,6 +1,6 @@
 package org.metadatacenter.config;
 
-public class TestConfig extends ServerConfig {
+public class TestConfig {
 
   private int port;
 
