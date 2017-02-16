@@ -5,6 +5,7 @@ import org.elasticsearch.client.Client;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
@@ -33,47 +34,48 @@ public class ContentIndexingService extends AbstractIndexingService {
 
   public IndexedDocumentId indexFolder(FolderServerNode folder, CedarRequestContext context, IndexedDocumentId
       parent) throws CedarProcessingException {
-    return indexNode(folder, null, context, parent);
+    return indexNode(folder, null, context, parent, FolderOrResource.FOLDER);
   }
 
   public IndexedDocumentId indexResource(FolderServerNode resource, JsonNode resourceContent, CedarRequestContext
       context, IndexedDocumentId parent) throws CedarProcessingException {
-    return indexNode(resource, resourceContent, context, parent);
+    return indexNode(resource, resourceContent, context, parent, FolderOrResource.RESOURCE);
   }
 
   private IndexedDocumentId indexNode(FolderServerNode node, JsonNode resourceContent, CedarRequestContext
-      context, IndexedDocumentId parent) throws CedarProcessingException {
+      context, IndexedDocumentId parent, FolderOrResource folderOrResource) throws CedarProcessingException {
     JsonNode summarizedContent = null;
-    if (resourceContent != null) {
-      try {
-        summarizedContent = indexUtils.extractSummarizedContent(node.getType(), resourceContent, context);
-      } catch (Exception e) {
-        log.error("There was an error while extracting summarized content", e);
-      }
-    }
-    if (summarizedContent == null) {
-      log.error("The resource indexing was cancelled, all related documents will be purged from the index (id = " +
-          node.getId() + ")");
-      return null;
-    } else {
-      log.debug("Indexing resource (id = " + node.getId() + ")");
-      // Set resource details
-      String templateId = null;
-      if (CedarNodeType.INSTANCE.equals(node.getType())) {
-        if (resourceContent != null) {
-          JsonNode isBasedOn = resourceContent.get("schema:isBasedOn");
-          if (isBasedOn != null && !isBasedOn.isMissingNode()) {
-            templateId = isBasedOn.asText();
-          }
-        }
-        if (templateId == null) {
-          log.error("Unable to determine templateId for instance:" + node.getId());
+    if (folderOrResource == FolderOrResource.RESOURCE) {
+      if (resourceContent != null) {
+        try {
+          summarizedContent = indexUtils.extractSummarizedContent(node.getType(), resourceContent, context);
+        } catch (Exception e) {
+          log.error("There was an error while extracting summarized content", e);
         }
       }
-      IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent, templateId);
-      JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-      return indexWorker.addToIndex(jsonResource, parent);
+      if (summarizedContent == null) {
+        log.error("The resource indexing was cancelled, all related documents will be purged from the index (id = " +
+            node.getId() + ")");
+        return null;
+      }
     }
+    log.debug("Indexing resource (id = " + node.getId() + ")");
+    // Set resource details
+    String templateId = null;
+    if (CedarNodeType.INSTANCE.equals(node.getType())) {
+      if (resourceContent != null) {
+        JsonNode isBasedOn = resourceContent.get("schema:isBasedOn");
+        if (isBasedOn != null && !isBasedOn.isMissingNode()) {
+          templateId = isBasedOn.asText();
+        }
+      }
+      if (templateId == null) {
+        log.error("Unable to determine templateId for instance:" + node.getId());
+      }
+    }
+    IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent, templateId);
+    JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
+    return indexWorker.addToIndex(jsonResource, parent);
   }
 
   public void removeDocumentFromIndex(String resourceId, IndexedDocumentId parent) throws CedarProcessingException {

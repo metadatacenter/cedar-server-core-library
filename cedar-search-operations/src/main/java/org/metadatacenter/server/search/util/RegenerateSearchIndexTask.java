@@ -108,7 +108,7 @@ public class RegenerateSearchIndexTask {
                 } else {
                   // othwerwise do not index the permissions
                   // and delete the node as well
-                  nodeIndexingService.removeDocumentFromIndex(resource.getId());
+                  nodeIndexingService.removeDocumentFromIndex(indexedNodeId);
                 }
               }
             }

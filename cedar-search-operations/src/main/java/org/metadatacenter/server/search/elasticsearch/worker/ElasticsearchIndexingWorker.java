@@ -67,7 +67,7 @@ public class ElasticsearchIndexingWorker {
     return newId;
   }
 
-  public void removeAllFromIndex(String resourceId, IndexedDocumentId parent) throws CedarProcessingException {
+  public long removeAllFromIndex(String resourceId, IndexedDocumentId parent) throws CedarProcessingException {
     log.debug("Removing " + documentType + " cid:" + resourceId + " from the index.");
     try {
       // Get resources by resource id
@@ -75,6 +75,7 @@ public class ElasticsearchIndexingWorker {
           .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
 
+      long removedCount = 0;
       // Delete by Elasticsearch id
       for (SearchHit hit : responseSearch.getHits()) {
         String hitId = hit.id();
@@ -89,11 +90,23 @@ public class ElasticsearchIndexingWorker {
               + " _id:" + hitId + " cid:" + resourceId + " from the index");
         } else {
           log.debug("The " + documentType + " " + hitId + " has been removed from the index");
+          removedCount++;
         }
       }
+      if (removedCount == 0) {
+        log.error("The " + documentType + " cid:" + resourceId + " was not removed from the index.");
+      } else {
+        log.debug("Removed " + removedCount + " documents of type " + documentType + " cid:" + resourceId
+            + " from the index.");
+      }
+      return removedCount;
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
+  public void removeFromIndex(IndexedDocumentId indexedDocumentId) {
+    log.debug("Removing " + documentType + " _id:" + indexedDocumentId.getId() + " from the index.");
+    client.prepareDelete(indexName, documentType, indexedDocumentId.getId()).get();
+  }
 }

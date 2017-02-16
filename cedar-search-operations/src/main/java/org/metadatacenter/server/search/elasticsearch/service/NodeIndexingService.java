@@ -30,10 +30,18 @@ public class NodeIndexingService extends AbstractIndexingService {
     return indexWorker.addToIndex(jsonResource, null);
   }
 
-  public void removeDocumentFromIndex(String resourceId) throws CedarProcessingException {
+  public long removeDocumentFromIndex(String resourceId) throws CedarProcessingException {
     if (resourceId != null) {
       log.debug("Removing node from index (id = " + resourceId);
-      indexWorker.removeAllFromIndex(resourceId, null);
+      return indexWorker.removeAllFromIndex(resourceId, null);
+    } else {
+      return -1;
     }
   }
+
+  public void removeDocumentFromIndex(IndexedDocumentId indexedDocumentId) {
+    log.debug("Removing node from index (_id = " + indexedDocumentId.getId());
+    indexWorker.removeFromIndex(indexedDocumentId);
+  }
+
 }
