@@ -45,27 +45,35 @@ public class ContentIndexingService extends AbstractIndexingService {
       context, IndexedDocumentId parent) throws CedarProcessingException {
     JsonNode summarizedContent = null;
     if (resourceContent != null) {
-      summarizedContent = indexUtils.extractSummarizedContent(node.getType(), resourceContent, context);
+      try {
+        summarizedContent = indexUtils.extractSummarizedContent(node.getType(), resourceContent, context);
+      } catch (Exception e) {
+        log.error("There was an error while extracting summarized content", e);
+      }
     }
-    log.debug("Indexing resource (id = " + node.getId() + ")");
-    // Set resource details
-    String templateId = null;
-    if (CedarNodeType.INSTANCE.equals(node.getType())) {
-      if (resourceContent != null) {
-        JsonNode isBasedOn = resourceContent.get("schema:isBasedOn");
-        if (isBasedOn != null && !isBasedOn.isMissingNode()) {
-          templateId = isBasedOn.asText();
+    if (summarizedContent == null) {
+      log.error("The resource indexing was cancelled, all related documents will be purged from the index (id = " +
+          node.getId() + ")");
+      return null;
+    } else {
+      log.debug("Indexing resource (id = " + node.getId() + ")");
+      // Set resource details
+      String templateId = null;
+      if (CedarNodeType.INSTANCE.equals(node.getType())) {
+        if (resourceContent != null) {
+          JsonNode isBasedOn = resourceContent.get("schema:isBasedOn");
+          if (isBasedOn != null && !isBasedOn.isMissingNode()) {
+            templateId = isBasedOn.asText();
+          }
+        }
+        if (templateId == null) {
+          log.error("Unable to determine templateId for instance:" + node.getId());
         }
       }
-      if (templateId == null) {
-        log.error("Unable to determine templateId for instance:" + node.getId());
-      }
+      IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent, templateId);
+      JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
+      return indexWorker.addToIndex(jsonResource, parent);
     }
-    //TODO: Is this setResourceDetails still needed???
-    //resource = setResourceDetails(resource);
-    IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent, templateId);
-    JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-    return indexWorker.addToIndex(jsonResource, parent);
   }
 
   public void removeDocumentFromIndex(String resourceId, IndexedDocumentId parent) throws CedarProcessingException {
@@ -90,12 +98,4 @@ public class ContentIndexingService extends AbstractIndexingService {
     return indexFolder(folder, context, parent);
   }
 
-  /**
-   * PRIVATE METHODS
-   */
-
-  /*private FolderServerNode setResourceDetails(FolderServerNode resource) {
-    resource.setDisplayName(resource.getName());
-    return resource;
-  }*/
 }

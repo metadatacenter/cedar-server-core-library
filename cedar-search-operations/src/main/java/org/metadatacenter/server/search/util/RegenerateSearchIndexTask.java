@@ -100,20 +100,28 @@ public class RegenerateSearchIndexTask {
               JsonNode resourceContent = indexUtils.findResourceContent(resource.getId(), resource.getType(),
                   requestContext);
               if (resourceContent != null) {
-                contentIndexingService.indexResource(resource, resourceContent, requestContext, indexedNodeId);
-                perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
+                IndexedDocumentId indexedContentId = contentIndexingService.indexResource(resource, resourceContent,
+                    requestContext, indexedNodeId);
+                // if the content was indexed, index the permissions as well
+                if (indexedContentId != null) {
+                  perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
+                } else {
+                  // othwerwise do not index the permissions
+                  // and delete the node as well
+                  nodeIndexingService.removeDocumentFromIndex(resource.getId());
+                }
               }
             }
             if (perm != null) {
               userPermissionIndexingService.indexDocument(perm, indexedNodeId);
               groupPermissionIndexingService.indexDocument(perm, indexedNodeId);
             } else {
-              log.error("Permissions not found for " + resource.getType() + ":" + resource.getId());
+              log.error("Permissions not indexed for " + resource.getType() + ":" + resource.getId());
             }
             float progress = (100 * count++) / resources.size();
             log.info(String.format("Progress: %.0f%%", progress));
           } catch (Exception e) {
-            log.error("Error while indexing docvument", e);
+            log.error("Error while indexing document: " + resource.getId(), e);
           }
         }
         // Point alias to new index
