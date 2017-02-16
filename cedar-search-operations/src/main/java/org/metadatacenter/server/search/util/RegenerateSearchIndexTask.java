@@ -90,27 +90,31 @@ public class RegenerateSearchIndexTask {
         // Get resources content and index it
         int count = 1;
         for (FolderServerNode resource : resources) {
-          CedarNodeMaterializedPermissions perm = null;
-          IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId());
-          if (resource.getType() == CedarNodeType.FOLDER) {
-            contentIndexingService.indexFolder(resource, requestContext, indexedNodeId);
-            perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);
-          } else {
-            JsonNode resourceContent = indexUtils.findResourceContent(resource.getId(), resource.getType(),
-                requestContext);
-            if (resourceContent != null) {
-              contentIndexingService.indexResource(resource, resourceContent, requestContext, indexedNodeId);
-              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
+          try {
+            CedarNodeMaterializedPermissions perm = null;
+            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId());
+            if (resource.getType() == CedarNodeType.FOLDER) {
+              contentIndexingService.indexFolder(resource, requestContext, indexedNodeId);
+              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);
+            } else {
+              JsonNode resourceContent = indexUtils.findResourceContent(resource.getId(), resource.getType(),
+                  requestContext);
+              if (resourceContent != null) {
+                contentIndexingService.indexResource(resource, resourceContent, requestContext, indexedNodeId);
+                perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
+              }
             }
+            if (perm != null) {
+              userPermissionIndexingService.indexDocument(perm, indexedNodeId);
+              groupPermissionIndexingService.indexDocument(perm, indexedNodeId);
+            } else {
+              log.error("Permissions not found for " + resource.getType() + ":" + resource.getId());
+            }
+            float progress = (100 * count++) / resources.size();
+            log.info(String.format("Progress: %.0f%%", progress));
+          } catch (Exception e) {
+            log.error("Error while indexing docvument", e);
           }
-          if (perm != null) {
-            userPermissionIndexingService.indexDocument(perm, indexedNodeId);
-            groupPermissionIndexingService.indexDocument(perm, indexedNodeId);
-          } else {
-            log.error("Permissions not found for " + resource.getType() + ":" + resource.getId());
-          }
-          float progress = (100 * count++) / resources.size();
-          log.info(String.format("Progress: %.0f%%", progress));
         }
         // Point alias to new index
         esManagementService.addAlias(newIndexName, indexName);
