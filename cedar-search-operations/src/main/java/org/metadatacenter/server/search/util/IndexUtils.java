@@ -225,9 +225,8 @@ public class IndexUtils {
             String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
             // Get field semantic type (if it has been defined)
             String fieldSemanticType = null;
-            if (fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum") != null) {
-              fieldSemanticType = fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum").get(0)
-                  .asText();
+            if ((fieldNode.get("properties").get("@type").get("oneOf") != null) && (fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum") != null)) {
+              fieldSemanticType = fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum").get(0).asText();
             }
             CedarIndexFieldSchema f = new CedarIndexFieldSchema();
             f.setFieldName(fieldName);
