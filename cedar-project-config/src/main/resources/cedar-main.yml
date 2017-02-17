@@ -1,14 +1,18 @@
+adminUser:
+  userName: "cedar-admin"
+  #UUID of "cedar-admin" user from Keycloak.
+  #You can find this after logging in  to the admin console of Keycloak.
+  uuid: "${CEDAR_ADMIN_USER_UUID}"
+  #Plain text password of "cedar-admin" user
+  password: "${CEDAR_ADMIN_USER_PASSWORD}"
+  #We keep the admin user's apiKey across system resets
+  apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
+
 #Keycloak server related settings.
 #These are used when the global objects are built in neo4j
 keycloak:
   clientId: "admin-cli"
-  adminUser:
-    userName: "cedar-admin"
-    #UUID of "cedar-admin" user from Keycloak.
-    #You can find this after logging in  to the admin console of Keycloak.
-    uuid: "${CEDAR_ADMIN_USER_UUID}"
-    #Plain text password of "cedar-admin" user
-    password: "${CEDAR_ADMIN_USER_PASSWORD}"
+  configFile: "${CEDAR_HOME}keycloak.json"
 
 #MongoDB settings
 mongo:
@@ -45,9 +49,13 @@ searchSettings:
     maxAllowedLimit: 1000
 
 elasticsearch:
-  cluster: "elasticsearch_cedar"
-  index: "cedar-search"
-  type: "resources"
+  clusterName: "elasticsearch_cedar"
+  indexName: "cedar-search"
+  types:
+    node: "node"
+    users: "users"
+    groups: "groups"
+    content: "content"
   host: "127.0.0.1"
   transportPort: 9300
   size: 1000
@@ -71,11 +79,6 @@ folderStructure:
     name: "Everybody"
     displayName: "Everybody"
     description: "Group holding all the users"
-
-folderRESTAPI:
-  pagination:
-    defaultPageSize: 100
-    maxPageSize: 300
 
 #Server bases
 #for inter-service REST calls
@@ -168,8 +171,30 @@ templateRESTAPISummaries:
       - "_ui.title"
       - "_ui.description"
 
+cache:
+  persistent:
+    connection:
+      host: "localhost"
+      port: 6379
+      timeout: 2000
+    queueNames:
+      searchPermission: "CEDAR-QUEUE-search-permission"
+  nonPersistent:
+    connection:
+      host: "localhost"
+      port: 6380
+      timeout: 2000
+
+submission:
+  ncbi:
+    sra:
+      ftp:
+        host: "ftp-private.ncbi.nlm.nih.gov"
+        user: "CEDAR"
+        password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
+        submissionDirectory: "submit/Test"
+
 test:
-  base: "http://localhost"
   port: 3333
   timeout: 10000
   template:

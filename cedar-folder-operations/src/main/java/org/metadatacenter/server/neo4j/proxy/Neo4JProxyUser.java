@@ -59,21 +59,10 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
   }
 
   public List<FolderServerUser> findUsers() {
-    List<FolderServerUser> userList = new ArrayList<>();
     String cypher = CypherQueryBuilder.findUsers();
     CypherQuery q = new CypherQueryLiteral(cypher);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
-    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
-      userListJsonNode.forEach(f -> {
-        JsonNode userNode = f.at("/row/0");
-        if (userNode != null && !userNode.isMissingNode()) {
-          FolderServerUser cu = buildUser(userNode);
-          userList.add(cu);
-        }
-      });
-    }
-    return userList;
+    return listUsers(jsonNode);
   }
 
   public FolderServerUser findUserById(String userURL) {

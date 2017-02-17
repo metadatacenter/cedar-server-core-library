@@ -1,28 +1,34 @@
 package org.metadatacenter.error;
 
-public class CedarErrorPackException {
+import java.util.ArrayList;
+import java.util.List;
 
-  private StackTraceElement[] stackTrace;
-  private String message;
-  private String localizedMessage;
+public class CedarErrorPackException extends CedarErrorPackSingleException {
+
+  private List<CedarErrorPackSingleException> causes;
 
   public CedarErrorPackException(Exception e) {
+    causes = new ArrayList<>();
     if (e != null) {
       this.message = e.getMessage();
       this.localizedMessage = e.getLocalizedMessage();
       this.stackTrace = e.getStackTrace();
+      appendCause(e.getCause());
     }
   }
 
-  public StackTraceElement[] getStackTrace() {
-    return stackTrace;
+  private void appendCause(Throwable cause) {
+    if (cause != null) {
+      CedarErrorPackSingleException c = new CedarErrorPackSingleException();
+      c.message = cause.getMessage();
+      c.localizedMessage = cause.getLocalizedMessage();
+      c.stackTrace = cause.getStackTrace();
+      causes.add(c);
+      appendCause(cause.getCause());
+    }
   }
 
-  public String getMessage() {
-    return message;
-  }
-
-  public String getLocalizedMessage() {
-    return localizedMessage;
+  public List<CedarErrorPackSingleException> getCauses() {
+    return causes;
   }
 }

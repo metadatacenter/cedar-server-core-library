@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.GroupServiceSession;
@@ -16,14 +17,12 @@ import java.util.*;
 
 public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession implements GroupServiceSession {
 
-  public Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
-      userIdPrefix, String groupIdPrefix) {
-    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
+    super(cedarConfig, proxies, cu);
   }
 
   public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(), proxies
-        .getGroupIdPrefix());
+    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser);
   }
 
   @Override
@@ -43,7 +42,7 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
 
   @Override
   public FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
-    String groupURL = buildGroupId(UUID.randomUUID().toString());
+    String groupURL = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.GROUP);
     return proxies.group().createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
   }
 

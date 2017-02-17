@@ -1,10 +1,12 @@
 package org.metadatacenter.util.http;
 
 import org.apache.commons.lang3.StringUtils;
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.neo4j.FolderContentSortOptions;
+import org.metadatacenter.util.CedarNodeTypeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,12 +107,13 @@ public class PagedSearchQuery {
     nodeTypeList = new ArrayList<>();
     for (String rt : nodeTypeStringList) {
       CedarNodeType crt = CedarNodeType.forValue(rt);
-      if (crt == null) {
-        throw new CedarAssertionException("You passed an illegal node type:'" + rt + "'. The allowed values are:" +
-            CedarNodeType.values())
+      if (!CedarNodeTypeUtil.isValidForRestCall(crt)) {
+        throw new CedarAssertionException("You passed an illegal resource_types:'" + rt + "'. The allowed values are:" +
+            CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls())
+            .errorKey(CedarErrorKey.INVALID_NODE_TYPE)
             .parameter("resource_types", nodeTypesString)
             .parameter("invalidResourceTypes", rt)
-            .parameter("allowedResourceTypes", CedarNodeType.values());
+            .parameter("allowedResourceTypes", CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls());
       } else {
         nodeTypeList.add(crt);
       }
@@ -123,6 +126,28 @@ public class PagedSearchQuery {
 
   public List<String> getSortList() {
     return sortList;
+  }
+
+  public String getSortListAsString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < sortList.size(); i++) {
+      sb.append(sortList.get(i));
+      if (i != sortList.size() - 1) {
+        sb.append(",");
+      }
+    }
+    return sb.toString();
+  }
+
+  public String getNodeTypesAsList() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < nodeTypeList.size(); i++) {
+      sb.append(nodeTypeList.get(i).getValue());
+      if (i != nodeTypeList.size() - 1) {
+        sb.append(",");
+      }
+    }
+    return sb.toString();
   }
 
   public int getLimit() {

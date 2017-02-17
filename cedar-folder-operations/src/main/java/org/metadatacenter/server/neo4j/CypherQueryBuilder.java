@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import java.util.List;
@@ -8,10 +9,6 @@ import java.util.Map;
 import static org.metadatacenter.server.neo4j.Neo4JFields.*;
 
 public class CypherQueryBuilder {
-
-  public enum FolderOrResource {
-    FOLDER, RESOURCE
-  }
 
   private CypherQueryBuilder() {
   }
@@ -156,6 +153,19 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  private static String getSharedWithMeConditions(String relationPrefix, String nodeAlias) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" ").append(relationPrefix).append(" ");
+    sb.append("(");
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
+        append("()-[:").append(RelationLabel.CANREAD).append("]->(").append(nodeAlias).append(")");
+    sb.append("\nOR\n");
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
+        append("()-[:").append(RelationLabel.CANWRITE).append("]->(").append(nodeAlias).append(")");
+    sb.append(")");
+    return sb.toString();
+  }
+
   private static String getUserToResourceRelationOneStepDirectly(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
     sb.append("(user)-[:").append(relationLabel).append("]->(").append(nodeAlias).append(")");
@@ -164,14 +174,14 @@ public class CypherQueryBuilder {
 
   private static String getUserToResourceRelationOneStepThroughGroup(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
-    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
         append("()-[:").append(relationLabel).append("]->(").append(nodeAlias).append(")");
     return sb.toString();
   }
 
   private static String getUserToResourceRelationTwoSteps(RelationLabel relationLabel, String nodeAlias) {
     StringBuilder sb = new StringBuilder();
-    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..]->").
+    sb.append("(user)-[:").append(RelationLabel.MEMBEROF).append("*0..1]->").
         append("()-[:").append(relationLabel).append("]->()-[:").
         append(RelationLabel.CONTAINS).append("*0..]->(").append(nodeAlias).append(")");
     return sb.toString();
@@ -572,7 +582,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getUsersWithPermissionOnNode(RelationLabel relationLabel) {
+  public static String getUsersWithDirectPermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
     sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
@@ -583,7 +593,7 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getGroupsWithPermissionOnNode(RelationLabel relationLabel) {
+  public static String getGroupsWithDirectPermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
     sb.append("MATCH (node:").append(NodeLabel.FSNODE).append(" {id:{nodeId} })");
@@ -591,6 +601,84 @@ public class CypherQueryBuilder {
     sb.append("-[:").append(relationLabel).append("]->");
     sb.append("(node)");
     sb.append("RETURN group");
+    return sb.toString();
+  }
+
+  public static String getUsersWithTransitiveReadOnNode(FolderOrResource folderOrResource) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
+    } else {
+      sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");
+    }
+    sb.append("\nWHERE");
+
+    sb.append("(");
+    sb.append(getUserToResourceRelationOneStepThroughGroup(RelationLabel.CANREADTHIS, "node"));
+    sb.append("\nOR\n");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, "node"));
+    sb.append(")");
+    sb.append("\nRETURN user");
+    return sb.toString();
+  }
+
+  public static String getUsersWithTransitiveWriteOnNode(FolderOrResource folderOrResource) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(")");
+
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
+    } else {
+      sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");
+    }
+    sb.append("\nWHERE");
+
+    sb.append("(");
+    sb.append(getUserToResourceRelationOneStepDirectly(RelationLabel.OWNS, "node"));
+    sb.append("\nOR\n");
+    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, "node"));
+    sb.append(")");
+    sb.append("\nRETURN user");
+    return sb.toString();
+  }
+
+  public static String getGroupsWithTransitiveReadOnNode(FolderOrResource folderOrResource) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
+
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
+    } else {
+      sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");
+    }
+    sb.append("\nWHERE");
+    sb.append("(");
+    sb.append("(group)-[:").append(RelationLabel.CANREADTHIS).append("]->(node)");
+    sb.append("\nOR\n");
+    sb.append("(group)-[:").append(RelationLabel.CANREAD).append("]->()-[:").append(RelationLabel.CONTAINS)
+        .append("*0..]->(node)");
+    sb.append(")");
+    sb.append("\nRETURN group");
+    return sb.toString();
+  }
+
+  public static String getGroupsWithTransitiveWriteOnNode(FolderOrResource folderOrResource) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(")");
+
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      sb.append("\nMATCH (node:").append(NodeLabel.FOLDER).append(" {id:{nodeId} })");
+    } else {
+      sb.append("\nMATCH (node:").append(NodeLabel.RESOURCE).append(" {id:{nodeId} })");
+    }
+    sb.append("\nWHERE");
+    sb.append("(");
+    sb.append("(group)-[:").append(RelationLabel.CANWRITE).append("]->()-[:").append(RelationLabel.CONTAINS)
+        .append("*0..]->(node)");
+    sb.append(")");
+    sb.append("\nRETURN group");
     return sb.toString();
   }
 
@@ -838,16 +926,14 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getSharedWithMeLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+  public static String getSharedWithMeLookupQuery(List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("\nMATCH (node)");
     sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND node.ownedBy  <> {userId}");
     sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
-    }
+    sb.append(getSharedWithMeConditions("\nAND\n", "node"));
     sb.append("\nRETURN node");
     sb.append("\nORDER BY node.").append(NODE_SORT_ORDER).append(",").append(getOrderByExpression("node", sortList));
     sb.append("\nSKIP {offset}");
@@ -855,16 +941,14 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getSharedWithMeCountQuery(boolean addPermissionConditions) {
+  public static String getSharedWithMeCountQuery() {
     StringBuilder sb = new StringBuilder();
     sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
     sb.append("\nMATCH (node)");
     sb.append("\nWHERE node.nodeType in {nodeTypeList}");
     sb.append("\nAND node.ownedBy  <> {userId}");
     sb.append("\nAND (node.isUserHome IS NULL OR node.isUserHome <> true) ");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions("\nAND\n", "node"));
-    }
+    sb.append(getSharedWithMeConditions("\nAND\n", "node"));
     sb.append("\nRETURN count(node)");
     return sb.toString();
   }
@@ -897,5 +981,45 @@ public class CypherQueryBuilder {
     sb.append("\nRETURN count(node)");
     return sb.toString();
   }
+
+  public static String getAllDescendantNodes() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (parent:").append(NodeLabel.FOLDER).append(" {id:{id} })");
+    sb.append("MATCH (child)");
+    sb.append("MATCH (parent)");
+    sb.append("-[:").append(RelationLabel.CONTAINS).append("*0..]->");
+    sb.append("(child)");
+    sb.append("RETURN child");
+    return sb.toString();
+  }
+
+  public static String getAllVisibleByUserQuery() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (user:").append(NodeLabel.USER).append(" {id:{userId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE");
+    sb.append(getResourcePermissionConditions("\n", "node"));
+    sb.append("\nRETURN node");
+    return sb.toString();
+  }
+
+  public static String getAllVisibleByGroupQuery() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (group:").append(NodeLabel.GROUP).append(" {id:{groupId} })");
+    sb.append("\nMATCH (node)");
+    sb.append("\nWHERE");
+    sb.append("(");
+    sb.append("(group)-[:").append(RelationLabel.CANREADTHIS).append("]->(node)");
+    sb.append("\nOR\n");
+    sb.append("(group)-[:").append(RelationLabel.CANREAD).append("]->()-[:").
+        append(RelationLabel.CONTAINS).append("*0..]->(node)");
+    sb.append("\nOR\n");
+    sb.append("(group)-[:").append(RelationLabel.CANWRITE).append("]->()-[:").
+        append(RelationLabel.CONTAINS).append("*0..]->(node)");
+    sb.append(")");
+    sb.append("\nRETURN node");
+    return sb.toString();
+  }
+
 
 }

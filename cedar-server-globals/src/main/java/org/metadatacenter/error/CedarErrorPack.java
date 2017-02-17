@@ -11,6 +11,7 @@ public class CedarErrorPack {
   private Response.Status status = Response.Status.INTERNAL_SERVER_ERROR;
   private CedarErrorType errorType = CedarErrorType.NONE;
   private CedarErrorKey errorKey = CedarErrorKey.NONE;
+  private CedarErrorReasonKey errorReasonKey = CedarErrorReasonKey.NONE;
   private String message;
   private final Map<String, Object> parameters;
   private CedarSuggestedAction suggestedAction = CedarSuggestedAction.NONE;
@@ -27,6 +28,7 @@ public class CedarErrorPack {
       this.status = other.getStatus();
       errorType = other.getErrorType();
       errorKey = other.getErrorKey();
+      errorReasonKey = other.getErrorReasonKey();
       message = other.getMessage();
       parameters.putAll(other.getParameters());
       suggestedAction = other.getSuggestedAction();
@@ -57,6 +59,14 @@ public class CedarErrorPack {
 
   public void setErrorKey(CedarErrorKey errorKey) {
     this.errorKey = errorKey;
+  }
+
+  public CedarErrorReasonKey getErrorReasonKey() {
+    return errorReasonKey;
+  }
+
+  public void setErrorReasonKey(CedarErrorReasonKey errorReasonKey) {
+    this.errorReasonKey = errorReasonKey;
   }
 
   public String getMessage() {

@@ -1,11 +1,11 @@
-package org.metadatacenter.model.index;
+package org.metadatacenter.server.search.elasticsearch.document;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 
-import java.util.List;
+public class IndexingDocumentContent {
 
-public class CedarIndexResource {
+  private String cid;
 
   private FolderServerNode info;
   // Contains a summary of the resource content. There is no need to index the full JSON for each resource. Only the
@@ -15,12 +15,22 @@ public class CedarIndexResource {
   private String templateId;
 
   // Used by Jackson
-  public CedarIndexResource() {};
+  public IndexingDocumentContent() {
+  }
 
-  public CedarIndexResource(FolderServerNode info, JsonNode resourceSummarizedContent, String templateId) {
+  public IndexingDocumentContent(FolderServerNode info, JsonNode resourceSummarizedContent, String templateId) {
+    this.cid = info.getId();
     this.info = info;
     this.resourceSummarizedContent = resourceSummarizedContent;
     this.templateId = templateId;
+  }
+
+  public void setCid(String cid) {
+    this.cid = cid;
+  }
+
+  public String getCid() {
+    return cid;
   }
 
   public FolderServerNode getInfo() {

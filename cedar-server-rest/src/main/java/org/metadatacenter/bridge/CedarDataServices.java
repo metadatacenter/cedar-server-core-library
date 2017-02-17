@@ -8,61 +8,90 @@ import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.proxy.*;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.server.service.mongodb.UserServiceMongoDB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class CedarDataServices {
+
+  private static final Logger log = LoggerFactory.getLogger(CedarDataServices.class);
 
   private UserService userService;
   private Neo4JProxies proxies;
   private CedarConfig cedarConfig;
-  private static CedarDataServices instance = null;
-
-  public static synchronized CedarDataServices getInstance(CedarConfig cedarConfig) {
-    if (instance == null) {
-      instance = buildCedarDataServices(cedarConfig);
-    }
-    return instance;
-  }
+  private static CedarDataServices instance = new CedarDataServices();
 
   private CedarDataServices() {
   }
 
-  private static CedarDataServices buildCedarDataServices(CedarConfig cedarConfig) {
-    CedarDataServices cds = new CedarDataServices();
-    cds.cedarConfig = cedarConfig;
-
-    cds.userService = new UserServiceMongoDB(cedarConfig.getMongoConfig().getDatabaseName(),
+  public static void initializeUserService(CedarConfig cedarConfig) {
+    instance.userService = new UserServiceMongoDB(cedarConfig.getMongoConfig().getDatabaseName(),
         cedarConfig.getMongoCollectionName(CedarNodeType.USER));
+  }
 
+  public static void initializeFolderServices(CedarConfig cedarConfig) {
+    instance.cedarConfig = cedarConfig;
     Neo4jConfig neo4jConfig = Neo4jConfig.fromCedarConfig(cedarConfig);
-    String genericIdPrefix = cedarConfig.getLinkedDataConfig().getBase();
-    String userIdPrefix = cedarConfig.getLinkedDataConfig().getUsersBase();
-
-    cds.proxies = new Neo4JProxies(neo4jConfig, genericIdPrefix, userIdPrefix);
-    return cds;
+    instance.proxies = new Neo4JProxies(neo4jConfig, cedarConfig.buildLinkedDataUtil());
   }
 
   public static GroupServiceSession getGroupServiceSession(CedarRequestContext context) {
-    return Neo4JUserSessionGroupService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    if (instance.proxies == null) {
+      log.error("You need to initialize folder services: CedarDataServices.initializeFolderServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionGroupService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
   }
 
   public static PermissionServiceSession getPermissionServiceSession(CedarRequestContext context) {
-    return Neo4JUserSessionPermissionService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    if (instance.proxies == null) {
+      log.error("You need to initialize folder services: CedarDataServices.initializeFolderServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionPermissionService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
   }
 
   public static AdminServiceSession getAdminServiceSession(CedarRequestContext context) {
-    return Neo4JUserSessionAdminService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    if (instance.proxies == null) {
+      log.error("You need to initialize folder services: CedarDataServices.initializeFolderServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionAdminService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
   }
 
   public static FolderServiceSession getFolderServiceSession(CedarRequestContext context) {
-    return Neo4JUserSessionFolderService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    if (instance.proxies == null) {
+      log.error("You need to initialize folder services: CedarDataServices.initializeFolderServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionFolderService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
   }
 
   public static UserServiceSession getUserServiceSession(CedarRequestContext context) {
-    return Neo4JUserSessionUserService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    if (instance.proxies == null) {
+      log.error("You need to initialize folder services: CedarDataServices.initializeFolderServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionUserService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
   }
 
   public static UserService getUserService() {
-    return instance.userService;
+    if (instance.userService == null) {
+      log.error("You need to initialize user service: CedarDataServices.initializeUserService(cedarConfig)");
+      System.exit(-1);
+      return null;
+    } else {
+      return instance.userService;
+    }
   }
 
 }

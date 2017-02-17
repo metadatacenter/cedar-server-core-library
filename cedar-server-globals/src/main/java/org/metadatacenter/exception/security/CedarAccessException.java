@@ -7,8 +7,8 @@ import org.metadatacenter.exception.CedarException;
 
 public class CedarAccessException extends CedarException {
 
-  public CedarAccessException(String message, CedarErrorKey errorKey,
-                              CedarSuggestedAction suggestedAction, Exception e) {
+  public CedarAccessException(String message, CedarErrorKey errorKey, CedarSuggestedAction suggestedAction, Exception
+      e) {
     super(message, e);
     errorPack.setErrorType(CedarErrorType.AUTHORIZATION);
     errorPack.setErrorKey(errorKey);

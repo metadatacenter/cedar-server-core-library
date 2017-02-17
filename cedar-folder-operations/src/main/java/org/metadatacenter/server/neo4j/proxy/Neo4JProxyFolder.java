@@ -1,7 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.*;
@@ -143,8 +142,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   FolderServerFolder createFolderAsChildOfId(String parentId, String name, String displayName, String description,
                                              String creatorId, NodeLabel label, Map<String, Object> extraProperties) {
     String cypher = CypherQueryBuilder.createFolderAsChildOfId(label, extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.folderIdPrefix, parentId, name, displayName,
-        description, creatorId, extraProperties);
+    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.getLinkedDataUtil(), parentId, name,
+        displayName, description, creatorId, extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");
@@ -199,7 +198,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     extraParams.put(Neo4JFields.IS_ROOT, true);
     extraParams.put(Neo4JFields.IS_SYSTEM, true);
     String cypher = CypherQueryBuilder.createRootFolder(extraParams);
-    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.folderIdPrefix, null, proxies.config
+    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.getLinkedDataUtil(), null, proxies.config
             .getRootFolderPath(), proxies.config.getRootFolderPath(), proxies.config.getRootFolderDescription(),
         creatorId, extraParams);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);

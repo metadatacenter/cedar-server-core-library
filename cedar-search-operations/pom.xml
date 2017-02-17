@@ -5,14 +5,14 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-search-operations</artifactId>
   <packaging>jar</packaging>
 
-  <name>CEDAR Search Server Operations</name>
+  <name>CEDAR Search Operations</name>
 
   <properties>
   </properties>
@@ -21,6 +21,21 @@
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-cache-operations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-server-globals</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-server-rest</artifactId>
     </dependency>
 
     <dependency>
@@ -41,6 +56,11 @@
     <dependency>
       <groupId>com.github.fge</groupId>
       <artifactId>json-schema-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
     </dependency>
 
   </dependencies>

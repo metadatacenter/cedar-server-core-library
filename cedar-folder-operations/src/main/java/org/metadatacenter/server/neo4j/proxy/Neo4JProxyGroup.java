@@ -27,21 +27,10 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
   }
 
   List<FolderServerGroup> findGroups() {
-    List<FolderServerGroup> groupList = new ArrayList<>();
     String cypher = CypherQueryBuilder.findGroups();
     CypherQuery q = new CypherQueryLiteral(cypher);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
-    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
-      userListJsonNode.forEach(f -> {
-        JsonNode groupNode = f.at("/row/0");
-        if (groupNode != null && !groupNode.isMissingNode()) {
-          FolderServerGroup cg = buildGroup(groupNode);
-          groupList.add(cg);
-        }
-      });
-    }
-    return groupList;
+    return listGroups(jsonNode);
   }
 
   FolderServerGroup findGroupById(String groupURL) {
@@ -85,41 +74,19 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
   }
 
   List<FolderServerUser> findGroupMembers(String groupURL) {
-    List<FolderServerUser> memberList = new ArrayList<>();
     String cypher = CypherQueryBuilder.getGroupUsersWithRelation(RelationLabel.MEMBEROF);
     Map<String, Object> params = CypherParamBuilder.matchGroupId(groupURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
-    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
-      userListJsonNode.forEach(f -> {
-        JsonNode userNode = f.at("/row/0");
-        if (userNode != null && !userNode.isMissingNode()) {
-          FolderServerUser u = buildUser(userNode);
-          memberList.add(u);
-        }
-      });
-    }
-    return memberList;
+    return listUsers(jsonNode);
   }
 
   List<FolderServerUser> findGroupAdministrators(String groupURL) {
-    List<FolderServerUser> memberList = new ArrayList<>();
     String cypher = CypherQueryBuilder.getGroupUsersWithRelation(RelationLabel.ADMINISTERS);
     Map<String, Object> params = CypherParamBuilder.matchGroupId(groupURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode userListJsonNode = jsonNode.at("/results/0/data");
-    if (userListJsonNode != null && !userListJsonNode.isMissingNode()) {
-      userListJsonNode.forEach(f -> {
-        JsonNode userNode = f.at("/row/0");
-        if (userNode != null && !userNode.isMissingNode()) {
-          FolderServerUser u = buildUser(userNode);
-          memberList.add(u);
-        }
-      });
-    }
-    return memberList;
+    return listUsers(jsonNode);
   }
 
   void addUserGroupRelation(String userURL, String groupURL, RelationLabel relation) {

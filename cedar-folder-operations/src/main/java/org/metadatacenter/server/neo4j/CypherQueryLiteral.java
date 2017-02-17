@@ -11,4 +11,14 @@ public class CypherQueryLiteral implements CypherQuery {
   public String getQuery() {
     return query;
   }
+
+  @Override
+  public String getFlatQuery() {
+    if (query != null) {
+      return query.replace("\n", " ").replace("\r", " ");
+    } else {
+      return null;
+    }
+  }
+
 }

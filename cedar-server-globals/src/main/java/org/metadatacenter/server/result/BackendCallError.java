@@ -1,9 +1,6 @@
 package org.metadatacenter.server.result;
 
-import org.metadatacenter.error.CedarErrorKey;
-import org.metadatacenter.error.CedarErrorPack;
-import org.metadatacenter.error.CedarErrorType;
-import org.metadatacenter.error.CedarSuggestedAction;
+import org.metadatacenter.error.*;
 import org.metadatacenter.operation.CedarOperationDescriptor;
 
 public class BackendCallError {
@@ -32,6 +29,11 @@ public class BackendCallError {
 
   public BackendCallError errorKey(CedarErrorKey errorKey) {
     errorPack.setErrorKey(errorKey);
+    return this;
+  }
+
+  public BackendCallError errorReasonKey(CedarErrorReasonKey errorReasonKey) {
+    errorPack.setErrorReasonKey(errorReasonKey);
     return this;
   }
 

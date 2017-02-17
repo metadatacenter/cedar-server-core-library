@@ -17,6 +17,15 @@ public class CypherQueryWithParameters implements CypherQuery {
     return query;
   }
 
+  @Override
+  public String getFlatQuery() {
+    if (query != null) {
+      return query.replace("\n", " ").replace("\r", " ");
+    } else {
+      return null;
+    }
+  }
+
   public Map<String, Object> getParameters() {
     return parameters;
   }
@@ -30,7 +39,7 @@ public class CypherQueryWithParameters implements CypherQuery {
         q = q.replace("{" + key + "}", v);
       }
     }
-    return q;
+    return q.replace("\n", "").replace("\r", "");
   }
 
   private String getVariableRepresentation(Object o) {

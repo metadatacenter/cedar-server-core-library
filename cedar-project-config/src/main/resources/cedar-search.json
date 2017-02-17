@@ -27,144 +27,223 @@
     }
   },
   "mappings": {
-    "properties": {
-      "templateId": {
-        "type": "string",
-        "index": "not_analyzed"
+    "node": {
+      "properties": {
+        "cid": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "name": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "nodeType": {
+          "type": "string",
+          "index": "not_analyzed"
+        }
+      }
+    },
+    "users": {
+      "_parent": {
+        "type": "node"
       },
-      "info": {
-        "properties": {
-          "@id": {
-            "type": "string",
-            "index": "not_analyzed"
-          },
-          "ownedBy": {
-            "type": "string",
-            "index": "not_analyzed"
-          },
-          "name": {
-            "type": "string",
-            "analyzer": "ngram_analyzer",
-            "search_analyzer": "standard",
-            "fields": {
-              "raw": {
-                "type": "string",
-                "analyzer": "analyzer_keyword"
-              }
+      "properties": {
+        "cid": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "users": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "permission": {
+              "type": "string",
+              "index": "not_analyzed"
             }
           }
         }
       }
     },
-    "dynamic_templates": [
-      {
-        "template_nested_array": {
-          "match_mapping_type": "array",
-          "unmatch": "*_field",
-          "mapping": {
-            "type": "nested"
-          }
-        }
+    "groups": {
+      "_parent": {
+        "type": "node"
       },
-      {
-        "template_nested_object": {
-          "match_mapping_type": "object",
-          "unmatch": "*_field",
-          "mapping": {
-            "type": "nested"
-          }
-        }
-      },
-      {
-        "template_common_fields": {
-          "match_pattern": "regex",
-          "match": "fieldName|fieldSemanticType|fieldValueSemanticType|fieldValueAndSemanticType|fieldValueType",
-          "mapping": {
-            "type": "string",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_common_fields": {
-          "match": "useForValueRecommendation",
-          "mapping": {
-            "type": "boolean",
-          }
-        }
-      },
-      {
-        "template_value_string": {
-          "match": "fieldValue_string",
-          "mapping": {
-            "type": "string",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_long": {
-          "match": "fieldValue_long",
-          "mapping": {
-            "type": "long",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_integer": {
-          "match": "fieldValue_integer",
-          "mapping": {
-            "type": "integer",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_short": {
-          "match": "fieldValue_short",
-          "mapping": {
-            "type": "short",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_double": {
-          "match": "fieldValue_double",
-          "mapping": {
-            "type": "double",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_float": {
-          "match": "fieldValue_float",
-          "mapping": {
-            "type": "float",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_date": {
-          "match": "fieldValue_date",
-          "mapping": {
-            "type": "date",
-            "index": "not_analyzed"
-          }
-        }
-      },
-      {
-        "template_value_boolean": {
-          "match": "fieldValue_boolean",
-          "mapping": {
-            "type": "boolean",
-            "index": "not_analyzed"
+      "properties": {
+        "cid": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "groups": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "permission": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
           }
         }
       }
-    ]
+    },
+    "content": {
+      "_parent": {
+        "type": "node"
+      },
+      "properties": {
+        "cid": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "templateId": {
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "info": {
+          "properties": {
+            "@id": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "pav:createdBy": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "cedar:lastUpdatedBy": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "ownedBy": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "name": {
+              "type": "string",
+              "analyzer": "ngram_analyzer",
+              "search_analyzer": "standard",
+              "fields": {
+                "raw": {
+                  "type": "string",
+                  "analyzer": "analyzer_keyword"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dynamic_templates": [
+        {
+          "template_nested_array": {
+            "match_mapping_type": "array",
+            "unmatch": "*_field",
+            "mapping": {
+              "type": "nested"
+            }
+          }
+        },
+        {
+          "template_nested_object": {
+            "match_mapping_type": "object",
+            "unmatch": "*_field",
+            "mapping": {
+              "type": "nested"
+            }
+          }
+        },
+        {
+          "template_common_fields": {
+            "match_pattern": "regex",
+            "match": "fieldName|fieldSemanticType|fieldValueSemanticType|fieldValueAndSemanticType|fieldValueType",
+            "mapping": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_common_fields": {
+            "match": "useForValueRecommendation",
+            "mapping": {
+              "type": "boolean"
+            }
+          }
+        },
+        {
+          "template_value_string": {
+            "match": "fieldValue_string",
+            "mapping": {
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_long": {
+            "match": "fieldValue_long",
+            "mapping": {
+              "type": "long",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_integer": {
+            "match": "fieldValue_integer",
+            "mapping": {
+              "type": "integer",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_short": {
+            "match": "fieldValue_short",
+            "mapping": {
+              "type": "short",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_double": {
+            "match": "fieldValue_double",
+            "mapping": {
+              "type": "double",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_float": {
+            "match": "fieldValue_float",
+            "mapping": {
+              "type": "float",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_date": {
+            "match": "fieldValue_date",
+            "mapping": {
+              "type": "date",
+              "index": "not_analyzed"
+            }
+          }
+        },
+        {
+          "template_value_boolean": {
+            "match": "fieldValue_boolean",
+            "mapping": {
+              "type": "boolean",
+              "index": "not_analyzed"
+            }
+          }
+        }
+      ]
+    }
   }
 }

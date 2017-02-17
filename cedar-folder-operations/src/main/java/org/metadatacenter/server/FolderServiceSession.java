@@ -19,8 +19,6 @@ public interface FolderServiceSession {
 
   String getRootPath();
 
-  String getResourceUUID(String resourceId, CedarNodeType nodeType);
-
   FolderServerFolder findFolderById(String folderURL);
 
   List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList);
@@ -63,6 +61,8 @@ public interface FolderServiceSession {
 
   long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
+  long findFolderContentsCount(String folderURL);
+
   void addPathAndParentId(FolderServerFolder folder);
 
   void addPathAndParentId(FolderServerResource resource);
@@ -84,4 +84,10 @@ public interface FolderServiceSession {
       sortList);
 
   long viewAllCount(List<CedarNodeType> nodeTypeList);
+
+  List<FolderServerNode> findAllDescendantNodesById(String id);
+
+  List<FolderServerNode> findAllNodesVisibleByUserId(String id);
+
+  List<FolderServerNode> findAllNodesVisibleByGroupId(String id);
 }

@@ -1,9 +1,9 @@
 package org.metadatacenter.exception;
 
-
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorPackException;
+import org.metadatacenter.error.CedarErrorReasonKey;
 
 public abstract class CedarException extends Exception {
 
@@ -53,6 +53,11 @@ public abstract class CedarException extends Exception {
 
   public CedarException errorKey(CedarErrorKey errorKey) {
     errorPack.setErrorKey(errorKey);
+    return this;
+  }
+
+  public CedarException errorReasonKey(CedarErrorReasonKey errorReasonKey) {
+    errorPack.setErrorReasonKey(errorReasonKey);
     return this;
   }
 

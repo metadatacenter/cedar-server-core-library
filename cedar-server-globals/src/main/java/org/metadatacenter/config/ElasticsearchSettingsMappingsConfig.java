@@ -6,13 +6,13 @@ public class ElasticsearchSettingsMappingsConfig {
 
   private HashMap<String, Object> settings;
 
-  private HashMap<String, Object> mappings;
+  private ElasticsearchMappingsConfig mappings;
 
   public HashMap<String, Object> getSettings() {
     return settings;
   }
 
-  public HashMap<String, Object> getMappings() {
+  public ElasticsearchMappingsConfig getMappings() {
     return mappings;
   }
 }

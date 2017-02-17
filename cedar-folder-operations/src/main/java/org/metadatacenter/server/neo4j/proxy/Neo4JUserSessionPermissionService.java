@@ -6,6 +6,7 @@ import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
@@ -19,30 +20,28 @@ import java.util.Set;
 
 public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession implements PermissionServiceSession {
 
-  public Neo4JUserSessionPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String
-      userIdPrefix, String groupIdPrefix) {
-    super(cedarConfig, proxies, cu, userIdPrefix, groupIdPrefix);
+  public Neo4JUserSessionPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
+    super(cedarConfig, proxies, cu);
   }
 
   public static PermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionPermissionService(cedarConfig, proxies, cedarUser, proxies.getUserIdPrefix(),
-        proxies.getGroupIdPrefix());
+    return new Neo4JUserSessionPermissionService(cedarConfig, proxies, cedarUser);
   }
 
   @Override
-  public CedarNodePermissions getNodePermissions(String nodeURL, boolean nodeIsFolder) {
+  public CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource) {
     FolderServerNode node;
-    if (nodeIsFolder) {
+    if (folderOrResource == FolderOrResource.FOLDER) {
       node = proxies.folder().findFolderById(nodeURL);
     } else {
       node = proxies.resource().findResourceById(nodeURL);
     }
     if (node != null) {
       FolderServerUser owner = getNodeOwner(nodeURL);
-      List<FolderServerUser> readUsers = getUsersWithPermission(nodeURL, NodePermission.READ);
-      List<FolderServerUser> writeUsers = getUsersWithPermission(nodeURL, NodePermission.WRITE);
-      List<FolderServerGroup> readGroups = getGroupsWithPermission(nodeURL, NodePermission.READ);
-      List<FolderServerGroup> writeGroups = getGroupsWithPermission(nodeURL, NodePermission.WRITE);
+      List<FolderServerUser> readUsers = getUsersWithDirectPermission(nodeURL, NodePermission.READ);
+      List<FolderServerUser> writeUsers = getUsersWithDirectPermission(nodeURL, NodePermission.WRITE);
+      List<FolderServerGroup> readGroups = getGroupsWithDirectPermission(nodeURL, NodePermission.READ);
+      List<FolderServerGroup> writeGroups = getGroupsWithDirectPermission(nodeURL, NodePermission.WRITE);
       return buildPermissions(owner, readUsers, writeUsers, readGroups, writeGroups);
     } else {
       return null;
@@ -53,30 +52,30 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     return proxies.node().getNodeOwner(nodeURL);
   }
 
-  private List<FolderServerUser> getUsersWithPermission(String nodeURL, NodePermission permission) {
-    return proxies.permission().getUsersWithPermissionOnNode(nodeURL, permission);
+  private List<FolderServerUser> getUsersWithDirectPermission(String nodeURL, NodePermission permission) {
+    return proxies.permission().getUsersWithDirectPermissionOnNode(nodeURL, permission);
   }
 
-  private List<FolderServerGroup> getGroupsWithPermission(String nodeURL, NodePermission permission) {
-    return proxies.permission().getGroupsWithPermissionOnNode(nodeURL, permission);
+  private List<FolderServerGroup> getGroupsWithDirectPermission(String nodeURL, NodePermission permission) {
+    return proxies.permission().getGroupsWithDirectPermissionOnNode(nodeURL, permission);
   }
 
   @Override
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
-                                                 boolean nodeIsFolder) {
+                                                 FolderOrResource folderOrResource) {
 
-    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, nodeIsFolder);
+    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, folderOrResource);
     BackendCallResult bcr = prv.getCallResult();
     if (bcr.isError()) {
       return bcr;
     } else {
-      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, nodeIsFolder);
+      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, folderOrResource);
       CedarNodePermissions newPermissions = prv.getPermissions();
 
       String oldOwnerId = currentPermissions.getOwner().getId();
       String newOwnerId = newPermissions.getOwner().getId();
       if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
-        Neo4JUserSessionGroupOperations.updateNodeOwner(proxies.node(), nodeURL, newOwnerId, nodeIsFolder);
+        Neo4JUserSessionGroupOperations.updateNodeOwner(proxies.node(), nodeURL, newOwnerId, folderOrResource);
       }
 
       Set<NodePermissionUserPermissionPair> oldUserPermissions = new HashSet<>();
@@ -93,7 +92,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toRemoveUserPermissions.removeAll(newUserPermissions);
       if (!toRemoveUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeUserPermissions(proxies.permission(), nodeURL, toRemoveUserPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
@@ -101,7 +100,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toAddUserPermissions.removeAll(oldUserPermissions);
       if (!toAddUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addUserPermissions(proxies.permission(), nodeURL, toAddUserPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionGroupPermissionPair> oldGroupPermissions = new HashSet<>();
@@ -118,7 +117,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toRemoveGroupPermissions.removeAll(newGroupPermissions);
       if (!toRemoveGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeGroupPermissions(proxies.permission(), nodeURL, toRemoveGroupPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
 
       Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
@@ -126,7 +125,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       toAddGroupPermissions.removeAll(oldGroupPermissions);
       if (!toAddGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addGroupPermissions(proxies.permission(), nodeURL, toAddGroupPermissions,
-            nodeIsFolder);
+            folderOrResource);
       }
       return new BackendCallResult();
     }
@@ -214,4 +213,69 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   public Map<String, String> findAccessibleNodeIds() {
     return proxies.permission().findAccessibleNodeIds(getUserId());
   }
+
+  @Override
+  public CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL, FolderOrResource
+      folderOrResource) {
+    FolderServerNode node;
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      node = proxies.folder().findFolderById(nodeURL);
+    } else {
+      node = proxies.resource().findResourceById(nodeURL);
+    }
+    if (node != null) {
+      List<FolderServerUser> readUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.READ,
+          folderOrResource);
+      List<FolderServerUser> writeUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.WRITE,
+          folderOrResource);
+      List<FolderServerGroup> readGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.READ,
+          folderOrResource);
+      List<FolderServerGroup> writeGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.WRITE,
+          folderOrResource);
+      return buildMaterializedPermissions(nodeURL, readUsers, writeUsers, readGroups, writeGroups);
+    } else {
+      return null;
+    }
+  }
+
+  private CedarNodeMaterializedPermissions buildMaterializedPermissions(String id, List<FolderServerUser> readUsers,
+                                                                        List<FolderServerUser> writeUsers,
+                                                                        List<FolderServerGroup> readGroups,
+                                                                        List<FolderServerGroup> writeGroups) {
+    CedarNodeMaterializedPermissions permissions = new CedarNodeMaterializedPermissions(id);
+    if (readUsers != null) {
+      for (FolderServerUser user : readUsers) {
+        permissions.setUserPermission(user.getId(), NodePermission.READ);
+      }
+    }
+    if (writeUsers != null) {
+      for (FolderServerUser user : writeUsers) {
+        permissions.setUserPermission(user.getId(), NodePermission.WRITE);
+      }
+    }
+    if (readGroups != null) {
+      for (FolderServerGroup group : readGroups) {
+        permissions.setGroupPermission(group.getId(), NodePermission.READ);
+      }
+    }
+    if (writeGroups != null) {
+      for (FolderServerGroup group : writeGroups) {
+        permissions.setGroupPermission(group.getId(), NodePermission.WRITE);
+      }
+    }
+    return permissions;
+  }
+
+  private List<FolderServerUser> getUsersWithTransitivePermission(String nodeURL, NodePermission permission,
+                                                                  FolderOrResource
+                                                                      folderOrResource) {
+    return proxies.permission().getUsersWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
+  }
+
+  private List<FolderServerGroup> getGroupsWithTransitivePermission(String nodeURL, NodePermission permission,
+                                                                    FolderOrResource
+                                                                        folderOrResource) {
+    return proxies.permission().getGroupsWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
+  }
+
 }

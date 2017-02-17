@@ -17,6 +17,7 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_PREFIX = "info.";
 
   // Searchable fields
+  public static final String ES_DOCUMENT_CEDAR_ID = "cid";
   public static final String ES_RESOURCE_ID_FIELD = "@id";
   public static final String ES_RESOURCE_NAME_FIELD = "name";
   public static final String ES_RESOURCE_DESCRIPTION_FIELD = "description";
@@ -25,9 +26,9 @@ public final class ElasticsearchConstants {
   public static final String ES_TEMPLATEID_FIELD = "templateId";
 
   // Sortable fields
-  public static final String ES_RESOURCE_SORTABLE_NAME_FIELD = "name.raw";
-  public static final String ES_RESOURCE_SORTABLE_CREATEDONTS_FIELD = "createdOnTS";
-  public static final String ES_RESOURCE_SORTABLE_LASTUPDATEDONTS_FIELD = "lastUpdatedOnTS";
+  public static final String ES_RESOURCE_SORT_NAME_FIELD = "name";
+  public static final String ES_RESOURCE_SORT_CREATEDONTS_FIELD = "createdOnTS";
+  public static final String ES_RESOURCE_SORT_LASTUPDATEDONTS_FIELD = "lastUpdatedOnTS";
 
   // Fields used to check access permissions
   public static final String ES_RESOURCE_OWNER_FIELD = "ownedBy";

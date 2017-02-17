@@ -1,12 +1,16 @@
 package org.metadatacenter.config;
 
+import org.metadatacenter.model.search.IndexedDocumentType;
+
+import java.util.Map;
+
 public class ElasticsearchConfig {
 
-  private String cluster;
+  private String clusterName;
 
-  private String index;
+  private String indexName;
 
-  private String type;
+  private Map<IndexedDocumentType, String> types;
 
   private String host;
 
@@ -16,16 +20,16 @@ public class ElasticsearchConfig {
 
   private int scrollKeepAlive;
 
-  public String getCluster() {
-    return cluster;
+  public String getClusterName() {
+    return clusterName;
   }
 
-  public String getIndex() {
-    return index;
+  public String getIndexName() {
+    return indexName;
   }
 
-  public String getType() {
-    return type;
+  public Map<IndexedDocumentType, String> getTypes() {
+    return types;
   }
 
   public String getHost() {
@@ -42,5 +46,9 @@ public class ElasticsearchConfig {
 
   public int getScrollKeepAlive() {
     return scrollKeepAlive;
+  }
+
+  public String getType(IndexedDocumentType documentType) {
+    return types.get(documentType);
   }
 }

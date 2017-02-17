@@ -1,17 +1,14 @@
 package org.metadatacenter.server.neo4j.proxy;
 
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.PathUtil;
 
 public class Neo4JProxies {
 
   protected final Neo4jConfig config;
-  protected final String genericIdPrefix;
-  protected final String folderIdPrefix;
-  protected final String userIdPrefix;
-  protected final String groupIdPrefix;
   protected final PathUtil pathUtil;
+  protected final LinkedDataUtil linkedDataUtil;
 
   private Neo4JProxyAdmin adminProxy;
   private Neo4JProxyFolder folderProxy;
@@ -21,12 +18,9 @@ public class Neo4JProxies {
   private Neo4JProxyResource resourceProxy;
   private Neo4JProxyNode nodeProxy;
 
-  public Neo4JProxies(Neo4jConfig config, String genericIdPrefix, String userIdPrefix) {
+  public Neo4JProxies(Neo4jConfig config, LinkedDataUtil linkedDataUtil) {
     this.config = config;
-    this.genericIdPrefix = genericIdPrefix;
-    this.userIdPrefix = userIdPrefix;
-    this.folderIdPrefix = getNodeTypeFullPrefix(CedarNodeType.FOLDER);
-    this.groupIdPrefix = getNodeTypeFullPrefix(CedarNodeType.GROUP);
+    this.linkedDataUtil = linkedDataUtil;
     this.pathUtil = new Neo4JPathUtil(config);
 
     this.adminProxy = new Neo4JProxyAdmin(this);
@@ -36,10 +30,6 @@ public class Neo4JProxies {
     this.permissionProxy = new Neo4JProxyPermission(this);
     this.resourceProxy = new Neo4JProxyResource(this);
     this.nodeProxy = new Neo4JProxyNode(this);
-  }
-
-  public String getNodeTypeFullPrefix(CedarNodeType nodeType) {
-    return genericIdPrefix + nodeType.getPrefix() + "/";
   }
 
   public Neo4JProxyAdmin admin() {
@@ -70,11 +60,7 @@ public class Neo4JProxies {
     return nodeProxy;
   }
 
-  String getUserIdPrefix() {
-    return userIdPrefix;
-  }
-
-  String getGroupIdPrefix() {
-    return groupIdPrefix;
+  public LinkedDataUtil getLinkedDataUtil() {
+    return linkedDataUtil;
   }
 }

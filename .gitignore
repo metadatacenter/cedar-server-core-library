@@ -16,3 +16,6 @@ pom.xml.releaseBackup
 release.properties
 pom.xml.versionsBackup
 
+cedar-auth-operations-noauth/
+cedar-auth-operations-play/
+cedar-server-utils-play/

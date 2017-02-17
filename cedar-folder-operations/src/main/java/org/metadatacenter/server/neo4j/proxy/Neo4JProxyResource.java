@@ -126,13 +126,4 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return buildResource(resourceNode);
   }
 
-  String getResourceUUID(String resourceId, CedarNodeType nodeType) {
-    String prefix = proxies.getNodeTypeFullPrefix(nodeType);
-    if (resourceId != null && resourceId.startsWith(prefix)) {
-      return resourceId.substring(prefix.length());
-    } else {
-      return null;
-    }
-  }
-
 }
