@@ -1,23 +1,29 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class NodeIdResultList {
 
-  private List<String> ids;
+  private Map<String, String> elasticToCedar;
   private long totalCount;
 
   public NodeIdResultList() {
-    ids = new ArrayList<>();
+    elasticToCedar = new LinkedHashMap<>();
   }
 
-  public void addId(String id) {
-    ids.add(id);
+  public void addId(String elasticId, String cedarId) {
+    elasticToCedar.put(elasticId, cedarId);
   }
 
-  public List<String> getIds() {
-    return ids;
+  public Set<String> getElasticIds() {
+    return elasticToCedar.keySet();
+  }
+
+  public Collection<String> getCedarIds() {
+    return elasticToCedar.values();
   }
 
   public long getTotalCount() {

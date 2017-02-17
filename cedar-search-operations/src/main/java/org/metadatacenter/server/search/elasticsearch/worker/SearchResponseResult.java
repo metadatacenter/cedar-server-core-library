@@ -5,19 +5,18 @@ import org.elasticsearch.action.search.SearchResponse;
 public class SearchResponseResult {
 
   private SearchResponse response;
-  private long totalCount;
+  private NodeIdResultList resultList;
 
-  public SearchResponseResult(SearchResponse response, long totalCount) {
+  public SearchResponseResult(SearchResponse response, NodeIdResultList resultList) {
     this.response = response;
-    this.totalCount = totalCount;
+    this.resultList = resultList;
   }
 
   public SearchResponse getResponse() {
     return response;
   }
 
-  public long getTotalCount() {
-    return totalCount;
+  public NodeIdResultList getResultList() {
+    return resultList;
   }
-
 }

@@ -1,6 +1,5 @@
 package org.metadatacenter.server.search.elasticsearch.service;
 
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.config.CedarConfig;
@@ -20,7 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ContentSearchingService extends AbstractSearchingService {
 
@@ -59,20 +60,33 @@ public class ContentSearchingService extends AbstractSearchingService {
 
   private FolderServerNodeListResponse assembleResponse(SearchResponseResult searchResult, String query, List<String>
       resourceTypes, String templateId, List<String> sortList, int limit, int offset, String absoluteUrl) {
-    List<FolderServerNode> resources = new ArrayList<>();
+    Map<String, IndexingDocumentContent> cidToContentMap = new HashMap<>();
+
+    // Get the object from the result
     for (SearchHit hit : searchResult.getResponse().getHits()) {
       String hitJson = hit.sourceAsString();
       try {
         IndexingDocumentContent content = JsonMapper.MAPPER.readValue(hitJson, IndexingDocumentContent.class);
-        resources.add(content.getInfo());
+        //System.out.println("Stored:" + content.getCid());
+        cidToContentMap.put(content.getCid(), content);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
       }
     }
 
+    // Maintain the order of the first search results
+    List<FolderServerNode> resources = new ArrayList<>();
+    for(String id : searchResult.getResultList().getCedarIds()) {
+      //System.out.println("Read:" + id);
+      IndexingDocumentContent indexingDocumentContent = cidToContentMap.get(id);
+      if (indexingDocumentContent != null) {
+        resources.add(indexingDocumentContent.getInfo());
+      }
+    }
+
     FolderServerNodeListResponse response = new FolderServerNodeListResponse();
 
-    long total = searchResult.getTotalCount();
+    long total = searchResult.getResultList().getTotalCount();
 
     response.setTotalCount(total);
     response.setCurrentOffset(offset);

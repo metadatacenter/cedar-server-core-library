@@ -7,7 +7,12 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.support.ValuesSource;
+import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
@@ -19,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.*;
 
@@ -47,23 +53,25 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
-    log.info("Search query in Query DSL: " + searchRequest.internalBuilder());
+    log.info("Searching for parent documents: " + searchRequest.internalBuilder());
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
-    NodeIdResultList ids = new NodeIdResultList();
-    ids.setTotalCount(response.getHits().getTotalHits());
+    NodeIdResultList nodeIdResultList = new NodeIdResultList();
+    nodeIdResultList.setTotalCount(response.getHits().getTotalHits());
     for (SearchHit hit : response.getHits()) {
-      ids.addId(hit.getId());
+      Map<String, Object> sourceMap = hit.sourceAsMap();
+      nodeIdResultList.addId(hit.getId(), (String) sourceMap.get(ES_DOCUMENT_CEDAR_ID));
     }
 
-    return searchContentWithIds(ids);
+    return searchContentWithIds(nodeIdResultList);
   }
 
   // It uses the scroll API. It retrieves all results. No pagination and therefore no offset. Scrolling is not
   // intended for real time user requests, but rather for processing large amounts of data.
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
-  public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>
+  public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
+                                         List<String>
       sortList, String templateId, int limit) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, sortList, templateId);
@@ -78,17 +86,18 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
 
-    NodeIdResultList ids = new NodeIdResultList();
-    ids.setTotalCount(response.getHits().getTotalHits());
+    NodeIdResultList nodeIdResultList = new NodeIdResultList();
+    nodeIdResultList.setTotalCount(response.getHits().getTotalHits());
     while (response.getHits().hits().length != 0 || response.getHits().hits().length >= limit) {
       for (SearchHit hit : response.getHits().hits()) {
-        ids.addId(hit.getId());
+        Map<String, Object> sourceMap = hit.sourceAsMap();
+        nodeIdResultList.addId(hit.getId(), (String) sourceMap.get(ES_DOCUMENT_CEDAR_ID));
       }
       //next scroll
       response = client.prepareSearchScroll(response.getScrollId()).setScroll(timeout)
           .execute().actionGet();
     }
-    return searchContentWithIds(ids);
+    return searchContentWithIds(nodeIdResultList);
   }
 
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String>
@@ -140,30 +149,41 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Sort by field
     // Sort is not supported in parent-child queries, only with score function
-    /*if (sortList != null && sortList.size() > 0) {
+    QueryBuilder contentChildScoreQuery = null;
+    // The name is stored on the node, so we can sort by that
+    if (sortList != null && sortList.size() > 0) {
       for (String s : sortList) {
         SortOrder sortOrder = SortOrder.ASC;
         if (s.startsWith(ES_SORT_DESC_PREFIX)) {
           sortOrder = SortOrder.DESC;
           s = s.substring(1);
         }
-        String sortField = ES_RESOURCE_PREFIX + (s.compareTo(ES_RESOURCE_NAME_FIELD) == 0 ?
-            ES_RESOURCE_SORTABLE_NAME_FIELD : s);
-        searchRequestBuilder.addSort(sortField, sortOrder);
+        if (ES_RESOURCE_SORT_NAME_FIELD.equals(s)) {
+          searchRequestBuilder.addSort("name", sortOrder);
+        } else if (ES_RESOURCE_SORT_LASTUPDATEDONTS_FIELD.equals(s)) {
+          searchRequestBuilder.addSort("_score", sortOrder);
+          QueryBuilder scoreQuery = QueryBuilders.functionScoreQuery(ScoreFunctionBuilders.scriptFunction(new Script("doc['info.lastUpdatedOnTS'].value")));
+          contentChildScoreQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
+              scoreQuery
+          ).scoreMode("max");
+          mainQuery.must(contentChildScoreQuery);
+        } else if (ES_RESOURCE_SORT_CREATEDONTS_FIELD.equals(s)) {
+          searchRequestBuilder.addSort("_score", sortOrder);
+        }
       }
-    }*/
+    }
     return searchRequestBuilder;
   }
 
-  private SearchResponseResult searchContentWithIds(NodeIdResultList ids) {
-    QueryBuilder withParentIds = QueryBuilders.termsQuery("_parent", ids.getIds());
+  private SearchResponseResult searchContentWithIds(NodeIdResultList nodeIdResultList) {
+    QueryBuilder withParentIds = QueryBuilders.termsQuery("_parent", nodeIdResultList.getElasticIds());
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.CONTENT.getValue());
     searchRequestBuilder.setQuery(withParentIds);
 
-    log.info("Search query in Query DSL: " + searchRequestBuilder.internalBuilder());
+    log.info("Searching for content documents: " + searchRequestBuilder.internalBuilder());
 
-    return new SearchResponseResult(searchRequestBuilder.execute().actionGet(), ids.getTotalCount());
+    return new SearchResponseResult(searchRequestBuilder.execute().actionGet(), nodeIdResultList);
   }
 
 }
