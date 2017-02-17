@@ -69,4 +69,8 @@ public class ElasticsearchServiceFactory {
   public NodeSearchingService nodeSearchingService() {
     return new NodeSearchingService(instance.cedarConfig, instance.managementService.getClient());
   }
+
+  public GroupPermissionSearchingService groupPermissionSearchingService() {
+    return new GroupPermissionSearchingService(instance.cedarConfig, instance.managementService.getClient());
+  }
 }

@@ -1,8 +1,11 @@
 package org.metadatacenter.server.search.elasticsearch.document;
 
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.search.IndexedDocumentId;
 
-public class IndexingDocumentNode {
+public class IndexedDocumentNode {
+
+  private String id;
 
   private String cid;
 
@@ -10,14 +13,11 @@ public class IndexingDocumentNode {
 
   private String nodeType;
 
-  public IndexingDocumentNode(String cid, String name, String nodeType) {
+  public IndexedDocumentNode(String id, String cid, String name, String nodeType) {
+    this.id = id;
     this.cid = cid;
     this.name = name;
     this.nodeType = nodeType;
-  }
-
-  public String getCid() {
-    return cid;
   }
 
   public String getName() {
@@ -28,4 +28,7 @@ public class IndexingDocumentNode {
     return CedarNodeType.forValue(nodeType);
   }
 
+  public IndexedDocumentId buildDocumentId() {
+    return new IndexedDocumentId(id);
+  }
 }

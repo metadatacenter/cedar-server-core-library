@@ -4,11 +4,9 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
@@ -16,11 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static org.metadatacenter.constant.ElasticsearchConstants.*;
 
 public class ElasticsearchSearchingWorker {
 
@@ -43,11 +38,15 @@ public class ElasticsearchSearchingWorker {
 
   // Retrieve all values for a fieldName. Dot notation is allowed (e.g. info.@id)
   public List<String> findAllValuesForField(String fieldName) throws CedarProcessingException {
-    List<String> fieldValues = new ArrayList<>();
     QueryBuilder qb = QueryBuilders.matchAllQuery();
+    return findAllValuesForField(fieldName, qb);
+  }
+
+  public List<String> findAllValuesForField(String fieldName, QueryBuilder queryBuilder) {
+    List<String> fieldValues = new ArrayList<>();
     SearchRequestBuilder searchRequest = client.prepareSearch(indexName).setTypes(documentType)
         .setFetchSource(new String[]{fieldName}, null)
-        .setScroll(keepAlive).setQuery(qb).setSize(config.getSize());
+        .setScroll(keepAlive).setQuery(queryBuilder).setSize(config.getSize());
     //System.out.println("Search query in Query DSL: " + searchRequest.internalBuilder());
     SearchResponse response = searchRequest.execute().actionGet();
     // Scroll until no hits are returned
@@ -70,6 +69,4 @@ public class ElasticsearchSearchingWorker {
     }
     return fieldValues;
   }
-
-
 }

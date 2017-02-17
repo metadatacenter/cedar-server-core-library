@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.elasticsearch.client.Client;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentNode;
@@ -25,9 +26,9 @@ public class NodeIndexingService extends AbstractIndexingService {
         IndexedDocumentType.NODE);
   }
 
-  public IndexedDocumentId indexDocument(String resourceId, String name) throws CedarProcessingException {
+  public IndexedDocumentId indexDocument(String resourceId, String name, CedarNodeType nodeType) throws CedarProcessingException {
     log.debug("Indexing node (id = " + resourceId + ")");
-    IndexingDocumentNode ir = new IndexingDocumentNode(resourceId, StringUtil.comparisonValue(name));
+    IndexingDocumentNode ir = new IndexingDocumentNode(resourceId, StringUtil.comparisonValue(name), nodeType.getValue());
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource, null);
   }

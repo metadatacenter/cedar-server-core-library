@@ -1,5 +1,8 @@
 package org.metadatacenter.server.search;
 
+/**
+ * Wrap an elasticsearch internal id
+ */
 public class IndexedDocumentId {
 
   private String id;
