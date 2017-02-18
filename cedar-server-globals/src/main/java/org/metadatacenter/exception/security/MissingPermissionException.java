@@ -9,6 +9,6 @@ public class MissingPermissionException extends CedarAccessException {
     super("Missing permission: '" + permissionName + "'.",
         CedarErrorKey.PERMISSION_MISSING,
         CedarSuggestedAction.REQUEST_ROLE);
-    errorPack.setParameter("permissionName", permissionName);
+    errorPack.parameter("permissionName", permissionName);
   }
 }

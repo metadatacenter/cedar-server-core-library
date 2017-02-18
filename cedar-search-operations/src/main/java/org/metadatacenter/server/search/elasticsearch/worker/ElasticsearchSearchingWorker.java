@@ -47,7 +47,6 @@ public class ElasticsearchSearchingWorker {
     SearchRequestBuilder searchRequest = client.prepareSearch(indexName).setTypes(documentType)
         .setFetchSource(new String[]{fieldName}, null)
         .setScroll(keepAlive).setQuery(queryBuilder).setSize(config.getSize());
-    //System.out.println("Search query in Query DSL: " + searchRequest.internalBuilder());
     SearchResponse response = searchRequest.execute().actionGet();
     // Scroll until no hits are returned
     while (true) {

@@ -25,7 +25,7 @@ public class CedarErrorPack {
   public CedarErrorPack(CedarErrorPack other) {
     this();
     if (other != null) {
-      this.status = other.getStatus();
+      status = other.getStatus();
       errorType = other.getErrorType();
       errorKey = other.getErrorKey();
       errorReasonKey = other.getErrorReasonKey();
@@ -37,71 +37,110 @@ public class CedarErrorPack {
     }
   }
 
+  public void merge(CedarErrorPack other) {
+    if (other.status != null) {
+      status = other.getStatus();
+    }
+    if (other.errorType != null) {
+      errorType = other.getErrorType();
+    }
+    if (other.errorKey != null) {
+      errorKey = other.getErrorKey();
+    }
+    if (other.errorReasonKey != null) {
+      errorReasonKey = other.getErrorReasonKey();
+    }
+    if (other.message != null) {
+      message = other.getMessage();
+    }
+    if (!other.parameters.isEmpty()) {
+      parameters.clear();
+      parameters.putAll(other.getParameters());
+    }
+    if (other.suggestedAction != null) {
+      suggestedAction = other.getSuggestedAction();
+    }
+    if (other.sourceException != null) {
+      sourceException = other.getSourceException();
+    }
+    if (other.operation != null) {
+      operation = other.getOperation();
+    }
+  }
+
   public Response.Status getStatus() {
     return status;
   }
 
-  public void setStatus(Response.Status status) {
+  public CedarErrorPack status(Response.Status status) {
     this.status = status;
+    return this;
   }
 
   public CedarErrorType getErrorType() {
     return errorType;
   }
 
-  public void setErrorType(CedarErrorType errorType) {
+  public CedarErrorPack errorType(CedarErrorType errorType) {
     this.errorType = errorType;
+    return this;
   }
 
   public CedarErrorKey getErrorKey() {
     return errorKey;
   }
 
-  public void setErrorKey(CedarErrorKey errorKey) {
+  public CedarErrorPack errorKey(CedarErrorKey errorKey) {
     this.errorKey = errorKey;
+    return this;
   }
 
   public CedarErrorReasonKey getErrorReasonKey() {
     return errorReasonKey;
   }
 
-  public void setErrorReasonKey(CedarErrorReasonKey errorReasonKey) {
+  public CedarErrorPack errorReasonKey(CedarErrorReasonKey errorReasonKey) {
     this.errorReasonKey = errorReasonKey;
+    return this;
   }
 
   public String getMessage() {
     return message;
   }
 
-  public void setMessage(String message) {
+  public CedarErrorPack message(String message) {
     this.message = message;
+    return this;
   }
 
   public Map<String, Object> getParameters() {
     return parameters;
   }
 
-  public void setParameter(String name, Object value) {
+  public CedarErrorPack parameter(String name, Object value) {
     this.parameters.put(name, value);
+    return this;
   }
 
   public CedarSuggestedAction getSuggestedAction() {
     return suggestedAction;
   }
 
-  public void setSuggestedAction(CedarSuggestedAction suggestedAction) {
+  public CedarErrorPack suggestedAction(CedarSuggestedAction suggestedAction) {
     this.suggestedAction = suggestedAction;
+    return this;
   }
 
   public CedarErrorPackException getSourceException() {
     return sourceException;
   }
 
-  public void setSourceException(Exception sourceException) {
+  public CedarErrorPack sourceException(Exception sourceException) {
     this.sourceException = new CedarErrorPackException(sourceException);
+    return this;
   }
 
-  public void setSourceException(CedarErrorPackException sourceException) {
+  public void sourceException(CedarErrorPackException sourceException) {
     this.sourceException = sourceException;
   }
 
@@ -109,7 +148,9 @@ public class CedarErrorPack {
     return operation;
   }
 
-  public void setOperation(CedarOperationDescriptor operation) {
+  public CedarErrorPack operation(CedarOperationDescriptor operation) {
     this.operation = operation;
+    return this;
   }
+
 }

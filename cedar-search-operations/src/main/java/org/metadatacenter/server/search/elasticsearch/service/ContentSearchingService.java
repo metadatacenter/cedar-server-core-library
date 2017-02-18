@@ -67,7 +67,6 @@ public class ContentSearchingService extends AbstractSearchingService {
       String hitJson = hit.sourceAsString();
       try {
         IndexingDocumentContent content = JsonMapper.MAPPER.readValue(hitJson, IndexingDocumentContent.class);
-        //System.out.println("Stored:" + content.getCid());
         cidToContentMap.put(content.getCid(), content);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
@@ -77,7 +76,6 @@ public class ContentSearchingService extends AbstractSearchingService {
     // Maintain the order of the first search results
     List<FolderServerNode> resources = new ArrayList<>();
     for(String id : searchResult.getResultList().getCedarIds()) {
-      //System.out.println("Read:" + id);
       IndexingDocumentContent indexingDocumentContent = cidToContentMap.get(id);
       if (indexingDocumentContent != null) {
         resources.add(indexingDocumentContent.getInfo());

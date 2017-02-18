@@ -54,7 +54,6 @@ public abstract class AbstractNeo4JProxy {
         statements.add(statement);
       }
     }
-    //System.out.println();
 
     Map<String, Object> body = new HashMap<>();
     body.put("statements", statements);
@@ -88,7 +87,6 @@ public abstract class AbstractNeo4JProxy {
 
     } catch (IOException ex) {
       log.error("Error while reading user details from Keycloak", ex);
-      ex.printStackTrace();
     }
     return null;
   }

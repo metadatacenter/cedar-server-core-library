@@ -39,7 +39,6 @@ public class IndexUtils {
 
   protected static final Logger log = LoggerFactory.getLogger(IndexUtils.class);
 
-
   private final String FIELD_SUFFIX = "_field";
 
   private String folderBase;
@@ -93,7 +92,7 @@ public class IndexUtils {
           try {
             Thread.sleep(delayAttempts);
           } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("Error while waiting", e);
           }
         }
       }

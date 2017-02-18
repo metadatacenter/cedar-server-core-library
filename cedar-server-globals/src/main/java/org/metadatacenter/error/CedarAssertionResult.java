@@ -11,7 +11,7 @@ public class CedarAssertionResult {
 
   public CedarAssertionResult(String message) {
     this.errorPack = new CedarErrorPack();
-    errorPack.setMessage(message);
+    errorPack.message(message);
   }
 
   public CedarAssertionResult(BackendCallResult backendCallResult) {
@@ -23,46 +23,50 @@ public class CedarAssertionResult {
   }
 
   public CedarAssertionResult internalServerError() {
-    errorPack.setStatus(Response.Status.INTERNAL_SERVER_ERROR);
+    errorPack.status(Response.Status.INTERNAL_SERVER_ERROR);
     return this;
   }
 
   public CedarAssertionResult forbidden() {
-    errorPack.setStatus(Response.Status.FORBIDDEN);
+    errorPack.status(Response.Status.FORBIDDEN);
     return this;
   }
 
   public CedarAssertionResult unauthorized() {
-    errorPack.setStatus(Response.Status.UNAUTHORIZED);
+    errorPack.status(Response.Status.UNAUTHORIZED);
     return this;
   }
 
   public CedarAssertionResult notFound() {
-    errorPack.setStatus(Response.Status.NOT_FOUND);
+    errorPack.status(Response.Status.NOT_FOUND);
     return this;
   }
 
   public CedarAssertionResult badRequest() {
-    errorPack.setStatus(Response.Status.BAD_REQUEST);
+    errorPack.status(Response.Status.BAD_REQUEST);
     return this;
   }
 
   public CedarAssertionResult parameter(String name, Object value) {
-    this.errorPack.setParameter(name, value);
+    this.errorPack.parameter(name, value);
     return this;
   }
 
   public CedarAssertionResult message(String message) {
-    this.errorPack.setMessage(message);
+    this.errorPack.message(message);
     return this;
   }
 
   public CedarAssertionResult status(Response.Status status) {
-    this.errorPack.setStatus(status);
+    this.errorPack.status(status);
     return this;
   }
 
   public CedarErrorPack getErrorPack() {
     return errorPack;
+  }
+
+  public void mergeErrorPack(CedarErrorPack errorPack) {
+    this.errorPack.merge(errorPack);
   }
 }

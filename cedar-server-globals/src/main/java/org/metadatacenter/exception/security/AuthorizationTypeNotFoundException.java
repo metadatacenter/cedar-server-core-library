@@ -9,6 +9,6 @@ public class AuthorizationTypeNotFoundException extends CedarAccessException {
 
   public AuthorizationTypeNotFoundException() {
     super("Authorization type not found.", CedarErrorKey.AUTHORIZATION_TYPE_NOT_FOUND, CedarSuggestedAction.LOGOUT);
-    errorPack.setStatus(Response.Status.FORBIDDEN);
+    errorPack.status(Response.Status.FORBIDDEN);
   }
 }

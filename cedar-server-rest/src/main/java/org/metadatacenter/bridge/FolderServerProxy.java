@@ -25,8 +25,6 @@ public class FolderServerProxy {
         HttpResponse proxyResponse = ProxyUtil.proxyGet(url, context);
         int statusCode = proxyResponse.getStatusLine().getStatusCode();
         HttpEntity entity = proxyResponse.getEntity();
-        System.out.println(statusCode);
-        System.out.println(entity);
         if (entity != null) {
           if (HttpStatus.SC_OK == statusCode) {
             FolderServerResource node = null;

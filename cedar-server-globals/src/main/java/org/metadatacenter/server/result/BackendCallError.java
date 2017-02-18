@@ -9,36 +9,36 @@ public class BackendCallError {
 
   BackendCallError(CedarErrorType errorType) {
     errorPack = new CedarErrorPack();
-    errorPack.setErrorType(errorType);
+    errorPack.errorType(errorType);
   }
 
   public BackendCallError message(String message) {
-    errorPack.setMessage(message);
+    errorPack.message(message);
     return this;
   }
 
   public BackendCallError parameter(String name, Object value) {
-    errorPack.setParameter(name, value);
+    errorPack.parameter(name, value);
     return this;
   }
 
   public BackendCallError suggestedAction(CedarSuggestedAction suggestedAction) {
-    errorPack.setSuggestedAction(suggestedAction);
+    errorPack.suggestedAction(suggestedAction);
     return this;
   }
 
   public BackendCallError errorKey(CedarErrorKey errorKey) {
-    errorPack.setErrorKey(errorKey);
+    errorPack.errorKey(errorKey);
     return this;
   }
 
   public BackendCallError errorReasonKey(CedarErrorReasonKey errorReasonKey) {
-    errorPack.setErrorReasonKey(errorReasonKey);
+    errorPack.errorReasonKey(errorReasonKey);
     return this;
   }
 
   public BackendCallError operation(CedarOperationDescriptor operation) {
-    errorPack.setOperation(operation);
+    errorPack.operation(operation);
     return this;
   }
 

@@ -15,22 +15,22 @@ public abstract class CedarException extends Exception {
   public CedarException(String message, Exception sourceException) {
     super(message, sourceException);
     errorPack = new CedarErrorPack();
-    errorPack.setMessage(message);
+    errorPack.message(message);
     if (sourceException != null) {
-      errorPack.setSourceException(sourceException);
+      errorPack.sourceException(sourceException);
     } else {
-      errorPack.setSourceException(new CedarHelperException());
+      errorPack.sourceException(new CedarHelperException());
     }
   }
 
   public CedarException(String message, CedarErrorPackException errorPackException) {
     super(message);
     errorPack = new CedarErrorPack();
-    errorPack.setMessage(message);
+    errorPack.message(message);
     if (errorPackException != null) {
-      errorPack.setSourceException(errorPackException);
+      errorPack.sourceException(errorPackException);
     } else {
-      errorPack.setSourceException(new CedarHelperException());
+      errorPack.sourceException(new CedarHelperException());
     }
   }
 
@@ -52,17 +52,17 @@ public abstract class CedarException extends Exception {
   }
 
   public CedarException errorKey(CedarErrorKey errorKey) {
-    errorPack.setErrorKey(errorKey);
+    errorPack.errorKey(errorKey);
     return this;
   }
 
   public CedarException errorReasonKey(CedarErrorReasonKey errorReasonKey) {
-    errorPack.setErrorReasonKey(errorReasonKey);
+    errorPack.errorReasonKey(errorReasonKey);
     return this;
   }
 
   public CedarException parameter(String name, Object value) {
-    errorPack.setParameter(name, value);
+    errorPack.parameter(name, value);
     return this;
   }
 }

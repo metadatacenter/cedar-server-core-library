@@ -118,13 +118,9 @@ public class UserDaoMongoDB implements GenericUserDao {
       if (!v.isMissingNode()) {
         ((ObjectNode) userNode).set(k, JsonMapper.MAPPER.valueToTree(modificationsMap.get(k)));
       } else {
-        System.out.println("Matching missing node:" + k);
         return false;
       }
-      //System.out.println(k);
-      //System.out.println(modificationsMap.get(k));
     }
-    //System.out.println(userNode);
     CedarUser modifiedUser = null;
     try {
       modifiedUser = JsonMapper.MAPPER.convertValue(userNode, CedarUser.class);

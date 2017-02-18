@@ -32,7 +32,7 @@ public class LoggedInAssertion implements CedarAssertion {
     CedarAssertionResult car = new CedarAssertionResult("You need to provide valid authorization data to " +
         "execute REST calls")
         .unauthorized();
-    car.getErrorPack().setSourceException(new CedarHelperException());
+    car.getErrorPack().sourceException(new CedarHelperException());
     return car;
   }
 

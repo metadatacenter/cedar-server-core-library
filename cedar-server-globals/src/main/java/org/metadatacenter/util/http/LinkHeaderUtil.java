@@ -14,8 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class LinkHeaderUtil {
+
+  private static final Logger log = LoggerFactory.getLogger(LinkHeaderUtil.class);
 
   private LinkHeaderUtil() {
   }
@@ -90,7 +94,7 @@ public final class LinkHeaderUtil {
       ub.setCharset(StandardCharsets.UTF_8);
       uri = ub.build();
     } catch (URISyntaxException e) {
-      e.printStackTrace();
+      log.error("There was an error while creating page link", e);
     }
     return uri;
   }
