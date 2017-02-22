@@ -58,7 +58,7 @@ public class IndexUtils {
   public IndexUtils(CedarConfig cedarConfig) {
     this.folderBase = cedarConfig.getServers().getFolder().getBase();
     this.templateBase = cedarConfig.getServers().getTemplate().getBase();
-    this.limit = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getLimitIndexRegeneration();
+    this.limit = cedarConfig.getFolderRESTAPI().getPagination().getMaxPageSize();
     this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
     this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
   }

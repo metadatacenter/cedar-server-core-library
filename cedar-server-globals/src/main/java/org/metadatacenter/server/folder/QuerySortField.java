@@ -1,15 +1,15 @@
-package org.metadatacenter.server.neo4j;
+package org.metadatacenter.server.folder;
 
-public class FolderContentSortField {
+public class QuerySortField {
 
   private final String name;
   private final String fieldName;
-  private final boolean textual;
+  private final QuerySortFieldType type;
 
-  public FolderContentSortField(String name, String fieldName, boolean textual) {
+  public QuerySortField(String name, String fieldName, QuerySortFieldType type) {
     this.name = name;
     this.fieldName = fieldName;
-    this.textual = textual;
+    this.type = type;
   }
 
   public String getName() {
@@ -21,6 +21,6 @@ public class FolderContentSortField {
   }
 
   public boolean isTextual() {
-    return textual;
+    return QuerySortFieldType.TEXTUAL == type;
   }
 }

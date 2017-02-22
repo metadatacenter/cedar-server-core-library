@@ -51,11 +51,11 @@ public class CedarConfig extends Configuration {
   @JsonProperty("importExport")
   private ImportExportConfig importExportConfig;
 
+  @JsonProperty("folderRESTAPI")
+  private FolderRESTAPI folderRESTAPI;
+
   @JsonProperty("templateRESTAPI")
   private TemplateRESTAPI templateRESTAPI;
-
-  @JsonProperty("templateRESTAPISummaries")
-  private TemplateRESTAPISummaries templateRESTAPISummaries;
 
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
@@ -174,12 +174,12 @@ public class CedarConfig extends Configuration {
     return importExportConfig;
   }
 
-  public TemplateRESTAPI getTemplateRESTAPI() {
-    return templateRESTAPI;
+  public FolderRESTAPI getFolderRESTAPI() {
+    return folderRESTAPI;
   }
 
-  public TemplateRESTAPISummaries getTemplateRESTAPISummaries() {
-    return templateRESTAPISummaries;
+  public TemplateRESTAPI getTemplateRESTAPI() {
+    return templateRESTAPI;
   }
 
   public SubmissionConfig getSubmissionConfig() { return submissionConfig; }

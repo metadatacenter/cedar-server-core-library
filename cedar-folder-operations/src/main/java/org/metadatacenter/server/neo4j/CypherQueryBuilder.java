@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.model.FolderOrResource;
+import org.metadatacenter.server.folder.QuerySortOptions;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import java.util.List;
@@ -232,12 +233,12 @@ public class CypherQueryBuilder {
   }
 
   private static String getCaseInsensitiveSortExpression(String nodeAlias, String fieldName) {
-    if (FolderContentSortOptions.isTextual(fieldName)) {
+    if (QuerySortOptions.isTextual(fieldName)) {
       return new StringBuilder().append("LOWER(").append(nodeAlias).append(".")
-          .append(FolderContentSortOptions.getFieldName(fieldName)).append(")").toString();
+          .append(QuerySortOptions.getFieldName(fieldName)).append(")").toString();
     } else {
       return new StringBuilder().append(nodeAlias).append(".")
-          .append(FolderContentSortOptions.getFieldName(fieldName)).toString();
+          .append(QuerySortOptions.getFieldName(fieldName)).toString();
     }
   }
 

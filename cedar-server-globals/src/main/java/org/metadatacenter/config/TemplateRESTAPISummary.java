@@ -2,7 +2,7 @@ package org.metadatacenter.config;
 
 import java.util.List;
 
-public class TemplateRESTAPISummary extends ServerConfig {
+public class TemplateRESTAPISummary {
 
   private List<String> fields;
 
