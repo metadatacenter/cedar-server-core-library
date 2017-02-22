@@ -153,4 +153,8 @@ public class CedarErrorPack {
     return this;
   }
 
+  public void resetSourceException() {
+    this.sourceException = null;
+  }
+
 }

@@ -8,13 +8,15 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class CedarExceptionMapper implements ExceptionMapper<Exception> {
+public class CedarExceptionMapper extends AbstractExceptionMapper implements ExceptionMapper<Exception> {
 
   public Response toResponse(Exception exception) {
-    CedarErrorPack cep = new CedarErrorPack();
-    cep.sourceException(exception);
+    CedarErrorPack errorPack = new CedarErrorPack();
+    if (!hideExceptionConditionally(errorPack)) {
+      errorPack.sourceException(exception);
+    }
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-        .entity(cep)
+        .entity(errorPack)
         .type(MediaType.APPLICATION_JSON)
         .build();
   }

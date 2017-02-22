@@ -8,7 +8,8 @@ import javax.ws.rs.core.Response;
 public class AuthorizationTypeNotFoundException extends CedarAccessException {
 
   public AuthorizationTypeNotFoundException() {
-    super("Authorization type not found.", CedarErrorKey.AUTHORIZATION_TYPE_NOT_FOUND, CedarSuggestedAction.LOGOUT);
+    super("Authorization not found.", CedarErrorKey.AUTHORIZATION_TYPE_NOT_FOUND, CedarSuggestedAction
+        .PROVIDE_AUTHORIZATION_HEADER);
     errorPack.status(Response.Status.FORBIDDEN);
   }
 }

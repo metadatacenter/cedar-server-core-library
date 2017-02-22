@@ -79,7 +79,8 @@ public abstract class AbstractNeo4JProxy {
 
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
-      if (statusCode == HTTP_OK) {
+      // TODO: Use a constant here: HTTP_OK
+      if (statusCode == 200) {
         return JsonMapper.MAPPER.readTree(responseAsString);
       } else {
         return null;
