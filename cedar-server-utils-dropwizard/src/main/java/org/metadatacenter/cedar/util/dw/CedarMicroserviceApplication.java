@@ -134,9 +134,16 @@ public abstract class CedarMicroserviceApplication<T extends Configuration> exte
     final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
 
     // Configure CORS parameters
-    cors.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
-    cors.setInitParameter(ALLOWED_HEADERS_PARAM, StringUtils.join(HTTP_HEADERS, ","));
-    cors.setInitParameter(ALLOWED_METHODS_PARAM, StringUtils.join(HTTP_METHODS, ","));
+    String httpOrigins = "*";
+    String httpHeaders = StringUtils.join(HTTP_HEADERS, ",");
+    String httpMethods = StringUtils.join(HTTP_METHODS, ",");
+    log.info("Setting up CORS...");
+    log.info(ALLOWED_ORIGINS_PARAM + ":" + httpOrigins);
+    log.info(ALLOWED_HEADERS_PARAM + ":" + httpHeaders);
+    log.info(ALLOWED_METHODS_PARAM + ":" + httpMethods);
+    cors.setInitParameter(ALLOWED_ORIGINS_PARAM, httpOrigins);
+    cors.setInitParameter(ALLOWED_HEADERS_PARAM, httpHeaders);
+    cors.setInitParameter(ALLOWED_METHODS_PARAM, httpMethods);
     // Add URL mapping
     cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
   }
