@@ -2,12 +2,9 @@ package org.metadatacenter.util.http;
 
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.config.PaginationConfig;
-import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.folder.QuerySortOptions;
-import org.metadatacenter.util.CedarNodeTypeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,17 +17,51 @@ public class PagedSortedQuery extends PagedQuery {
 
   private List<String> sortList;
 
-  public PagedSortedQuery(PaginationConfig config, Optional<String> sortInput,
-                          Optional<Integer> limitInput, Optional<Integer> offsetInput) {
-    super(config, limitInput, offsetInput);
-    this.sortInput = sortInput;
-
+  public PagedSortedQuery(PaginationConfig config) {
+    super(config);
     sortList = new ArrayList<>();
   }
 
-  public void validate() throws CedarException {
-    super.validate();
+  public PagedSortedQuery sort(Optional<String> sortInput) {
+    this.sortInput = sortInput;
+    return this;
+  }
 
+  @Override
+  public PagedSortedQuery limit(Optional<Integer> limitInput) {
+    super.limit(limitInput);
+    return this;
+  }
+
+  @Override
+  public PagedSortedQuery offset(Optional<Integer> offsetInput) {
+    super.offset(offsetInput);
+    return this;
+  }
+
+  @Override
+  public void validate() throws CedarException {
+    validateLimit();
+    validateOffset();
+    validateSorting();
+  }
+
+  public List<String> getSortList() {
+    return sortList;
+  }
+
+  public String getSortListAsString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < sortList.size(); i++) {
+      sb.append(sortList.get(i));
+      if (i != sortList.size() - 1) {
+        sb.append(",");
+      }
+    }
+    return sb.toString();
+  }
+
+  protected void validateSorting() throws CedarException {
     String sortString;
     if (sortInput.isPresent()) {
       sortString = sortInput.get();
@@ -55,21 +86,6 @@ public class PagedSortedQuery extends PagedQuery {
             .parameter("allowedSort", QuerySortOptions.getKnownFieldNames());
       }
     }
-
   }
 
-  public List<String> getSortList() {
-    return sortList;
-  }
-
-  public String getSortListAsString() {
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < sortList.size(); i++) {
-      sb.append(sortList.get(i));
-      if (i != sortList.size() - 1) {
-        sb.append(",");
-      }
-    }
-    return sb.toString();
-  }
 }

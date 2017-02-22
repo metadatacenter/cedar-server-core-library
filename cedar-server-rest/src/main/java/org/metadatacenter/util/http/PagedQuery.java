@@ -16,13 +16,34 @@ public class PagedQuery {
   private int offset;
 
 
-  public PagedQuery(PaginationConfig config, Optional<Integer> limitInput, Optional<Integer> offsetInput) {
+  public PagedQuery(PaginationConfig config) {
     this.config = config;
+  }
+
+  public PagedQuery limit(Optional<Integer> limitInput) {
     this.limitInput = limitInput;
+    return this;
+  }
+
+  public PagedQuery offset(Optional<Integer> offsetInput) {
     this.offsetInput = offsetInput;
+    return this;
   }
 
   public void validate() throws CedarException {
+    validateLimit();
+    validateOffset();
+  }
+
+  public int getLimit() {
+    return limit;
+  }
+
+  public int getOffset() {
+    return offset;
+  }
+
+  protected void validateLimit() throws CedarException {
     int limitDefault = config.getDefaultPageSize();
     int limitMax = config.getMaxPageSize();
     limit = limitDefault;
@@ -36,7 +57,9 @@ public class PagedQuery {
             .parameter("limit", limit);
       }
     }
+  }
 
+  protected void validateOffset() throws CedarException {
     offset = 0;
     if (offsetInput.isPresent()) {
       if (offsetInput.get() < 0) {
@@ -47,11 +70,5 @@ public class PagedQuery {
     }
   }
 
-  public int getLimit() {
-    return limit;
-  }
 
-  public int getOffset() {
-    return offset;
-  }
 }
