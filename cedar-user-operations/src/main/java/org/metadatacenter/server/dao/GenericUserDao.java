@@ -2,6 +2,7 @@ package org.metadatacenter.server.dao;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import javax.management.InstanceNotFoundException;
@@ -16,6 +17,5 @@ public interface GenericUserDao {
 
   @NonNull List<CedarUser> findAll() throws IOException;
 
-  @NonNull CedarUser update(@NonNull String userId, JsonNode modification) throws IOException,
-      InstanceNotFoundException;
+  @NonNull BackendCallResult<CedarUser> update(@NonNull String userId, JsonNode modification) throws IOException;
 }

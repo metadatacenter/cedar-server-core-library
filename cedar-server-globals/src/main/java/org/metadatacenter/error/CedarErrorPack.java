@@ -15,6 +15,7 @@ public class CedarErrorPack {
   private String message;
   private final Map<String, Object> parameters;
   private CedarSuggestedAction suggestedAction = CedarSuggestedAction.NONE;
+  private Exception originalException;
   private CedarErrorPackException sourceException;
   private CedarOperationDescriptor operation;
 
@@ -32,6 +33,7 @@ public class CedarErrorPack {
       message = other.getMessage();
       parameters.putAll(other.getParameters());
       suggestedAction = other.getSuggestedAction();
+      originalException = other.getOriginalException();
       sourceException = other.getSourceException();
       operation = other.getOperation();
     }
@@ -59,6 +61,9 @@ public class CedarErrorPack {
     }
     if (other.suggestedAction != null) {
       suggestedAction = other.getSuggestedAction();
+    }
+    if (other.originalException != null) {
+      originalException = other.getOriginalException();
     }
     if (other.sourceException != null) {
       sourceException = other.getSourceException();
@@ -136,8 +141,13 @@ public class CedarErrorPack {
   }
 
   public CedarErrorPack sourceException(Exception sourceException) {
+    this.originalException = sourceException;
     this.sourceException = new CedarErrorPackException(sourceException);
     return this;
+  }
+
+  public Exception getOriginalException() {
+    return originalException;
   }
 
   public void sourceException(CedarErrorPackException sourceException) {
@@ -154,6 +164,7 @@ public class CedarErrorPack {
   }
 
   public void resetSourceException() {
+    this.originalException = null;
     this.sourceException = null;
   }
 

@@ -1,7 +1,10 @@
 package org.metadatacenter.util.http;
 
 import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorReasonKey;
+import org.metadatacenter.server.result.BackendCallError;
+import org.metadatacenter.server.result.BackendCallResult;
 
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -12,6 +15,20 @@ public abstract class CedarResponse {
   private static CedarResponseBuilder newResponseBuilder() {
     return new CedarResponseBuilder();
   }
+
+  private static CedarResponseBuilder newResponseBuilder(BackendCallResult backendCallResult) {
+    if (backendCallResult != null) {
+      BackendCallError firstError = backendCallResult.getFirstError();
+      if (firstError != null) {
+        CedarErrorPack errorPack = firstError.getErrorPack();
+        if (errorPack != null) {
+          return new CedarResponseBuilder(errorPack);
+        }
+      }
+    }
+    return null;
+  }
+
 
   public static class CedarResponseBuilder {
 
@@ -25,6 +42,15 @@ public abstract class CedarResponse {
 
     protected CedarResponseBuilder() {
       this.parameters = new HashMap<>();
+    }
+
+    public CedarResponseBuilder(CedarErrorPack errorPack) {
+      parameters = errorPack.getParameters();
+      errorKey = errorPack.getErrorKey();
+      errorReasonKey = errorPack.getErrorReasonKey();
+      errorMessage = errorPack.getMessage();
+      exception = errorPack.getOriginalException();
+      status = errorPack.getStatus();
     }
 
     public Response build() {
@@ -120,6 +146,10 @@ public abstract class CedarResponse {
 
   protected static CedarResponseBuilder status(Response.Status status) {
     return newResponseBuilder().status(status);
+  }
+
+  public static Response from(BackendCallResult backendCallResult) {
+    return newResponseBuilder(backendCallResult).build();
   }
 
 }

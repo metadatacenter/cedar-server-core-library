@@ -42,6 +42,11 @@ public class BackendCallError {
     return this;
   }
 
+  public BackendCallError sourceException(Exception e) {
+    errorPack.sourceException(e);
+    return this;
+  }
+
   public CedarErrorPack getErrorPack() {
     return errorPack;
   }

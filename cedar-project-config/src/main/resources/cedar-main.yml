@@ -119,11 +119,7 @@ blueprintUserProfile:
       sortBy: "name"
       sortDirection: "asc"
       viewMode: "grid"
-    populateATemplate:
-      sortBy: "name"
-      sortDirection: "asc"
-      viewMode: "grid"
-      opened: true
+    stylesheet: "default"
 
 #Terminology server configuration
 terminology:

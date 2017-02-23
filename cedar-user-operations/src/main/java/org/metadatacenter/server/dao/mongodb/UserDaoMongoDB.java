@@ -1,5 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
+import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
@@ -9,8 +10,12 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.dao.GenericUserDao;
+import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.CedarUserUIFolderView;
+import org.metadatacenter.server.security.model.user.CedarUserUIPreferences;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
@@ -84,39 +89,71 @@ public class UserDaoMongoDB implements GenericUserDao {
   }
 
   @Override
-  public @NonNull CedarUser update(@NonNull String id, JsonNode modifications) throws IOException,
-      InstanceNotFoundException {
+  public @NonNull BackendCallResult<CedarUser> update(@NonNull String id, JsonNode modifications) {
+    BackendCallResult<CedarUser> result = new BackendCallResult();
     if ((id == null) || (id.length() == 0)) {
-      throw new IllegalArgumentException();
+      result.addError(CedarErrorType.INVALID_ARGUMENT)
+          .message("The id empty")
+          .parameter("id", id);
+      return result;
     }
-    if (!exists(id)) {
-      throw new InstanceNotFoundException();
-    }
-    CedarUser cedarUser = find(id);
-    // Adapts all keys not accepted by MongoDB
-    modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
-    Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
-    boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
-    if (modificationsOk) {
-      UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id), new Document("$set",
-          modificationsMap));
-      if (updateResult.getMatchedCount() == 1) {
-        return find(id);
-      } else {
-        throw new InternalError();
+    try {
+      if (!exists(id)) {
+        result.addError(CedarErrorType.NOT_FOUND)
+            .message("The user can not be found by id")
+            .parameter("id", id);
+        return result;
       }
-    } else {
-      throw new IllegalArgumentException();
+      CedarUser cedarUser = find(id);
+      // Adapts all keys not accepted by MongoDB
+      modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
+      Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
+      boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
+      if (modificationsOk) {
+        UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id),
+            new Document("$set", modificationsMap));
+        long matchedCount = updateResult.getMatchedCount();
+        if (matchedCount == 1) {
+          result.setPayload(find(id));
+          return result;
+        } else {
+          result.addError(CedarErrorType.SERVER_ERROR)
+              .message("There was an error while updating the user")
+              .parameter("id", id)
+              .parameter("matchedCount", matchedCount);
+          return result;
+        }
+      } else {
+        result.addError(CedarErrorType.INVALID_ARGUMENT)
+            .message("The requested modifications are invalid")
+            .parameter("id", id)
+            .parameter("modifications", modifications);
+        return result;
+      }
+    } catch (IOException e) {
+      result.addError(CedarErrorType.SERVER_ERROR)
+          .message("There was an error while updating the user")
+          .parameter("id", id)
+          .sourceException(e);
+      return result;
     }
   }
 
   private boolean validateModifications(CedarUser cedarUser, Map<String, Object> modificationsMap) {
     JsonNode userNode = JsonMapper.MAPPER.valueToTree(cedarUser);
     for (String k : modificationsMap.keySet()) {
-      String pointer = "/" + k.replace(".", "/");
+      String pointerS = "/" + k.replace(".", "/");
+      pointerS.replaceAll("//", "/");
+      if (!pointerS.startsWith("/uiPreferences/")) {
+        return false;
+      }
+      JsonPointer pointer = JsonPointer.compile(pointerS);
       JsonNode v = userNode.at(pointer);
       if (!v.isMissingNode()) {
-        ((ObjectNode) userNode).set(k, JsonMapper.MAPPER.valueToTree(modificationsMap.get(k)));
+        JsonNode newValue = JsonMapper.MAPPER.valueToTree(modificationsMap.get(k));
+        JsonNode parentNode = userNode.at(pointer.head());
+        String lastNodeName = pointer.last().toString().replace("/", "");
+        ((ObjectNode) parentNode).set(lastNodeName, newValue);
       } else {
         return false;
       }
@@ -124,10 +161,46 @@ public class UserDaoMongoDB implements GenericUserDao {
     CedarUser modifiedUser = null;
     try {
       modifiedUser = JsonMapper.MAPPER.convertValue(userNode, CedarUser.class);
+      if (!userUIPreferencesAreNotNull(modifiedUser)) {
+        return false;
+      }
     } catch (Exception e) {
-      //DO nothing
+      // The
+      //DO nothing, it means the modifications render the user invalid.
     }
     return modifiedUser != null;
+  }
+
+  // TODO: write a method which check the NonNull fields with reflection
+  private boolean userUIPreferencesAreNotNull(CedarUser user) {
+    CedarUserUIPreferences uiPreferences = user.getUiPreferences();
+    if (uiPreferences == null) {
+      return false;
+    }
+    if (uiPreferences.getStylesheet() == null) {
+      return false;
+    }
+    if (uiPreferences.getTemplateEditor() == null) {
+      return false;
+    }
+    if (uiPreferences.getMetadataEditor() == null) {
+      return false;
+    }
+    if(uiPreferences.getInfoPanel() == null) {
+      return false;
+    }
+    if (uiPreferences.getResourceTypeFilters() == null) {
+      return false;
+    }
+    if (uiPreferences.getFolderView() == null) {
+      return false;
+    } else {
+      CedarUserUIFolderView folderView = uiPreferences.getFolderView();
+      if (folderView.getSortBy() == null || folderView.getSortDirection() == null || folderView.getViewMode() == null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override

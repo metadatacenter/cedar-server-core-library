@@ -51,7 +51,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
-    log.info("Searching for parent documents: " + searchRequest.internalBuilder());
+    log.debug("Searching for parent documents: " + searchRequest.internalBuilder());
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
@@ -79,7 +79,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     searchRequest.setScroll(timeout);
     searchRequest.setSize(offset + limit);
 
-    log.info("Search query in Query DSL: " + searchRequest.internalBuilder());
+    log.debug("Search query in Query DSL: " + searchRequest.internalBuilder());
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
@@ -184,7 +184,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
         .setSize(nodeIdResultList.getCount());
     searchRequestBuilder.setQuery(withParentIds);
 
-    log.info("Searching for content documents: " + searchRequestBuilder.internalBuilder());
+    log.debug("Searching for content documents: " + searchRequestBuilder.internalBuilder());
 
     return new SearchResponseResult(searchRequestBuilder.execute().actionGet(), nodeIdResultList);
   }
