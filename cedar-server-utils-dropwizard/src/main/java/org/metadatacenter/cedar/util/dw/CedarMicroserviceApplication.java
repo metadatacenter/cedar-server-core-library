@@ -1,7 +1,7 @@
 package org.metadatacenter.cedar.util.dw;
 
 import io.dropwizard.Application;
-import io.dropwizard.Configuration;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jetty.ConnectorFactory;
@@ -28,11 +28,9 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_HEADERS_PARAM;
-import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_METHODS_PARAM;
-import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_ORIGINS_PARAM;
+import static org.eclipse.jetty.servlets.CrossOriginFilter.*;
 
-public abstract class CedarMicroserviceApplication<T extends Configuration> extends Application<T> {
+public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceConfiguration> extends Application<T> {
 
   private static final Logger log = LoggerFactory.getLogger(CedarMicroserviceApplication.class);
   private static final List<String> HTTP_HEADERS;
@@ -84,6 +82,8 @@ public abstract class CedarMicroserviceApplication<T extends Configuration> exte
     IAuthorizationResolver authResolver = new AuthorizationKeycloakAndApiKeyResolver();
     Authorization.setAuthorizationResolver(authResolver);
     Authorization.setUserService(CedarDataServices.getUserService());
+
+    bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
 
     //Continue with the app
     initializeApp(bootstrap);
