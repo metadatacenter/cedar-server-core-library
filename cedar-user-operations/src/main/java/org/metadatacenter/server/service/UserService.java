@@ -19,7 +19,9 @@ public interface UserService extends IUserService {
 
   CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException;
 
-  BackendCallResult<CedarUser> updateUser(@NonNull String userId, JsonNode modifications);
+  BackendCallResult<CedarUser> updateUser(@NonNull String userId, CedarUser user);
+
+  BackendCallResult<CedarUser> patchUser(@NonNull String userId, JsonNode modifications);
 
   List<CedarUser> findAll() throws IOException, ProcessingException;
 

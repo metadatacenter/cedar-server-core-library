@@ -89,7 +89,7 @@ public class UserDaoMongoDB implements GenericUserDao {
   }
 
   @Override
-  public @NonNull BackendCallResult<CedarUser> update(@NonNull String id, JsonNode modifications) {
+  public @NonNull BackendCallResult<CedarUser> patch(@NonNull String id, JsonNode modifications) {
     BackendCallResult<CedarUser> result = new BackendCallResult();
     if ((id == null) || (id.length() == 0)) {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
@@ -118,7 +118,7 @@ public class UserDaoMongoDB implements GenericUserDao {
           return result;
         } else {
           result.addError(CedarErrorType.SERVER_ERROR)
-              .message("There was an error while updating the user")
+              .message("There was an error while patching the user")
               .parameter("id", id)
               .parameter("matchedCount", matchedCount);
           return result;
@@ -128,6 +128,49 @@ public class UserDaoMongoDB implements GenericUserDao {
             .message("The requested modifications are invalid")
             .parameter("id", id)
             .parameter("modifications", modifications);
+        return result;
+      }
+    } catch (IOException e) {
+      result.addError(CedarErrorType.SERVER_ERROR)
+          .message("There was an error while patching the user")
+          .parameter("id", id)
+          .sourceException(e);
+      return result;
+    }
+  }
+
+  @Override
+  public @NonNull BackendCallResult<CedarUser> update(@NonNull String id, CedarUser user) {
+    BackendCallResult<CedarUser> result = new BackendCallResult();
+    if ((id == null) || (id.length() == 0)) {
+      result.addError(CedarErrorType.INVALID_ARGUMENT)
+          .message("The id empty")
+          .parameter("id", id);
+      return result;
+    }
+    try {
+      if (!exists(id)) {
+        result.addError(CedarErrorType.NOT_FOUND)
+            .message("The user can not be found by id")
+            .parameter("id", id);
+        return result;
+      }
+      CedarUser cedarUser = find(id);
+      // Adapts all keys not accepted by MongoDB
+      JsonNode userNode = JsonMapper.MAPPER.valueToTree(user);
+      userNode = jsonUtils.fixMongoDB(userNode, FixMongoDirection.WRITE_TO_MONGO);
+      Map userMap = JsonMapper.MAPPER.convertValue(userNode, Map.class);
+      UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id),
+          new Document("$set", userMap));
+      long matchedCount = updateResult.getMatchedCount();
+      if (matchedCount == 1) {
+        result.setPayload(find(id));
+        return result;
+      } else {
+        result.addError(CedarErrorType.SERVER_ERROR)
+            .message("There was an error while updating the user")
+            .parameter("id", id)
+            .parameter("matchedCount", matchedCount);
         return result;
       }
     } catch (IOException e) {
@@ -186,7 +229,7 @@ public class UserDaoMongoDB implements GenericUserDao {
     if (uiPreferences.getMetadataEditor() == null) {
       return false;
     }
-    if(uiPreferences.getInfoPanel() == null) {
+    if (uiPreferences.getInfoPanel() == null) {
       return false;
     }
     if (uiPreferences.getResourceTypeFilters() == null) {
