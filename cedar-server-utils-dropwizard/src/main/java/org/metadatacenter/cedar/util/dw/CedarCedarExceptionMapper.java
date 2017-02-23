@@ -9,10 +9,11 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class CedarCedarExceptionMapper implements ExceptionMapper<CedarException> {
+public class CedarCedarExceptionMapper extends AbstractExceptionMapper implements ExceptionMapper<CedarException> {
 
   public Response toResponse(CedarException exception) {
     CedarErrorPack errorPack = exception.getErrorPack();
+    hideExceptionConditionally(errorPack);
     return Response.status(errorPack.getStatus())
         .entity(errorPack)
         .type(MediaType.APPLICATION_JSON)

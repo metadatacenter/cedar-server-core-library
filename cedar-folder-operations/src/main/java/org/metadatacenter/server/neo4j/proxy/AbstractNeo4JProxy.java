@@ -54,7 +54,6 @@ public abstract class AbstractNeo4JProxy {
         statements.add(statement);
       }
     }
-    //System.out.println();
 
     Map<String, Object> body = new HashMap<>();
     body.put("statements", statements);
@@ -80,7 +79,8 @@ public abstract class AbstractNeo4JProxy {
 
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
-      if (statusCode == HTTP_OK) {
+      // TODO: Use a constant here: HTTP_OK
+      if (statusCode == 200) {
         return JsonMapper.MAPPER.readTree(responseAsString);
       } else {
         return null;
@@ -88,7 +88,6 @@ public abstract class AbstractNeo4JProxy {
 
     } catch (IOException ex) {
       log.error("Error while reading user details from Keycloak", ex);
-      ex.printStackTrace();
     }
     return null;
   }

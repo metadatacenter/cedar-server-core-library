@@ -4,13 +4,14 @@ public class BlueprintUIPreferences {
 
   private BlueprintFolderView folderView;
 
-  private BlueprintPopulateATemplate populateATemplate;
+  private String stylesheet;
 
   public BlueprintFolderView getFolderView() {
     return folderView;
   }
 
-  public BlueprintPopulateATemplate getPopulateATemplate() {
-    return populateATemplate;
+  public String getStylesheet() {
+    return stylesheet;
   }
+
 }

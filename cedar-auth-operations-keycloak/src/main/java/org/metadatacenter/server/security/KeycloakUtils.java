@@ -49,7 +49,7 @@ public class KeycloakUtils {
     try {
       return KeycloakDeploymentBuilder.build(new FileInputStream(Paths.get(path).toFile()));
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      log.error("File not found: " + path, e);
     }
     return null;
   }
@@ -82,7 +82,7 @@ public class KeycloakUtils {
     try {
       user = userService.findUser(userId);
     } catch (IOException | ProcessingException e) {
-      e.printStackTrace();
+      log.error("Error while getting user", e);
     }
     return user;
   }

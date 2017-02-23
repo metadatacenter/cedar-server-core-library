@@ -1,27 +1,27 @@
-package org.metadatacenter.server.neo4j;
+package org.metadatacenter.server.folder;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class FolderContentSortOptions {
+public class QuerySortOptions {
 
-  final static Map<String, FolderContentSortField> knownSortKeys;
-  private static final FolderContentSortField DEFAULT_SORT_FIELD;
+  final static Map<String, QuerySortField> knownSortKeys;
+  private static final QuerySortField DEFAULT_SORT_FIELD;
 
   static {
     knownSortKeys = new HashMap<>();
-    DEFAULT_SORT_FIELD = new FolderContentSortField("name", "displayName", true);
+    DEFAULT_SORT_FIELD = new QuerySortField("name", "displayName", QuerySortFieldType.TEXTUAL);
     addField(DEFAULT_SORT_FIELD);
-    addField(new FolderContentSortField("createdOnTS", "createdOnTS", false));
-    addField(new FolderContentSortField("lastUpdatedOnTS", "lastUpdatedOnTS", false));
+    addField(new QuerySortField("createdOnTS", "createdOnTS", QuerySortFieldType.NUMERIC));
+    addField(new QuerySortField("lastUpdatedOnTS", "lastUpdatedOnTS", QuerySortFieldType.NUMERIC));
   }
 
-  private static void addField(FolderContentSortField field) {
+  private static void addField(QuerySortField field) {
     knownSortKeys.put(field.getName(), field);
   }
 
-  public static FolderContentSortField getDefaultSortField() {
+  public static QuerySortField getDefaultSortField() {
     return DEFAULT_SORT_FIELD;
   }
 

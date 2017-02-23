@@ -3,6 +3,7 @@ package org.metadatacenter.server.security.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,25 +20,36 @@ public class CedarUser implements CedarUserRepresentation {
   public static final String UI_FACETED_SEARCH = "facetedSearch";
   public static final String UI_INFO_PANEL = "infoPanel";
 
+  @NotNull
   private String id;
+
+  @NotNull
   private String firstName;
+
+  @NotNull
   private String lastName;
+
+  @NotNull
   private String email;
+
   private String homeFolderId;
+
+  @NotNull
   private List<CedarUserApiKey> apiKeys;
+
+  @NotNull
   private List<CedarUserRole> roles;
+
+  @NotNull
   private List<String> permissions;
-  private Map<String, CedarUserUIPreferences> uiPreferences;
+
+  @NotNull
+  private CedarUserUIPreferences uiPreferences;
 
   public CedarUser() {
     this.apiKeys = new ArrayList<>();
-    this.uiPreferences = new HashMap<>();
     this.roles = new ArrayList<>();
-    this.uiPreferences.put(UI_POPULATE_A_TEMPLATE, new CedarUserUIPopulateATemplate());
-    this.uiPreferences.put(UI_FOLDER_VIEW, new CedarUserUIFolderView());
-    this.uiPreferences.put(UI_RESOURCE_TYPE_FILTERS, new CedarUserUIResourceTypeFilters());
-    this.uiPreferences.put(UI_FACETED_SEARCH, new CedarUserUIFacetedSearch());
-    this.uiPreferences.put(UI_INFO_PANEL, new CedarUserUIInfoPanel());
+    this.uiPreferences = new CedarUserUIPreferences();
   }
 
   public String getId() {
@@ -104,27 +116,12 @@ public class CedarUser implements CedarUserRepresentation {
     this.permissions = permissions;
   }
 
-  public Map<String, CedarUserUIPreferences> getUiPreferences() {
+  public CedarUserUIPreferences getUiPreferences() {
     return uiPreferences;
   }
 
-  public void setUiPreferences(Map<String, CedarUserUIPreferences> uiPreferences) {
+  public void setUiPreferences(CedarUserUIPreferences uiPreferences) {
     this.uiPreferences = uiPreferences;
-  }
-
-  @JsonIgnore
-  public CedarUserUIPopulateATemplate getPopulateATemplate() {
-    return (CedarUserUIPopulateATemplate) uiPreferences.get(UI_POPULATE_A_TEMPLATE);
-  }
-
-  @JsonIgnore
-  public CedarUserUIFolderView getFolderView() {
-    return (CedarUserUIFolderView) uiPreferences.get(UI_FOLDER_VIEW);
-  }
-
-  @JsonIgnore
-  public CedarUserUIResourceTypeFilters getResourceTypeFilters() {
-    return (CedarUserUIResourceTypeFilters) uiPreferences.get(UI_RESOURCE_TYPE_FILTERS);
   }
 
   @JsonIgnore
@@ -139,6 +136,7 @@ public class CedarUser implements CedarUserRepresentation {
     return null;
   }
 
+  @JsonIgnore
   public String getFirstApiKeyAuthHeader() {
     String apiKey = this.getFirstActiveApiKey();
     if (apiKey != null) {

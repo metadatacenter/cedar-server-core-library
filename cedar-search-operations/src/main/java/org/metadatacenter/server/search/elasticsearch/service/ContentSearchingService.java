@@ -47,12 +47,13 @@ public class ContentSearchingService extends AbstractSearchingService {
 
 
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                                 String templateId, List<String> sortList, int limit) throws
+                                                 String templateId, List<String> sortList, int limit, int offset, String
+                                                     absoluteUrl) throws
       CedarProcessingException {
     try {
       SearchResponseResult searchResult = searchWorker.searchDeep(rctx, query, resourceTypes, sortList, templateId,
-          limit);
-      return assembleResponse(searchResult, query, resourceTypes, templateId, sortList, limit, 0, null);
+          limit, offset);
+      return assembleResponse(searchResult, query, resourceTypes, templateId, sortList, limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
@@ -67,7 +68,6 @@ public class ContentSearchingService extends AbstractSearchingService {
       String hitJson = hit.sourceAsString();
       try {
         IndexingDocumentContent content = JsonMapper.MAPPER.readValue(hitJson, IndexingDocumentContent.class);
-        //System.out.println("Stored:" + content.getCid());
         cidToContentMap.put(content.getCid(), content);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
@@ -76,8 +76,7 @@ public class ContentSearchingService extends AbstractSearchingService {
 
     // Maintain the order of the first search results
     List<FolderServerNode> resources = new ArrayList<>();
-    for(String id : searchResult.getResultList().getCedarIds()) {
-      //System.out.println("Read:" + id);
+    for (String id : searchResult.getResultList().getCedarIds()) {
       IndexingDocumentContent indexingDocumentContent = cidToContentMap.get(id);
       if (indexingDocumentContent != null) {
         resources.add(indexingDocumentContent.getInfo());

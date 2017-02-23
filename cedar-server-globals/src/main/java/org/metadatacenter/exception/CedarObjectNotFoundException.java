@@ -6,6 +6,6 @@ public class CedarObjectNotFoundException extends CedarException {
 
   public CedarObjectNotFoundException(String message) {
     super(message);
-    errorPack.setStatus(Response.Status.NOT_FOUND);
+    errorPack.status(Response.Status.NOT_FOUND);
   }
 }

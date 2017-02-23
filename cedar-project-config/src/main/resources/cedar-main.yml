@@ -40,13 +40,8 @@ neo4j:
 
 searchSettings:
   searchRetrieveSettings:
-    limit: 100
-    limitIndexRegeneration: 50000
     maxAttempts: 3
     delayAttempts: 10000
-  searchDefaultSettings:
-    defaultLimit: 100
-    maxAllowedLimit: 1000
 
 elasticsearch:
   clusterName: "elasticsearch_cedar"
@@ -124,11 +119,7 @@ blueprintUserProfile:
       sortBy: "name"
       sortDirection: "asc"
       viewMode: "grid"
-    populateATemplate:
-      sortBy: "name"
-      sortDirection: "asc"
-      viewMode: "grid"
-      opened: true
+    stylesheet: "default"
 
 #Terminology server configuration
 terminology:
@@ -142,34 +133,38 @@ terminology:
 importExport:
   exportDir: "${CEDAR_HOME}export/"
 
+folderRESTAPI:
+  pagination:
+    defaultPageSize: 100
+    maxPageSize: 500
+
 templateRESTAPI:
   pagination:
     defaultPageSize: 20
-    maxPageSize: 300
+    maxPageSize: 500
   excludedFields:
     - "_id"
-
-templateRESTAPISummaries:
-  field:
-    fields:
-      - "@id"
-      - "_ui.title"
-      - "_ui.description"
-  element:
-    fields:
-      - "@id"
-      - "_ui.title"
-      - "_ui.description"
-  template:
-    fields:
-      - "@id"
-      - "_ui.title"
-      - "_ui.description"
-  instance:
-    fields:
-      - "@id"
-      - "_ui.title"
-      - "_ui.description"
+  summaries:
+    field:
+      fields:
+        - "@id"
+        - "_ui.title"
+        - "_ui.description"
+    element:
+      fields:
+        - "@id"
+        - "_ui.title"
+        - "_ui.description"
+    template:
+      fields:
+        - "@id"
+        - "_ui.title"
+        - "_ui.description"
+    instance:
+      fields:
+        - "@id"
+        - "_ui.title"
+        - "_ui.description"
 
 cache:
   persistent:

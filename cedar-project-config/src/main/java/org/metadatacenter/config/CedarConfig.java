@@ -6,6 +6,8 @@ import io.dropwizard.configuration.*;
 import io.dropwizard.jackson.Jackson;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -49,11 +51,11 @@ public class CedarConfig extends Configuration {
   @JsonProperty("importExport")
   private ImportExportConfig importExportConfig;
 
+  @JsonProperty("folderRESTAPI")
+  private FolderRESTAPI folderRESTAPI;
+
   @JsonProperty("templateRESTAPI")
   private TemplateRESTAPI templateRESTAPI;
-
-  @JsonProperty("templateRESTAPISummaries")
-  private TemplateRESTAPISummaries templateRESTAPISummaries;
 
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
@@ -69,6 +71,8 @@ public class CedarConfig extends Configuration {
 
   @JsonProperty("cache")
   private CacheConfig cacheConfig;
+
+  protected static final Logger log = LoggerFactory.getLogger(CedarConfig.class);
 
   private final static CedarConfig instance;
 
@@ -94,7 +98,7 @@ public class CedarConfig extends Configuration {
     try {
       config = mainConfigurationFactory.build(substitutingSourceProvider, mainConfigFileName);
     } catch (IOException | ConfigurationException e) {
-      e.printStackTrace();
+      log.error("Error while reading main config file", e);
       System.exit(-1);
     }
 
@@ -109,7 +113,7 @@ public class CedarConfig extends Configuration {
     try {
       elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider, elasticSearchSettingsMappingsConfigFileName);
     } catch (IOException | ConfigurationException e) {
-      e.printStackTrace();
+      log.error("Error while reading search config file", e);
       System.exit(-2);
     }
 
@@ -170,12 +174,12 @@ public class CedarConfig extends Configuration {
     return importExportConfig;
   }
 
-  public TemplateRESTAPI getTemplateRESTAPI() {
-    return templateRESTAPI;
+  public FolderRESTAPI getFolderRESTAPI() {
+    return folderRESTAPI;
   }
 
-  public TemplateRESTAPISummaries getTemplateRESTAPISummaries() {
-    return templateRESTAPISummaries;
+  public TemplateRESTAPI getTemplateRESTAPI() {
+    return templateRESTAPI;
   }
 
   public SubmissionConfig getSubmissionConfig() { return submissionConfig; }

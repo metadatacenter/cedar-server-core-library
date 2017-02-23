@@ -1,6 +1,6 @@
 package org.metadatacenter.config;
 
-public class TemplateRESTAPIPagination extends ServerConfig {
+public class PaginationConfig {
 
   private int defaultPageSize;
 

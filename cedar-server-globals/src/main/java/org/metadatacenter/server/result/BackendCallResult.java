@@ -5,12 +5,22 @@ import org.metadatacenter.error.CedarErrorType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackendCallResult {
+public class BackendCallResult<T> {
 
   private final List<BackendCallError> errors;
 
+  private T payload;
+
   public BackendCallResult() {
     this.errors = new ArrayList<>();
+  }
+
+  public void setPayload(T payload) {
+    this.payload = payload;
+  }
+
+  public T getPayload() {
+    return payload;
   }
 
   public boolean isOk() {

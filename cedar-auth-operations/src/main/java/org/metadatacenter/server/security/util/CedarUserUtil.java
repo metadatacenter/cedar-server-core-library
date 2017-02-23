@@ -15,10 +15,6 @@ public class CedarUserUtil {
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey) {
-    return createUserFromBlueprint(cedarConfig, ur, apiKey, null);
-  }
-
   public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey,
                                                   List<CedarUserRole> roles) {
     BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
@@ -54,24 +50,30 @@ public class CedarUserUtil {
     CedarUserRolePermissionUtil.expandRolesIntoPermissions(user);
 
     // set folder view defaults
-    CedarUserUIFolderView folderView = user.getFolderView();
+    CedarUserUIFolderView folderView = user.getUiPreferences().getFolderView();
     folderView.setSortBy(uiPref.getFolderView().getSortBy());
     folderView.setSortDirection(SortDirection.forValue(uiPref.getFolderView().getSortDirection()));
     folderView.setViewMode(ViewMode.forValue(uiPref.getFolderView().getViewMode()));
 
     // set resource type filter defaults
-    CedarUserUIResourceTypeFilters resourceTypeFilters = user.getResourceTypeFilters();
+    CedarUserUIResourceTypeFilters resourceTypeFilters = user.getUiPreferences().getResourceTypeFilters();
     resourceTypeFilters.setField(false);
     resourceTypeFilters.setElement(true);
     resourceTypeFilters.setTemplate(true);
     resourceTypeFilters.setInstance(true);
 
-    // set populate-a-template view defaults
-    CedarUserUIPopulateATemplate populateATemplate = user.getPopulateATemplate();
-    populateATemplate.setOpened(uiPref.getPopulateATemplate().isOpened());
-    populateATemplate.setSortBy(uiPref.getPopulateATemplate().getSortBy());
-    populateATemplate.setSortDirection(SortDirection.forValue(uiPref.getPopulateATemplate().getSortDirection()));
-    populateATemplate.setViewMode(ViewMode.forValue(uiPref.getPopulateATemplate().getViewMode()));
+    CedarUserUIInfoPanel infoPanel = user.getUiPreferences().getInfoPanel();
+    infoPanel.setOpened(false);
+
+    CedarUserUITemplateEditor templateEditor = user.getUiPreferences().getTemplateEditor();
+    templateEditor.setTemplateJsonViewer(false);
+
+    CedarUserUIMetadataEditor metadataEditor = user.getUiPreferences().getMetadataEditor();
+    metadataEditor.setTemplateJsonViewer(false);
+    metadataEditor.setMetadataJsonViewer(false);
+
+    user.getUiPreferences().setStylesheet(blueprint.getUiPreferences().getStylesheet());
+
     return user;
   }
 

@@ -1,10 +1,19 @@
 package org.metadatacenter.server.security.model.user;
 
-public class CedarUserUIResourceTypeFilters implements CedarUserUIPreferences {
+import javax.validation.constraints.NotNull;
 
+public class CedarUserUIResourceTypeFilters {
+
+  @NotNull
   private boolean field;
+
+  @NotNull
   private boolean element;
+
+  @NotNull
   private boolean template;
+
+  @NotNull
   private boolean instance;
 
   public CedarUserUIResourceTypeFilters() {

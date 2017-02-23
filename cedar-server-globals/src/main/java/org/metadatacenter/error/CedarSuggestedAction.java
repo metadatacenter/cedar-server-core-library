@@ -7,6 +7,7 @@ public enum CedarSuggestedAction {
   NONE("none"),
   REQUEST_ROLE("requestRole"),
   LOGOUT("logout"),
+  PROVIDE_AUTHORIZATION_HEADER("provideAuthorizationHeader"),
   REFRESH_TOKEN("refreshToken");
 
   private String value;

@@ -1,7 +1,10 @@
 package org.metadatacenter.server.security.model.user;
 
-public class CedarUserUIInfoPanel implements CedarUserUIPreferences {
+import javax.validation.constraints.NotNull;
 
+public class CedarUserUIInfoPanel {
+
+  @NotNull
   private boolean opened;
 
   public CedarUserUIInfoPanel() {

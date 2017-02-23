@@ -94,7 +94,9 @@ public enum CedarErrorKey {
   INVALID_NODE_TYPE("invalidNodeType"),
   READ_OTHER_PROFILE_FORBIDDEN("readOtherProfileForbidden"),
   UPDATE_OTHER_PROFILE_FORBIDDEN("updateOtherProfileForbidden"),
-  FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted");
+  FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted"),
+  GROUP_ALREADY_PRESENT("groupAlreadyPresent"),
+  FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged");
 
   private final String value;
 

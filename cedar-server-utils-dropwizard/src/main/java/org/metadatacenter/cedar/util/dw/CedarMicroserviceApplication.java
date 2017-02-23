@@ -9,9 +9,11 @@ import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
 import org.metadatacenter.server.security.IAuthorizationResolver;
@@ -22,7 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_HEADERS_PARAM;
 import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_METHODS_PARAM;
@@ -31,9 +35,32 @@ import static org.eclipse.jetty.servlets.CrossOriginFilter.ALLOWED_ORIGINS_PARAM
 public abstract class CedarMicroserviceApplication<T extends Configuration> extends Application<T> {
 
   private static final Logger log = LoggerFactory.getLogger(CedarMicroserviceApplication.class);
+  private static final List<String> HTTP_HEADERS;
+  private static final List<String> HTTP_METHODS;
 
   protected static CedarConfig cedarConfig;
   protected static UserService userService;
+
+  static {
+    HTTP_HEADERS = new ArrayList<>();
+    HTTP_HEADERS.add("X-Requested-With");
+    HTTP_HEADERS.add("Content-Type");
+    HTTP_HEADERS.add("Accept");
+    HTTP_HEADERS.add("Origin");
+    HTTP_HEADERS.add("Referer");
+    HTTP_HEADERS.add("User-Agent");
+    HTTP_HEADERS.add("Authorization");
+    HTTP_HEADERS.add(CedarConstants.HTTP_HEADER_DEBUG);
+
+    HTTP_METHODS = new ArrayList<>();
+    HTTP_METHODS.add("OPTIONS");
+    HTTP_METHODS.add("GET");
+    HTTP_METHODS.add("PUT");
+    HTTP_METHODS.add("POST");
+    HTTP_METHODS.add("DELETE");
+    HTTP_METHODS.add("HEAD");
+    HTTP_METHODS.add("PATCH");
+  }
 
   @Override
   public void initialize(Bootstrap<T> bootstrap) {
@@ -64,6 +91,7 @@ public abstract class CedarMicroserviceApplication<T extends Configuration> exte
 
   @Override
   public void run(T configuration, Environment environment) throws Exception {
+    log.info("**************************************************************");
     log.info("********** Running CEDAR microservice " + getName());
     int httpPort = getHttpPort(configuration);
     log.info("********** HTTP  Port:" + httpPort);
@@ -106,11 +134,16 @@ public abstract class CedarMicroserviceApplication<T extends Configuration> exte
     final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
 
     // Configure CORS parameters
-    cors.setInitParameter(ALLOWED_ORIGINS_PARAM, "*");
-    cors.setInitParameter(ALLOWED_HEADERS_PARAM,
-        "X-Requested-With,Content-Type,Accept,Origin,Referer,User-Agent,Authorization");
-    cors.setInitParameter(ALLOWED_METHODS_PARAM, "OPTIONS,GET,PUT,POST,DELETE,HEAD,PATCH");
-
+    String httpOrigins = "*";
+    String httpHeaders = StringUtils.join(HTTP_HEADERS, ",");
+    String httpMethods = StringUtils.join(HTTP_METHODS, ",");
+    log.info("Setting up CORS...");
+    log.info(ALLOWED_ORIGINS_PARAM + ":" + httpOrigins);
+    log.info(ALLOWED_HEADERS_PARAM + ":" + httpHeaders);
+    log.info(ALLOWED_METHODS_PARAM + ":" + httpMethods);
+    cors.setInitParameter(ALLOWED_ORIGINS_PARAM, httpOrigins);
+    cors.setInitParameter(ALLOWED_HEADERS_PARAM, httpHeaders);
+    cors.setInitParameter(ALLOWED_METHODS_PARAM, httpMethods);
     // Add URL mapping
     cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
   }

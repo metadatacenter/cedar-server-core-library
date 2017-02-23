@@ -19,6 +19,7 @@ public final class CedarConstants {
   public static final String SEARCH_PREFIX = "search.";
   public static final String SEARCH_PARAM_DEFAULT_LIMIT = SEARCH_PREFIX + PARAM_DEFAULT_LIMIT;
   public static final String SEARCH_PARAM_MAX_ALLOWED_LIMIT = SEARCH_PREFIX + PARAM_MAX_ALLOWED_LIMIT;
+  public static final String HTTP_HEADER_DEBUG = "CEDAR-Debug";
 
   // JSON ID constants
   public static final String TEMP_ID_PREFIX = "tmp-";

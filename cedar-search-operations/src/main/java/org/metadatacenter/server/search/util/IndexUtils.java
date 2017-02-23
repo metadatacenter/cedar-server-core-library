@@ -39,7 +39,6 @@ public class IndexUtils {
 
   protected static final Logger log = LoggerFactory.getLogger(IndexUtils.class);
 
-
   private final String FIELD_SUFFIX = "_field";
 
   private String folderBase;
@@ -59,7 +58,7 @@ public class IndexUtils {
   public IndexUtils(CedarConfig cedarConfig) {
     this.folderBase = cedarConfig.getServers().getFolder().getBase();
     this.templateBase = cedarConfig.getServers().getTemplate().getBase();
-    this.limit = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getLimitIndexRegeneration();
+    this.limit = cedarConfig.getFolderRESTAPI().getPagination().getMaxPageSize();
     this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
     this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
   }
@@ -93,7 +92,7 @@ public class IndexUtils {
           try {
             Thread.sleep(delayAttempts);
           } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("Error while waiting", e);
           }
         }
       }
@@ -287,8 +286,9 @@ public class IndexUtils {
             // Single value
             if (field.getValue().isObject()) {
               // Field (regular)
-              if (field.getValue().has("@value")) {
-                JsonNode valueNode = field.getValue().get("@value");
+              String fieldValueName = getFieldValueName(field.getValue());
+              if (field.getValue().has(fieldValueName)) {
+                JsonNode valueNode = field.getValue().get(fieldValueName);
                 JsonNode fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
                 CedarIndexFieldValue fv = null;
                 // Free text value
@@ -320,11 +320,12 @@ public class IndexUtils {
               ((ObjectNode) results).set(field.getKey(), JsonNodeFactory.instance.arrayNode());
               for (int i = 0; i < field.getValue().size(); i++) {
                 JsonNode arrayItem = field.getValue().get(i);
+                String fieldValueName = getFieldValueName(arrayItem);
                 // If the array items contain @value fields with values (not objects)
-                if (arrayItem.has("@value") && (arrayItem.get("@value").isValueNode())) {
+                if (arrayItem.has(fieldValueName) && (arrayItem.get(fieldValueName).isValueNode())) {
                   JsonNode fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
-                  CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get("@value"), fieldSchema);
-                  ((ArrayNode) results.get(field.getKey())).add((ObjectNode) JsonMapper.MAPPER.valueToTree(fv));
+                  CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get(fieldValueName), fieldSchema);
+                  ((ArrayNode) results.get(field.getKey())).add(JsonMapper.MAPPER.valueToTree(fv));
                 } else {
                   ((ArrayNode) results.get(field.getKey())).add(JsonNodeFactory.instance.objectNode());
                   extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), arrayItem, results.get(field
@@ -337,6 +338,13 @@ public class IndexUtils {
       }
     }
     return results;
+  }
+
+  private String getFieldValueName(JsonNode item) {
+    if (item.has("@value")) {
+      return "@value";
+    }
+    return "@id";
   }
 
   private CedarIndexFieldValue valueToIndexValue(JsonNode valueNode, JsonNode fieldSchema) throws

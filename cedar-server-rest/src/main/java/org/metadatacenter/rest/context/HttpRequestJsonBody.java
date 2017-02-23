@@ -8,8 +8,12 @@ import org.metadatacenter.rest.assertion.noun.CedarParameterImpl;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.util.json.JsonMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpRequestJsonBody implements CedarRequestBody {
+
+  protected static final Logger log = LoggerFactory.getLogger(HttpRequestJsonBody.class);
 
   private final JsonNode bodyNode;
 
@@ -53,7 +57,7 @@ public class HttpRequestJsonBody implements CedarRequestBody {
     try {
       object = JsonMapper.MAPPER.treeToValue(bodyNode, type);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      log.warn("Error while processing json", e);
       throw new CedarAssertionException(e);
     }
     return object;

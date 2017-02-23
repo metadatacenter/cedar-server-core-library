@@ -2,15 +2,16 @@ package org.metadatacenter.util.provenance;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.security.Authorization;
-import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
@@ -20,6 +21,8 @@ public class ProvenanceUtil {
   public static final String PAV_CREATED_BY = "pav:createdBy";
   public static final String PAV_LAST_UPDATED_ON = "pav:lastUpdatedOn";
   public static final String LAST_UPDATED_BY = "oslc:modifiedBy";
+
+  private static final Logger log = LoggerFactory.getLogger(ProvenanceUtil.class);
 
   private LinkedDataUtil linkedDataUtil;
 
@@ -63,7 +66,7 @@ public class ProvenanceUtil {
       CedarUser accountInfo = Authorization.getUser(authRequest);
       id = accountInfo.getId();
     } catch (CedarAccessException e) {
-      e.printStackTrace();
+      log.error("There was an error building the provenance info", e);
     }
     return buildFromUUID(id);
   }

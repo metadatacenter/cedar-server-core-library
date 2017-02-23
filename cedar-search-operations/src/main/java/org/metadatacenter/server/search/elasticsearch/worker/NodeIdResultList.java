@@ -34,4 +34,8 @@ public class NodeIdResultList {
     this.totalCount = totalCount;
   }
 
+  public int getCount() {
+    return elasticToCedar.size();
+  }
+
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.mongodb.UserDaoMongoDB;
+import org.metadatacenter.server.result.BackendCallError;
+import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
 
@@ -37,9 +39,13 @@ public class UserServiceMongoDB implements UserService {
   }
 
   @Override
-  public CedarUser updateUser(@NonNull String userId, JsonNode modifications) throws IOException, ProcessingException,
-      InstanceNotFoundException {
-    return userDao.update(userId, modifications);
+  public BackendCallResult<CedarUser> updateUser(@NonNull String userId, CedarUser user) {
+    return userDao.update(userId, user);
+  }
+
+  @Override
+  public BackendCallResult<CedarUser> patchUser(@NonNull String userId, JsonNode modifications) {
+    return userDao.patch(userId, modifications);
   }
 
   @Override
