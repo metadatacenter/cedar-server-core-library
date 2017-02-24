@@ -19,6 +19,8 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
+
 public class ContentIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(ContentIndexingService.class);
@@ -64,7 +66,7 @@ public class ContentIndexingService extends AbstractIndexingService {
     String templateId = null;
     if (CedarNodeType.INSTANCE.equals(node.getType())) {
       if (resourceContent != null) {
-        JsonNode isBasedOn = resourceContent.get("schema:isBasedOn");
+        JsonNode isBasedOn = resourceContent.get(SCHEMA_IS_BASED_ON);
         if (isBasedOn != null && !isBasedOn.isMissingNode()) {
           templateId = isBasedOn.asText();
         }

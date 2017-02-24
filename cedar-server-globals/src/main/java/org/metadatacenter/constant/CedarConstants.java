@@ -11,6 +11,8 @@ public final class CedarConstants {
   // JSON Schema
   public static final String JSON_SCHEMA_URL = "http://json-schema.org/draft-04/schema#";
 
+  public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
+
   // Query String parameter names
   public static final String PARAM_OFFSET = "offset";
   public static final String PARAM_LIMIT = "limit";

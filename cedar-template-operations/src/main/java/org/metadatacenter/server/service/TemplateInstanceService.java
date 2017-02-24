@@ -27,4 +27,6 @@ public interface TemplateInstanceService<K, T> {
   void deleteAllTemplateInstances();
 
   long count();
+
+  long countReferencingTemplate(@NonNull K templateId);
 }
