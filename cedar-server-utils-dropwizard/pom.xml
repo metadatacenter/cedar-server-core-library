@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.5</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -24,6 +24,11 @@
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.dropwizard</groupId>
+      <artifactId>dropwizard-assets</artifactId>
     </dependency>
 
     <dependency>

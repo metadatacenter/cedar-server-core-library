@@ -21,7 +21,6 @@ import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
 import org.metadatacenter.util.mongo.MongoFactory;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
