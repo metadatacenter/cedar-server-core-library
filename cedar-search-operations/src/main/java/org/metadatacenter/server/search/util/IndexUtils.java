@@ -259,6 +259,8 @@ public class IndexUtils {
           results = extractSchemaSummary(CedarNodeType.TEMPLATE, templateJson, results, context);
         } catch (CedarProcessingException e) {
           log.error("Error while accessing the reference template for the instance. It may have been removed");
+          log.error("Instance id: " + resourceContent.get("@id"));
+          log.error("Template id: " + templateId);
         }
       }
     }

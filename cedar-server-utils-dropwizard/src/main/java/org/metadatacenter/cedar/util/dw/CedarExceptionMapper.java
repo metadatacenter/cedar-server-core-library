@@ -1,7 +1,12 @@
 package org.metadatacenter.cedar.util.dw;
 
+import com.fasterxml.jackson.jaxrs.base.JsonMappingExceptionMapper;
+import io.dropwizard.jersey.errors.LoggingExceptionMapper;
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
+import org.metadatacenter.util.http.CedarResponse;
 
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -11,6 +16,21 @@ import javax.ws.rs.ext.Provider;
 public class CedarExceptionMapper extends AbstractExceptionMapper implements ExceptionMapper<Exception> {
 
   public Response toResponse(Exception exception) {
+    if (exception instanceof BadRequestException) {
+      return CedarResponse.badRequest().build();
+    } else if (exception instanceof ForbiddenException) {
+      return CedarResponse.forbidden().build();
+    } else if (exception instanceof NotAcceptableException) {
+      return CedarResponse.notAcceptable().build();
+    } else if (exception instanceof NotAllowedException) {
+      return CedarResponse.notAllowed().build();
+    } else if (exception instanceof NotAuthorizedException) {
+      return CedarResponse.unauthorized().build();
+    } else if (exception instanceof NotFoundException) {
+      return CedarResponse.notFound().build();
+    } else if (exception instanceof NotSupportedException) {
+      return CedarResponse.notSupported().build();
+    }
     CedarErrorPack errorPack = new CedarErrorPack();
     if (!hideExceptionConditionally(errorPack)) {
       errorPack.sourceException(exception);

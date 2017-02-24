@@ -50,18 +50,19 @@ public class SearchPermissionExecutorService {
                                          GroupPermissionIndexingService groupPermissionIndexingService,
                                          NodeSearchingService nodeSearchingService,
                                          GroupPermissionSearchingService groupPermissionSearchingService) {
-    userService = CedarDataServices.getUserService();
-    this.indexUtils = indexUtils;
+    this.userService = CedarDataServices.getUserService();
     this.userPermissionIndexingService = userPermissionIndexingService;
     this.groupPermissionIndexingService = groupPermissionIndexingService;
     this.nodeSearchingService = nodeSearchingService;
     this.groupPermissionSearchingService = groupPermissionSearchingService;
+    this.indexUtils = indexUtils;
     String adminUserUUID = cedarConfig.getAdminUserConfig().getUuid();
     CedarUser adminUser = null;
     try {
       adminUser = userService.findUser(adminUserUUID);
     } catch (Exception ex) {
-      log.error("Error while looking up admin user", ex);
+      log.error("Error while looking up admin user. The server won't be able to run", ex);
+      System.exit(-125);
     }
     if (adminUser != null) {
       try {

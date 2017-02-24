@@ -29,7 +29,6 @@ public abstract class CedarResponse {
     return null;
   }
 
-
   public static class CedarResponseBuilder {
 
     private Map<String, Object> parameters;
@@ -65,7 +64,8 @@ public abstract class CedarResponse {
         r.put("errorKey", errorKey);
         r.put("errorReasonKey", errorReasonKey);
         r.put("errorMessage", errorMessage);
-
+        r.put("status", status);
+        r.put("statusCode", status.getStatusCode());
         if (exception != null) {
           StackTraceElement[] stackTrace = exception.getStackTrace();
           if (stackTrace != null) {
@@ -142,6 +142,18 @@ public abstract class CedarResponse {
 
   public static CedarResponseBuilder badRequest() {
     return newResponseBuilder().status(Response.Status.BAD_REQUEST);
+  }
+
+  public static CedarResponseBuilder notAcceptable() {
+    return newResponseBuilder().status(Response.Status.NOT_ACCEPTABLE);
+  }
+
+  public static CedarResponseBuilder notAllowed() {
+    return newResponseBuilder().status(Response.Status.METHOD_NOT_ALLOWED);
+  }
+
+  public static CedarResponseBuilder notSupported() {
+    return newResponseBuilder().status(Response.Status.HTTP_VERSION_NOT_SUPPORTED);
   }
 
   protected static CedarResponseBuilder status(Response.Status status) {
