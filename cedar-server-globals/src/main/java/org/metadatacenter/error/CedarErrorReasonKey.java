@@ -8,7 +8,8 @@ public enum CedarErrorReasonKey {
 
   NON_EMPTY_FOLDER("nonEmptyFolder"),
   USER_HOME_FOLDER("userHomeFolder"),
-  SYSTEM_FOLDER("systemFolder");
+  SYSTEM_FOLDER("systemFolder"),
+  TEMPLATE_REFERENCED_IN_INSTANCES("templateReferencedInInstances");
 
   private final String value;
 

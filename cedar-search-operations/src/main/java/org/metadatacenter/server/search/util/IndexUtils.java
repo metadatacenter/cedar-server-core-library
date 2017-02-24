@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
 import static org.metadatacenter.constant.ResourceConstants.FOLDER_ALL_NODES;
 
 public class IndexUtils {
@@ -251,8 +252,8 @@ public class IndexUtils {
       }
       // If the resource is an instance, the field names must be extracted from the template
     } else if (nodeType.compareTo(CedarNodeType.INSTANCE) == 0) {
-      if (resourceContent.get("schema:isBasedOn") != null) {
-        String templateId = resourceContent.get("schema:isBasedOn").asText();
+      if (resourceContent.get(SCHEMA_IS_BASED_ON) != null) {
+        String templateId = resourceContent.get(SCHEMA_IS_BASED_ON).asText();
         JsonNode templateJson = null;
         try {
           templateJson = findResourceContent(templateId, CedarNodeType.TEMPLATE, context);

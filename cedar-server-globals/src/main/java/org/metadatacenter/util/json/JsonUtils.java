@@ -20,6 +20,8 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
+
 public class JsonUtils {
 
   /* JSON Schema Validation */
@@ -85,7 +87,7 @@ public class JsonUtils {
   public static @NonNull JsonNode localizeAtIdsAndTemplateId(@NonNull JsonNode node, @NonNull LinkedDataUtil
       linkedDataUtil) {
     ObjectNode object = (ObjectNode) node;
-    localizeFieldValueAsId(object, "schema:isBasedOn", linkedDataUtil, CedarNodeType.TEMPLATE);
+    localizeFieldValueAsId(object, SCHEMA_IS_BASED_ON, linkedDataUtil, CedarNodeType.TEMPLATE);
     localizeAtIdRecursively(object, linkedDataUtil);
     return object;
   }

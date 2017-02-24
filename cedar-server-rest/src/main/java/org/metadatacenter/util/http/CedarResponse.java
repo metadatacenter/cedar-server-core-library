@@ -148,11 +148,11 @@ public abstract class CedarResponse {
     return newResponseBuilder().status(Response.Status.NOT_ACCEPTABLE);
   }
 
-  public static CedarResponseBuilder notAllowed() {
+  public static CedarResponseBuilder methodNotAllowed() {
     return newResponseBuilder().status(Response.Status.METHOD_NOT_ALLOWED);
   }
 
-  public static CedarResponseBuilder notSupported() {
+  public static CedarResponseBuilder httpVersionNotSupported() {
     return newResponseBuilder().status(Response.Status.HTTP_VERSION_NOT_SUPPORTED);
   }
 
