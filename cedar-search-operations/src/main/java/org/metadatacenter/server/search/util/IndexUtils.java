@@ -292,7 +292,10 @@ public class IndexUtils {
               String fieldValueName = getFieldValueName(field.getValue());
               if (field.getValue().has(fieldValueName)) {
                 JsonNode valueNode = field.getValue().get(fieldValueName);
-                JsonNode fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
+                JsonNode fieldSchema = null;
+                if (schemaSummary.has(field.getKey() + FIELD_SUFFIX)) {
+                  fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
+                }
                 // If the field was not found in the template, it is ignored. This may happen if the template is updated.
                 if (fieldSchema != null) {
                   CedarIndexFieldValue fv = null;
