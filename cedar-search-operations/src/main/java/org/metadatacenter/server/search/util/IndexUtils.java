@@ -225,8 +225,10 @@ public class IndexUtils {
             String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
             // Get field semantic type (if it has been defined)
             String fieldSemanticType = null;
-            if ((fieldNode.get("properties").get("@type").get("oneOf") != null) && (fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum") != null)) {
-              fieldSemanticType = fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum").get(0).asText();
+            if ((fieldNode.get("properties").get("@type").get("oneOf") != null) && (fieldNode.get("properties").get
+                ("@type").get("oneOf").get(0).get("enum") != null)) {
+              fieldSemanticType = fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum").get(0)
+                  .asText();
             }
             CedarIndexFieldSchema f = new CedarIndexFieldSchema();
             f.setFieldName(fieldName);
@@ -283,7 +285,6 @@ public class IndexUtils {
       Iterator<Map.Entry<String, JsonNode>> fieldsIterator = resourceContent.fields();
       while (fieldsIterator.hasNext()) {
         Map.Entry<String, JsonNode> field = fieldsIterator.next();
-
         if (field.getValue().isContainerNode()) {
           if (!field.getKey().equals("@context")) {
             // Single value
@@ -292,25 +293,34 @@ public class IndexUtils {
               String fieldValueName = getFieldValueName(field.getValue());
               if (field.getValue().has(fieldValueName)) {
                 JsonNode valueNode = field.getValue().get(fieldValueName);
-                JsonNode fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
-                CedarIndexFieldValue fv = null;
-                // Free text value
-                if (!field.getValue().has("_valueLabel")) {
-                  fv = valueToIndexValue(valueNode, fieldSchema);
+                JsonNode fieldSchema = null;
+                if (schemaSummary != null && schemaSummary.has(field.getKey() + FIELD_SUFFIX)) {
+                  fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
                 }
-                // Controlled term
-                else {
-                  JsonNode valueLabelNode = field.getValue().get("_valueLabel");
-                  CedarIndexFieldSchema fs = JsonMapper.MAPPER.treeToValue(fieldSchema, CedarIndexFieldSchema.class);
-                  fv = fs.toFieldValue();
-                  // Controlled term URI
-                  fv.setFieldValueSemanticType(valueNode.asText());
-                  // Controlled term preferred name
-                  fv.setFieldValue_string(valueLabelNode.asText());
-                  fv.generateFieldValueAndSemanticType();
+                // If the field was not found in the template, it is ignored. This may happen if the template is
+                // updated.
+                if (fieldSchema != null) {
+                  CedarIndexFieldValue fv = null;
+                  // Free text value
+                  if (!field.getValue().has("_valueLabel")) {
+                    fv = valueToIndexValue(valueNode, fieldSchema);
+                  }
+                  // Controlled term
+                  else {
+                    JsonNode valueLabelNode = field.getValue().get("_valueLabel");
+                    CedarIndexFieldSchema fs = JsonMapper.MAPPER.treeToValue(fieldSchema, CedarIndexFieldSchema
+                        .class);
+                    fv = fs.toFieldValue();
+                    // Controlled term URI
+                    fv.setFieldValueSemanticType(valueNode.asText());
+                    // Controlled term preferred name
+                    fv.setFieldValue_string(valueLabelNode.asText());
+                    fv.generateFieldValueAndSemanticType();
+                  }
+                  String outputFieldKey = field.getKey() + FIELD_SUFFIX;
+                  ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(fv));
                 }
-                String outputFieldKey = field.getKey() + FIELD_SUFFIX;
-                ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(fv));
+
                 // Element
               } else {
                 ((ObjectNode) results).set(field.getKey(), JsonNodeFactory.instance.objectNode());
@@ -326,9 +336,16 @@ public class IndexUtils {
                 String fieldValueName = getFieldValueName(arrayItem);
                 // If the array items contain @value fields with values (not objects)
                 if (arrayItem.has(fieldValueName) && (arrayItem.get(fieldValueName).isValueNode())) {
-                  JsonNode fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
-                  CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get(fieldValueName), fieldSchema);
-                  ((ArrayNode) results.get(field.getKey())).add(JsonMapper.MAPPER.valueToTree(fv));
+                  JsonNode fieldSchema = null;
+                  if (schemaSummary != null && schemaSummary.has(field.getKey() + FIELD_SUFFIX)) {
+                    fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
+                  }
+                  // If the field was not found in the template, it is ignored. This may happen if the template is
+                  // updated.
+                  if (fieldSchema != null) {
+                    CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get(fieldValueName), fieldSchema);
+                    ((ArrayNode) results.get(field.getKey())).add(JsonMapper.MAPPER.valueToTree(fv));
+                  }
                 } else {
                   ((ArrayNode) results.get(field.getKey())).add(JsonNodeFactory.instance.objectNode());
                   extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), arrayItem, results.get(field
