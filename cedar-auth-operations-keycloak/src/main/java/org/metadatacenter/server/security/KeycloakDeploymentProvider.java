@@ -1,20 +1,25 @@
 package org.metadatacenter.server.security;
 
 import org.keycloak.adapters.KeycloakDeployment;
-import org.metadatacenter.config.CedarConfig;
+import org.keycloak.common.enums.SslRequired;
+import org.keycloak.representations.adapters.config.AdapterConfig;
+import org.metadatacenter.config.KeycloakConfig;
 
 public class KeycloakDeploymentProvider {
 
-  private static final KeycloakDeploymentProvider instance = new KeycloakDeploymentProvider();
-
-  private KeycloakDeploymentProvider() {
-    CedarConfig cedarConfig = CedarConfig.getInstance();
-    KeycloakDeployment keycloakDeployment = KeycloakUtils.buildDeployment(cedarConfig.getKeycloakConfig()
-        .getConfigFile());
+  public KeycloakDeploymentProvider() {
   }
 
-  public static KeycloakDeploymentProvider getInstance() {
-    return instance;
+  public KeycloakDeployment buildDeployment(KeycloakConfig keycloakConfig) {
+    KeycloakDeployment keycloakDeployment = new KeycloakDeployment();
+    keycloakDeployment.setRealm(keycloakConfig.getRealm());
+    AdapterConfig adapterConfig = new AdapterConfig();
+    adapterConfig.setAuthServerUrl(keycloakConfig.getAuthServerUrl());
+    keycloakDeployment.setAuthServerBaseUrl(adapterConfig);
+    keycloakDeployment.setSslRequired(SslRequired.valueOf(keycloakConfig.getSslRequired()));
+    keycloakDeployment.setResourceName(keycloakConfig.getResource());
+    keycloakDeployment.setPublicClient(keycloakConfig.isPublicClient());
+    return keycloakDeployment;
   }
 
 }

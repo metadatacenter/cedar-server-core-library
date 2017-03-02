@@ -39,7 +39,7 @@ public class KeycloakUtils {
     byte[] bytes = Base64Url.decode(parts[1]);
     return JsonSerialization.readValue(bytes, clazz);
   }
-
+/*
   public static KeycloakDeployment buildDeployment() {
     InputStream config = Thread.currentThread().getContextClassLoader().getResourceAsStream(KeycloakConstants.JSON);
     return KeycloakDeploymentBuilder.build(config);
@@ -52,7 +52,7 @@ public class KeycloakUtils {
       log.error("File not found: " + path, e);
     }
     return null;
-  }
+  }*/
 
   private static AccessToken checkIfTokenIsStillActiveByUserInfo(String token) throws CedarAccessException {
     AccessToken accessToken;

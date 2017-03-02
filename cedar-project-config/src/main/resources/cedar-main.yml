@@ -9,10 +9,15 @@ adminUser:
   apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
 #Keycloak server related settings.
-#These are used when the global objects are built in neo4j
 keycloak:
+  #For admin tasks
   clientId: "admin-cli"
-  configFile: "${CEDAR_HOME}keycloak.json"
+  #Configuring Keycloak instead of having a keycloak.json
+  realm: "CEDAR"
+  authServerUrl: "https://auth.${CEDAR_HOST}/auth"
+  sslRequired: "ALL"
+  resource: "cedar-angular-app"
+  publicClient: true
 
 #MongoDB settings
 mongo:

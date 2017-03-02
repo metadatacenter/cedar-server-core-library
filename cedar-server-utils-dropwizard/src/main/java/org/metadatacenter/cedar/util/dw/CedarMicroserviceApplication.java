@@ -77,7 +77,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     userService = CedarDataServices.getUserService();
 
     //Initialize Keycloak
-    KeycloakDeploymentProvider.getInstance();
+    KeycloakDeploymentProvider keycloakDeploymentProvider = new KeycloakDeploymentProvider();
+    keycloakDeploymentProvider.buildDeployment(cedarConfig.getKeycloakConfig());
     // Init Authorization Resolver
     IAuthorizationResolver authResolver = new AuthorizationKeycloakAndApiKeyResolver();
     Authorization.setAuthorizationResolver(authResolver);
