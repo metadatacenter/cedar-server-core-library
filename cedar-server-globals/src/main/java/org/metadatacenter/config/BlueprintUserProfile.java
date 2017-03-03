@@ -1,5 +1,8 @@
 package org.metadatacenter.config;
 
+import org.metadatacenter.server.security.model.user.CedarSuperRole;
+import org.metadatacenter.server.security.model.user.CedarUserRole;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +14,7 @@ public class BlueprintUserProfile {
 
   private BlueprintDefaultAPIKey defaultAPIKey;
 
-  private Map<String, List<String>> userRoles;
+  private Map<CedarSuperRole, List<CedarUserRole>> defaultRoles;
 
   private BlueprintUIPreferences uiPreferences;
 
@@ -27,8 +30,8 @@ public class BlueprintUserProfile {
     return defaultAPIKey;
   }
 
-  public Map<String, List<String>> getUserRoles() {
-    return userRoles;
+  public Map<CedarSuperRole, List<CedarUserRole>> getDefaultRoles() {
+    return defaultRoles;
   }
 
   public BlueprintUIPreferences getUiPreferences() {

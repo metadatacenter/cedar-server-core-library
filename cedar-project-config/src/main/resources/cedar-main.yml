@@ -119,17 +119,13 @@ blueprintUserProfile:
   defaultAPIKey:
     serviceName: "CEDAR"
     description: "Auto-generated apiKey for CEDAR"
-  userRoles:
+  defaultRoles:
     normal:
       - "templateCreator"
-      - "templateInstantiator"
-    admin:
-      - "templateCreator"
-      - "templateInstantiator"
-      - "administrator"
+      - "metadataCreator"
     builtInAdmin:
       - "templateCreator"
-      - "templateInstantiator"
+      - "metadataCreator"
       - "builtInSystemAdministrator"
   uiPreferences:
     folderView:

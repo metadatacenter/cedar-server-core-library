@@ -7,7 +7,9 @@ import org.metadatacenter.server.security.CedarUserRolePermissionUtil;
 import org.metadatacenter.server.security.model.user.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class CedarUserUtil {
@@ -16,7 +18,7 @@ public class CedarUserUtil {
   }
 
   public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey,
-                                                  List<CedarUserRole> roles) {
+                                                  CedarSuperRole superRole) {
     BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
     BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUserProfile().getUiPreferences();
 
@@ -41,12 +43,9 @@ public class CedarUserUtil {
 
     user.getApiKeys().add(apiKeyObject);
 
-    if (roles == null || roles.isEmpty()) {
-      user.getRoles().add(CedarUserRole.TEMPLATE_CREATOR);
-      user.getRoles().add(CedarUserRole.TEMPLATE_INSTANTIATOR);
-    } else {
-      user.getRoles().addAll(roles);
-    }
+    List<CedarUserRole> roles = CedarUserUtil.getRolesForType(cedarConfig, superRole);
+    user.getRoles().addAll(roles);
+
     CedarUserRolePermissionUtil.expandRolesIntoPermissions(user);
 
     // set folder view defaults
@@ -77,4 +76,21 @@ public class CedarUserUtil {
     return user;
   }
 
+  public static List<CedarUserRole> getRolesForType(CedarConfig cedarConfig, CedarSuperRole superRole) {
+    List<CedarUserRole> roles = new ArrayList<>();
+    Map<CedarSuperRole, List<CedarUserRole>> defaultRoles = cedarConfig.getBlueprintUserProfile().getDefaultRoles();
+    if (defaultRoles != null) {
+      List<CedarUserRole> roleList = defaultRoles.get(superRole);
+      if (roleList != null) {
+        for (CedarUserRole cedarUserRole : roleList) {
+          roles.add(cedarUserRole);
+        }
+      }
+    }
+    if (roles.isEmpty()) {
+      return null;
+    } else {
+      return roles;
+    }
+  }
 }

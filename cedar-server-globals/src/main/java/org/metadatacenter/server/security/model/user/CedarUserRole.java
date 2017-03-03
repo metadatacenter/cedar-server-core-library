@@ -1,15 +1,16 @@
 package org.metadatacenter.server.security.model.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
-import java.lang.String;
 
 public enum CedarUserRole {
   TEMPLATE_CREATOR("templateCreator"),
-  TEMPLATE_INSTANTIATOR("templateInstantiator"),
-  BUILT_IN_SYSTEM_ADMINISTRATOR("builtInSystemAdministrator"),
+  METADATA_CREATOR("metadataCreator"),
+  USER_ADMINISTRATOR("userAdministrator"),
+  GROUP_ADMINISTRATOR("groupAdministrator"),
   FILESYSTEM_ADMINISTRATOR("filesystemAdministrator"),
-  ADMINISTRATOR("administrator");
+  SEARCH_REINDEXER("searchReindexer"),
+  BUILT_IN_SYSTEM_ADMINISTRATOR("builtInSystemAdministrator");
 
   private final String value;
 
@@ -20,6 +21,16 @@ public enum CedarUserRole {
   @JsonValue
   public String getValue() {
     return value;
+  }
+
+  @JsonCreator
+  public static CedarUserRole forValue(String value) {
+    for (CedarUserRole t : values()) {
+      if (t.getValue().equals(value)) {
+        return t;
+      }
+    }
+    return null;
   }
 
 }
