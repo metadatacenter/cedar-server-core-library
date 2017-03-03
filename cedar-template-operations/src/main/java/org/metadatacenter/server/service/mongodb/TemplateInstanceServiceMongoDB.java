@@ -1,5 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
+import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.server.dao.mongodb.TemplateInstanceDaoMongoDB;
@@ -16,8 +17,9 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   @NonNull
   private final TemplateInstanceDaoMongoDB templateInstanceDao;
 
-  public TemplateInstanceServiceMongoDB(@NonNull String db, @NonNull String templateInstancesCollection) {
-    this.templateInstanceDao = new TemplateInstanceDaoMongoDB(db, templateInstancesCollection);
+  public TemplateInstanceServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String
+      templateInstancesCollection) {
+    this.templateInstanceDao = new TemplateInstanceDaoMongoDB(mongoClient, db, templateInstancesCollection);
   }
 
   @Override

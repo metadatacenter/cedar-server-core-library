@@ -21,8 +21,11 @@ public class CedarConfig extends Configuration {
   @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
-  @JsonProperty("mongo")
-  private MongoConfig mongoConfig;
+  @JsonProperty("templateServer")
+  private MongoConfig templateServerConfig;
+
+  @JsonProperty("userServer")
+  private MongoConfig userServerConfig;
 
   @JsonProperty("neo4j")
   private Neo4JConfig neo4jConfig;
@@ -107,11 +110,13 @@ public class CedarConfig extends Configuration {
 
     ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappings = null;
 
-    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> searchConfigurationFactory = new YamlConfigurationFactory<>(
+    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> searchConfigurationFactory = new
+        YamlConfigurationFactory<>(
         ElasticsearchSettingsMappingsConfig.class, validator, Jackson.newObjectMapper(), "cedar");
 
     try {
-      elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider, elasticSearchSettingsMappingsConfigFileName);
+      elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider,
+          elasticSearchSettingsMappingsConfigFileName);
     } catch (IOException | ConfigurationException e) {
       log.error("Error while reading search config file", e);
       System.exit(-2);
@@ -134,8 +139,12 @@ public class CedarConfig extends Configuration {
     return keycloakConfig;
   }
 
-  public MongoConfig getMongoConfig() {
-    return mongoConfig;
+  public MongoConfig getTemplateServerConfig() {
+    return templateServerConfig;
+  }
+
+  public MongoConfig getUserServerConfig() {
+    return userServerConfig;
   }
 
   public Neo4JConfig getNeo4jConfig() {
@@ -182,7 +191,9 @@ public class CedarConfig extends Configuration {
     return templateRESTAPI;
   }
 
-  public SubmissionConfig getSubmissionConfig() { return submissionConfig; }
+  public SubmissionConfig getSubmissionConfig() {
+    return submissionConfig;
+  }
 
   public TestConfig getTestConfig() {
     return testConfig;
@@ -203,7 +214,11 @@ public class CedarConfig extends Configuration {
   // Utility methods
 
   public String getMongoCollectionName(CedarNodeType nt) {
-    return getMongoConfig().getCollections().get(nt.getValue());
+    String name = getTemplateServerConfig().getCollections().get(nt.getValue());
+    if (name == null) {
+      name = getUserServerConfig().getCollections().get(nt.getValue());
+    }
+    return name;
   }
 
   public LinkedDataUtil buildLinkedDataUtil() {

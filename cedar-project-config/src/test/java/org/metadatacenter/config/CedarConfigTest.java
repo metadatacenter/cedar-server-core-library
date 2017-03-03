@@ -30,6 +30,8 @@ public class CedarConfigTest {
     env.put("CEDAR_TEST_USER2_UUID", "user1-uuid2");
     env.put("CEDAR_TEST_USER3_UUID", "user1-uuid3");
     env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
+    env.put("CEDAR_MONGO_USER_NAME", "cedarUser");
+    env.put("CEDAR_MONGO_USER_PASSWORD", "cedarPassword");
     TestUtil.setEnv(env);
   }
 
@@ -57,18 +59,27 @@ public class CedarConfigTest {
   @Test
   public void testMongoConfig() throws Exception {
     CedarConfig instance = CedarConfig.getInstance();
-    MongoConfig mongoConfig = instance.getMongoConfig();
-    Assert.assertNotNull(mongoConfig);
-    Assert.assertEquals("cedar", mongoConfig.getDatabaseName());
-    Assert.assertEquals("cedar-test", mongoConfig.getDatabaseNameTest());
+    MongoConfig templateServerConfig = instance.getTemplateServerConfig();
+    Assert.assertNotNull(templateServerConfig);
+    Assert.assertEquals("cedar", templateServerConfig.getDatabaseName());
+    Assert.assertEquals("cedar-test", templateServerConfig.getDatabaseNameTest());
 
-    Map<String, String> collections = mongoConfig.getCollections();
-    Assert.assertNotNull(collections);
+    Map<String, String> templateServerCollections = templateServerConfig.getCollections();
+    Assert.assertNotNull(templateServerCollections);
     //Assert.assertEquals("template-fields", collections.get("field"));
-    Assert.assertEquals("template-elements", collections.get("element"));
-    Assert.assertEquals("templates", collections.get("template"));
-    Assert.assertEquals("template-instances", collections.get("instance"));
-    Assert.assertEquals("users", collections.get("user"));
+    Assert.assertEquals("template-elements", templateServerCollections.get("element"));
+    Assert.assertEquals("templates", templateServerCollections.get("template"));
+    Assert.assertEquals("template-instances", templateServerCollections.get("instance"));
+
+    MongoConfig userServerConfig = instance.getUserServerConfig();
+    Assert.assertNotNull(userServerConfig);
+    Assert.assertEquals("cedar", userServerConfig.getDatabaseName());
+    Assert.assertEquals("cedar-test", userServerConfig.getDatabaseNameTest());
+
+    Map<String, String> userServerCollections = userServerConfig.getCollections();
+    Assert.assertNotNull(userServerCollections);
+
+    Assert.assertEquals("users", userServerCollections.get("user"));
   }
 
   @Test

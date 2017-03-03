@@ -20,16 +20,28 @@ keycloak:
   publicClient: true
 
 #MongoDB settings
-mongo:
-  #Database name
-  databaseName: "cedar"
+templateServer:
+  mongoConnection:
+    host: localhost
+    port: 27017
+    user: "${CEDAR_MONGO_USER_NAME}"
+    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    databaseName: "cedar"
   databaseNameTest: "cedar-test"
-  #Collection names
   collections:
     field: "template-fields"
     element: "template-elements"
     template: "templates"
     instance: "template-instances"
+userServer:
+  mongoConnection:
+    host: localhost
+    port: 27017
+    user: "${CEDAR_MONGO_USER_NAME}"
+    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    databaseName: "cedar"
+  databaseNameTest: "cedar-test"
+  collections:
     user: "users"
 
 #Neo4J settings

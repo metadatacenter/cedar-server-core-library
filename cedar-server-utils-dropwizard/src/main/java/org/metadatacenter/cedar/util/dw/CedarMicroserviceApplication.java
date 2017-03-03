@@ -73,6 +73,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     cedarConfig = CedarConfig.getInstance();
 
     //Initialize user service
+    CedarDataServices.initializeMongoClientFactoryForUsers(cedarConfig.getUserServerConfig().getMongoConnection());
     CedarDataServices.initializeUserService(cedarConfig);
     userService = CedarDataServices.getUserService();
 
