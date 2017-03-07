@@ -1,26 +1,31 @@
 package org.metadatacenter.server.security.util;
 
+import org.apache.commons.codec.binary.Hex;
 import org.metadatacenter.config.BlueprintUIPreferences;
 import org.metadatacenter.config.BlueprintUserProfile;
-import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.security.CedarUserRolePermissionUtil;
 import org.metadatacenter.server.security.model.user.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class CedarUserUtil {
+
+  private static final Logger log = LoggerFactory.getLogger(CedarUserUtil.class);
 
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(CedarConfig cedarConfig, CedarUserRepresentation ur, String apiKey,
+  public static CedarUser createUserFromBlueprint(BlueprintUserProfile blueprintProfile, CedarUserRepresentation ur,
                                                   CedarSuperRole superRole) {
-    BlueprintUserProfile blueprint = cedarConfig.getBlueprintUserProfile();
-    BlueprintUIPreferences uiPref = cedarConfig.getBlueprintUserProfile().getUiPreferences();
+    BlueprintUIPreferences uiPref = blueprintProfile.getUiPreferences();
 
     CedarUser user = new CedarUser();
     user.setId(ur.getId());
@@ -31,19 +36,15 @@ public class CedarUserUtil {
     LocalDateTime now = LocalDateTime.now();
     // create a default API Key
     CedarUserApiKey apiKeyObject = new CedarUserApiKey();
-    if (apiKey != null) {
-      apiKeyObject.setKey(apiKey);
-    } else {
-      apiKeyObject.setKey(UUID.randomUUID().toString());
-    }
+    apiKeyObject.setKey(generateApiKey(blueprintProfile.getDefaultAPIKey().getSalt(), (ur.getId())));
     apiKeyObject.setCreationDate(now);
     apiKeyObject.setEnabled(true);
-    apiKeyObject.setServiceName(blueprint.getDefaultAPIKey().getServiceName());
-    apiKeyObject.setDescription(blueprint.getDefaultAPIKey().getDescription());
+    apiKeyObject.setServiceName(blueprintProfile.getDefaultAPIKey().getServiceName());
+    apiKeyObject.setDescription(blueprintProfile.getDefaultAPIKey().getDescription());
 
     user.getApiKeys().add(apiKeyObject);
 
-    List<CedarUserRole> roles = CedarUserUtil.getRolesForType(cedarConfig, superRole);
+    List<CedarUserRole> roles = CedarUserUtil.getRolesForType(blueprintProfile, superRole);
     user.getRoles().addAll(roles);
 
     CedarUserRolePermissionUtil.expandRolesIntoPermissions(user);
@@ -71,14 +72,14 @@ public class CedarUserUtil {
     metadataEditor.setTemplateJsonViewer(false);
     metadataEditor.setMetadataJsonViewer(false);
 
-    user.getUiPreferences().setStylesheet(blueprint.getUiPreferences().getStylesheet());
+    user.getUiPreferences().setStylesheet(blueprintProfile.getUiPreferences().getStylesheet());
 
     return user;
   }
 
-  public static List<CedarUserRole> getRolesForType(CedarConfig cedarConfig, CedarSuperRole superRole) {
+  public static List<CedarUserRole> getRolesForType(BlueprintUserProfile blueprintProfile, CedarSuperRole superRole) {
     List<CedarUserRole> roles = new ArrayList<>();
-    Map<CedarSuperRole, List<CedarUserRole>> defaultRoles = cedarConfig.getBlueprintUserProfile().getDefaultRoles();
+    Map<CedarSuperRole, List<CedarUserRole>> defaultRoles = blueprintProfile.getDefaultRoles();
     if (defaultRoles != null) {
       List<CedarUserRole> roleList = defaultRoles.get(superRole);
       if (roleList != null) {
@@ -92,5 +93,23 @@ public class CedarUserUtil {
     } else {
       return roles;
     }
+  }
+
+  private static String generateApiKey(String salt, String userId) {
+    MessageDigest digest = null;
+    try {
+      digest = MessageDigest.getInstance("SHA-256");
+    } catch (NoSuchAlgorithmException e) {
+      log.error("Error while building SHA-256 digest");
+    }
+    digest.update(salt.getBytes(StandardCharsets.UTF_8));
+    byte[] hash = digest.digest(userId.getBytes(StandardCharsets.UTF_8));
+
+    for (int i = 0; i < 1000; i++) {
+      hash = digest.digest(hash);
+    }
+    char[] chars = Hex.encodeHex(hash);
+    String key = new String(chars);
+    return key;
   }
 }

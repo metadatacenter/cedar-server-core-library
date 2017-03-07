@@ -5,8 +5,6 @@ adminUser:
   uuid: "${CEDAR_ADMIN_USER_UUID}"
   #Plain text password of "cedar-admin" user
   password: "${CEDAR_ADMIN_USER_PASSWORD}"
-  #We keep the admin user's apiKey across system resets
-  apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
 #Keycloak server related settings.
 keycloak:
@@ -119,6 +117,7 @@ blueprintUserProfile:
   defaultAPIKey:
     serviceName: "CEDAR"
     description: "Auto-generated apiKey for CEDAR"
+    salt: "${CEDAR_SALT_API_KEY}"
   defaultRoles:
     normal:
       - "templateCreator"
