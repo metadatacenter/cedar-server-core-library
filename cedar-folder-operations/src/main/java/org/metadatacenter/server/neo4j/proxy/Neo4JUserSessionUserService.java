@@ -34,10 +34,10 @@ public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implem
 
   @Override
   public FolderServerUser ensureUserExists() {
-    FolderServerUser currentUser = proxies.user().findUserById(getUserId());
+    FolderServerUser currentUser = proxies.user().findUserById(cu.getId());
     if (currentUser == null) {
       String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
-      currentUser = proxies.user().createUser(getUserId(), displayName, displayName, cu.getFirstName(), cu
+      currentUser = proxies.user().createUser(cu.getId(), displayName, displayName, cu.getFirstName(), cu
               .getLastName(),
           cu.getEmail());
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);

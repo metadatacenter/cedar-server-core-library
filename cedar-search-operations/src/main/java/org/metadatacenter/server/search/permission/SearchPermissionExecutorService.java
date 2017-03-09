@@ -3,7 +3,6 @@ package org.metadatacenter.server.search.permission;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.Upsert;
@@ -14,17 +13,16 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
-import org.metadatacenter.server.search.SearchPermissionQueueEvent;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.search.IndexedDocumentId;
+import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentNode;
-import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentNode;
 import org.metadatacenter.server.search.elasticsearch.service.GroupPermissionIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.GroupPermissionSearchingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.search.elasticsearch.service.UserPermissionIndexingService;
 import org.metadatacenter.server.search.util.IndexUtils;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
-import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,23 +54,11 @@ public class SearchPermissionExecutorService {
     this.nodeSearchingService = nodeSearchingService;
     this.groupPermissionSearchingService = groupPermissionSearchingService;
     this.indexUtils = indexUtils;
-    String adminUserUUID = cedarConfig.getAdminUserConfig().getUuid();
-    CedarUser adminUser = null;
-    try {
-      adminUser = userService.findUser(adminUserUUID);
-    } catch (Exception ex) {
-      log.error("Error while looking up admin user. The server won't be able to run", ex);
-      System.exit(-125);
-    }
-    if (adminUser != null) {
-      try {
-        CedarRequestContext cedarRequestContext = CedarRequestContextFactory.fromUser(adminUser);
-        folderSession = CedarDataServices.getFolderServiceSession(cedarRequestContext);
-        permissionSession = CedarDataServices.getPermissionServiceSession(cedarRequestContext);
-      } catch (CedarAccessException ex) {
-        log.error("Error while building folder service sessions", ex);
-      }
-    }
+
+    CedarRequestContext cedarRequestContext = CedarRequestContextFactory.fromAdminUser(cedarConfig, userService);
+
+    folderSession = CedarDataServices.getFolderServiceSession(cedarRequestContext);
+    permissionSession = CedarDataServices.getPermissionServiceSession(cedarRequestContext);
   }
 
   // Main entry point

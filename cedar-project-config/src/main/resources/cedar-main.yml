@@ -75,7 +75,7 @@ elasticsearch:
 #For ID generation
 linkedData:
   base: "https://repo.${CEDAR_HOST}/"
-  usersBase: "https://metadatacenter.org/users/"
+  usersBase: "${CEDAR_LD_USER_BASE}"
 
 #Folder server global structure
 folderStructure:

@@ -43,12 +43,12 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
   @Override
   public FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription) {
     String groupURL = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.GROUP);
-    return proxies.group().createGroup(groupURL, groupName, groupDisplayName, groupDescription, getUserId(), null);
+    return proxies.group().createGroup(groupURL, groupName, groupDisplayName, groupDescription, cu.getId(), null);
   }
 
   @Override
   public FolderServerGroup updateGroupById(String groupURL, Map<String, String> updateFields) {
-    return proxies.group().updateGroupById(groupURL, updateFields, getUserId());
+    return proxies.group().updateGroupById(groupURL, updateFields, cu.getId());
   }
 
   @Override
@@ -105,7 +105,7 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
   public boolean userAdministersGroup(String groupURL) {
     CedarGroupUsers groupUsers = findGroupUsers(groupURL);
     if (groupUsers != null) {
-      String currentUserId = getUserId();
+      String currentUserId = cu.getId();
       for (CedarGroupUser user : groupUsers.getUsers()) {
         if (currentUserId.equals(user.getUser().getId()) && user.isAdministrator()) {
           return true;

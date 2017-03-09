@@ -1,6 +1,5 @@
 package org.metadatacenter.bridge;
 
-import com.mongodb.MongoClient;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.MongoConnection;
 import org.metadatacenter.model.CedarNodeType;
@@ -48,7 +47,7 @@ public final class CedarDataServices {
   public static void initializeFolderServices(CedarConfig cedarConfig) {
     instance.cedarConfig = cedarConfig;
     Neo4jConfig neo4jConfig = Neo4jConfig.fromCedarConfig(cedarConfig);
-    instance.proxies = new Neo4JProxies(neo4jConfig, cedarConfig.buildLinkedDataUtil());
+    instance.proxies = new Neo4JProxies(neo4jConfig, cedarConfig.getLinkedDataUtil());
   }
 
   public static GroupServiceSession getGroupServiceSession(CedarRequestContext context) {

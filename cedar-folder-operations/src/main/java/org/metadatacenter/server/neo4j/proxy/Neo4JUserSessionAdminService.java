@@ -37,7 +37,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     boolean addAdminToEverybody = false;
 
-    String userId = getUserId();
+    String userId = cu.getId();
 
     FolderServerUser cedarAdmin = proxies.user().findUserById(userId);
     if (cedarAdmin == null) {

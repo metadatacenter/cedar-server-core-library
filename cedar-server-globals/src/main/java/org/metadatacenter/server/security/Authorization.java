@@ -1,6 +1,7 @@
 package org.metadatacenter.server.security;
 
 import org.metadatacenter.exception.security.CedarAccessException;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -21,13 +22,13 @@ public final class Authorization {
     userService = us;
   }
 
-  public static CedarUser getUserAndEnsurePermission(AuthRequest authRequest, CedarPermission permission) throws
-      CedarAccessException {
-    return resolver.getUserAndEnsurePermission(authRequest, permission, userService);
+  public static CedarUser getUserAndEnsurePermission(LinkedDataUtil linkedDataUtil, AuthRequest authRequest,
+                                                     CedarPermission permission) throws CedarAccessException {
+    return resolver.getUserAndEnsurePermission(linkedDataUtil, authRequest, permission, userService);
   }
 
-  public static CedarUser getUser(AuthRequest authRequest) throws CedarAccessException {
-    return resolver.getUser(authRequest, userService);
+  public static CedarUser getUser(LinkedDataUtil linkedDataUtil, AuthRequest authRequest) throws CedarAccessException {
+    return resolver.getUser(linkedDataUtil, authRequest, userService);
   }
 
 }

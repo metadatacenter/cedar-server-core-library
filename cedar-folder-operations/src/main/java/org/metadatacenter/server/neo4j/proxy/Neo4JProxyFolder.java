@@ -208,4 +208,12 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
 
+  public FolderServerFolder findHomeFolderOf(String userId) {
+    String cypher = CypherQueryBuilder.getHomeFolderOf();
+    Map<String, Object> params = CypherParamBuilder.matchUserId(userId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode folderNode = jsonNode.at("/results/0/data/0/row/0");
+    return buildFolder(folderNode);
+  }
 }

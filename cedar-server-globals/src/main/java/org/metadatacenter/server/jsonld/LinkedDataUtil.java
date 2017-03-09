@@ -21,6 +21,10 @@ public class LinkedDataUtil {
     }
   }
 
+  public String getUserId(String uuid) {
+    return getLinkedDataId(CedarNodeType.USER, uuid);
+  }
+
   public String getLinkedDataId(CedarNodeType nodeType, String uuid) {
     return getLinkedDataPrefix(nodeType) + uuid;
   }

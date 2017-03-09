@@ -14,7 +14,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
@@ -41,7 +40,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     this.config = cedarConfig.getElasticsearchConfig();
     this.client = client;
     this.indexName = config.getIndexName();
-    this.linkedDataUtil = cedarConfig.buildLinkedDataUtil();
+    this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
   }
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>
@@ -109,7 +108,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 
-    String userId = linkedDataUtil.getLinkedDataId(CedarNodeType.USER, rctx.getCedarUser().getId());
+    String userId = rctx.getCedarUser().getId();
 
     // Filter by user
     QueryBuilder userChildQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.USERS.getValue(),

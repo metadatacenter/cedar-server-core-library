@@ -67,8 +67,6 @@ public interface FolderServiceSession {
 
   void addPathAndParentId(FolderServerResource resource);
 
-  String getHomeFolderPath();
-
   boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder);
 
   boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder);
@@ -90,4 +88,8 @@ public interface FolderServiceSession {
   List<FolderServerNode> findAllNodesVisibleByUserId(String id);
 
   List<FolderServerNode> findAllNodesVisibleByGroupId(String id);
+
+  FolderServerFolder findHomeFolderOf();
+
+  FolderServerFolder createUserHomeFolder();
 }

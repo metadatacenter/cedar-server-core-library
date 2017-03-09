@@ -3,12 +3,8 @@ package org.metadatacenter.util.provenance;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.exception.security.CedarAccessException;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
+import org.metadatacenter.model.CreateOrUpdate;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
-import org.metadatacenter.server.security.Authorization;
-import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +20,12 @@ public class ProvenanceUtil {
 
   private static final Logger log = LoggerFactory.getLogger(ProvenanceUtil.class);
 
-  private LinkedDataUtil linkedDataUtil;
-
-  public ProvenanceUtil(LinkedDataUtil linkedDataUtil) {
-    this.linkedDataUtil = linkedDataUtil;
-    this.linkedDataUtil = linkedDataUtil;
+  public ProvenanceUtil() {
   }
 
-  private void setProvenanceInfo(JsonNode node, ProvenanceInfo pi, boolean justModification) {
+  private void setProvenanceInfo(JsonNode node, ProvenanceInfo pi, CreateOrUpdate createOrUpdate) {
     ObjectNode resource = (ObjectNode) node;
-    if (!justModification) {
+    if (createOrUpdate == CreateOrUpdate.CREATE) {
       resource.put(PAV_CREATED_ON, pi.getCreatedOn());
       resource.put(PAV_CREATED_BY, pi.getCreatedBy());
     }
@@ -42,14 +34,14 @@ public class ProvenanceUtil {
   }
 
   public void addProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
-    setProvenanceInfo(node, pi, false);
+    setProvenanceInfo(node, pi, CreateOrUpdate.CREATE);
   }
 
   public void patchProvenanceInfo(JsonNode node, ProvenanceInfo pi) {
-    setProvenanceInfo(node, pi, true);
+    setProvenanceInfo(node, pi, CreateOrUpdate.UPDATE);
   }
 
-  public ProvenanceInfo buildFromUserURLId(String userURL) {
+  private ProvenanceInfo buildFromUserURLId(String userURL) {
     ProvenanceInfo pi = new ProvenanceInfo();
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -60,24 +52,8 @@ public class ProvenanceUtil {
     return pi;
   }
 
-  public ProvenanceInfo build(AuthRequest authRequest) {
-    String id = null;
-    try {
-      CedarUser accountInfo = Authorization.getUser(authRequest);
-      id = accountInfo.getId();
-    } catch (CedarAccessException e) {
-      log.error("There was an error building the provenance info", e);
-    }
-    return buildFromUUID(id);
-  }
-
   public ProvenanceInfo build(CedarUser cu) {
-    String id = cu.getId();
-    return buildFromUUID(id);
-  }
-
-  public ProvenanceInfo buildFromUUID(String userUUID) {
-    return buildFromUserURLId(linkedDataUtil.getLinkedDataId(CedarNodeType.USER, userUUID));
+    return buildFromUserURLId(cu.getId());
   }
 
 }

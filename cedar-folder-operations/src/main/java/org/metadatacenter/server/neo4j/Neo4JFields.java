@@ -31,6 +31,7 @@ public class Neo4JFields {
   public static final String IS_SYSTEM = "isSystem";
   public static final String IS_USER_HOME = "isUserHome";
   public static final String NODE_SORT_ORDER = "nodeSortOrder";
+  public static final String HOME_OF = "homeOf";
   public static final String FROM_ID = "fromId";
   public static final String TO_ID = "toId";
 

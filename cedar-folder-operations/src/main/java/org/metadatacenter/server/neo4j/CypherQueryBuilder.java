@@ -1022,5 +1022,11 @@ public class CypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getHomeFolderOf() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("MATCH (folder:").append(NodeLabel.FOLDER).append(" {isUserHome:true, homeOf:{userId}})");
+    sb.append("RETURN folder");
+    return sb.toString();
+  }
 
 }

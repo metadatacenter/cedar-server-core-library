@@ -78,9 +78,11 @@ public class CedarConfig extends Configuration {
   protected static final Logger log = LoggerFactory.getLogger(CedarConfig.class);
 
   private final static CedarConfig instance;
+  private final static LinkedDataUtil linkedDataUtil;
 
   static {
     instance = buildInstance();
+    linkedDataUtil = new LinkedDataUtil(instance.getLinkedDataConfig());
   }
 
   private static CedarConfig buildInstance() {
@@ -221,8 +223,12 @@ public class CedarConfig extends Configuration {
     return name;
   }
 
-  public LinkedDataUtil buildLinkedDataUtil() {
-    return new LinkedDataUtil(getLinkedDataConfig());
+  public LinkedDataUtil getLinkedDataUtil() {
+    return linkedDataUtil;
+  }
+
+  public String getAdminUserId() {
+    return linkedDataUtil.getUserId(getAdminUserConfig().getUuid());
   }
 
 }

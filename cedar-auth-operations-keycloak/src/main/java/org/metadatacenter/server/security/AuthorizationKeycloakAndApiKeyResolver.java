@@ -1,7 +1,9 @@
 package org.metadatacenter.server.security;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.security.*;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -14,9 +16,9 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
   }
 
   @Override
-  public CedarUser getUserAndEnsurePermission(AuthRequest authRequest, CedarPermission permission, IUserService
-      userService) throws CedarAccessException {
-    CedarUser user = getUser(authRequest, userService);
+  public CedarUser getUserAndEnsurePermission(LinkedDataUtil linkedDataUtil, AuthRequest authRequest, CedarPermission
+      permission, IUserService userService) throws CedarAccessException {
+    CedarUser user = getUser(linkedDataUtil, authRequest, userService);
     if (user == null) {
       throw new CedarUserNotFoundException(new ApiKeyNotFoundException(authRequest.getAuthString()));
     } else {
@@ -28,10 +30,11 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
     return user;
   }
 
-  public CedarUser getUser(AuthRequest authRequest, IUserService userService) throws CedarAccessException {
+  public CedarUser getUser(LinkedDataUtil linkedDataUtil, AuthRequest authRequest, IUserService userService) throws
+      CedarAccessException {
     CedarUser user;
     if (authRequest instanceof CedarBearerAuthRequest) {
-      user = KeycloakUtils.getUserFromAuthRequest(authRequest, userService);
+      user = KeycloakUtils.getUserFromAuthRequest(linkedDataUtil, authRequest, userService);
       if (user == null) {
         throw new CedarUserNotFoundException(new FailedToLoadUserByTokenException(null));
       } else {

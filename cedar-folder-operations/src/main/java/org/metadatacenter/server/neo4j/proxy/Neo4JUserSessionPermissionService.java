@@ -134,41 +134,41 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   @Override
   public boolean userIsOwnerOfFolder(String folderURL) {
     FolderServerUser owner = getNodeOwner(folderURL);
-    return owner != null && owner.getId().equals(getUserId());
+    return owner != null && owner.getId().equals(cu.getId());
   }
 
   @Override
   public boolean userHasReadAccessToFolder(String folderURL) {
-    return proxies.permission().userHasReadAccessToFolder(getUserId(), folderURL) || proxies.permission()
+    return proxies.permission().userHasReadAccessToFolder(cu.getId(), folderURL) || proxies.permission()
         .userHasWriteAccessToFolder(cu.getId(), folderURL);
   }
 
   @Override
   public boolean userHasWriteAccessToFolder(String folderURL) {
-    return proxies.permission().userHasWriteAccessToFolder(getUserId(), folderURL);
+    return proxies.permission().userHasWriteAccessToFolder(cu.getId(), folderURL);
   }
 
   @Override
   public boolean userIsOwnerOfResource(String resourceURL) {
     FolderServerUser owner = getNodeOwner(resourceURL);
-    return owner != null && owner.getId().equals(getUserId());
+    return owner != null && owner.getId().equals(cu.getId());
   }
 
   @Override
   public boolean userHasReadAccessToResource(String resourceURL) {
-    return proxies.permission().userHasReadAccessToResource(getUserId(), resourceURL) || proxies.permission()
+    return proxies.permission().userHasReadAccessToResource(cu.getId(), resourceURL) || proxies.permission()
         .userHasWriteAccessToFolder(cu.getId(), resourceURL);
   }
 
   @Override
   public boolean userHasWriteAccessToResource(String resourceURL) {
-    return proxies.permission().userHasWriteAccessToResource(getUserId(), resourceURL);
+    return proxies.permission().userHasWriteAccessToResource(cu.getId(), resourceURL);
   }
 
   @Override
   public boolean userIsOwnerOfNode(FolderServerNode node) {
     FolderServerUser nodeOwner = getNodeOwner(node.getId());
-    return nodeOwner != null && nodeOwner.getId().equals(getUserId());
+    return nodeOwner != null && nodeOwner.getId().equals(cu.getId());
   }
 
 
@@ -211,7 +211,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
 
   @Override
   public Map<String, String> findAccessibleNodeIds() {
-    return proxies.permission().findAccessibleNodeIds(getUserId());
+    return proxies.permission().findAccessibleNodeIds(cu.getId());
   }
 
   @Override
