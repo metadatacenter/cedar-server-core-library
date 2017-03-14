@@ -128,7 +128,7 @@ public abstract class AbstractCypherQueryBuilder {
   protected static String createNodeAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (parent:<LABEL.FOLDER {id:{parentId}})");
+    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{parentId}})");
     sb.append(createNode("child", label, extraProperties));
     sb.append(" CREATE (user)-[:<REL.OWNS>]->(child)");
     sb.append(" CREATE (parent)-[:<REL.CONTAINS>]->(child)");

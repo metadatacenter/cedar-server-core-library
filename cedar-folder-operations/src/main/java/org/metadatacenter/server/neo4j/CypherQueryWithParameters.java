@@ -4,6 +4,8 @@ import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.CypherQueryParameter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class CypherQueryWithParameters extends AbstractCypherQuery {
 
@@ -14,8 +16,12 @@ public class CypherQueryWithParameters extends AbstractCypherQuery {
     this.parameters = parameters;
   }
 
-  public CypherParameters getParameters() {
-    return parameters;
+  public Map<String, Object> getParameterMap() {
+    Map<String, Object> map = new HashMap<>();
+    for(CypherQueryParameter p : parameters.keySet()) {
+      map.put(p.getValue(), parameters.get(p));
+    }
+    return map;
   }
 
   public String getInterpolatedParamsQuery() {
