@@ -5,6 +5,7 @@ import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -31,17 +32,17 @@ public interface FolderServiceSession {
       description, NodeLabel label);
 
   FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<String, Object> extraProperties);
+      description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties);
+      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
 
-  FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields);
+  FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
 
-  FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
+  FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<NodeProperty,
       String> updateFields);
 
   boolean deleteFolderById(String folderURL);

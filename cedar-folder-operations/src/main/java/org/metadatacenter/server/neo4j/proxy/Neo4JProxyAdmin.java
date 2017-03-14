@@ -2,8 +2,8 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.server.neo4j.CypherQuery;
-import org.metadatacenter.server.neo4j.CypherQueryBuilder;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderAdmin;
 
 public class Neo4JProxyAdmin extends AbstractNeo4JProxy {
 
@@ -12,15 +12,10 @@ public class Neo4JProxyAdmin extends AbstractNeo4JProxy {
   }
 
   boolean wipeAllData() {
-    String cypher = CypherQueryBuilder.wipeAllData();
+    String cypher = CypherQueryBuilderAdmin.wipeAllData();
     CypherQuery q = new CypherQueryLiteral(cypher);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while deleting all data:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while deleting all data:");
   }
 
 }

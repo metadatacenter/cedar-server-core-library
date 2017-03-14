@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.metadatacenter.model.CedarNodeType;
 
 public enum NodeLabel {
@@ -78,6 +79,11 @@ public enum NodeLabel {
         return INSTANCE;
     }
     return null;
+  }
+
+  @JsonIgnore
+  public boolean isFolder() {
+    return FOLDER.equals(value) || SYSTEM_FOLDER.equals(value) || USER_HOME_FOLDER.equals(value);
   }
 
   @Override

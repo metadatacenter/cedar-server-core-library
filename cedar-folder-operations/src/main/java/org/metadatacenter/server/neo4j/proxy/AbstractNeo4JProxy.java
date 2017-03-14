@@ -39,18 +39,21 @@ public abstract class AbstractNeo4JProxy {
     for (CypherQuery q : queries) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        log.debug("c.query : " + qp.getFlatQuery());
-        log.debug("c.params: " + qp.getParameters());
-        log.debug("c.interp: " + qp.getLiteralCypher());
+        String runnableQuery = qp.getRunnableQuery();
+        log.debug("c.original     : " + qp.getOriginalQuery());
+        log.debug("c.runnable     : " + runnableQuery);
+        log.debug("c.parameters   : " + qp.getParameters());
+        log.debug("c.interpolated : " + qp.getInterpolatedParamsQuery());
         Map<String, Object> statement = new HashMap<>();
-        statement.put("statement", qp.getQuery());
+        statement.put("statement", runnableQuery);
         statement.put("parameters", qp.getParameters());
         statements.add(statement);
       } else if (q instanceof CypherQueryLiteral) {
-        log.debug("c.string: " + q.getFlatQuery());
-        CypherQueryLiteral qp = (CypherQueryLiteral) q;
+        String runnableQuery = q.getRunnableQuery();
+        log.debug("c.original     : " + q.getOriginalQuery());
+        log.debug("c.runnable     : " + runnableQuery);
         Map<String, Object> statement = new HashMap<>();
-        statement.put("statement", qp.getQuery());
+        statement.put("statement", runnableQuery);
         statements.add(statement);
       }
     }
@@ -83,6 +86,12 @@ public abstract class AbstractNeo4JProxy {
       if (statusCode == 200) {
         return JsonMapper.MAPPER.readTree(responseAsString);
       } else {
+        if (responseAsString != null) {
+          JsonNode jsonNode = JsonMapper.MAPPER.readTree(responseAsString);
+          successOrLog(jsonNode, "Error while executing cypher query");
+        } else {
+          log.error("Error while deserializing cypher response");
+        }
         return null;
       }
 
@@ -209,15 +218,22 @@ public abstract class AbstractNeo4JProxy {
     return userList;
   }
 
+  protected boolean successOrLog(JsonNode jsonNode, String errorMessage) {
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      JsonNode error = errorsNode.path(0);
+      log.error(errorMessage, error);
+    }
+    return errorsNode.size() == 0;
+  }
 
-  /*
-  String getFolderUUID(String folderId) {
-    if (folderId != null && folderId.startsWith(folderIdPrefix)) {
-      return folderId.substring(folderIdPrefix.length());
+  protected long count(JsonNode jsonNode) {
+    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
+    if (countNode != null && !countNode.isMissingNode()) {
+      return countNode.asLong();
     } else {
-      return null;
+      return -1;
     }
   }
-*/
 
 }

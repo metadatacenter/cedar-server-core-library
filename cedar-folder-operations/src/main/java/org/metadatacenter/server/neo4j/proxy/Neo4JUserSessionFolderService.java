@@ -7,13 +7,20 @@ import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.FolderServiceSession;
-import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.server.neo4j.Neo4JFieldValues;
+import org.metadatacenter.server.neo4j.Neo4jConfig;
+import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarNodeTypeUtil;
 import org.metadatacenter.util.CedarUserNameUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession implements FolderServiceSession {
 
@@ -33,18 +40,18 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties) {
+      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name,
         description, cu.getId(), label, extraProperties);
   }
 
   @Override
-  public FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields) {
+  public FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields) {
     return proxies.folder().updateFolderById(folderURL, updateFields, cu.getId());
   }
 
   @Override
-  public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
+  public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<NodeProperty,
       String> updateFields) {
     return proxies.resource().updateResourceById(resourceURL, updateFields, cu.getId());
   }
@@ -216,7 +223,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<String, Object> extraProperties) {
+      description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, displayName, description, cu.getId(),
         label, extraProperties);
   }
@@ -306,9 +313,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     FolderServerFolder currentUserHomeFolder;
     FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
     // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
-    Map<String, Object> extraParams = new HashMap<>();
-    extraParams.put(Neo4JFields.IS_USER_HOME, true);
-    extraParams.put(Neo4JFields.HOME_OF, userId);
+    Map<NodeProperty, Object> extraParams = new HashMap<>();
+    extraParams.put(NodeProperty.IS_USER_HOME, true);
+    extraParams.put(NodeProperty.HOME_OF, userId);
     String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
     currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), displayName, displayName, description,

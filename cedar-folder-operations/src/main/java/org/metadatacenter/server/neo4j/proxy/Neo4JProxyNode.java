@@ -7,7 +7,13 @@ import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
-import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.CypherQuery;
+import org.metadatacenter.server.neo4j.CypherQueryLiteral;
+import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.parameter.*;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.util.ArrayList;
@@ -23,8 +29,8 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   List<FolderServerNode> findNodePathById(String id) {
     List<FolderServerNode> pathList = new ArrayList<>();
-    String cypher = CypherQueryBuilder.getNodeLookupQueryById();
-    Map<String, Object> params = CypherParamBuilder.getNodeLookupByIDParameters(proxies.pathUtil, id);
+    String cypher = CypherQueryBuilderNode.getNodeLookupQueryById();
+    CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode pathListJsonNode = jsonNode.at("/results/0/data/0/row/0");
@@ -44,66 +50,50 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   }
 
   long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList) {
-    String cypher = CypherQueryBuilder.getFolderContentsFilteredCountQuery();
-    Map<String, Object> params = CypherParamBuilder.getFolderContentsFilteredCountParameters(folderId,
-        nodeTypeList);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery();
+    CypherParameters params = CypherParamBuilderFolder.getFolderContentsFilteredCountParameters(folderId, nodeTypeList);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
-    if (countNode != null && !countNode.isMissingNode()) {
-      return countNode.asLong();
-    } else {
-      return -1;
-    }
+    return count(jsonNode);
   }
 
   long findFolderContentsCount(String folderId) {
-    String cypher = CypherQueryBuilder.getFolderContentsCountQuery();
-    Map<String, Object> params = CypherParamBuilder.getFolderContentsCountParameters(folderId);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsCountQuery();
+    CypherParameters params = CypherParamBuilderFolder.getFolderContentsCountParameters(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
-    if (countNode != null && !countNode.isMissingNode()) {
-      return countNode.asLong();
-    } else {
-      return -1;
-    }
+    return count(jsonNode);
   }
 
   List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList) {
-    String cypher = CypherQueryBuilder.getAllNodesLookupQuery(sortList);
-    Map<String, Object> params = CypherParamBuilder.getAllNodesLookupParameters(limit, offset);
+    String cypher = CypherQueryBuilderNode.getAllNodesLookupQuery(sortList);
+    CypherParameters params = CypherParamBuilderNode.getAllNodesLookupParameters(limit, offset);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
   long findAllNodesCount() {
-    String cypher = CypherQueryBuilder.getAllNodesCountQuery();
+    String cypher = CypherQueryBuilderNode.getAllNodesCountQuery();
     CypherQuery q = new CypherQueryLiteral(cypher);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
-    if (countNode != null && !countNode.isMissingNode()) {
-      return countNode.asLong();
-    } else {
-      return -1;
-    }
+    return count(jsonNode);
   }
 
   List<FolderServerNode> findFolderContents(String folderId, Collection<CedarNodeType> nodeTypes, int
       limit, int offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
-    String cypher = CypherQueryBuilder.getFolderContentsLookupQuery(sortList, addPermissionConditions);
-    Map<String, Object> params = CypherParamBuilder.getFolderContentsLookupParameters(folderId, nodeTypes, limit,
-        offset, cu.getId(), addPermissionConditions);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsLookupQuery(sortList, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsLookupParameters(folderId, nodeTypes,
+        limit, offset, cu.getId(), addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
   FolderServerNode findNodeByParentIdAndName(String parentId, String name) {
-    String cypher = CypherQueryBuilder.getNodeByParentIdAndName();
-    Map<String, Object> params = CypherParamBuilder.getNodeByParentIdAndName(parentId, name);
+    String cypher = CypherQueryBuilderNode.getNodeByParentIdAndName();
+    CypherParameters params = CypherParamBuilderNode.getNodeByParentIdAndName(parentId, name);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode node = jsonNode.at("/results/0/data/0/row/0");
@@ -128,8 +118,8 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   }
 
   FolderServerUser getNodeOwner(String nodeURL) {
-    String cypher = CypherQueryBuilder.getNodeOwner();
-    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    String cypher = CypherQueryBuilderNode.getNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -138,8 +128,8 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, int limit, int offset,
                                                          List<String> sortList, CedarUser cu) {
-    String cypher = CypherQueryBuilder.getSharedWithMeLookupQuery(sortList);
-    Map<String, Object> params = CypherParamBuilder.getSharedWithMeLookupParameters(nodeTypes, limit, offset, cu
+    String cypher = CypherQueryBuilderNode.getSharedWithMeLookupQuery(sortList);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeLookupParameters(nodeTypes, limit, offset, cu
         .getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -147,23 +137,18 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   }
 
   public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
-    String cypher = CypherQueryBuilder.getSharedWithMeCountQuery();
-    Map<String, Object> params = CypherParamBuilder.getSharedWithMeCountParameters(nodeTypes, cu.getId());
+    String cypher = CypherQueryBuilderNode.getSharedWithMeCountQuery();
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeCountParameters(nodeTypes, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
-    if (countNode != null && !countNode.isMissingNode()) {
-      return countNode.asLong();
-    } else {
-      return -1;
-    }
+    return count(jsonNode);
   }
 
   public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
       sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
-    String cypher = CypherQueryBuilder.getAllLookupQuery(sortList, addPermissionConditions);
-    Map<String, Object> params = CypherParamBuilder.getAllLookupParameters(nodeTypes, limit, offset, cu.getId(),
+    String cypher = CypherQueryBuilderNode.getAllLookupQuery(sortList, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(nodeTypes, limit, offset, cu.getId(),
         addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -172,38 +157,33 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
     boolean addPermissionConditions = true;
-    String cypher = CypherQueryBuilder.getAllCountQuery(addPermissionConditions);
-    Map<String, Object> params = CypherParamBuilder.getAllCountParameters(nodeTypes, cu.getId(),
+    String cypher = CypherQueryBuilderNode.getAllCountQuery(addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllCountParameters(nodeTypes, cu.getId(),
         addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
-    if (countNode != null && !countNode.isMissingNode()) {
-      return countNode.asLong();
-    } else {
-      return -1;
-    }
+    return count(jsonNode);
   }
 
   public List<FolderServerNode> findAllDescendantNodesById(String id) {
-    String cypher = CypherQueryBuilder.getAllDescendantNodes();
-    Map<String, Object> params = CypherParamBuilder.getNodeById(id);
+    String cypher = CypherQueryBuilderNode.getAllDescendantNodes();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
   public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
-    String cypher = CypherQueryBuilder.getAllVisibleByUserQuery();
-    Map<String, Object> params = CypherParamBuilder.matchUserId(id);
+    String cypher = CypherQueryBuilderNode.getAllVisibleByUserQuery();
+    CypherParameters params = CypherParamBuilderUser.matchUserId(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
   public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
-    String cypher = CypherQueryBuilder.getAllVisibleByGroupQuery();
-    Map<String, Object> params = CypherParamBuilder.matchGroupId(id);
+    String cypher = CypherQueryBuilderNode.getAllVisibleByGroupQuery();
+    CypherParameters params = CypherParamBuilderGroup.matchGroupId(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);

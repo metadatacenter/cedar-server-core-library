@@ -2,8 +2,6 @@ package org.metadatacenter.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import java.lang.String;
-
 public enum CedarNodeType {
 
   FOLDER(Types.FOLDER, Prefix.FOLDERS, null),

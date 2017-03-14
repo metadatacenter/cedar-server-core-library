@@ -1,6 +1,7 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsers;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsersRequest;
@@ -17,7 +18,7 @@ public interface GroupServiceSession extends ServiceSession {
 
   FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription);
 
-  FolderServerGroup updateGroupById(String groupURL, Map<String, String> updateFields);
+  FolderServerGroup updateGroupById(String groupURL, Map<NodeProperty, String> updateFields);
 
   boolean deleteGroupById(String groupURL);
 

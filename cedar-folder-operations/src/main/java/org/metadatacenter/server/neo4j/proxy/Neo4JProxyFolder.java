@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +36,9 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   private boolean folderIsAncestorOf(FolderServerFolder parentFolder, FolderServerFolder folder) {
-    String cypher = CypherQueryBuilder.folderIsAncestorOf();
-    Map<String, Object> params = CypherParamBuilder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
-        ());
+    String cypher = CypherQueryBuilderFolder.folderIsAncestorOf();
+    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder
+        .getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode folderNode = jsonNode.at("/results/0/data/0/row/0");
@@ -42,35 +47,25 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   private boolean unlinkFolderFromParent(FolderServerFolder folder) {
-    String cypher = CypherQueryBuilder.unlinkFolderFromParent();
-    Map<String, Object> params = CypherParamBuilder.matchFolderId(folder.getId());
+    String cypher = CypherQueryBuilderFolder.unlinkFolderFromParent();
+    CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while unlinking folder:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while unlinking folder:");
   }
 
   private boolean linkFolderUnderFolder(FolderServerFolder folder, FolderServerFolder parentFolder) {
-    String cypher = CypherQueryBuilder.linkFolderUnderFolder();
-    Map<String, Object> params = CypherParamBuilder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
+    String cypher = CypherQueryBuilderFolder.linkFolderUnderFolder();
+    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
         ());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while linking folder:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while linking folder:");
   }
 
-  FolderServerFolder updateFolderById(String folderId, Map<String, String> updateFields, String updatedBy) {
-    String cypher = CypherQueryBuilder.updateFolderById(updateFields);
-    Map<String, Object> params = CypherParamBuilder.updateFolderById(folderId, updateFields, updatedBy);
+  FolderServerFolder updateFolderById(String folderId, Map<NodeProperty, String> updateFields, String updatedBy) {
+    String cypher = CypherQueryBuilderFolder.updateFolderById(updateFields);
+    CypherParameters params = CypherParamBuilderFolder.updateFolderById(folderId, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode updatedNode = jsonNode.at("/results/0/data/0/row/0");
@@ -78,23 +73,18 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   boolean deleteFolderById(String folderId) {
-    String cypher = CypherQueryBuilder.deleteFolderContentsRecursivelyById();
-    Map<String, Object> params = CypherParamBuilder.deleteFolderById(folderId);
+    String cypher = CypherQueryBuilderFolder.deleteFolderContentsRecursivelyById();
+    CypherParameters params = CypherParamBuilderFolder.deleteFolderById(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while deleting folder:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while deleting folder:");
   }
 
   List<FolderServerFolder> findFolderPathByPath(String path) {
     List<FolderServerFolder> pathList = new ArrayList<>();
     int cnt = proxies.pathUtil.getPathDepth(path);
-    String cypher = CypherQueryBuilder.getFolderLookupQueryByDepth(cnt);
-    Map<String, Object> params = CypherParamBuilder.getFolderLookupByDepthParameters(proxies.pathUtil, path);
+    String cypher = CypherQueryBuilderFolder.getFolderLookupQueryByDepth(cnt);
+    CypherParameters params = CypherParamBuilderFolder.getFolderLookupByDepthParameters(proxies.pathUtil, path);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode pathListJsonNode = jsonNode.at("/results/0/data/0/row");
@@ -111,8 +101,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
 
   List<FolderServerFolder> findFolderPathById(String id) {
     List<FolderServerFolder> pathList = new ArrayList<>();
-    String cypher = CypherQueryBuilder.getFolderLookupQueryById();
-    Map<String, Object> params = CypherParamBuilder.getFolderLookupByIDParameters(proxies.pathUtil, id);
+    String cypher = CypherQueryBuilderFolder.getFolderLookupQueryById();
+    CypherParameters params = CypherParamBuilderFolder.getFolderLookupByIDParameters(proxies.pathUtil, id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode pathListJsonNode = jsonNode.at("/results/0/data/0/row/0");
@@ -140,9 +130,10 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   FolderServerFolder createFolderAsChildOfId(String parentId, String name, String displayName, String description,
-                                             String creatorId, NodeLabel label, Map<String, Object> extraProperties) {
-    String cypher = CypherQueryBuilder.createFolderAsChildOfId(label, extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.getLinkedDataUtil(), parentId, name,
+                                             String creatorId, NodeLabel label, Map<NodeProperty, Object>
+                                                 extraProperties) {
+    String cypher = CypherQueryBuilderFolder.createFolderAsChildOfId(label, extraProperties);
+    CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), parentId, name,
         displayName, description, creatorId, extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
@@ -151,29 +142,19 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   private boolean setOwner(FolderServerFolder folder, FolderServerUser user) {
-    String cypher = CypherQueryBuilder.setFolderOwner();
-    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+    String cypher = CypherQueryBuilderFolder.setFolderOwner();
+    CypherParameters params = CypherParamBuilderFolder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while setting owner:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while setting owner:");
   }
 
   private boolean removeOwner(FolderServerFolder folder) {
-    String cypher = CypherQueryBuilder.removeFolderOwner();
-    Map<String, Object> params = CypherParamBuilder.matchFolderId(folder.getId());
+    String cypher = CypherQueryBuilderFolder.removeFolderOwner();
+    CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing owner:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing owner:");
   }
 
   boolean updateOwner(FolderServerFolder folder, FolderServerUser user) {
@@ -185,8 +166,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   FolderServerFolder findFolderById(String folderUUID) {
-    String cypher = CypherQueryBuilder.getFolderById();
-    Map<String, Object> params = CypherParamBuilder.getFolderById(folderUUID);
+    String cypher = CypherQueryBuilderFolder.getFolderById();
+    CypherParameters params = CypherParamBuilderFolder.getFolderById(folderUUID);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode folderNode = jsonNode.at("/results/0/data/0/row/0");
@@ -194,11 +175,11 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   FolderServerFolder createRootFolder(String creatorId) {
-    Map<String, Object> extraParams = new HashMap<>();
-    extraParams.put(Neo4JFields.IS_ROOT, true);
-    extraParams.put(Neo4JFields.IS_SYSTEM, true);
-    String cypher = CypherQueryBuilder.createRootFolder(extraParams);
-    Map<String, Object> params = CypherParamBuilder.createFolder(proxies.getLinkedDataUtil(), null, proxies.config
+    Map<NodeProperty, Object> extraParams = new HashMap<>();
+    extraParams.put(NodeProperty.IS_ROOT, true);
+    extraParams.put(NodeProperty.IS_SYSTEM, true);
+    String cypher = CypherQueryBuilderFolder.createRootFolder(extraParams);
+    CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), null, proxies.config
             .getRootFolderPath(), proxies.config.getRootFolderPath(), proxies.config.getRootFolderDescription(),
         creatorId, extraParams);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -207,10 +188,9 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return buildFolder(rootNode);
   }
 
-
   public FolderServerFolder findHomeFolderOf(String userId) {
-    String cypher = CypherQueryBuilder.getHomeFolderOf();
-    Map<String, Object> params = CypherParamBuilder.matchUserId(userId);
+    String cypher = CypherQueryBuilderFolder.getHomeFolderOf();
+    CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode folderNode = jsonNode.at("/results/0/data/0/row/0");
