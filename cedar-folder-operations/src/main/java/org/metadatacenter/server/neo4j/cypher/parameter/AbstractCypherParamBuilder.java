@@ -12,10 +12,7 @@ public abstract class AbstractCypherParamBuilder {
   public static final String FOLDER_ALIAS_PREFIX = "f";
 
   protected static ParameterLiteral getFolderAlias(int i) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(FOLDER_ALIAS_PREFIX);
-    sb.append(i);
-    return new ParameterLiteral(sb.toString());
+    return new ParameterLiteral(FOLDER_ALIAS_PREFIX + i);
   }
 
   protected static CypherParameters createNode(String parentId, String childId, CedarNodeType nodeType, String name,

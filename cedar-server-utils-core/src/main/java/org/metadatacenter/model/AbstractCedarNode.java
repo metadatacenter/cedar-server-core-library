@@ -1,7 +1,5 @@
 package org.metadatacenter.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +10,7 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
   protected String displayName;
   protected String createdBy;
   protected String lastUpdatedBy;
-  protected static Map<String, String> CONTEXT;
+  protected static final Map<String, String> CONTEXT;
   protected String path;
   protected String parentPath;
   protected String displayPath;

@@ -8,10 +8,10 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 public abstract class AbstractNeo4JUserSession implements ServiceSession {
 
-  protected Neo4JProxies proxies;
-  protected CedarUser cu;
-  protected CedarConfig cedarConfig;
-  protected LinkedDataUtil linkedDataUtil;
+  protected final Neo4JProxies proxies;
+  protected final CedarUser cu;
+  protected final CedarConfig cedarConfig;
+  protected final LinkedDataUtil linkedDataUtil;
 
   public AbstractNeo4JUserSession(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
     this.cedarConfig = cedarConfig;

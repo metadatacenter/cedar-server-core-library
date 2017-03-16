@@ -16,8 +16,6 @@ public interface FolderServiceSession {
 
   String normalizePath(String path);
 
-  String getChildPath(String path, String name);
-
   String getRootPath();
 
   FolderServerFolder findFolderById(String folderURL);
@@ -53,8 +51,6 @@ public interface FolderServiceSession {
 
   FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name);
 
-  List<FolderServerFolder> findFolderPathByPath(String path);
-
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
   List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
@@ -85,8 +81,6 @@ public interface FolderServiceSession {
   long viewAllCount(List<CedarNodeType> nodeTypeList);
 
   List<FolderServerNode> findAllDescendantNodesById(String id);
-
-  List<FolderServerNode> findAllNodesVisibleByUserId(String id);
 
   List<FolderServerNode> findAllNodesVisibleByGroupId(String id);
 

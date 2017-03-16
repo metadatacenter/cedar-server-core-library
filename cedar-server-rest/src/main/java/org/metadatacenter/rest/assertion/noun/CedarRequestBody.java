@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.CedarAssertionNoun;
-import org.metadatacenter.rest.exception.CedarAssertionException;
 
 public interface CedarRequestBody extends CedarAssertionNoun {
 

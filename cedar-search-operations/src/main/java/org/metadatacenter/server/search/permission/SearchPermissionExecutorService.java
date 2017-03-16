@@ -13,7 +13,6 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentNode;
@@ -33,9 +32,8 @@ public class SearchPermissionExecutorService {
 
   private static final Logger log = LoggerFactory.getLogger(SearchPermissionExecutorService.class);
 
-  private final UserService userService;
-  private FolderServiceSession folderSession;
-  private PermissionServiceSession permissionSession;
+  private final FolderServiceSession folderSession;
+  private final PermissionServiceSession permissionSession;
   private final UserPermissionIndexingService userPermissionIndexingService;
   private final GroupPermissionIndexingService groupPermissionIndexingService;
   private final NodeSearchingService nodeSearchingService;
@@ -48,7 +46,7 @@ public class SearchPermissionExecutorService {
                                          GroupPermissionIndexingService groupPermissionIndexingService,
                                          NodeSearchingService nodeSearchingService,
                                          GroupPermissionSearchingService groupPermissionSearchingService) {
-    this.userService = CedarDataServices.getUserService();
+    UserService userService = CedarDataServices.getUserService();
     this.userPermissionIndexingService = userPermissionIndexingService;
     this.groupPermissionIndexingService = groupPermissionIndexingService;
     this.nodeSearchingService = nodeSearchingService;

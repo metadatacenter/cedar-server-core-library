@@ -31,16 +31,13 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private final Client client;
   private final String indexName;
-  private final CedarConfig cedarConfig;
-  private final ElasticsearchConfig config;
-  private final LinkedDataUtil linkedDataUtil;
 
   public ElasticsearchPermissionEnabledContentSearchingWorker(CedarConfig cedarConfig, Client client) {
-    this.cedarConfig = cedarConfig;
-    this.config = cedarConfig.getElasticsearchConfig();
+    CedarConfig cedarConfig1 = cedarConfig;
+    ElasticsearchConfig config = cedarConfig.getElasticsearchConfig();
     this.client = client;
     this.indexName = config.getIndexName();
-    this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
+    LinkedDataUtil linkedDataUtil = cedarConfig.getLinkedDataUtil();
   }
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>

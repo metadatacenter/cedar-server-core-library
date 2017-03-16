@@ -1,7 +1,6 @@
 package org.metadatacenter.server.security;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.security.*;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;

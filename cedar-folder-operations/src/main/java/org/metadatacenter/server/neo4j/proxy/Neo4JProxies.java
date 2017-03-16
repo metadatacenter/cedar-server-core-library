@@ -10,13 +10,13 @@ public class Neo4JProxies {
   protected final PathUtil pathUtil;
   protected final LinkedDataUtil linkedDataUtil;
 
-  private Neo4JProxyAdmin adminProxy;
-  private Neo4JProxyFolder folderProxy;
-  private Neo4JProxyGroup groupProxy;
-  private Neo4JProxyUser userProxy;
-  private Neo4JProxyPermission permissionProxy;
-  private Neo4JProxyResource resourceProxy;
-  private Neo4JProxyNode nodeProxy;
+  private final Neo4JProxyAdmin adminProxy;
+  private final Neo4JProxyFolder folderProxy;
+  private final Neo4JProxyGroup groupProxy;
+  private final Neo4JProxyUser userProxy;
+  private final Neo4JProxyPermission permissionProxy;
+  private final Neo4JProxyResource resourceProxy;
+  private final Neo4JProxyNode nodeProxy;
 
   public Neo4JProxies(Neo4jConfig config, LinkedDataUtil linkedDataUtil) {
     this.config = config;

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CedarErrorPackException extends CedarErrorPackSingleException {
 
-  private List<CedarErrorPackSingleException> causes;
+  private final List<CedarErrorPackSingleException> causes;
 
   public CedarErrorPackException(Exception e) {
     causes = new ArrayList<>();

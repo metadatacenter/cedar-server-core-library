@@ -24,7 +24,7 @@ public class CedarMicroserviceIndexResource extends CedarMicroserviceResource {
 
   public CedarMicroserviceIndexResource(CedarConfig cedarConfig, String serverName) {
     super(cedarConfig);
-    this.serverName = serverName;
+    CedarMicroserviceIndexResource.serverName = serverName;
     info.put("name", serverName);
   }
 

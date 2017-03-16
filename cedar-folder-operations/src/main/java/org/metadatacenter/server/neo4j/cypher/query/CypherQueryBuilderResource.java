@@ -25,57 +25,51 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
   }
 
   public static String deleteResourceById() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{id}})");
-    sb.append(" DETACH DELETE resource");
-    return sb.toString();
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{id}})" +
+        " DETACH DELETE resource";
   }
 
   public static String unlinkResourceFromParent() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FOLDER>)");
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})");
-    sb.append(" MATCH (parent)-[relation:<REL.CONTAINS>]->(resource)");
-    sb.append(" DELETE relation");
-    sb.append(" RETURN resource");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER>)" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (parent)-[relation:<REL.CONTAINS>]->(resource)" +
+        " DELETE relation" +
+        " RETURN resource";
   }
 
   public static String linkResourceUnderFolder() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{parentFolderId}})");
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})");
-    sb.append(" CREATE (parent)-[:<REL.CONTAINS>]->(resource)");
-    sb.append(" RETURN resource");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {id:{parentFolderId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " CREATE (parent)-[:<REL.CONTAINS>]->(resource)" +
+        " RETURN resource";
   }
 
   public static String setResourceOwner() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})");
-    sb.append(" CREATE (user)-[:<REL.OWNS>]->(resource)");
-    sb.append(" SET resource.<PROP.OWNED_BY> = {userId}");
-    sb.append(" RETURN resource");
-    return sb.toString();
+    return "" +
+        " MATCH (user:<LABEL.USER> {id:{userId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " CREATE (user)-[:<REL.OWNS>]->(resource)" +
+        " SET resource.<PROP.OWNED_BY> = {userId}" +
+        " RETURN resource";
   }
 
   public static String removeResourceOwner() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})");
-    sb.append(" MATCH (user)-[relation:<REL.OWNS>]->(resource)");
-    sb.append(" DELETE relation");
-    sb.append(" SET resource.<PROP.OWNED_BY> = null");
-    sb.append(" RETURN resource");
-    return sb.toString();
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (user)-[relation:<REL.OWNS>]->(resource)" +
+        " DELETE relation" +
+        " SET resource.<PROP.OWNED_BY> = null" +
+        " RETURN resource";
   }
 
   public static String getResourceById() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{id}})");
-    sb.append(" RETURN resource");
-    return sb.toString();
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{id}})" +
+        " RETURN resource";
   }
 
 }

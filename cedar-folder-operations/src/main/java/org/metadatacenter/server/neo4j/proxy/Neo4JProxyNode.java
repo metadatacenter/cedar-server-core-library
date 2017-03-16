@@ -173,14 +173,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return listNodes(jsonNode);
   }
 
-  public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
-    String cypher = CypherQueryBuilderNode.getAllVisibleByUserQuery();
-    CypherParameters params = CypherParamBuilderUser.matchUserId(id);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return listNodes(jsonNode);
-  }
-
   public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
     String cypher = CypherQueryBuilderNode.getAllVisibleByGroupQuery();
     CypherParameters params = CypherParamBuilderGroup.matchGroupId(id);

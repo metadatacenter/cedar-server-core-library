@@ -8,8 +8,8 @@ import java.util.List;
 
 public class IndexingDocumentUsers {
 
-  private String cid;
-  private List<IdNodePermissionPair> users;
+  private final String cid;
+  private final List<IdNodePermissionPair> users;
 
   public IndexingDocumentUsers(CedarNodeMaterializedPermissions permissions) {
     this.cid = permissions.getId();

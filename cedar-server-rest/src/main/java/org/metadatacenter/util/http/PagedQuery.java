@@ -11,7 +11,7 @@ public class PagedQuery {
   private Optional<Integer> limitInput;
   private Optional<Integer> offsetInput;
 
-  private PaginationConfig config;
+  private final PaginationConfig config;
   private int limit;
   private int offset;
 

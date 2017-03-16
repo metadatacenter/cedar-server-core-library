@@ -2,55 +2,40 @@ package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AbstractCypherQuery implements CypherQuery {
 
   protected final String query;
   protected String runnableQuery;
 
-  protected static Set<NodeLabel> labels;
-  protected static Set<RelationLabel> relations;
-  protected static Set<NodeProperty> properties;
-  protected static Map<String, String> replacementTable;
+  protected static final Set<NodeLabel> labels;
+  protected static final Set<RelationLabel> relations;
+  protected static final Set<NodeProperty> properties;
+  protected static final Map<String, String> replacementTable;
 
   static {
     labels = new HashSet<>();
-    for (NodeLabel label : NodeLabel.values()) {
-      labels.add(label);
-    }
+    Collections.addAll(labels, NodeLabel.values());
 
     relations = new HashSet<>();
-    for (RelationLabel label : RelationLabel.values()) {
-      relations.add(label);
-    }
+    Collections.addAll(relations, RelationLabel.values());
 
     properties = new HashSet<>();
-    for (NodeProperty property : NodeProperty.values()) {
-      properties.add(property);
-    }
+    Collections.addAll(properties, NodeProperty.values());
 
     replacementTable = new HashMap<>();
 
     for (NodeLabel label : labels) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<LABEL.").append(label.name()).append(">");
-      replacementTable.put(sb.toString(), label.getValue());
+      replacementTable.put("<LABEL." + label.name() + ">", label.getValue());
     }
 
     for (RelationLabel relation : relations) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<REL.").append(relation.name()).append(">");
-      replacementTable.put(sb.toString(), relation.getValue());
+      replacementTable.put("<REL." + relation.name() + ">", relation.getValue());
     }
 
     for (NodeProperty property : properties) {
-      StringBuilder sb = new StringBuilder();
-      sb.append("<PROP.").append(property.name()).append(">");
-      replacementTable.put(sb.toString(), property.getValue());
+      replacementTable.put("<PROP." + property.name() + ">", property.getValue());
     }
 
   }

@@ -66,15 +66,19 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return proxies.resource().deleteResourceById(resourceURL);
   }
 
+  private void setPaths(FolderServerNode node, List<? extends FolderServerNode> path) {
+    node.setPath(getPathString(path));
+    node.setParentPath(getParentPathString(path));
+    node.setDisplayPath(getDisplayPathString(path));
+    node.setDisplayParentPath(getDisplayParentPathString(path));
+  }
+
   @Override
   public void addPathAndParentId(FolderServerFolder folder) {
     if (folder != null) {
       List<FolderServerFolder> path = findFolderPath(folder);
       if (path != null) {
-        folder.setPath(getPathString(path));
-        folder.setParentPath(getParentPathString(path));
-        folder.setDisplayPath(getDisplayPathString(path));
-        folder.setDisplayParentPath(getDisplayParentPathString(path));
+        setPaths(folder, path);
       }
     }
   }
@@ -84,10 +88,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     if (resource != null) {
       List<FolderServerNode> path = proxies.node().findNodePathById(resource.getId());
       if (path != null) {
-        resource.setPath(getPathString(path));
-        resource.setParentPath(getParentPathString(path));
-        resource.setDisplayPath(getDisplayPathString(path));
-        resource.setDisplayParentPath(getDisplayParentPathString(path));
+        setPaths(resource, path);
       }
     }
   }
@@ -180,11 +181,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public String getChildPath(String path, String name) {
-    return proxies.pathUtil.getChildPath(path, name);
-  }
-
-  @Override
   public List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList) {
     return proxies.node().findFolderContents(folderURL, nodeTypeList, limit, offset, sortList, cu);
@@ -193,11 +189,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public String getRootPath() {
     return proxies.pathUtil.getRootPath();
-  }
-
-  @Override
-  public List<FolderServerFolder> findFolderPathByPath(String path) {
-    return proxies.folder().findFolderPathByPath(path);
   }
 
   @Override
@@ -291,15 +282,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
-    return proxies.node().findAllNodesVisibleByUserId(id);
-  }
-
-  @Override
   public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
     return proxies.node().findAllNodesVisibleByGroupId(id);
   }
-
 
   @Override
   public FolderServerFolder findHomeFolderOf() {

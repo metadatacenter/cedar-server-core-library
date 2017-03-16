@@ -21,11 +21,6 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     super(proxies);
   }
 
-  public FolderServerUser createUser(String userURL, String name, String displayName, String firstName, String
-      lastName, String email, FolderServerGroup group) {
-    return createUser(userURL, name, displayName, firstName, lastName, email, null, group);
-  }
-
   FolderServerUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
       email) {
     return createUser(userURL, name, displayName, firstName, lastName, email, null, null);

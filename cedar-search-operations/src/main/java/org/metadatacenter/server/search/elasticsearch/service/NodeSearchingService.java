@@ -10,7 +10,6 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentNode;
-import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentNode;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class NodeSearchingService extends AbstractSearchingService {
 
   private final Client client;
   private final ElasticsearchConfig config;
-  private ElasticsearchSearchingWorker searchWorker;
+  private final ElasticsearchSearchingWorker searchWorker;
 
   NodeSearchingService(CedarConfig cedarConfig, Client client) {
     this.client = client;

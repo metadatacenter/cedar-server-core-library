@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MongoClientFactory {
 
-  private MongoConnection mongoConnection;
+  private final MongoConnection mongoConnection;
 
   private MongoClient mongoClient;
 

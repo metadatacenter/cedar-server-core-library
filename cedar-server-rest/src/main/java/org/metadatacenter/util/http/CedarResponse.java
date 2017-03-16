@@ -31,7 +31,7 @@ public abstract class CedarResponse {
 
   public static class CedarResponseBuilder {
 
-    private Map<String, Object> parameters;
+    private final Map<String, Object> parameters;
     private CedarErrorKey errorKey;
     private CedarErrorReasonKey errorReasonKey;
     private String errorMessage;

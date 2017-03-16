@@ -5,22 +5,20 @@ import java.util.List;
 public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder {
 
   public static String getFolderContentsFilteredCountQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{id}})");
-    sb.append(" MATCH (child)");
-    sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
-    sb.append(" WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}");
-    sb.append(" RETURN count(child)");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {id:{id}})" +
+        " MATCH (child)" +
+        " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
+        " WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}" +
+        " RETURN count(child)";
   }
 
   public static String getFolderContentsCountQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{id}})");
-    sb.append(" MATCH (child)");
-    sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
-    sb.append(" RETURN count(child)");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {id:{id}})" +
+        " MATCH (child)" +
+        " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
+        " RETURN count(child)";
   }
 
   public static String getFolderContentsLookupQuery(List<String> sortList, boolean addPermissionConditions) {

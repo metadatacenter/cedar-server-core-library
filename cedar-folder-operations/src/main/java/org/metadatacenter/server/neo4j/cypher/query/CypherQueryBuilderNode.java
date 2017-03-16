@@ -5,75 +5,68 @@ import java.util.List;
 public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getAllNodesLookupQuery(List<String> sortList) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (node:<LABEL.FSNODE>)");
-    sb.append(" RETURN node");
-    sb.append(" ORDER BY ").append(getOrderByExpression("node", sortList));
-    sb.append(" SKIP {offset}");
-    sb.append(" LIMIT {limit}");
-    return sb.toString();
+    return "" +
+        " MATCH (node:<LABEL.FSNODE>)" +
+        " RETURN node" +
+        " ORDER BY " + getOrderByExpression("node", sortList) +
+        " SKIP {offset}" +
+        " LIMIT {limit}";
   }
 
   public static String getNodeLookupQueryById() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (root:<LABEL.FOLDER> {name:{name}}),");
-    sb.append(" (current {id:{id}}),");
-    sb.append(" path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))");
-    sb.append(" RETURN path");
-    return sb.toString();
+    return "" +
+        " MATCH (root:<LABEL.FOLDER> {name:{name}})," +
+        " (current {id:{id}})," +
+        " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
+        " RETURN path";
   }
 
   public static String getAllNodesCountQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (node:<LABEL.FSNODE>)");
-    sb.append(" RETURN count(node)");
-    return sb.toString();
+    return "" +
+        " MATCH (node:<LABEL.FSNODE>)" +
+        " RETURN count(node)";
   }
 
   public static String getNodeByParentIdAndName() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FSNODE> {id:{id}})");
-    sb.append(" MATCH (child)");
-    sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
-    sb.append(" WHERE child.<PROP.NAME> = {name}");
-    sb.append(" RETURN child");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FSNODE> {id:{id}})" +
+        " MATCH (child)" +
+        " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
+        " WHERE child.<PROP.NAME> = {name}" +
+        " RETURN child";
   }
 
   public static String getNodeOwner() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (node:<LABEL.FSNODE> {id:{nodeId} })");
-    sb.append(" MATCH (user)-[:<REL.OWNS>]->(node)");
-    sb.append(" RETURN user");
-    return sb.toString();
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (node:<LABEL.FSNODE> {id:{nodeId} })" +
+        " MATCH (user)-[:<REL.OWNS>]->(node)" +
+        " RETURN user";
   }
 
   public static String getSharedWithMeLookupQuery(List<String> sortList) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
-    sb.append(" AND node.<PROP.OWNED_BY> <> {userId}");
-    sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
-    sb.append(getSharedWithMeConditions(" AND ", "node"));
-    sb.append(" RETURN node");
-    sb.append(" ORDER BY node.<PROP.NODE_SORT_ORDER>,").append(getOrderByExpression("node", sortList));
-    sb.append(" SKIP {offset}");
-    sb.append(" LIMIT {limit}");
-    return sb.toString();
+    return "" +
+        " MATCH (user:<LABEL.USER> {id:{userId}})" +
+        " MATCH (node)" +
+        " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+        " AND node.<PROP.OWNED_BY> <> {userId}" +
+        " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
+        getSharedWithMeConditions(" AND ", "node") +
+        " RETURN node" +
+        " ORDER BY node.<PROP.NODE_SORT_ORDER>," + getOrderByExpression("node", sortList) +
+        " SKIP {offset}" +
+        " LIMIT {limit}";
   }
 
   public static String getSharedWithMeCountQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
-    sb.append(" AND node.<PROP.OWNED_BY>  <> {userId}");
-    sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
-    sb.append(getSharedWithMeConditions(" AND ", "node"));
-    sb.append(" RETURN count(node)");
-    return sb.toString();
+    return "" +
+        " MATCH (user:<LABEL.USER> {id:{userId}})" +
+        " MATCH (node)" +
+        " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+        " AND node.<PROP.OWNED_BY>  <> {userId}" +
+        " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
+        getSharedWithMeConditions(" AND ", "node") +
+        " RETURN count(node)";
   }
 
   public static String getAllLookupQuery(List<String> sortList, boolean addPermissionConditions) {
@@ -106,38 +99,26 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
   }
 
   public static String getAllDescendantNodes() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{id} })");
-    sb.append(" MATCH (child)");
-    sb.append(" MATCH (parent)-[:<REL>CONTAINS>*0..]->(child)");
-    sb.append(" RETURN child");
-    return sb.toString();
-  }
-
-  public static String getAllVisibleByUserQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (node)");
-    sb.append(" WHERE");
-    sb.append(getResourcePermissionConditions(" ", "node"));
-    sb.append(" RETURN node");
-    return sb.toString();
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {id:{id} })" +
+        " MATCH (child)" +
+        " MATCH (parent)-[:<REL>CONTAINS>*0..]->(child)" +
+        " RETURN child";
   }
 
   public static String getAllVisibleByGroupQuery() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (group:<LABEL.GROUP> {id:{groupId}})");
-    sb.append(" MATCH (node)");
-    sb.append(" WHERE");
-    sb.append(" (");
-    sb.append(" (group)-[:<REL.CANREADTHIS>]->(node)");
-    sb.append(" OR ");
-    sb.append(" (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(node)");
-    sb.append(" OR ");
-    sb.append(" (group)-[:<REL.CANWRITE]->()-[:<REL.CONTAINS>*0..]->(node)");
-    sb.append(" )");
-    sb.append(" RETURN node");
-    return sb.toString();
+    return "" +
+        " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
+        " MATCH (node)" +
+        " WHERE" +
+        " (" +
+        " (group)-[:<REL.CANREADTHIS>]->(node)" +
+        " OR " +
+        " (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(node)" +
+        " OR " +
+        " (group)-[:<REL.CANWRITE]->()-[:<REL.CONTAINS>*0..]->(node)" +
+        " )" +
+        " RETURN node";
   }
 
 }

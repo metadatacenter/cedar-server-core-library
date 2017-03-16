@@ -42,11 +42,11 @@ public class IndexUtils {
 
   private final String FIELD_SUFFIX = "_field";
 
-  private String folderBase;
-  private String templateBase;
-  private int limit;
-  private int maxAttempts;
-  private int delayAttempts;
+  private final String folderBase;
+  private final String templateBase;
+  private final int limit;
+  private final int maxAttempts;
+  private final int delayAttempts;
 
   private enum ESType {
     STRING, LONG, INTEGER, SHORT, DOUBLE, FLOAT, DATE, BOOLEAN;

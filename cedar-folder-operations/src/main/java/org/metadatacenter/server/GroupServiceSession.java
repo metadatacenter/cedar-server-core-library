@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface GroupServiceSession extends ServiceSession {
+
   List<FolderServerGroup> findGroups();
 
   FolderServerGroup findGroupById(String groupURL);

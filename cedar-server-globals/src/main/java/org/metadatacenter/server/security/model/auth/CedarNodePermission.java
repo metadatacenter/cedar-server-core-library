@@ -23,11 +23,7 @@ public abstract class CedarNodePermission {
   }
 
   public static String getKey(String objectId, NodePermission permission) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(objectId);
-    sb.append(KEY_SEPARATOR);
-    sb.append(permission.getValue());
-    return sb.toString();
+    return objectId + KEY_SEPARATOR + permission.getValue();
   }
 
   public static String getId(String key) {

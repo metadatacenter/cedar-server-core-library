@@ -55,12 +55,7 @@ public enum CedarPermission {
   CedarPermission(String resourceType, String accessType) {
     this.resourceType = resourceType;
     this.accessType = accessType;
-    StringBuilder sb = new StringBuilder();
-    sb.append("permission_");
-    sb.append(resourceType);
-    sb.append("_");
-    sb.append(accessType);
-    permissionName = sb.toString();
+    this.permissionName = "permission_" + resourceType + "_" + accessType;
   }
 
   public String getAccessType() {

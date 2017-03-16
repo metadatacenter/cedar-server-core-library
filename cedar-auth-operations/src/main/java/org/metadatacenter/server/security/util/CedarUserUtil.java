@@ -3,8 +3,6 @@ package org.metadatacenter.server.security.util;
 import org.apache.commons.codec.binary.Hex;
 import org.metadatacenter.config.BlueprintUIPreferences;
 import org.metadatacenter.config.BlueprintUserProfile;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.CedarUserRolePermissionUtil;
 import org.metadatacenter.server.security.model.user.*;
 import org.slf4j.Logger;

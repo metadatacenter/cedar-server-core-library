@@ -4,7 +4,6 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.UserServiceSession;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -25,11 +24,6 @@ public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implem
   @Override
   public List<FolderServerUser> findUsers() {
     return proxies.user().findUsers();
-  }
-
-  @Override
-  public FolderServerUser findUserById(String userURL) {
-    return proxies.user().findUserById(userURL);
   }
 
   @Override

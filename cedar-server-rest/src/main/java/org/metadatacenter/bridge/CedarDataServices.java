@@ -22,7 +22,7 @@ public final class CedarDataServices {
   private CedarConfig cedarConfig;
   private MongoClientFactory mongoClientFactoryForDocuments;
   private MongoClientFactory mongoClientFactoryForUsers;
-  private static CedarDataServices instance = new CedarDataServices();
+  private static final CedarDataServices instance = new CedarDataServices();
 
   private CedarDataServices() {
   }
