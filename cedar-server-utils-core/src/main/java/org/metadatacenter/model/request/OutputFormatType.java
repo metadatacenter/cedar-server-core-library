@@ -7,8 +7,7 @@ public enum OutputFormatType {
 
   JSONLD("jsonld"),
   JSON("json"),
-  RDF_NQUAD("rdf-nquad"),
-  UNKNOWN("unknown");
+  RDF_NQUAD("rdf-nquad");
 
   private final String value;
 
@@ -23,11 +22,12 @@ public enum OutputFormatType {
 
   @JsonCreator
   public static OutputFormatType forValue(String value) {
+    OutputFormatType formatType = null;
     for (OutputFormatType t : values()) {
       if (t.getValue().equals(value)) {
-        return t;
+        formatType = t;
       }
     }
-    return UNKNOWN;
+    return formatType;
   }
 }
