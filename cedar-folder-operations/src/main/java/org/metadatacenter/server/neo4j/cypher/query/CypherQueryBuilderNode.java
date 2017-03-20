@@ -102,7 +102,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {id:{id} })" +
         " MATCH (child)" +
-        " MATCH (parent)-[:<REL>CONTAINS>*0..]->(child)" +
+        " MATCH (parent)-[:<REL.CONTAINS>*0..]->(child)" +
         " RETURN child";
   }
 

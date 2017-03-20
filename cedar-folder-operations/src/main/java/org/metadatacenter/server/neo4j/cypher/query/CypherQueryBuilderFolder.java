@@ -10,7 +10,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   public static String createRootFolder(Map<NodeProperty, Object> extraParams) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        createNode("root", NodeLabel.SYSTEM_FOLDER, extraParams) +
+        createFSNode("root", NodeLabel.SYSTEM_FOLDER, extraParams) +
         " CREATE (user)-[:<REL.OWNS>]->(root)" +
         " RETURN root";
   }
@@ -35,7 +35,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   }
 
   public static String createFolderAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
-    return createNodeAsChildOfId(label, extraProperties);
+    return createFSNodeAsChildOfId(label, extraProperties);
   }
 
   public static String unlinkFolderFromParent() {

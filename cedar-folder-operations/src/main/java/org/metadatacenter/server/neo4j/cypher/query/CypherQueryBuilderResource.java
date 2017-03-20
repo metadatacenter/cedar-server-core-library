@@ -8,7 +8,7 @@ import java.util.Map;
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String createResourceAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
-    return createNodeAsChildOfId(label, extraProperties);
+    return createFSNodeAsChildOfId(label, extraProperties);
   }
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {

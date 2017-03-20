@@ -22,10 +22,10 @@ public abstract class AbstractCypherQueryBuilder {
   }
 
   protected static String buildSetter(String nodeAlias, NodeProperty property) {
-    return " SET" + nodeAlias + "." + buildUpdateAssignment(property);
+    return " SET " + nodeAlias + "." + buildUpdateAssignment(property);
   }
 
-  protected static String createNode(String nodeAlias, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
+  protected static String createFSNode(String nodeAlias, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (").append(nodeAlias).append(":").append(label).append(" {");
 
@@ -39,7 +39,7 @@ public abstract class AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_BY)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
-    sb.append(buildCreateAssignment(NodeProperty.OWNED_BY));
+    sb.append(buildCreateAssignment(NodeProperty.OWNED_BY)).append(",");
 
     sb.append(NodeProperty.NODE_SORT_ORDER).append(":")
         .append(label.isFolder() ? ORDER_FOLDER : ORDER_NON_FOLDER).append(",");
@@ -107,11 +107,11 @@ public abstract class AbstractCypherQueryBuilder {
         " RETURN fromNode";
   }
 
-  protected static String createNodeAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
+  protected static String createFSNodeAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createNode("child", label, extraProperties) +
+        createFSNode("child", label, extraProperties) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";

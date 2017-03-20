@@ -84,18 +84,21 @@ public abstract class AbstractNeo4JProxy {
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
       // TODO: Use a constant here: HTTP_OK
-      if (statusCode == 200) {
-        return JsonMapper.MAPPER.readTree(responseAsString);
+      JsonNode cypherQueryResponse = null;
+      boolean resultOk = false;
+      if (responseAsString != null) {
+        cypherQueryResponse = JsonMapper.MAPPER.readTree(responseAsString);
       } else {
-        if (responseAsString != null) {
-          JsonNode jsonNode = JsonMapper.MAPPER.readTree(responseAsString);
-          successOrLog(jsonNode, "Error while executing cypher query");
-        } else {
-          log.error("Error while deserializing cypher response");
-        }
+        log.error("Error while reading cypher query response!");
+      }
+      if (cypherQueryResponse != null) {
+        resultOk = successOrLog(cypherQueryResponse, "Error while executing cypher query:");
+      }
+      if (resultOk) {
+        return cypherQueryResponse;
+      } else {
         return null;
       }
-
     } catch (IOException ex) {
       log.error("Error while reading user details from Keycloak", ex);
     }
@@ -223,7 +226,15 @@ public abstract class AbstractNeo4JProxy {
     JsonNode errorsNode = jsonNode.at("/errors");
     if (errorsNode.size() != 0) {
       JsonNode error = errorsNode.path(0);
-      log.error(errorMessage, error);
+      log.error(errorMessage);
+      JsonNode code = error.get("code");
+      if (code != null) {
+        log.error("code: " + code.asText());
+      }
+      JsonNode message = error.get("message");
+      if (message != null) {
+        log.error("message: " + message.asText());
+      }
     }
     return errorsNode.size() == 0;
   }
