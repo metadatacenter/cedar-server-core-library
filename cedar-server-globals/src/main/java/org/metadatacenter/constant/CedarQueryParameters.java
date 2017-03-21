@@ -18,5 +18,6 @@ public final class CedarQueryParameters {
   public static final String QP_DERIVED_FROM_ID = "derived_from_id";
   public static final String QP_Q = "q";
   public static final String QP_SHARING = "sharing";
+  public static final String QP_FORMAT = "format";
 
 }
