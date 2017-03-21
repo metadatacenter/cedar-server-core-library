@@ -4,8 +4,8 @@ import org.elasticsearch.action.search.SearchResponse;
 
 public class SearchResponseResult {
 
-  private SearchResponse response;
-  private NodeIdResultList resultList;
+  private final SearchResponse response;
+  private final NodeIdResultList resultList;
 
   public SearchResponseResult(SearchResponse response, NodeIdResultList resultList) {
     this.response = response;

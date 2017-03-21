@@ -16,7 +16,6 @@ import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
-import org.metadatacenter.util.mongo.MongoFactory;
 
 import javax.management.InstanceNotFoundException;
 import java.io.IOException;
@@ -35,11 +34,9 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
   protected final MongoCollection<Document> entityCollection;
   private final @NonNull JsonUtils jsonUtils;
 
-  public GenericLDDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
-    MongoClient mongoClient = MongoFactory.getClient();
+  public GenericLDDaoMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName, @NonNull String collectionName) {
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     jsonUtils = new JsonUtils();
-    // TODO: close mongoClient after using it
   }
 
   /* CRUD operations */

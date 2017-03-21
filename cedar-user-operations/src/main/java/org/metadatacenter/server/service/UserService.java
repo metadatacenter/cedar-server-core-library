@@ -7,7 +7,6 @@ import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.IUserService;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 

@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderPermission;
+import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,110 +22,71 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   }
 
   boolean addPermission(FolderServerFolder folder, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilder.addPermissionToFolderForGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
+    String cypher = CypherQueryBuilderPermission.addPermissionToFolderForGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while adding permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilder.addPermissionToFolderForUser(permission);
-    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+    String cypher = CypherQueryBuilderPermission.addPermissionToFolderForUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while adding permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilder.addPermissionToResourceForGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
+    String cypher = CypherQueryBuilderPermission.addPermissionToResourceForGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while adding permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilder.addPermissionToResourceForUser(permission);
-    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    String cypher = CypherQueryBuilderPermission.addPermissionToResourceForUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while adding permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while adding permission:");
   }
 
   boolean removePermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilder.removePermissionForFolderFromUser(permission);
-    Map<String, Object> params = CypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+    String cypher = CypherQueryBuilderPermission.removePermissionForFolderFromUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerFolder folder, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilder.removePermissionForFolderFromGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
+    String cypher = CypherQueryBuilderPermission.removePermissionForFolderFromGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilder.removePermissionForResourceFromUser(permission);
-    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    String cypher = CypherQueryBuilderPermission.removePermissionForResourceFromUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilder.removePermissionForResourceFromGroup(permission);
-    Map<String, Object> params = CypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
+    String cypher = CypherQueryBuilderPermission.removePermissionForResourceFromGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing permission:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing permission:");
   }
 
-  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource folderOrResource) {
+  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource
+      folderOrResource) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
       if (folderOrResource == FolderOrResource.FOLDER) {
@@ -156,7 +121,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource folderOrResource) {
+  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource
+      folderOrResource) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
       if (folderOrResource == FolderOrResource.FOLDER) {
@@ -173,7 +139,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource folderOrResource) {
+  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource
+      folderOrResource) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
       if (folderOrResource == FolderOrResource.FOLDER) {
@@ -191,8 +158,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   }
 
   boolean userHasReadAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilder.userCanReadNode(FolderOrResource.FOLDER);
-    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
+    String cypher = CypherQueryBuilderPermission.userCanReadNode(FolderOrResource.FOLDER);
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -201,8 +168,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   }
 
   boolean userHasWriteAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilder.userCanWriteNode(FolderOrResource.FOLDER);
-    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
+    String cypher = CypherQueryBuilderPermission.userCanWriteNode(FolderOrResource.FOLDER);
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -211,8 +178,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   }
 
   boolean userHasReadAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilder.userCanReadNode(FolderOrResource.RESOURCE);
-    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
+    String cypher = CypherQueryBuilderPermission.userCanReadNode(FolderOrResource.RESOURCE);
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -221,8 +188,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   }
 
   boolean userHasWriteAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilder.userCanWriteNode(FolderOrResource.RESOURCE);
-    Map<String, Object> params = CypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
+    String cypher = CypherQueryBuilderPermission.userCanWriteNode(FolderOrResource.RESOURCE);
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
@@ -240,8 +207,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
         relationLabel = RelationLabel.CANWRITE;
         break;
     }
-    String cypher = CypherQueryBuilder.getUsersWithDirectPermissionOnNode(relationLabel);
-    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    String cypher = CypherQueryBuilderPermission.getUsersWithDirectPermissionOnNode(relationLabel);
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listUsers(jsonNode);
@@ -257,8 +224,8 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
         relationLabel = RelationLabel.CANWRITE;
         break;
     }
-    String cypher = CypherQueryBuilder.getGroupsWithDirectPermissionOnNode(relationLabel);
-    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    String cypher = CypherQueryBuilderPermission.getGroupsWithDirectPermissionOnNode(relationLabel);
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listGroups(jsonNode);
@@ -269,33 +236,32 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilder.getUsersWithTransitiveReadOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveReadOnNode(folderOrResource);
         break;
       case WRITE:
-        cypher = CypherQueryBuilder.getUsersWithTransitiveWriteOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveWriteOnNode(folderOrResource);
         break;
     }
 
-    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listUsers(jsonNode);
   }
 
   List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, NodePermission permission,
-                                                                  FolderOrResource
-                                                                      folderOrResource) {
+                                                                  FolderOrResource folderOrResource) {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilder.getGroupsWithTransitiveReadOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveReadOnNode(folderOrResource);
         break;
       case WRITE:
-        cypher = CypherQueryBuilder.getGroupsWithTransitiveWriteOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveWriteOnNode(folderOrResource);
         break;
     }
 
-    Map<String, Object> params = CypherParamBuilder.matchNodeId(nodeURL);
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listGroups(jsonNode);
@@ -304,18 +270,18 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   public Map<String, String> findAccessibleNodeIds(String userURL) {
     Map<String, String> map = new HashMap<>();
 
-    String cypherOwned = CypherQueryBuilder.findOwnedNodes();
-    Map<String, Object> params = CypherParamBuilder.matchUserId(userURL);
+    String cypherOwned = CypherQueryBuilderPermission.findOwnedNodes();
+    CypherParameters params = CypherParamBuilderUser.matchUserId(userURL);
     CypherQuery qOwned = new CypherQueryWithParameters(cypherOwned, params);
     JsonNode jsonNodeOwned = executeCypherQueryAndCommit(qOwned);
     mergeAccessibleNodesIntoMap(map, jsonNodeOwned, RelationLabel.OWNS);
 
-    String cypherWrite = CypherQueryBuilder.findWritableNodes();
+    String cypherWrite = CypherQueryBuilderPermission.findWritableNodes();
     CypherQuery qWrite = new CypherQueryWithParameters(cypherWrite, params);
     JsonNode jsonNodeWritable = executeCypherQueryAndCommit(qWrite);
     mergeAccessibleNodesIntoMap(map, jsonNodeWritable, RelationLabel.CANWRITE);
 
-    String cypherRead = CypherQueryBuilder.findReadableNodes();
+    String cypherRead = CypherQueryBuilderPermission.findReadableNodes();
     CypherQuery qRead = new CypherQueryWithParameters(cypherRead, params);
     JsonNode jsonNodeReadable = executeCypherQueryAndCommit(qRead);
     mergeAccessibleNodesIntoMap(map, jsonNodeReadable, RelationLabel.CANREAD);

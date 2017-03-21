@@ -1,13 +1,27 @@
 package org.metadatacenter.rest.context;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.security.CedarAccessException;
+import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class CedarRequestContextFactory {
+
+  private static LinkedDataUtil linkedDataUtil;
+
+  private static final Logger log = LoggerFactory.getLogger(CedarRequestContextFactory.class);
+
+  public static void init(LinkedDataUtil linkedDataUtil) {
+    CedarRequestContextFactory.linkedDataUtil = linkedDataUtil;
+  }
+
   public static CedarRequestContext fromRequest(HttpServletRequest request) throws CedarAccessException {
-    HttpServletRequestContext sc = new HttpServletRequestContext(request);
+    HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request);
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();
     }
@@ -20,5 +34,16 @@ public class CedarRequestContextFactory {
       throw lrc.getUserCreationException();
     }
     return lrc;
+  }
+
+  public static CedarRequestContext fromAdminUser(CedarConfig cedarConfig, UserService userService) {
+    try {
+      String adminUserId = cedarConfig.getAdminUserId();
+      CedarUser adminUser = userService.findUser(adminUserId);
+      return CedarRequestContextFactory.fromUser(adminUser);
+    } catch (Exception ex) {
+      log.error("Error while looking up admin user.", ex);
+      return null;
+    }
   }
 }

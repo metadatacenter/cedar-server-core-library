@@ -17,7 +17,7 @@ public class UserPermissionIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(UserPermissionIndexingService.class);
 
-  private ElasticsearchIndexingWorker indexWorker;
+  private final ElasticsearchIndexingWorker indexWorker;
 
   UserPermissionIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
     indexWorker = new ElasticsearchIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,

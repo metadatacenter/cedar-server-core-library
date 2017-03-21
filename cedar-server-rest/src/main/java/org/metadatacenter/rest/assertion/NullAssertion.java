@@ -20,8 +20,8 @@ public class NullAssertion implements CedarAssertion {
         if (param.isNull()) {
           return null;
         } else {
-          return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
-              .append("' from ").append(param.getSource()).append(" should be null").toString())
+          return new CedarAssertionResult("The parameter named '" + param.getName() + "' from " + param.getSource() +
+              " should be null")
               .parameter("name", param.getName())
               .parameter("source", param.getSource());
         }

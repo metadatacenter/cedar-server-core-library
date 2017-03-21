@@ -5,7 +5,14 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
-import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.CypherQuery;
+import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
+import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.Map;
 
@@ -16,19 +23,20 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   FolderServerResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType nodeType, String
-      name, String description, String creatorId, NodeLabel label, Map<String, Object> extraProperties) {
-    String cypher = CypherQueryBuilder.createResourceAsChildOfId(label, extraProperties);
-    Map<String, Object> params = CypherParamBuilder.createResource(parentId, childURL, nodeType, name, description,
-        creatorId, extraProperties);
+      name, String description, String creatorId, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
+    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(label, extraProperties);
+    CypherParameters params = CypherParamBuilderResource.createResource(parentId, childURL, nodeType, name,
+        description, creatorId, extraProperties);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");
     return buildResource(newNode);
   }
 
-  FolderServerResource updateResourceById(String resourceURL, Map<String, String> updateFields, String updatedBy) {
-    String cypher = CypherQueryBuilder.updateResourceById(updateFields);
-    Map<String, Object> params = CypherParamBuilder.updateResourceById(resourceURL, updateFields, updatedBy);
+  FolderServerResource updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
+      updatedBy) {
+    String cypher = CypherQueryBuilderResource.updateResourceById(updateFields);
+    CypherParameters params = CypherParamBuilderResource.updateResourceById(resourceURL, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode updatedNode = jsonNode.at("/results/0/data/0/row/0");
@@ -36,16 +44,11 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   boolean deleteResourceById(String resourceURL) {
-    String cypher = CypherQueryBuilder.deleteResourceById();
-    Map<String, Object> params = CypherParamBuilder.deleteResourceById(resourceURL);
+    String cypher = CypherQueryBuilderResource.deleteResourceById();
+    CypherParameters params = CypherParamBuilderResource.deleteResourceById(resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while deleting resource:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while deleting resource:");
   }
 
   boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
@@ -57,43 +60,28 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   private boolean unlinkResourceFromParent(FolderServerResource resource) {
-    String cypher = CypherQueryBuilder.unlinkResourceFromParent();
-    Map<String, Object> params = CypherParamBuilder.matchResourceId(resource.getId());
+    String cypher = CypherQueryBuilderResource.unlinkResourceFromParent();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while unlinking resource:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while unlinking resource:");
   }
 
   private boolean linkResourceUnderFolder(FolderServerResource resource, FolderServerFolder parentFolder) {
-    String cypher = CypherQueryBuilder.linkResourceUnderFolder();
-    Map<String, Object> params = CypherParamBuilder.matchResourceIdAndParentFolderId(resource.getId(), parentFolder
+    String cypher = CypherQueryBuilderResource.linkResourceUnderFolder();
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceIdAndParentFolderId(resource.getId(), parentFolder
         .getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while linking resource:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while linking resource:");
   }
 
   private boolean setOwner(FolderServerResource resource, FolderServerUser user) {
-    String cypher = CypherQueryBuilder.setResourceOwner();
-    Map<String, Object> params = CypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
+    String cypher = CypherQueryBuilderResource.setResourceOwner();
+    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while setting owner:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while setting owner:");
   }
 
   boolean updateOwner(FolderServerResource resource, FolderServerUser user) {
@@ -105,21 +93,16 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   boolean removeOwner(FolderServerResource resource) {
-    String cypher = CypherQueryBuilder.removeResourceOwner();
-    Map<String, Object> params = CypherParamBuilder.matchResourceId(resource.getId());
+    String cypher = CypherQueryBuilderResource.removeResourceOwner();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode errorsNode = jsonNode.at("/errors");
-    if (errorsNode.size() != 0) {
-      JsonNode error = errorsNode.path(0);
-      log.warn("Error while removing owner:", error);
-    }
-    return errorsNode.size() == 0;
+    return successOrLog(jsonNode, "Error while removing owner:");
   }
 
   FolderServerResource findResourceById(String resourceURL) {
-    String cypher = CypherQueryBuilder.getResourceById();
-    Map<String, Object> params = CypherParamBuilder.getResourceById(resourceURL);
+    String cypher = CypherQueryBuilderResource.getResourceById();
+    CypherParameters params = CypherParamBuilderResource.getResourceById(resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode resourceNode = jsonNode.at("/results/0/data/0/row/0");

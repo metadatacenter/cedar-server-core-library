@@ -27,7 +27,7 @@ public class ContentSearchingService extends AbstractSearchingService {
 
   private static final Logger log = LoggerFactory.getLogger(ContentSearchingService.class);
 
-  private ElasticsearchPermissionEnabledContentSearchingWorker searchWorker;
+  private final ElasticsearchPermissionEnabledContentSearchingWorker searchWorker;
 
   ContentSearchingService(CedarConfig cedarConfig, Client client) {
     searchWorker = new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig, client);

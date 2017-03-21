@@ -10,6 +10,7 @@ import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest
 import java.util.Map;
 
 public interface PermissionServiceSession {
+
   CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource);
 
   CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL, FolderOrResource folderOrResource);

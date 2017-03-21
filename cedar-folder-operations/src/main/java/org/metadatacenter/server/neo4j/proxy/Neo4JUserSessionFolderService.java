@@ -7,13 +7,20 @@ import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.FolderServiceSession;
-import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.server.neo4j.Neo4JFieldValues;
+import org.metadatacenter.server.neo4j.Neo4jConfig;
+import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarNodeTypeUtil;
 import org.metadatacenter.util.CedarUserNameUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession implements FolderServiceSession {
 
@@ -33,20 +40,20 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties) {
+      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
     return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name,
-        description, getUserId(), label, extraProperties);
+        description, cu.getId(), label, extraProperties);
   }
 
   @Override
-  public FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields) {
-    return proxies.folder().updateFolderById(folderURL, updateFields, getUserId());
+  public FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields) {
+    return proxies.folder().updateFolderById(folderURL, updateFields, cu.getId());
   }
 
   @Override
-  public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
+  public FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<NodeProperty,
       String> updateFields) {
-    return proxies.resource().updateResourceById(resourceURL, updateFields, getUserId());
+    return proxies.resource().updateResourceById(resourceURL, updateFields, cu.getId());
   }
 
   @Override
@@ -59,15 +66,19 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return proxies.resource().deleteResourceById(resourceURL);
   }
 
+  private void setPaths(FolderServerNode node, List<? extends FolderServerNode> path) {
+    node.setPath(getPathString(path));
+    node.setParentPath(getParentPathString(path));
+    node.setDisplayPath(getDisplayPathString(path));
+    node.setDisplayParentPath(getDisplayParentPathString(path));
+  }
+
   @Override
   public void addPathAndParentId(FolderServerFolder folder) {
     if (folder != null) {
       List<FolderServerFolder> path = findFolderPath(folder);
       if (path != null) {
-        folder.setPath(getPathString(path));
-        folder.setParentPath(getParentPathString(path));
-        folder.setDisplayPath(getDisplayPathString(path));
-        folder.setDisplayParentPath(getDisplayParentPathString(path));
+        setPaths(folder, path);
       }
     }
   }
@@ -77,10 +88,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     if (resource != null) {
       List<FolderServerNode> path = proxies.node().findNodePathById(resource.getId());
       if (path != null) {
-        resource.setPath(getPathString(path));
-        resource.setParentPath(getParentPathString(path));
-        resource.setDisplayPath(getDisplayPathString(path));
-        resource.setDisplayParentPath(getDisplayParentPathString(path));
+        setPaths(resource, path);
       }
     }
   }
@@ -148,11 +156,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public String getHomeFolderPath() {
-    return proxies.config.getUsersFolderPath() + proxies.pathUtil.getSeparator() + this.cu.getId();
-  }
-
-  @Override
   public long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList) {
     return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList);
   }
@@ -178,11 +181,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public String getChildPath(String path, String name) {
-    return proxies.pathUtil.getChildPath(path, name);
-  }
-
-  @Override
   public List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList) {
     return proxies.node().findFolderContents(folderURL, nodeTypeList, limit, offset, sortList, cu);
@@ -191,11 +189,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public String getRootPath() {
     return proxies.pathUtil.getRootPath();
-  }
-
-  @Override
-  public List<FolderServerFolder> findFolderPathByPath(String path) {
-    return proxies.folder().findFolderPathByPath(path);
   }
 
   @Override
@@ -221,9 +214,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<String, Object> extraProperties) {
-    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, displayName, description,
-        getUserId(), label, extraProperties);
+      description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
+    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, displayName, description, cu.getId(),
+        label, extraProperties);
   }
 
   @Override
@@ -254,29 +247,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerFolder ensureUserHomeExists() {
-    Neo4jConfig config = proxies.config;
-    PathUtil pathUtil = proxies.pathUtil;
-    String userHomePath = config.getUsersFolderPath() + pathUtil.getSeparator() + cu.getId();
-    FolderServerFolder currentUserHomeFolder = findFolderByPath(userHomePath);
+    FolderServerFolder currentUserHomeFolder = findHomeFolderOf();
     if (currentUserHomeFolder == null) {
-      FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
-      // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
-      Map<String, Object> extraParams = new HashMap<>();
-      extraParams.put(Neo4JFields.IS_USER_HOME, true);
-      String userId = cu.getId();
-      String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
-      String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
-      currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), userId, displayName, description, NodeLabel
-          .USER_HOME_FOLDER, extraParams);
-      if (currentUserHomeFolder != null) {
-        FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
-        if (everybody != null) {
-          proxies.permission().addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
-        }
-        return currentUserHomeFolder;
-      }
+      currentUserHomeFolder = createUserHomeFolder();
     }
-    return null;
+    return currentUserHomeFolder;
   }
 
   @Override
@@ -307,12 +282,37 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> findAllNodesVisibleByUserId(String id) {
-    return proxies.node().findAllNodesVisibleByUserId(id);
-  }
-
-  @Override
   public List<FolderServerNode> findAllNodesVisibleByGroupId(String id) {
     return proxies.node().findAllNodesVisibleByGroupId(id);
   }
+
+  @Override
+  public FolderServerFolder findHomeFolderOf() {
+    return proxies.folder().findHomeFolderOf(cu.getId());
+  }
+
+  @Override
+  public FolderServerFolder createUserHomeFolder() {
+    String userId = cu.getId();
+    Neo4jConfig config = proxies.config;
+    FolderServerFolder currentUserHomeFolder;
+    FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
+    // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
+    Map<NodeProperty, Object> extraParams = new HashMap<>();
+    extraParams.put(NodeProperty.IS_USER_HOME, true);
+    extraParams.put(NodeProperty.HOME_OF, userId);
+    String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
+    String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
+    currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), displayName, displayName, description,
+        NodeLabel.USER_HOME_FOLDER, extraParams);
+    if (currentUserHomeFolder != null) {
+      FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+      if (everybody != null) {
+        proxies.permission().addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
+      }
+    }
+    return currentUserHomeFolder;
+  }
+
+
 }

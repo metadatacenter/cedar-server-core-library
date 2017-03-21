@@ -4,14 +4,18 @@ import java.util.Map;
 
 public class MongoConfig {
 
-  private String databaseName;
+  private MongoConnection mongoConnection;
 
   private String databaseNameTest;
 
   private Map<String, String> collections;
 
+  public MongoConnection getMongoConnection() {
+    return mongoConnection;
+  }
+
   public String getDatabaseName() {
-    return databaseName;
+    return mongoConnection.getDatabaseName();
   }
 
   public String getDatabaseNameTest() {

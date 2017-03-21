@@ -18,13 +18,13 @@ public class NonNullAssertion implements CedarAssertion {
       if (target instanceof CedarParameter) {
         CedarParameter param = (CedarParameter) target;
         if (param.isMissing()) {
-          return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
-              .append("' from ").append(param.getSource()).append(" should be present").toString())
+          return new CedarAssertionResult("The parameter named '" + param.getName() + "' from " + param.getSource() +
+              " should be present")
               .parameter("name", param.getName())
               .parameter("source", param.getSource());
         } else if (param.isNull()) {
-          return new CedarAssertionResult(new StringBuilder().append("The parameter named '").append(param.getName())
-              .append("' from ").append(param.getSource()).append(" should be not null").toString())
+          return new CedarAssertionResult("The parameter named '" + param.getName() + "' from " + param.getSource() +
+              " should be not null")
               .parameter("name", param.getName())
               .parameter("source", param.getSource());
         } else {

@@ -1,6 +1,5 @@
 package org.metadatacenter.server.security.model.auth;
 
-
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.security.model.CedarObjectConstants;
 
@@ -39,14 +38,15 @@ public enum CedarPermission {
   USER_READ(CedarNodeType.Types.USER, CedarObjectConstants.ACCESS_READ),
   USER_UPDATE(CedarNodeType.Types.USER, CedarObjectConstants.ACCESS_UPDATE),
 
-  USER_ROLE_UPDATE(CedarObjectConstants.USER_ROLE, CedarObjectConstants.ACCESS_UPDATE),
-
   LOGGED_IN(CedarObjectConstants.LOGGED_IN, CedarObjectConstants.ACCESS_READ),
   SEARCH_INDEX_REINDEX(CedarObjectConstants.SEARCH_INDEX, CedarObjectConstants.ACCESS_CREATE),
-  SYSTEM_FOLDER_CREATE(CedarObjectConstants.SYSTEM_FOLDER, CedarObjectConstants.ACCESS_CREATE),
 
-  UPDATE_PERMISSION_NOT_OWNED_NODE(CedarObjectConstants.NOT_OWNED_NODE, CedarObjectConstants.ACCESS_UPDATE),
-  FOLDER_CREATE_IN_NON_WRITABLE_FOLDER(CedarObjectConstants.NON_WRITABLE_FOLDER, CedarObjectConstants.ACCESS_CREATE);
+  UPDATE_PERMISSION_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE_PERMISSIONS,
+      CedarObjectConstants.ACCESS_UPDATE),
+  CREATE_IN_NOT_WRITABLE_FOLDER(CedarObjectConstants.NOT_WRITABLE_FOLDER, CedarObjectConstants.ACCESS_CREATE),
+  READ_NOT_READABLE_NODE(CedarObjectConstants.NOT_READABLE_NODE, CedarObjectConstants.ACCESS_READ),
+  UPDATE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_UPDATE),
+  DELETE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_DELETE);
 
   private final String resourceType;
   private final String accessType;
@@ -55,12 +55,7 @@ public enum CedarPermission {
   CedarPermission(String resourceType, String accessType) {
     this.resourceType = resourceType;
     this.accessType = accessType;
-    StringBuilder sb = new StringBuilder();
-    sb.append("permission_");
-    sb.append(resourceType);
-    sb.append("_");
-    sb.append(accessType);
-    permissionName = sb.toString();
+    this.permissionName = "permission_" + resourceType + "_" + accessType;
   }
 
   public String getAccessType() {

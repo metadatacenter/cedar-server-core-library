@@ -5,7 +5,7 @@ import org.metadatacenter.operation.CedarOperationDescriptor;
 
 public class BackendCallError {
 
-  private CedarErrorPack errorPack;
+  private final CedarErrorPack errorPack;
 
   BackendCallError(CedarErrorType errorType) {
     errorPack = new CedarErrorPack();

@@ -14,6 +14,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
 import org.metadatacenter.server.security.IAuthorizationResolver;
@@ -72,7 +73,10 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     //Initialize config
     cedarConfig = CedarConfig.getInstance();
 
+    CedarRequestContextFactory.init(cedarConfig.getLinkedDataUtil());
+
     //Initialize user service
+    CedarDataServices.initializeMongoClientFactoryForUsers(cedarConfig.getUserServerConfig().getMongoConnection());
     CedarDataServices.initializeUserService(cedarConfig);
     userService = CedarDataServices.getUserService();
 

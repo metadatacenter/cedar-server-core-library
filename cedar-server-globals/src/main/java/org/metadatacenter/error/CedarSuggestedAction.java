@@ -10,7 +10,7 @@ public enum CedarSuggestedAction {
   PROVIDE_AUTHORIZATION_HEADER("provideAuthorizationHeader"),
   REFRESH_TOKEN("refreshToken");
 
-  private String value;
+  private final String value;
 
   CedarSuggestedAction(String value) {
     this.value = value;

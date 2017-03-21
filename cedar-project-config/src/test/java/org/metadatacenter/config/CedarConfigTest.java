@@ -13,23 +13,24 @@ public class CedarConfigTest {
 
   public final static String CEDAR_ADMIN_USER_PASSWORD = "Password123";
   public final static String CEDAR_ADMIN_USER_UUID = "abcd-efgh";
-  public final static String CEDAR_ADMIN_USER_API_KEY = "xyzW-abcd";
 
   @Before
   public void setEnvironment() {
     Map<String, String> env = new HashMap<>();
-    env.put("CEDAR_ADMIN_USER_API_KEY", CEDAR_ADMIN_USER_API_KEY);
-    env.put("CEDAR_ADMIN_USER_UUID", CEDAR_ADMIN_USER_UUID);
     env.put("CEDAR_ADMIN_USER_PASSWORD", CEDAR_ADMIN_USER_PASSWORD);
-    env.put("CEDAR_NEO4J_TRANSACTION_URL", "http://");
-    env.put("CEDAR_NEO4J_AUTH_STRING", "neo-auth");
-    env.put("CEDAR_HOST", "metadatacenter.orgx");
+    env.put("CEDAR_ADMIN_USER_UUID", CEDAR_ADMIN_USER_UUID);
     env.put("CEDAR_BIOPORTAL_API_KEY", "apiKey-abcd");
     env.put("CEDAR_HOME", "/Users/CEDAR/");
+    env.put("CEDAR_HOST", "metadatacenter.orgx");
+    env.put("CEDAR_MONGO_USER_NAME", "cedarUser");
+    env.put("CEDAR_MONGO_USER_PASSWORD", "cedarPassword");
+    env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
+    env.put("CEDAR_NEO4J_AUTH_STRING", "neo-auth");
+    env.put("CEDAR_NEO4J_TRANSACTION_URL", "http://");
+    env.put("CEDAR_SALT_API_KEY", "salt");
     env.put("CEDAR_TEST_USER1_UUID", "user1-uuid1");
     env.put("CEDAR_TEST_USER2_UUID", "user1-uuid2");
     env.put("CEDAR_TEST_USER3_UUID", "user1-uuid3");
-    env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
     TestUtil.setEnv(env);
   }
 
@@ -49,7 +50,6 @@ public class CedarConfigTest {
     AdminUserConfig adminUser = instance.getAdminUserConfig();
     Assert.assertNotNull(adminUser);
     Assert.assertEquals("cedar-admin", adminUser.getUserName());
-    Assert.assertEquals(CEDAR_ADMIN_USER_API_KEY, adminUser.getApiKey());
     Assert.assertEquals(CEDAR_ADMIN_USER_PASSWORD, adminUser.getPassword());
     Assert.assertEquals(CEDAR_ADMIN_USER_UUID, adminUser.getUuid());
   }
@@ -57,18 +57,27 @@ public class CedarConfigTest {
   @Test
   public void testMongoConfig() throws Exception {
     CedarConfig instance = CedarConfig.getInstance();
-    MongoConfig mongoConfig = instance.getMongoConfig();
-    Assert.assertNotNull(mongoConfig);
-    Assert.assertEquals("cedar", mongoConfig.getDatabaseName());
-    Assert.assertEquals("cedar-test", mongoConfig.getDatabaseNameTest());
+    MongoConfig templateServerConfig = instance.getTemplateServerConfig();
+    Assert.assertNotNull(templateServerConfig);
+    Assert.assertEquals("cedar", templateServerConfig.getDatabaseName());
+    Assert.assertEquals("cedar-test", templateServerConfig.getDatabaseNameTest());
 
-    Map<String, String> collections = mongoConfig.getCollections();
-    Assert.assertNotNull(collections);
+    Map<String, String> templateServerCollections = templateServerConfig.getCollections();
+    Assert.assertNotNull(templateServerCollections);
     //Assert.assertEquals("template-fields", collections.get("field"));
-    Assert.assertEquals("template-elements", collections.get("element"));
-    Assert.assertEquals("templates", collections.get("template"));
-    Assert.assertEquals("template-instances", collections.get("instance"));
-    Assert.assertEquals("users", collections.get("user"));
+    Assert.assertEquals("template-elements", templateServerCollections.get("element"));
+    Assert.assertEquals("templates", templateServerCollections.get("template"));
+    Assert.assertEquals("template-instances", templateServerCollections.get("instance"));
+
+    MongoConfig userServerConfig = instance.getUserServerConfig();
+    Assert.assertNotNull(userServerConfig);
+    Assert.assertEquals("cedar", userServerConfig.getDatabaseName());
+    Assert.assertEquals("cedar-test", userServerConfig.getDatabaseNameTest());
+
+    Map<String, String> userServerCollections = userServerConfig.getCollections();
+    Assert.assertNotNull(userServerCollections);
+
+    Assert.assertEquals("users", userServerCollections.get("user"));
   }
 
   @Test
