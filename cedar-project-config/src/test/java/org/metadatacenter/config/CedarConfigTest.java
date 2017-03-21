@@ -22,6 +22,7 @@ public class CedarConfigTest {
     env.put("CEDAR_BIOPORTAL_API_KEY", "apiKey-abcd");
     env.put("CEDAR_HOME", "/Users/CEDAR/");
     env.put("CEDAR_HOST", "metadatacenter.orgx");
+    env.put("CEDAR_LD_USER_BASE", "https://metadatacenter.org/users/");
     env.put("CEDAR_MONGO_USER_NAME", "cedarUser");
     env.put("CEDAR_MONGO_USER_PASSWORD", "cedarPassword");
     env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
@@ -30,7 +31,6 @@ public class CedarConfigTest {
     env.put("CEDAR_SALT_API_KEY", "salt");
     env.put("CEDAR_TEST_USER1_UUID", "user1-uuid1");
     env.put("CEDAR_TEST_USER2_UUID", "user1-uuid2");
-    env.put("CEDAR_TEST_USER3_UUID", "user1-uuid3");
     TestUtil.setEnv(env);
   }
 

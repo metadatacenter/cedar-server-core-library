@@ -218,5 +218,3 @@ testUsers:
     uuid: "${CEDAR_TEST_USER1_UUID}"
   testUser2:
     uuid: "${CEDAR_TEST_USER2_UUID}"
-  testUser3:
-    uuid: "${CEDAR_TEST_USER3_UUID}"
