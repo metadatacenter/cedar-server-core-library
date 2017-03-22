@@ -2,9 +2,9 @@ package org.metadatacenter.config;
 
 public class TestUser {
 
-  private String uuid;
+  private String id;
 
-  public String getUuid() {
-    return uuid;
+  public String getId() {
+    return id;
   }
 }
