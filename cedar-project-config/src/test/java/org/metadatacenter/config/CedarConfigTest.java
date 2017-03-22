@@ -29,8 +29,8 @@ public class CedarConfigTest {
     env.put("CEDAR_NEO4J_AUTH_STRING", "neo-auth");
     env.put("CEDAR_NEO4J_TRANSACTION_URL", "http://");
     env.put("CEDAR_SALT_API_KEY", "salt");
-    env.put("CEDAR_TEST_USER1_UUID", "user1-uuid1");
-    env.put("CEDAR_TEST_USER2_UUID", "user1-uuid2");
+    env.put("CEDAR_TEST_USER1_ID", "https://metadatacenter.org/users/user1-uuid1");
+    env.put("CEDAR_TEST_USER2_ID", "https://metadatacenter.org/users/user1-uuid2");
     TestUtil.setEnv(env);
   }
 
