@@ -215,6 +215,6 @@ test:
 
 testUsers:
   testUser1:
-    uuid: "${CEDAR_TEST_USER1_UUID}"
+    id: "${CEDAR_TEST_USER1_ID}"
   testUser2:
-    uuid: "${CEDAR_TEST_USER2_UUID}"
+    id: "${CEDAR_TEST_USER2_ID}"
