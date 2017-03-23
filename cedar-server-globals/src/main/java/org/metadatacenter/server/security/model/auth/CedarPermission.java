@@ -41,12 +41,10 @@ public enum CedarPermission {
   LOGGED_IN(CedarObjectConstants.LOGGED_IN, CedarObjectConstants.ACCESS_READ),
   SEARCH_INDEX_REINDEX(CedarObjectConstants.SEARCH_INDEX, CedarObjectConstants.ACCESS_CREATE),
 
-  UPDATE_PERMISSION_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE_PERMISSIONS,
-      CedarObjectConstants.ACCESS_UPDATE),
-  CREATE_IN_NOT_WRITABLE_FOLDER(CedarObjectConstants.NOT_WRITABLE_FOLDER, CedarObjectConstants.ACCESS_CREATE),
+  UPDATE_PERMISSION_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE_PERMISSIONS, CedarObjectConstants
+      .ACCESS_UPDATE),
   READ_NOT_READABLE_NODE(CedarObjectConstants.NOT_READABLE_NODE, CedarObjectConstants.ACCESS_READ),
-  UPDATE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_UPDATE),
-  DELETE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_DELETE);
+  WRITE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_WRITE);
 
   private final String resourceType;
   private final String accessType;

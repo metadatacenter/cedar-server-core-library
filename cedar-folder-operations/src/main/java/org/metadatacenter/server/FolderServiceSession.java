@@ -53,12 +53,12 @@ public interface FolderServiceSession {
 
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
-  List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
+  List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList);
 
-  long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
+  long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
-  long findFolderContentsCount(String folderURL);
+  long findFolderContentsUnfilteredCount(String folderURL);
 
   void addPathAndParentId(FolderServerFolder folder);
 

@@ -1,6 +1,8 @@
 package org.metadatacenter.cedar.util.dw;
 
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.constant.CedarQueryParameters;
 import org.metadatacenter.error.CedarErrorPack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +15,8 @@ public abstract class AbstractExceptionMapper {
   HttpServletRequest request;
 
   protected boolean hideExceptionConditionally(CedarErrorPack errorPack) {
-    if (!"true".equals(request.getParameter("debug")) &&
-        !"true".equals(request.getHeader(CedarConstants.HTTP_HEADER_DEBUG))) {
+    if (!"true".equals(request.getParameter(CedarQueryParameters.QP_DEBUG)) &&
+        !"true".equals(request.getHeader(CedarHeaderParameters.HP_DEBUG))) {
       errorPack.resetSourceException();
       return true;
     } else {

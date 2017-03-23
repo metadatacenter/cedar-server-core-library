@@ -56,10 +56,11 @@ public abstract class CedarUserRolePermissionUtil {
 
     filesystemAdministratorPermissions = new HashSet<>();
     filesystemAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE.getPermissionName());
-    filesystemAdministratorPermissions.add(CedarPermission.CREATE_IN_NOT_WRITABLE_FOLDER.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.CREATE_IN_NOT_WRITABLE_FOLDER.getPermissionName());
     filesystemAdministratorPermissions.add(CedarPermission.READ_NOT_READABLE_NODE.getPermissionName());
-    filesystemAdministratorPermissions.add(CedarPermission.UPDATE_NOT_WRITABLE_NODE.getPermissionName());
-    filesystemAdministratorPermissions.add(CedarPermission.DELETE_NOT_WRITABLE_NODE.getPermissionName());
+    filesystemAdministratorPermissions.add(CedarPermission.WRITE_NOT_WRITABLE_NODE.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.UPDATE_NOT_WRITABLE_NODE.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.DELETE_NOT_WRITABLE_NODE.getPermissionName());
 
     searchReindexerPermissions = new HashSet<>();
     searchReindexerPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());

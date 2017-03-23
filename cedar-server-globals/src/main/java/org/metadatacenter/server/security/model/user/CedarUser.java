@@ -2,6 +2,7 @@ package org.metadatacenter.server.security.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -143,4 +144,9 @@ public class CedarUser implements CedarUserRepresentation {
       return null;
     }
   }
+
+  public boolean has(CedarPermission permission) {
+    return permission != null && permissions != null && permissions.contains(permission.getPermissionName());
+  }
+
 }

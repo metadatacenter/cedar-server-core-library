@@ -6,12 +6,8 @@ import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.PathUtil;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.CypherQueryParameter;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
@@ -27,6 +23,10 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
     return params;
+  }
+
+  public static CypherParameters matchId(String folderURL) {
+    return getNodeByIdentity(folderURL);
   }
 
   public static CypherParameters updateFolderById(String folderURL, Map<? extends CypherQueryParameter, String>
@@ -66,20 +66,6 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
   }
 
   public static CypherParameters getFolderById(String folderURL) {
-    return getNodeByIdentity(folderURL);
-  }
-
-  public static CypherParameters getFolderContentsFilteredCountParameters(String folderURL, Collection<CedarNodeType>
-      nodeTypes) {
-    CypherParameters params = new CypherParameters();
-    params.put(NodeProperty.ID, folderURL);
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
-    return params;
-  }
-
-  public static CypherParameters getFolderContentsCountParameters(String folderURL) {
     return getNodeByIdentity(folderURL);
   }
 

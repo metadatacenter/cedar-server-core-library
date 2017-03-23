@@ -13,6 +13,8 @@ public interface CedarRequest extends CedarAssertionNoun {
 
   String getAuthorizationHeader();
 
+  String getDebugHeader();
+
   CedarParameter wrapQueryParam(String paramName, Optional<?> paramValue);
 
 }

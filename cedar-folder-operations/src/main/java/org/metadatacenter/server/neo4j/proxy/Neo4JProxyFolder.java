@@ -51,7 +51,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while unlinking folder:");
+    return successOrLogAndThrowException(jsonNode, "Error while unlinking folder:");
   }
 
   private boolean linkFolderUnderFolder(FolderServerFolder folder, FolderServerFolder parentFolder) {
@@ -60,7 +60,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
         ());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while linking folder:");
+    return successOrLogAndThrowException(jsonNode, "Error while linking folder:");
   }
 
   FolderServerFolder updateFolderById(String folderId, Map<NodeProperty, String> updateFields, String updatedBy) {
@@ -77,7 +77,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderFolder.deleteFolderById(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while deleting folder:");
+    return successOrLogAndThrowException(jsonNode, "Error while deleting folder:");
   }
 
   List<FolderServerFolder> findFolderPathByPath(String path) {
@@ -146,7 +146,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderFolder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while setting owner:");
+    return successOrLogAndThrowException(jsonNode, "Error while setting owner:");
   }
 
   private boolean removeOwner(FolderServerFolder folder) {
@@ -154,7 +154,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing owner:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing owner:");
   }
 
   boolean updateOwner(FolderServerFolder folder, FolderServerUser user) {

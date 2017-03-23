@@ -48,7 +48,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderResource.deleteResourceById(resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while deleting resource:");
+    return successOrLogAndThrowException(jsonNode, "Error while deleting resource:");
   }
 
   boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
@@ -64,7 +64,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while unlinking resource:");
+    return successOrLogAndThrowException(jsonNode, "Error while unlinking resource:");
   }
 
   private boolean linkResourceUnderFolder(FolderServerResource resource, FolderServerFolder parentFolder) {
@@ -73,7 +73,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
         .getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while linking resource:");
+    return successOrLogAndThrowException(jsonNode, "Error while linking resource:");
   }
 
   private boolean setOwner(FolderServerResource resource, FolderServerUser user) {
@@ -81,7 +81,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while setting owner:");
+    return successOrLogAndThrowException(jsonNode, "Error while setting owner:");
   }
 
   boolean updateOwner(FolderServerResource resource, FolderServerUser user) {
@@ -97,7 +97,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing owner:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing owner:");
   }
 
   FolderServerResource findResourceById(String resourceURL) {

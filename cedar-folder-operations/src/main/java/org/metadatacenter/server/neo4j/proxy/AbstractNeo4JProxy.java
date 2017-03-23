@@ -92,7 +92,7 @@ public abstract class AbstractNeo4JProxy {
         log.error("Error while reading cypher query response!");
       }
       if (cypherQueryResponse != null) {
-        resultOk = successOrLog(cypherQueryResponse, "Error while executing cypher query:");
+        resultOk = successOrLogAndThrowException(cypherQueryResponse, "Error while executing cypher query:");
       }
       if (resultOk) {
         return cypherQueryResponse;
@@ -222,21 +222,27 @@ public abstract class AbstractNeo4JProxy {
     return userList;
   }
 
-  protected boolean successOrLog(JsonNode jsonNode, String errorMessage) {
+  // TODO: Handle the errors differently, propagate the error to an upper layer, or throw a checked exception
+  protected boolean successOrLogAndThrowException(JsonNode jsonNode, String errorMessage) {
     JsonNode errorsNode = jsonNode.at("/errors");
     if (errorsNode.size() != 0) {
+      String code = null;
+      String message = null;
       JsonNode error = errorsNode.path(0);
       log.error(errorMessage);
-      JsonNode code = error.get("code");
-      if (code != null) {
-        log.error("code: " + code.asText());
+      JsonNode codeNode = error.get("codeNode");
+      if (codeNode != null) {
+        code = codeNode.asText();
+        log.error("code: " + code);
       }
-      JsonNode message = error.get("message");
-      if (message != null) {
-        log.error("message: " + message.asText());
+      JsonNode messageNode = error.get("message");
+      if (messageNode != null) {
+        message = messageNode.asText();
+        log.error("message: " + message);
       }
+      throw new RuntimeException("Error executing Cypher query:" + errorMessage + ":" + code + ":" + message);
     }
-    return errorsNode.size() == 0;
+    return true;
   }
 
   protected long count(JsonNode jsonNode) {

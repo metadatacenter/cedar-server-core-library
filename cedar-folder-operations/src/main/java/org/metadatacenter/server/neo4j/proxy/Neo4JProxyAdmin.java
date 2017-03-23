@@ -15,7 +15,7 @@ public class Neo4JProxyAdmin extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderAdmin.wipeAllData();
     CypherQuery q = new CypherQueryLiteral(cypher);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while deleting all data:");
+    return successOrLogAndThrowException(jsonNode, "Error while deleting all data:");
   }
 
 }

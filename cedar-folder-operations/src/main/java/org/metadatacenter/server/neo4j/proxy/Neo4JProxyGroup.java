@@ -70,7 +70,7 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderGroup.deleteGroupById(groupURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while deleting group:");
+    return successOrLogAndThrowException(jsonNode, "Error while deleting group:");
   }
 
   List<FolderServerUser> findGroupMembers(String groupURL) {
@@ -123,7 +123,7 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFromNodeToNode(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding relation:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding relation:");
   }
 
   boolean removeRelation(FolderServerUser user, FolderServerGroup group, RelationLabel relation) {
@@ -131,7 +131,7 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFromNodeToNode(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing relation:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing relation:");
   }
 
 }

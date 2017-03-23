@@ -14,6 +14,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
@@ -49,7 +50,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     HTTP_HEADERS.add("Referer");
     HTTP_HEADERS.add("User-Agent");
     HTTP_HEADERS.add("Authorization");
-    HTTP_HEADERS.add(CedarConstants.HTTP_HEADER_DEBUG);
+    HTTP_HEADERS.add(CedarHeaderParameters.HP_DEBUG);
 
     HTTP_METHODS = new ArrayList<>();
     HTTP_METHODS.add("OPTIONS");

@@ -26,7 +26,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
@@ -34,7 +34,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
@@ -42,7 +42,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding permission:");
   }
 
   boolean addPermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
@@ -50,7 +50,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding permission:");
   }
 
   boolean removePermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
@@ -58,7 +58,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerFolder folder, FolderServerGroup group, NodePermission permission) {
@@ -66,7 +66,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
@@ -74,7 +74,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing permission:");
   }
 
   boolean removePermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
@@ -82,7 +82,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while removing permission:");
+    return successOrLogAndThrowException(jsonNode, "Error while removing permission:");
   }
 
   void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource

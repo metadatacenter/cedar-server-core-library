@@ -51,7 +51,7 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchUserAndGroup(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLog(jsonNode, "Error while adding group to user:");
+    return successOrLogAndThrowException(jsonNode, "Error while adding group to user:");
   }
 
   public List<FolderServerUser> findUsers() {

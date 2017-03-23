@@ -33,4 +33,9 @@ public class LocalRequest extends CedarRequestNoun {
     return cedarUser.getFirstApiKeyAuthHeader();
   }
 
+  @Override
+  public String getDebugHeader() {
+    return "true";
+  }
+
 }
