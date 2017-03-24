@@ -143,14 +143,4 @@ public abstract class AbstractCypherQueryBuilder {
         ")";
   }
 
-  protected static String getSharedWithMeConditions(String relationPrefix, String nodeAlias) {
-    return "" +
-        " " + relationPrefix + " " +
-        "(" +
-        "(user)-[:<REL.MEMBEROF>*0..1]->()-[:<REL.CANREAD>]->(" + nodeAlias + ")" +
-        " OR " +
-        "(user)-[:<REL.MEMBEROF>*0..1]->()-[:<REL.CANWRITE>]->(" + nodeAlias + ")" +
-        ")";
-  }
-
 }

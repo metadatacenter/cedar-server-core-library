@@ -46,12 +46,14 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getSharedWithMeLookupQuery(List<String> sortList) {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (node)" +
+        " MATCH (user:<LABEL.USER> {id:{userId}})-" +
+        "[:<REL.MEMBEROF>*0..1]->" +
+        "()-" +
+        "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+        "(node)" +
         " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
         " AND node.<PROP.OWNED_BY> <> {userId}" +
         " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
-        getSharedWithMeConditions(" AND ", "node") +
         " RETURN node" +
         " ORDER BY node.<PROP.NODE_SORT_ORDER>," + getOrderByExpression("node", sortList) +
         " SKIP {offset}" +
@@ -60,12 +62,14 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getSharedWithMeCountQuery() {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (node)" +
+        " MATCH (user:<LABEL.USER> {id:{userId}})-" +
+        "[:<REL.MEMBEROF>*0..1]->" +
+        "()-" +
+        "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+        "(node)" +
         " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
-        " AND node.<PROP.OWNED_BY>  <> {userId}" +
+        " AND node.<PROP.OWNED_BY> <> {userId}" +
         " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
-        getSharedWithMeConditions(" AND ", "node") +
         " RETURN count(node)";
   }
 
