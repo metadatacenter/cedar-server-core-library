@@ -27,7 +27,8 @@ public class AbstractCypherQuery implements CypherQuery {
     replacementTable = new HashMap<>();
 
     for (NodeLabel label : labels) {
-      replacementTable.put("<LABEL." + label.name() + ">", label.getValue());
+      replacementTable.put("<LABEL." + label.name() + ">", label.getSimpleLabel());
+      replacementTable.put("<COMPOSEDLABEL." + label.name() + ">", label.getComposedLabel());
     }
 
     for (RelationLabel relation : relations) {

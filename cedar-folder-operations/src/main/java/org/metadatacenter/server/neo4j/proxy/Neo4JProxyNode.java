@@ -19,10 +19,8 @@ import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import static org.metadatacenter.server.security.model.auth.CedarPermission.READ_NOT_READABLE_NODE;
 
@@ -30,28 +28,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   Neo4JProxyNode(Neo4JProxies proxies) {
     super(proxies);
-  }
-
-  List<FolderServerNode> findNodePathById(String id) {
-    List<FolderServerNode> pathList = new ArrayList<>();
-    String cypher = CypherQueryBuilderNode.getNodeLookupQueryById();
-    CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    JsonNode pathListJsonNode = jsonNode.at("/results/0/data/0/row/0");
-    if (pathListJsonNode != null && !pathListJsonNode.isMissingNode()) {
-      pathListJsonNode.forEach(f -> {
-        // relationships are also included, filter them out
-        Map pathElement = buildMap(f);
-        if (pathElement != null && !pathElement.isEmpty()) {
-          FolderServerNode cf = buildNode(f);
-          if (cf != null) {
-            pathList.add(cf);
-          }
-        }
-      });
-    }
-    return pathList;
   }
 
   long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList, CedarUser cu) {

@@ -9,7 +9,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
 
   public static String createGroup(Map<NodeProperty, Object> extraProperties) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" CREATE (group:<LABEL.GROUP> {");
+    sb.append(" CREATE (group:<COMPOSEDLABEL.GROUP> {");
 
     sb.append(buildCreateAssignment(NodeProperty.ID)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.NAME)).append(",");

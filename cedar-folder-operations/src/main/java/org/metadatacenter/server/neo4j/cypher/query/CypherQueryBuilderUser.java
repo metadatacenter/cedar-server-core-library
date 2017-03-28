@@ -6,7 +6,7 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
 
   public static String createUser() {
     return "" +
-        " CREATE (user:<LABEL.USER> {" +
+        " CREATE (user:<COMPOSEDLABEL.USER> {" +
         buildCreateAssignment(NodeProperty.ID) + "," +
         buildCreateAssignment(NodeProperty.NAME) + "," +
         buildCreateAssignment(NodeProperty.DISPLAY_NAME) + "," +

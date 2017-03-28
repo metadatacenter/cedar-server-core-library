@@ -41,10 +41,12 @@ public abstract class AbstractNeo4JProxy {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         String runnableQuery = qp.getRunnableQuery();
         Map<String, Object> parameterMap = qp.getParameterMap();
+        log.debug("VVV----------------------------------------------------------------");
         log.debug("c.original     : " + qp.getOriginalQuery());
         log.debug("c.runnable     : " + runnableQuery);
         log.debug("c.parameters   : " + parameterMap);
         log.debug("c.interpolated : " + qp.getInterpolatedParamsQuery());
+        log.debug("^^^----------------------------------------------------------------");
         Map<String, Object> statement = new HashMap<>();
         statement.put("statement", runnableQuery);
         statement.put("parameters", parameterMap);

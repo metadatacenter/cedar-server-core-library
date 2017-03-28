@@ -5,6 +5,6 @@ import org.metadatacenter.server.neo4j.NodeLabel;
 public class CypherQueryBuilderAdmin extends AbstractCypherQueryBuilder {
 
   public static String wipeAllData() {
-    return " MATCH (n:" + NodeLabel.PlainLabels.SCOPE + ") DETACH DELETE n";
+    return " MATCH (n:" + NodeLabel.SimpleLabel.SCOPE + ") DETACH DELETE n";
   }
 }

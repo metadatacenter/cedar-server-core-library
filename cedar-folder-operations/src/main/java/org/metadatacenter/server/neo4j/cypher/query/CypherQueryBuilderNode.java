@@ -13,14 +13,6 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " LIMIT {limit}";
   }
 
-  public static String getNodeLookupQueryById() {
-    return "" +
-        " MATCH (root:<LABEL.FOLDER> {name:{name}})," +
-        " (current {id:{id}})," +
-        " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
-        " RETURN path";
-  }
-
   public static String getAllNodesCountQuery() {
     return "" +
         " MATCH (node:<LABEL.FSNODE>)" +

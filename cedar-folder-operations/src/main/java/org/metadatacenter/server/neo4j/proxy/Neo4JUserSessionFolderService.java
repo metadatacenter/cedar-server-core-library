@@ -85,7 +85,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public void addPathAndParentId(FolderServerResource resource) {
     if (resource != null) {
-      List<FolderServerNode> path = proxies.node().findNodePathById(resource.getId());
+      List<FolderServerNode> path = proxies.resource().findResourcePathById(resource.getId());
       if (path != null) {
         setPaths(resource, path);
       }
