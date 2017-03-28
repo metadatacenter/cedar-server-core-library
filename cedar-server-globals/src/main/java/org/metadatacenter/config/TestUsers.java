@@ -6,8 +6,6 @@ public class TestUsers {
 
   private TestUser testUser2;
 
-  private TestUser testUser3;
-
   public TestUser getTestUser1() {
     return testUser1;
   }
@@ -16,7 +14,4 @@ public class TestUsers {
     return testUser2;
   }
 
-  public TestUser getTestUser3() {
-    return testUser3;
-  }
 }

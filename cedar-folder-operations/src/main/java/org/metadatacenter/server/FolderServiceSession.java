@@ -5,6 +5,7 @@ import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,6 @@ public interface FolderServiceSession {
   String sanitizeName(String name);
 
   String normalizePath(String path);
-
-  String getChildPath(String path, String name);
 
   String getRootPath();
 
@@ -31,17 +30,17 @@ public interface FolderServiceSession {
       description, NodeLabel label);
 
   FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<String, Object> extraProperties);
+      description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<String, Object> extraProperties);
+      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
 
-  FolderServerFolder updateFolderById(String folderURL, Map<String, String> updateFields);
+  FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
 
-  FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<String,
+  FolderServerResource updateResourceById(String resourceURL, CedarNodeType nodeType, Map<NodeProperty,
       String> updateFields);
 
   boolean deleteFolderById(String folderURL);
@@ -52,22 +51,18 @@ public interface FolderServiceSession {
 
   FolderServerNode findNodeByParentIdAndName(FolderServerFolder parentFolder, String name);
 
-  List<FolderServerFolder> findFolderPathByPath(String path);
-
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
-  List<FolderServerNode> findFolderContents(String folderURL, List<CedarNodeType> nodeTypeList, int
+  List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList, int
       limit, int offset, List<String> sortList);
 
-  long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList);
+  long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList);
 
-  long findFolderContentsCount(String folderURL);
+  long findFolderContentsUnfilteredCount(String folderURL);
 
   void addPathAndParentId(FolderServerFolder folder);
 
   void addPathAndParentId(FolderServerResource resource);
-
-  String getHomeFolderPath();
 
   boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder);
 
@@ -87,7 +82,9 @@ public interface FolderServiceSession {
 
   List<FolderServerNode> findAllDescendantNodesById(String id);
 
-  List<FolderServerNode> findAllNodesVisibleByUserId(String id);
-
   List<FolderServerNode> findAllNodesVisibleByGroupId(String id);
+
+  FolderServerFolder findHomeFolderOf();
+
+  FolderServerFolder createUserHomeFolder();
 }

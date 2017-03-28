@@ -14,6 +14,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   private Optional<String> qInput;
   private Optional<String> derivedFromIdInput;
+  private String q;
   private String derivedFromId;
 
   public PagedSortedTypedSearchQuery(PaginationConfig config) {
@@ -59,7 +60,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     validateLimit();
     validateOffset();
     validateSorting();
-    validateSearchTerm();
+    validateQ();
     validateResourceTypesWithTemplateId();
   }
 
@@ -68,7 +69,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
   }
 
   public String getQ() {
-    return qInput.get();
+    return q;
   }
 
   private static boolean isValidURL(String urlStr) {
@@ -110,12 +111,16 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     }
   }
 
-  public void validateSearchTerm() throws CedarException {
+  public void validateQ() throws CedarException {
     if (qInput.isPresent()) {
       if (qInput.get() == null || qInput.get().trim().isEmpty()) {
         throw new CedarAssertionException("You must pass in a valid search query as 'q'!")
             .parameter("q", qInput.get());
+      } else {
+        q = qInput.get();
       }
+    } else {
+      q = null;
     }
   }
 

@@ -2,7 +2,6 @@ package org.metadatacenter.rest.assertion.noun;
 
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.CedarAssertionNoun;
-import org.metadatacenter.rest.exception.CedarAssertionException;
 
 import java.util.Optional;
 
@@ -14,6 +13,8 @@ public interface CedarRequest extends CedarAssertionNoun {
 
   String getAuthorizationHeader();
 
-  CedarParameter wrapQueryParam(String paramName, Optional<? extends Object> paramValue);
+  String getDebugHeader();
+
+  CedarParameter wrapQueryParam(String paramName, Optional<?> paramValue);
 
 }

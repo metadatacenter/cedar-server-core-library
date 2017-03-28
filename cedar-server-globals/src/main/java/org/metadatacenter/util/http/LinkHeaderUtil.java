@@ -4,8 +4,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.constant.HttpConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,12 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class LinkHeaderUtil {
 
   private static final Logger log = LoggerFactory.getLogger(LinkHeaderUtil.class);
+
+  public static final String PARAM_OFFSET = "offset";
+  public static final String PARAM_LIMIT = "limit";
 
   private LinkHeaderUtil() {
   }
@@ -88,8 +90,8 @@ public final class LinkHeaderUtil {
     try {
       URIBuilder ub = new URIBuilder(baseUrl);
       List<NameValuePair> params = new ArrayList<>();
-      params.add(new BasicNameValuePair(CedarConstants.PARAM_OFFSET, String.valueOf(offset)));
-      params.add(new BasicNameValuePair(CedarConstants.PARAM_LIMIT, String.valueOf(limit)));
+      params.add(new BasicNameValuePair(PARAM_OFFSET, String.valueOf(offset)));
+      params.add(new BasicNameValuePair(PARAM_LIMIT, String.valueOf(limit)));
       ub.addParameters(params);
       ub.setCharset(StandardCharsets.UTF_8);
       uri = ub.build();

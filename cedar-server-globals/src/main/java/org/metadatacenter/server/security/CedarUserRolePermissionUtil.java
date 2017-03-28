@@ -8,81 +8,80 @@ import java.util.*;
 
 public abstract class CedarUserRolePermissionUtil {
 
-  private static final Map<CedarUserRole, List<String>> roleToPermissions;
-  private static final List<String> creatorPermissions;
-  private static final List<String> instantiatorPermissions;
-  private static final List<String> builtInSystemAdministratorPermissions;
-  private static final List<String> administratorPermissions;
-  private static final List<String> roleAdministratorPermissions;
-  private static final List<String> userAdministratorPermissions;
-  private static final List<String> groupAdministratorPermissions;
-  private static final List<String> filesystemAdministratorPermissions;
+  private static final Map<CedarUserRole, Set<String>> roleToPermissions;
+  private static final Set<String> templateCreatorPermissions;
+  private static final Set<String> metadataCreatorPermissions;
+  private static final Set<String> userAdministratorPermissions;
+  private static final Set<String> groupAdministratorPermissions;
+  private static final Set<String> filesystemAdministratorPermissions;
+  private static final Set<String> searchReindexerPermissions;
+  private static final Set<String> builtInSystemAdministratorPermissions;
 
   static {
-    creatorPermissions = new ArrayList<>();
-    creatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_FIELD_CREATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_FIELD_READ.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_FIELD_UPDATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_FIELD_DELETE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_CREATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_READ.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_UPDATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_DELETE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_CREATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_READ.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_UPDATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.TEMPLATE_DELETE.getPermissionName());
-    creatorPermissions.add(CedarPermission.FOLDER_CREATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.FOLDER_READ.getPermissionName());
-    creatorPermissions.add(CedarPermission.FOLDER_UPDATE.getPermissionName());
-    creatorPermissions.add(CedarPermission.FOLDER_DELETE.getPermissionName());
+    templateCreatorPermissions = new HashSet<>();
+    templateCreatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_CREATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_READ.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_UPDATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_DELETE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_CREATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_READ.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_UPDATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_ELEMENT_DELETE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_CREATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_READ.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_UPDATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.TEMPLATE_DELETE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.FOLDER_CREATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.FOLDER_READ.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.FOLDER_UPDATE.getPermissionName());
+    templateCreatorPermissions.add(CedarPermission.FOLDER_DELETE.getPermissionName());
 
-    instantiatorPermissions = new ArrayList<>();
-    instantiatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
-    instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_CREATE.getPermissionName());
-    instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_READ.getPermissionName());
-    instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_UPDATE.getPermissionName());
-    instantiatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_DELETE.getPermissionName());
+    metadataCreatorPermissions = new HashSet<>();
+    metadataCreatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
+    metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_CREATE.getPermissionName());
+    metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_READ.getPermissionName());
+    metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_UPDATE.getPermissionName());
+    metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_DELETE.getPermissionName());
 
-    builtInSystemAdministratorPermissions = new ArrayList<>();
-    builtInSystemAdministratorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
-    builtInSystemAdministratorPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
-    builtInSystemAdministratorPermissions.add(CedarPermission.SYSTEM_FOLDER_CREATE.getPermissionName());
-
-    administratorPermissions = new ArrayList<>();
-    administratorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
-    administratorPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
-
-    roleAdministratorPermissions = new ArrayList<>();
-    roleAdministratorPermissions.add(CedarPermission.USER_ROLE_UPDATE.getPermissionName());
-
-    userAdministratorPermissions = new ArrayList<>();
+    userAdministratorPermissions = new HashSet<>();
     userAdministratorPermissions.add(CedarPermission.USER_READ.getPermissionName());
     userAdministratorPermissions.add(CedarPermission.USER_UPDATE.getPermissionName());
 
-    groupAdministratorPermissions = new ArrayList<>();
+    groupAdministratorPermissions = new HashSet<>();
     groupAdministratorPermissions.add(CedarPermission.GROUP_CREATE.getPermissionName());
     groupAdministratorPermissions.add(CedarPermission.GROUP_READ.getPermissionName());
     groupAdministratorPermissions.add(CedarPermission.GROUP_UPDATE.getPermissionName());
     groupAdministratorPermissions.add(CedarPermission.GROUP_DELETE.getPermissionName());
 
-    filesystemAdministratorPermissions = new ArrayList<>();
-    filesystemAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_OWNED_NODE.getPermissionName());
-    filesystemAdministratorPermissions.add(CedarPermission.FOLDER_CREATE_IN_NON_WRITABLE_FOLDER.getPermissionName());
+    filesystemAdministratorPermissions = new HashSet<>();
+    filesystemAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.CREATE_IN_NOT_WRITABLE_FOLDER.getPermissionName());
+    filesystemAdministratorPermissions.add(CedarPermission.READ_NOT_READABLE_NODE.getPermissionName());
+    filesystemAdministratorPermissions.add(CedarPermission.WRITE_NOT_WRITABLE_NODE.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.UPDATE_NOT_WRITABLE_NODE.getPermissionName());
+    //filesystemAdministratorPermissions.add(CedarPermission.DELETE_NOT_WRITABLE_NODE.getPermissionName());
+
+    searchReindexerPermissions = new HashSet<>();
+    searchReindexerPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
+    searchReindexerPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
+
+    builtInSystemAdministratorPermissions = new HashSet<>();
+    builtInSystemAdministratorPermissions.addAll(templateCreatorPermissions);
+    builtInSystemAdministratorPermissions.addAll(metadataCreatorPermissions);
+    builtInSystemAdministratorPermissions.addAll(userAdministratorPermissions);
+    builtInSystemAdministratorPermissions.addAll(groupAdministratorPermissions);
+    builtInSystemAdministratorPermissions.addAll(filesystemAdministratorPermissions);
+    builtInSystemAdministratorPermissions.addAll(searchReindexerPermissions);
 
     roleToPermissions = new HashMap<>();
-    roleToPermissions.put(CedarUserRole.TEMPLATE_CREATOR, creatorPermissions);
-    roleToPermissions.put(CedarUserRole.TEMPLATE_INSTANTIATOR, instantiatorPermissions);
-    roleToPermissions.put(CedarUserRole.BUILT_IN_SYSTEM_ADMINISTRATOR, builtInSystemAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.TEMPLATE_CREATOR, templateCreatorPermissions);
+    roleToPermissions.put(CedarUserRole.METADATA_CREATOR, metadataCreatorPermissions);
+    roleToPermissions.put(CedarUserRole.USER_ADMINISTRATOR, userAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.GROUP_ADMINISTRATOR, groupAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.FILESYSTEM_ADMINISTRATOR, filesystemAdministratorPermissions);
-
-    List<String> adminRoles = new ArrayList<>();
-    adminRoles.addAll(administratorPermissions);
-    adminRoles.addAll(roleAdministratorPermissions);
-    adminRoles.addAll(userAdministratorPermissions);
-    adminRoles.addAll(groupAdministratorPermissions);
-    roleToPermissions.put(CedarUserRole.ADMINISTRATOR, adminRoles);
+    roleToPermissions.put(CedarUserRole.SEARCH_REINDEXER, searchReindexerPermissions);
+    roleToPermissions.put(CedarUserRole.BUILT_IN_SYSTEM_ADMINISTRATOR, builtInSystemAdministratorPermissions);
   }
 
   public static void expandRolesIntoPermissions(CedarUser u) {

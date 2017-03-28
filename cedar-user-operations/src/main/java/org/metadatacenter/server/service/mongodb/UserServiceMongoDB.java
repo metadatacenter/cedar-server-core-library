@@ -2,14 +2,13 @@ package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.mongodb.UserDaoMongoDB;
-import org.metadatacenter.server.result.BackendCallError;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class UserServiceMongoDB implements UserService {
   private final UserDaoMongoDB userDao;
 
 
-  public UserServiceMongoDB(@NonNull String db, @NonNull String usersCollection) {
-    this.userDao = new UserDaoMongoDB(db, usersCollection);
+  public UserServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String usersCollection) {
+    this.userDao = new UserDaoMongoDB(mongoClient, db, usersCollection);
   }
 
   @Override

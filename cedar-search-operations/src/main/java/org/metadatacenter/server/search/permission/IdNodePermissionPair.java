@@ -4,8 +4,8 @@ import org.metadatacenter.server.security.model.auth.NodePermission;
 
 public class IdNodePermissionPair {
 
-  private String id;
-  private NodePermission permission;
+  private final String id;
+  private final NodePermission permission;
 
   public IdNodePermissionPair(String id, NodePermission permission) {
     this.id = id;

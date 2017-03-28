@@ -37,7 +37,7 @@ public class Neo4JPathUtil implements PathUtil {
 
   @Override
   public String getChildPath(String parent, String name) {
-    return new StringBuilder().append(parent).append(SEPARATOR).append(name).toString();
+    return parent + SEPARATOR + name;
   }
 
   @Override
@@ -79,21 +79,6 @@ public class Neo4JPathUtil implements PathUtil {
     }
     return null;
   }
-
-/*  public String getParentPath(String path) {
-    if (path != null) {
-      String[] split = StringUtils.split(path, SEPARATOR);
-      if (split != null) {
-        if (split.length > 0) {
-          String parent = StringUtils.join(Arrays.copyOf(split, split.length - 1), SEPARATOR);
-          return normalizePath(parent);
-        }
-      } else {
-        return rootPath;
-      }
-    }
-    return null;
-  }*/
 
   @Override
   public int getPathDepth(String path) {

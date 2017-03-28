@@ -5,13 +5,13 @@ import org.metadatacenter.server.search.IndexedDocumentId;
 
 public class IndexedDocumentNode {
 
-  private String id;
+  private final String id;
 
-  private String cid;
+  private final String cid;
 
-  private String name;
+  private final String name;
 
-  private String nodeType;
+  private final String nodeType;
 
   public IndexedDocumentNode(String id, String cid, String name, String nodeType) {
     this.id = id;

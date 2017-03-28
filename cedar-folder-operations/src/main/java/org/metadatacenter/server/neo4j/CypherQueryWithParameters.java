@@ -1,42 +1,36 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.neo4j.parameter.CypherQueryParameter;
+
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
-public class CypherQueryWithParameters implements CypherQuery {
-  private final String query;
-  private final Map<String, Object> parameters;
+public class CypherQueryWithParameters extends AbstractCypherQuery {
 
-  public CypherQueryWithParameters(String query, Map<String, Object> parameters) {
-    this.query = query;
+  private final CypherParameters parameters;
+
+  public CypherQueryWithParameters(String query, CypherParameters parameters) {
+    super(query);
     this.parameters = parameters;
   }
 
-  @Override
-  public String getQuery() {
-    return query;
-  }
-
-  @Override
-  public String getFlatQuery() {
-    if (query != null) {
-      return query.replace("\n", " ").replace("\r", " ");
-    } else {
-      return null;
+  public Map<String, Object> getParameterMap() {
+    Map<String, Object> map = new HashMap<>();
+    for(CypherQueryParameter p : parameters.keySet()) {
+      map.put(p.getValue(), parameters.get(p));
     }
+    return map;
   }
 
-  public Map<String, Object> getParameters() {
-    return parameters;
-  }
-
-  public String getLiteralCypher() {
-    String q = this.query;
+  public String getInterpolatedParamsQuery() {
+    String q = this.runnableQuery;
     if (q != null) {
-      for (String key : parameters.keySet()) {
-        Object o = parameters.get(key);
+      for (CypherQueryParameter parameter : parameters.keySet()) {
+        Object o = parameters.get(parameter);
         String v = getVariableRepresentation(o);
-        q = q.replace("{" + key + "}", v);
+        q = q.replace("{" + parameter.getValue() + "}", v);
       }
     }
     return q.replace("\n", "").replace("\r", "");
@@ -48,8 +42,8 @@ public class CypherQueryWithParameters implements CypherQuery {
       sb.append("null");
     } else if (o instanceof String) {
       sb.append("\"").append(((String) o).replace("\"", "\\\"")).append("\"");
-    } else if (o instanceof Integer) {
-      sb.append(String.valueOf((Integer) o));
+    } else if (o instanceof Boolean || o instanceof Integer || o instanceof Long) {
+      sb.append(String.valueOf(o));
     } else if (o instanceof List) {
       sb.append("[");
       List l = (List) o;

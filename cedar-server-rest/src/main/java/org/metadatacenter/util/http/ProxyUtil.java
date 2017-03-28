@@ -6,6 +6,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
+import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -21,7 +22,8 @@ public class ProxyUtil {
     Request proxyRequest = Request.Get(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader());
+        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
+        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader());
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -34,6 +36,7 @@ public class ProxyUtil {
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
         .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
+        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .addHeader(HttpHeaders.CONTENT_LENGTH, ZERO_LENGTH)
         .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString());
     try {
@@ -53,6 +56,7 @@ public class ProxyUtil {
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
         .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
+        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
     try {
       return proxyRequest.execute().returnResponse();
@@ -71,6 +75,7 @@ public class ProxyUtil {
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
         .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
+        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
     try {
       return proxyRequest.execute().returnResponse();

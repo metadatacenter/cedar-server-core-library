@@ -7,7 +7,7 @@ public final class CedarQueryParameters {
 
   public static final String QP_FOLDER_ID = "folder_id";
   public static final String QP_IMPORT_MODE = "import_mode";
-  public static final String QP_PATH = "path";
+  public static final String QP_DEBUG = "debug";
   public static final String QP_RESOURCE_TYPES = "resource_types";
   public static final String QP_SORT = "sort";
   public static final String QP_LIMIT = "limit";
@@ -18,5 +18,6 @@ public final class CedarQueryParameters {
   public static final String QP_DERIVED_FROM_ID = "derived_from_id";
   public static final String QP_Q = "q";
   public static final String QP_SHARING = "sharing";
+  public static final String QP_FORMAT = "format";
 
 }

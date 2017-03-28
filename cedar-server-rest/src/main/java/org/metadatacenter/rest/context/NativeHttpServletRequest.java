@@ -1,6 +1,7 @@
 package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
@@ -48,6 +49,11 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   @Override
   public String getAuthorizationHeader() {
     return nativeRequest.getHeader(HTTP_HEADER_AUTHORIZATION);
+  }
+
+  @Override
+  public String getDebugHeader() {
+    return nativeRequest.getHeader(CedarHeaderParameters.HP_DEBUG);
   }
 
 }

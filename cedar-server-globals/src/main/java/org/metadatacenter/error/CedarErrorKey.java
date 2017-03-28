@@ -96,7 +96,9 @@ public enum CedarErrorKey {
   UPDATE_OTHER_PROFILE_FORBIDDEN("updateOtherProfileForbidden"),
   FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted"),
   GROUP_ALREADY_PRESENT("groupAlreadyPresent"),
-  FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged");
+  FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged"),
+  UNKNOWN_INSTANCE_OUTPUT_FORMAT("unknownInstanceOutputFormat"),
+  FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed");
 
   private final String value;
 

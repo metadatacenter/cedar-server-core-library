@@ -9,10 +9,10 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.io.IOException;
 
-public class TestUtil {
+public class TestUserUtil {
 
   public static String getTestUser1AuthHeader(CedarConfig cedarConfig) {
-    String uuid = cedarConfig.getTestUsers().getTestUser1().getUuid();
+    String uuid = cedarConfig.getTestUsers().getTestUser1().getId();
 
     CedarUser user = null;
 

@@ -6,9 +6,7 @@ public final class HttpConstants {
   }
 
   // HTTP headers
-  public static final String HTTP_HEADER_LOCATION = "Location";
   public static final String HTTP_HEADER_LINK = "Link";
-  public static final String HTTP_HEADER_HOST = "Host";
   public static final String HTTP_HEADER_CONTENT_TYPE = "Content-Type";
   public static final String HTTP_HEADER_AUTHORIZATION = "Authorization";
   public static final String HTTP_HEADER_ACCEPT = "Accept";
@@ -25,6 +23,5 @@ public final class HttpConstants {
 
   // Content Types
   public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
-  public static final String CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
 
 }

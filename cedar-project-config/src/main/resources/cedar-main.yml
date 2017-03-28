@@ -5,26 +5,41 @@ adminUser:
   uuid: "${CEDAR_ADMIN_USER_UUID}"
   #Plain text password of "cedar-admin" user
   password: "${CEDAR_ADMIN_USER_PASSWORD}"
-  #We keep the admin user's apiKey across system resets
-  apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
 #Keycloak server related settings.
-#These are used when the global objects are built in neo4j
 keycloak:
+  #For admin tasks
   clientId: "admin-cli"
-  configFile: "${CEDAR_HOME}keycloak.json"
+  #Configuring Keycloak instead of having a keycloak.json
+  realm: "CEDAR"
+  authServerUrl: "https://auth.${CEDAR_HOST}/auth"
+  sslRequired: "ALL"
+  resource: "cedar-angular-app"
+  publicClient: true
 
 #MongoDB settings
-mongo:
-  #Database name
-  databaseName: "cedar"
+templateServer:
+  mongoConnection:
+    host: localhost
+    port: 27017
+    user: "${CEDAR_MONGO_USER_NAME}"
+    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    databaseName: "cedar"
   databaseNameTest: "cedar-test"
-  #Collection names
   collections:
     field: "template-fields"
     element: "template-elements"
     template: "templates"
     instance: "template-instances"
+userServer:
+  mongoConnection:
+    host: localhost
+    port: 27017
+    user: "${CEDAR_MONGO_USER_NAME}"
+    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    databaseName: "cedar"
+  databaseNameTest: "cedar-test"
+  collections:
     user: "users"
 
 #Neo4J settings
@@ -60,7 +75,7 @@ elasticsearch:
 #For ID generation
 linkedData:
   base: "https://repo.${CEDAR_HOST}/"
-  usersBase: "https://metadatacenter.org/users/"
+  usersBase: "${CEDAR_LD_USER_BASE}"
 
 #Folder server global structure
 folderStructure:
@@ -102,17 +117,14 @@ blueprintUserProfile:
   defaultAPIKey:
     serviceName: "CEDAR"
     description: "Auto-generated apiKey for CEDAR"
-  userRoles:
+    salt: "${CEDAR_SALT_API_KEY}"
+  defaultRoles:
     normal:
       - "templateCreator"
-      - "templateInstantiator"
-    admin:
-      - "templateCreator"
-      - "templateInstantiator"
-      - "administrator"
+      - "metadataCreator"
     builtInAdmin:
       - "templateCreator"
-      - "templateInstantiator"
+      - "metadataCreator"
       - "builtInSystemAdministrator"
   uiPreferences:
     folderView:
@@ -203,8 +215,6 @@ test:
 
 testUsers:
   testUser1:
-    uuid: "${CEDAR_TEST_USER1_UUID}"
+    id: "${CEDAR_TEST_USER1_ID}"
   testUser2:
-    uuid: "${CEDAR_TEST_USER2_UUID}"
-  testUser3:
-    uuid: "${CEDAR_TEST_USER3_UUID}"
+    id: "${CEDAR_TEST_USER2_ID}"

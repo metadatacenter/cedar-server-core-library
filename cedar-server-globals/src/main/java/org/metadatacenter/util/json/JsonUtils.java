@@ -1,8 +1,6 @@
 package org.metadatacenter.util.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
@@ -15,8 +13,6 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.util.mongo.FixMongoDirection;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,14 +69,6 @@ public class JsonUtils {
     ObjectNode object = (ObjectNode) node;
     object.remove(fieldName);
     return object;
-  }
-
-  public static String prettyPrint(Object o) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.enable(SerializationFeature.INDENT_OUTPUT);
-    StringWriter sw = new StringWriter();
-    mapper.writeValue(sw, o);
-    return sw.toString();
   }
 
   // TODO: move the below 5 functions into a separate class, all of them are dealing with id replacement

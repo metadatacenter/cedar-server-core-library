@@ -42,11 +42,11 @@ public class IndexUtils {
 
   private final String FIELD_SUFFIX = "_field";
 
-  private String folderBase;
-  private String templateBase;
-  private int limit;
-  private int maxAttempts;
-  private int delayAttempts;
+  private final String folderBase;
+  private final String templateBase;
+  private final int limit;
+  private final int maxAttempts;
+  private final int delayAttempts;
 
   private enum ESType {
     STRING, LONG, INTEGER, SHORT, DOUBLE, FLOAT, DATE, BOOLEAN;
@@ -183,12 +183,8 @@ public class IndexUtils {
       // Instances
       else if (nodeType.equals(CedarNodeType.INSTANCE)) {
         // TODO: avoid calling this method multiple times when posting multiple instances for the same template
-        JsonNode schemaSummary = extractSchemaSummary(nodeType, resourceContent, JsonNodeFactory.instance.objectNode(),
-            context);
-
-        JsonNode valuesSummary = extractValuesSummary(nodeType, schemaSummary, resourceContent, JsonNodeFactory
-            .instance.objectNode());
-
+        JsonNode schemaSummary = extractSchemaSummary(nodeType, resourceContent, JsonNodeFactory.instance.objectNode(), context);
+        JsonNode valuesSummary = extractValuesSummary(nodeType, schemaSummary, resourceContent, JsonNodeFactory.instance.objectNode());
         return valuesSummary;
       } else {
         throw new InternalError("Invalid node type: " + nodeType);
@@ -320,12 +316,12 @@ public class IndexUtils {
                   String outputFieldKey = field.getKey() + FIELD_SUFFIX;
                   ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(fv));
                 }
-
                 // Element
               } else {
-                ((ObjectNode) results).set(field.getKey(), JsonNodeFactory.instance.objectNode());
-                extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), field.getValue(), results.get(field
-                    .getKey()));
+                if (schemaSummary.has(field.getKey())) {
+                  ((ObjectNode) results).set(field.getKey(), JsonNodeFactory.instance.objectNode());
+                  extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), field.getValue(), results.get(field.getKey()));
+                }
               }
             }
             // it is an Array (Multi-instance value)
@@ -340,16 +336,18 @@ public class IndexUtils {
                   if (schemaSummary != null && schemaSummary.has(field.getKey() + FIELD_SUFFIX)) {
                     fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
                   }
-                  // If the field was not found in the template, it is ignored. This may happen if the template is
-                  // updated.
+                  // If the field was not found in the template, it is ignored. This may happen if the template is updated.
                   if (fieldSchema != null) {
                     CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get(fieldValueName), fieldSchema);
                     ((ArrayNode) results.get(field.getKey())).add(JsonMapper.MAPPER.valueToTree(fv));
                   }
                 } else {
-                  ((ArrayNode) results.get(field.getKey())).add(JsonNodeFactory.instance.objectNode());
-                  extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), arrayItem, results.get(field
-                      .getKey()).get(i));
+                  // If the field was not found in the template, it is ignored. This may happen if the template is updated.
+                  if (schemaSummary.has(field.getKey())) {
+                    ((ArrayNode) results.get(field.getKey())).add(JsonNodeFactory.instance.objectNode());
+                    extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), arrayItem, results.get(field
+                        .getKey()).get(i));
+                  }
                 }
               }
             }

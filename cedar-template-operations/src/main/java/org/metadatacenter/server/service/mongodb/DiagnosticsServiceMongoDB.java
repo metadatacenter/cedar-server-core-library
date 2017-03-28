@@ -1,6 +1,5 @@
 package org.metadatacenter.server.service.mongodb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,8 +7,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.conversions.Bson;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.service.DiagnosticsService;
-import org.metadatacenter.util.mongo.MongoFactory;
 
 import java.util.Date;
 
@@ -17,8 +16,7 @@ public class DiagnosticsServiceMongoDB implements DiagnosticsService<JsonNode> {
 
   private MongoDatabase database = null;
 
-  public DiagnosticsServiceMongoDB(@NonNull String dbName) {
-    MongoClient mongoClient = MongoFactory.getClient();
+  public DiagnosticsServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName) {
     database = mongoClient.getDatabase(dbName);
   }
 

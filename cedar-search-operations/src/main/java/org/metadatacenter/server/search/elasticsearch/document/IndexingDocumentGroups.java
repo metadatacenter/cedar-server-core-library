@@ -8,8 +8,8 @@ import java.util.List;
 
 public class IndexingDocumentGroups {
 
-  private String cid;
-  private List<IdNodePermissionPair> groups;
+  private final String cid;
+  private final List<IdNodePermissionPair> groups;
 
   public IndexingDocumentGroups(CedarNodeMaterializedPermissions permissions) {
     this.cid = permissions.getId();

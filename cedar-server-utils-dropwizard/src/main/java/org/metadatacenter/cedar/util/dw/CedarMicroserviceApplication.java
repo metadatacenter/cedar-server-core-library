@@ -14,6 +14,8 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
 import org.metadatacenter.server.security.IAuthorizationResolver;
@@ -48,7 +50,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     HTTP_HEADERS.add("Referer");
     HTTP_HEADERS.add("User-Agent");
     HTTP_HEADERS.add("Authorization");
-    HTTP_HEADERS.add(CedarConstants.HTTP_HEADER_DEBUG);
+    HTTP_HEADERS.add(CedarHeaderParameters.HP_DEBUG);
 
     HTTP_METHODS = new ArrayList<>();
     HTTP_METHODS.add("OPTIONS");
@@ -72,12 +74,16 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     //Initialize config
     cedarConfig = CedarConfig.getInstance();
 
+    CedarRequestContextFactory.init(cedarConfig.getLinkedDataUtil());
+
     //Initialize user service
+    CedarDataServices.initializeMongoClientFactoryForUsers(cedarConfig.getUserServerConfig().getMongoConnection());
     CedarDataServices.initializeUserService(cedarConfig);
     userService = CedarDataServices.getUserService();
 
     //Initialize Keycloak
-    KeycloakDeploymentProvider.getInstance();
+    KeycloakDeploymentProvider keycloakDeploymentProvider = new KeycloakDeploymentProvider();
+    keycloakDeploymentProvider.buildDeployment(cedarConfig.getKeycloakConfig());
     // Init Authorization Resolver
     IAuthorizationResolver authResolver = new AuthorizationKeycloakAndApiKeyResolver();
     Authorization.setAuthorizationResolver(authResolver);

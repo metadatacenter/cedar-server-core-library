@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class NodeIdResultList {
 
-  private Map<String, String> elasticToCedar;
+  private final Map<String, String> elasticToCedar;
   private long totalCount;
 
   public NodeIdResultList() {

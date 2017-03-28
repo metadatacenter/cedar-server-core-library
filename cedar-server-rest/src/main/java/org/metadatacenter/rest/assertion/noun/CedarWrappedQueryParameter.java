@@ -8,9 +8,9 @@ public class CedarWrappedQueryParameter extends CedarParameterNoun {
 
   private final String name;
   private final CedarParameterSource source;
-  private final Optional<? extends Object> wrapped;
+  private final Optional<?> wrapped;
 
-  public CedarWrappedQueryParameter(String name, Optional<? extends Object> wrapped) {
+  public CedarWrappedQueryParameter(String name, Optional<?> wrapped) {
     this.name = name;
     this.source = CedarParameterSource.QueryString;
     this.wrapped = wrapped;

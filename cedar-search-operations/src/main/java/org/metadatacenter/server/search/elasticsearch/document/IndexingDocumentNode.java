@@ -4,11 +4,11 @@ import org.metadatacenter.model.CedarNodeType;
 
 public class IndexingDocumentNode {
 
-  private String cid;
+  private final String cid;
 
-  private String name;
+  private final String name;
 
-  private String nodeType;
+  private final String nodeType;
 
   public IndexingDocumentNode(String cid, String name, String nodeType) {
     this.cid = cid;

@@ -19,7 +19,6 @@ import org.metadatacenter.server.security.model.user.CedarUserUIPreferences;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
-import org.metadatacenter.util.mongo.MongoFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +33,7 @@ public class UserDaoMongoDB implements GenericUserDao {
   protected final @NonNull JsonUtils jsonUtils;
   protected final static String USER_PK_FIELD = "id";
 
-  public UserDaoMongoDB(@NonNull String dbName, @NonNull String collectionName) {
-    MongoClient mongoClient = MongoFactory.getClient();
+  public UserDaoMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName, @NonNull String collectionName) {
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     jsonUtils = new JsonUtils();
   }

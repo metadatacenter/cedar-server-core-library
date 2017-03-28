@@ -25,7 +25,7 @@ public class RegenerateSearchIndexTask {
 
   private static final Logger log = LoggerFactory.getLogger(RegenerateSearchIndexTask.class);
 
-  private CedarConfig cedarConfig;
+  private final CedarConfig cedarConfig;
 
 
   public RegenerateSearchIndexTask(CedarConfig cedarConfig) {

@@ -9,6 +9,4 @@ public interface UserServiceSession {
   FolderServerUser ensureUserExists();
 
   List<FolderServerUser> findUsers();
-
-  FolderServerUser findUserById(String userURL);
 }

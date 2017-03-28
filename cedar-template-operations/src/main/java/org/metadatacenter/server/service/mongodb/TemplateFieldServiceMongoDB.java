@@ -1,5 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
+import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<String, JsonNode> implements
     TemplateFieldService<String, JsonNode> {
@@ -27,8 +27,9 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   @NonNull
   private final TemplateFieldDaoMongoDB templateFieldDao;
 
-  public TemplateFieldServiceMongoDB(@NonNull String db, @NonNull String templateFieldsCollection) {
-    this.templateFieldDao = new TemplateFieldDaoMongoDB(db, templateFieldsCollection);
+  public TemplateFieldServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String
+      templateFieldsCollection) {
+    this.templateFieldDao = new TemplateFieldDaoMongoDB(mongoClient, db, templateFieldsCollection);
   }
 
   @Override

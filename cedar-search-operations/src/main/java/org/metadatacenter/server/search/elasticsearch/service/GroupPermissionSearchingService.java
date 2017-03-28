@@ -17,13 +17,11 @@ public class GroupPermissionSearchingService extends AbstractSearchingService {
 
   private static final Logger log = LoggerFactory.getLogger(GroupPermissionSearchingService.class);
 
-  private final Client client;
-  private final ElasticsearchConfig config;
-  private ElasticsearchSearchingWorker searchWorker;
+  private final ElasticsearchSearchingWorker searchWorker;
 
   GroupPermissionSearchingService(CedarConfig cedarConfig, Client client) {
-    this.client = client;
-    this.config = cedarConfig.getElasticsearchConfig();
+    Client client1 = client;
+    ElasticsearchConfig config = cedarConfig.getElasticsearchConfig();
     searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client, IndexedDocumentType
         .GROUPS);
   }

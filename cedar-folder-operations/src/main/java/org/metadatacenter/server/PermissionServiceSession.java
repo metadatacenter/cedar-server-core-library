@@ -10,6 +10,7 @@ import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest
 import java.util.Map;
 
 public interface PermissionServiceSession {
+
   CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource);
 
   CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL, FolderOrResource folderOrResource);
@@ -17,13 +18,13 @@ public interface PermissionServiceSession {
   BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request, FolderOrResource
       folderOrResource);
 
-  boolean userIsOwnerOfFolder(String folderURL);
+  boolean userCanChangeOwnerOfFolder(String folderURL);
 
   boolean userHasReadAccessToFolder(String folderURL);
 
   boolean userHasWriteAccessToFolder(String folderURL);
 
-  boolean userIsOwnerOfResource(String resourceURL);
+  boolean userCanChangeOwnerOfResource(String resourceURL);
 
   boolean userHasReadAccessToResource(String resourceURL);
 

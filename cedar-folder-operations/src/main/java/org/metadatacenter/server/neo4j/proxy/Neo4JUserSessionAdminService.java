@@ -7,13 +7,13 @@ import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.AdminServiceSession;
 import org.metadatacenter.server.neo4j.*;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession implements AdminServiceSession {
 
@@ -37,7 +37,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     boolean addAdminToEverybody = false;
 
-    String userId = getUserId();
+    String userId = cu.getId();
 
     FolderServerUser cedarAdmin = proxies.user().findUserById(userId);
     if (cedarAdmin == null) {
@@ -50,8 +50,8 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (everybody == null) {
       String everybodyURL = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.GROUP);
-      Map<String, Object> extraParams = new HashMap<>();
-      extraParams.put(Neo4JFields.SPECIAL_GROUP, Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+      Map<NodeProperty, Object> extraParams = new HashMap<>();
+      extraParams.put(NodeProperty.SPECIAL_GROUP, Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       everybody = proxies.group().createGroup(everybodyURL, config.getEverybodyGroupName(),
           config.getEverybodyGroupDisplayName(), config.getEverybodyGroupDescription(), userId, extraParams);
       addAdminToEverybody = true;
@@ -73,8 +73,8 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     FolderServerFolder usersFolder = proxies.folder().findFolderByPath(config.getUsersFolderPath());
     if (usersFolder == null) {
-      Map<String, Object> extraParams = new HashMap<>();
-      extraParams.put(Neo4JFields.IS_SYSTEM, true);
+      Map<NodeProperty, Object> extraParams = new HashMap<>();
+      extraParams.put(NodeProperty.IS_SYSTEM, true);
       String name = pathUtil.extractName(config.getUsersFolderPath());
       usersFolder = proxies.folder().createFolderAsChildOfId(rootFolderURL, name, name, config
           .getUsersFolderDescription(), cedarAdmin.getId(), NodeLabel.SYSTEM_FOLDER, extraParams);

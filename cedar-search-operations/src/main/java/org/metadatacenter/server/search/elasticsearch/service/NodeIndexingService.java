@@ -9,7 +9,6 @@ import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentNode;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
-import org.metadatacenter.server.search.util.IndexUtils;
 import org.metadatacenter.util.StringUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -19,7 +18,7 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(NodeIndexingService.class);
 
-  private ElasticsearchIndexingWorker indexWorker;
+  private final ElasticsearchIndexingWorker indexWorker;
 
   NodeIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
     indexWorker = new ElasticsearchIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,

@@ -39,18 +39,24 @@ public abstract class AbstractNeo4JProxy {
     for (CypherQuery q : queries) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        log.debug("c.query : " + qp.getFlatQuery());
-        log.debug("c.params: " + qp.getParameters());
-        log.debug("c.interp: " + qp.getLiteralCypher());
+        String runnableQuery = qp.getRunnableQuery();
+        Map<String, Object> parameterMap = qp.getParameterMap();
+        log.debug("VVV----------------------------------------------------------------");
+        log.debug("c.original     : " + qp.getOriginalQuery());
+        log.debug("c.runnable     : " + runnableQuery);
+        log.debug("c.parameters   : " + parameterMap);
+        log.debug("c.interpolated : " + qp.getInterpolatedParamsQuery());
+        log.debug("^^^----------------------------------------------------------------");
         Map<String, Object> statement = new HashMap<>();
-        statement.put("statement", qp.getQuery());
-        statement.put("parameters", qp.getParameters());
+        statement.put("statement", runnableQuery);
+        statement.put("parameters", parameterMap);
         statements.add(statement);
       } else if (q instanceof CypherQueryLiteral) {
-        log.debug("c.string: " + q.getFlatQuery());
-        CypherQueryLiteral qp = (CypherQueryLiteral) q;
+        String runnableQuery = q.getRunnableQuery();
+        log.debug("c.original     : " + q.getOriginalQuery());
+        log.debug("c.runnable     : " + runnableQuery);
         Map<String, Object> statement = new HashMap<>();
-        statement.put("statement", qp.getQuery());
+        statement.put("statement", runnableQuery);
         statements.add(statement);
       }
     }
@@ -80,12 +86,21 @@ public abstract class AbstractNeo4JProxy {
       int statusCode = response.getStatusLine().getStatusCode();
       String responseAsString = EntityUtils.toString(response.getEntity());
       // TODO: Use a constant here: HTTP_OK
-      if (statusCode == 200) {
-        return JsonMapper.MAPPER.readTree(responseAsString);
+      JsonNode cypherQueryResponse = null;
+      boolean resultOk = false;
+      if (responseAsString != null) {
+        cypherQueryResponse = JsonMapper.MAPPER.readTree(responseAsString);
+      } else {
+        log.error("Error while reading cypher query response!");
+      }
+      if (cypherQueryResponse != null) {
+        resultOk = successOrLogAndThrowException(cypherQueryResponse, "Error while executing cypher query:");
+      }
+      if (resultOk) {
+        return cypherQueryResponse;
       } else {
         return null;
       }
-
     } catch (IOException ex) {
       log.error("Error while reading user details from Keycloak", ex);
     }
@@ -209,15 +224,36 @@ public abstract class AbstractNeo4JProxy {
     return userList;
   }
 
+  // TODO: Handle the errors differently, propagate the error to an upper layer, or throw a checked exception
+  protected boolean successOrLogAndThrowException(JsonNode jsonNode, String errorMessage) {
+    JsonNode errorsNode = jsonNode.at("/errors");
+    if (errorsNode.size() != 0) {
+      String code = null;
+      String message = null;
+      JsonNode error = errorsNode.path(0);
+      log.error(errorMessage);
+      JsonNode codeNode = error.get("codeNode");
+      if (codeNode != null) {
+        code = codeNode.asText();
+        log.error("code: " + code);
+      }
+      JsonNode messageNode = error.get("message");
+      if (messageNode != null) {
+        message = messageNode.asText();
+        log.error("message: " + message);
+      }
+      throw new RuntimeException("Error executing Cypher query:" + errorMessage + ":" + code + ":" + message);
+    }
+    return true;
+  }
 
-  /*
-  String getFolderUUID(String folderId) {
-    if (folderId != null && folderId.startsWith(folderIdPrefix)) {
-      return folderId.substring(folderIdPrefix.length());
+  protected long count(JsonNode jsonNode) {
+    JsonNode countNode = jsonNode.at("/results/0/data/0/row/0");
+    if (countNode != null && !countNode.isMissingNode()) {
+      return countNode.asLong();
     } else {
-      return null;
+      return -1;
     }
   }
-*/
 
 }
