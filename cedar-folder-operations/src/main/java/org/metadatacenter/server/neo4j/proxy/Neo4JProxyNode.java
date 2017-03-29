@@ -138,6 +138,9 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
       sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
     String cypher = CypherQueryBuilderNode.getAllLookupQuery(sortList, addPermissionConditions);
     CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(nodeTypes, limit, offset, cu.getId(),
         addPermissionConditions);
@@ -148,6 +151,9 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
     boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
     String cypher = CypherQueryBuilderNode.getAllCountQuery(addPermissionConditions);
     CypherParameters params = CypherParamBuilderNode.getAllCountParameters(nodeTypes, cu.getId(),
         addPermissionConditions);
