@@ -67,7 +67,9 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getAllLookupQuery(List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    }
     sb.append(" MATCH (node)");
     sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
@@ -83,7 +85,9 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getAllCountQuery(boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    }
     sb.append(" MATCH (node)");
     sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");

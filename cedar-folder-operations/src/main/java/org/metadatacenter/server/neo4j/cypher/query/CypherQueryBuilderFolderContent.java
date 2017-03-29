@@ -14,7 +14,9 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
 
   public static String getFolderContentsFilteredCountQuery(boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    }
     sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
@@ -29,7 +31,9 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
 
   public static String getFolderContentsFilteredLookupQuery(List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    }
     sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");

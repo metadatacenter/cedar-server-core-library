@@ -16,7 +16,7 @@ import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +33,9 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private final String indexName;
 
   public ElasticsearchPermissionEnabledContentSearchingWorker(CedarConfig cedarConfig, Client client) {
-    CedarConfig cedarConfig1 = cedarConfig;
     ElasticsearchConfig config = cedarConfig.getElasticsearchConfig();
     this.client = client;
     this.indexName = config.getIndexName();
-    LinkedDataUtil linkedDataUtil = cedarConfig.getLinkedDataUtil();
   }
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>
@@ -107,12 +105,14 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     String userId = rctx.getCedarUser().getId();
 
-    // Filter by user
-    QueryBuilder userChildQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.USERS.getValue(),
-        QueryBuilders.termQuery("users.id", userId)
-    );
+    if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
+      // Filter by user
+      QueryBuilder userChildQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.USERS.getValue(),
+          QueryBuilders.termQuery("users.id", userId)
+      );
 
-    mainQuery.must(userChildQuery);
+      mainQuery.must(userChildQuery);
+    }
 
     BoolQueryBuilder contentQuery = QueryBuilders.boolQuery();
 
