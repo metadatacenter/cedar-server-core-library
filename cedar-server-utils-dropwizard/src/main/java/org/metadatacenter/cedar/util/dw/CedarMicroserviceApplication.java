@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
