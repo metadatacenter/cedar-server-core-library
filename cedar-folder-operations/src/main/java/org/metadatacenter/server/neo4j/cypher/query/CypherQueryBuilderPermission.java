@@ -10,9 +10,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
-        " CREATE (user)-[:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(folder)" +
+        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
         " RETURN user";
   }
 
@@ -20,9 +18,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
         " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
-        " CREATE (group)-[:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(resource)" +
+        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " RETURN group";
   }
 
@@ -30,9 +26,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
         " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
-        " CREATE (group)-[:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(folder)" +
+        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
         " RETURN group";
   }
 
@@ -40,9 +34,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
-        " CREATE (user)-[:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(resource)" +
+        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " RETURN user";
   }
 
@@ -50,9 +42,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
-        " MATCH (user)-[relation:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(folder)" +
+        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
         " DELETE (relation)" +
         " RETURN folder";
   }
@@ -61,9 +51,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
         " MATCH (folder:<LABEL.FOLDER> {id:{folderId} })" +
-        " MATCH (group)-[relation:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(folder)" +
+        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
         " DELETE (relation)" +
         " RETURN folder";
   }
@@ -72,9 +60,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
-        " MATCH (user)-[relation:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(resource)" +
+        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
         " RETURN resource";
   }
@@ -83,9 +69,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
         " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
-        " MATCH (group)-[relation:" +
-        RelationLabel.forNodePermission(permission) +
-        "]->(resource)" +
+        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
         " RETURN resource";
   }
@@ -180,65 +164,42 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   }
 
   public static String getGroupsWithTransitiveReadOnNode(FolderOrResource folderOrResource) {
+    String node;
+    if (folderOrResource == FolderOrResource.FOLDER) {
+      node = "(node:<LABEL.FOLDER> {id:{nodeId}})";
+    } else {
+      node = "(node:<LABEL.RESOURCE> {id:{nodeId}})";
+    }
+
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");
-
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      sb.append(" MATCH (node:<LABEL.FOLDER> {id:{nodeId}})");
-    } else {
-      sb.append(" MATCH (node:<LABEL.RESOURCE> {id:{nodeId}})");
-    }
-    sb.append(" WHERE");
-    sb.append(" (");
-    sb.append(" (group)-[:<REL.CANREADTHIS>]->(node)");
-    sb.append(" OR ");
-    sb.append(" (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(node)");
-    sb.append(" )");
+    sb.append(" -[:<REL.CANREADTHIS>]->");
+    sb.append(node);
     sb.append(" RETURN group");
+
+    sb.append(" UNION");
+
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
+    sb.append(" RETURN group");
+
     return sb.toString();
   }
 
   public static String getGroupsWithTransitiveWriteOnNode(FolderOrResource folderOrResource) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MATCH (group:<LABEL.GROUP>)");
-
+    String node;
     if (folderOrResource == FolderOrResource.FOLDER) {
-      sb.append(" MATCH (node:<LABEL.FOLDER> {id:{nodeId}})");
+      node = "(node:<LABEL.FOLDER> {id:{nodeId}})";
     } else {
-      sb.append(" MATCH (node:<LABEL.RESOURCE> {id:{nodeId}})");
+      node = "(node:<LABEL.RESOURCE> {id:{nodeId}})";
     }
-    sb.append(" WHERE");
-    sb.append(" (");
-    sb.append(" (group)-[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->(node)");
-    sb.append(" )");
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
     sb.append(" RETURN group");
     return sb.toString();
   }
-
-  public static String findWritableNodes() {
-    return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (node:<LABEL.FSNODE>)" +
-        " WHERE" +
-        getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, "node") +
-        " RETURN node";
-  }
-
-  public static String findReadableNodes() {
-    return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (node:<LABEL.FSNODE>)" +
-        " WHERE" +
-        getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, "node") +
-        " RETURN node";
-  }
-
-  public static String findOwnedNodes() {
-    return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (node:<:LABEL.FSNODE>)" +
-        " MATCH (user)-[:<REL>OWNS>]->(node)" +
-        " RETURN node";
-  }
-
 }
