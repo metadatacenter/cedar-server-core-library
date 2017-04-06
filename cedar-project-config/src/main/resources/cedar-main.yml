@@ -1,3 +1,7 @@
+home: "${CEDAR_HOME}"
+profile: "${CEDAR_PROFILE}"
+host: "${CEDAR_HOST}"
+
 adminUser:
   userName: "cedar-admin"
   #UUID of "cedar-admin" user from Keycloak.
@@ -93,21 +97,42 @@ folderStructure:
 #Server bases
 #for inter-service REST calls
 servers:
-  template:
-    base: "https://template.${CEDAR_HOST}/"
   folder:
+    port: 9008
     base: "https://folder.${CEDAR_HOST}/"
     users: "https://folder.${CEDAR_HOST}/users"
     groups: "https://folder.${CEDAR_HOST}/groups"
-  user:
-    base: "https://user.${CEDAR_HOST}/"
-    usersBase: "https://user.${CEDAR_HOST}/users/"
+  group:
+    port: 9009
+  repo:
+    port: 9002
   resource:
+    port: 9007
+    apiDoc: true
     base: "https://resource.${CEDAR_HOST}/"
     regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
   schema:
+    port: 9003
     base: "https://schema.${CEDAR_HOST}/"
     coreBase: "https://schema.${CEDAR_HOST}/core/"
+  submission:
+    port: 9010
+  template:
+    port: 9001
+    base: "https://template.${CEDAR_HOST}/"
+  terminology:
+    port: 9004
+    apiDoc: true
+  user:
+    port: 9005
+    base: "https://user.${CEDAR_HOST}/"
+    usersBase: "https://user.${CEDAR_HOST}/users/"
+  valuerecommender:
+    port: 9006
+    apiDoc: true
+  worker:
+    port: 9011
+
 
 #Default values for user profile
 #Used when generating user from blueprint
