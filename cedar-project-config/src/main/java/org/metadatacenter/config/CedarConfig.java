@@ -15,6 +15,15 @@ import java.io.IOException;
 
 public class CedarConfig extends Configuration {
 
+  @JsonProperty("home")
+  private String home;
+
+  @JsonProperty("profile")
+  private String profile;
+
+  @JsonProperty("host")
+  private String host;
+
   @JsonProperty("adminUser")
   private AdminUserConfig adminUserConfig;
 
@@ -131,6 +140,18 @@ public class CedarConfig extends Configuration {
 
   public static CedarConfig getInstance() {
     return instance;
+  }
+
+  public String getHome() {
+    return home;
+  }
+
+  public String getProfile() {
+    return profile;
+  }
+
+  public String getHost() {
+    return host;
   }
 
   public AdminUserConfig getAdminUserConfig() {

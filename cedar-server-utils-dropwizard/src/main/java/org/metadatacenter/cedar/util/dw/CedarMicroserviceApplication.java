@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.config.ServerConfig;
+import org.metadatacenter.model.ServerName;
 import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
@@ -96,6 +98,15 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
   @Override
   public void run(T configuration, Environment environment) throws Exception {
+    ServerConfig serverConfig = cedarConfig.getServers().get(getServerName());
+    System.out.println(cedarConfig.getAdminUserConfig().getPassword());
+    System.out.println(getName());
+    DefaultServerFactory serverFactory = (DefaultServerFactory) configuration.getServerFactory();
+    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(serverConfig.getPort());
+    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(serverConfig.getPort() + 100);
+    System.setProperty("STOP.PORT", String.valueOf(serverConfig.getPort() + 200));
+    System.setProperty("STOP.KEY", "Stop:" + getServerName().getName() + ":Me");
+
     log.info("**************************************************************");
     log.info("********** Running CEDAR microservice " + getName());
     int httpPort = getHttpPort(configuration);
@@ -156,4 +167,12 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
   protected abstract void initializeApp(Bootstrap<T> bootstrap);
 
   protected abstract void runApp(T configuration, Environment environment);
+
+  protected abstract ServerName getServerName();
+
+  @Override
+  public String getName() {
+    return getServerName().getName();
+  }
+
 }
