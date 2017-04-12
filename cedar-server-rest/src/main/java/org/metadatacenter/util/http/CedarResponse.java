@@ -1,5 +1,6 @@
 package org.metadatacenter.util.http;
 
+import com.google.common.collect.Maps;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorReasonKey;
@@ -38,6 +39,7 @@ public abstract class CedarResponse {
     private Exception exception;
     private Response.Status status;
     private Object entity;
+    private Map<String, Object> headers = Maps.newHashMap();
 
     protected CedarResponseBuilder() {
       this.parameters = new HashMap<>();
@@ -56,6 +58,11 @@ public abstract class CedarResponse {
       Response.ResponseBuilder responseBuilder = Response.noContent();
       responseBuilder.status(status);
 
+      if (!headers.isEmpty()) {
+        for (String property : headers.keySet()) {
+          responseBuilder.header(property, headers.get(property));
+        }
+      }
       if (entity != null) {
         responseBuilder.entity(entity);
       } else {
@@ -116,6 +123,11 @@ public abstract class CedarResponse {
 
     public CedarResponseBuilder exception(Exception exception) {
       this.exception = exception;
+      return this;
+    }
+
+    public CedarResponseBuilder header(String property, Object value) {
+      headers.put(property, value);
       return this;
     }
   }
