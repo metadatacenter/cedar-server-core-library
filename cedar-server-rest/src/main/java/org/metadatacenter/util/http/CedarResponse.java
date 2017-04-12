@@ -8,6 +8,7 @@ import org.metadatacenter.server.result.BackendCallError;
 import org.metadatacenter.server.result.BackendCallResult;
 
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,7 @@ public abstract class CedarResponse {
     private Exception exception;
     private Response.Status status;
     private Object entity;
+    private URI createdResourceUri;
     private Map<String, Object> headers = Maps.newHashMap();
 
     protected CedarResponseBuilder() {
@@ -62,6 +64,9 @@ public abstract class CedarResponse {
         for (String property : headers.keySet()) {
           responseBuilder.header(property, headers.get(property));
         }
+      }
+      if (createdResourceUri != null) {
+        responseBuilder.status(Response.Status.CREATED).location(createdResourceUri);
       }
       if (entity != null) {
         responseBuilder.entity(entity);
@@ -126,6 +131,11 @@ public abstract class CedarResponse {
       return this;
     }
 
+    public CedarResponseBuilder created(URI createdResourceUri) {
+      this.createdResourceUri = createdResourceUri;
+      return this;
+    }
+
     public CedarResponseBuilder header(String property, Object value) {
       headers.put(property, value);
       return this;
@@ -166,6 +176,10 @@ public abstract class CedarResponse {
 
   public static CedarResponseBuilder httpVersionNotSupported() {
     return newResponseBuilder().status(Response.Status.HTTP_VERSION_NOT_SUPPORTED);
+  }
+
+  public static CedarResponseBuilder created(URI createdResourceLocation) {
+    return newResponseBuilder().created(createdResourceLocation);
   }
 
   protected static CedarResponseBuilder status(Response.Status status) {
