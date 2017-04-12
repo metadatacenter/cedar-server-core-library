@@ -2,13 +2,9 @@ package org.metadatacenter.config;
 
 public class AdminUserConfig {
 
-  private String uuid;
   private String userName;
   private String password;
-
-  public String getUuid() {
-    return uuid;
-  }
+  private String apiKey;
 
   public String getUserName() {
     return userName;
@@ -16,5 +12,9 @@ public class AdminUserConfig {
 
   public String getPassword() {
     return password;
+  }
+
+  public String getApiKey() {
+    return apiKey;
   }
 }

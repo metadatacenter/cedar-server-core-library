@@ -72,9 +72,6 @@ public class CedarConfig extends Configuration {
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
 
-  @JsonProperty("test")
-  private TestConfig testConfig;
-
   @JsonProperty("testUsers")
   private TestUsers testUsers;
 
@@ -101,7 +98,7 @@ public class CedarConfig extends Configuration {
     final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     final SubstitutingSourceProvider substitutingSourceProvider = new SubstitutingSourceProvider(
-        new ClasspathConfigurationSourceProvider(), new EnvironmentVariableSubstitutor());
+        new ClasspathConfigurationSourceProvider(), new CedarEnvironmentVariableSubstitutor());
 
     // Read main config
     final String mainConfigFileName = "cedar-main.yml";
@@ -218,10 +215,6 @@ public class CedarConfig extends Configuration {
     return submissionConfig;
   }
 
-  public TestConfig getTestConfig() {
-    return testConfig;
-  }
-
   public TestUsers getTestUsers() {
     return testUsers;
   }
@@ -236,20 +229,8 @@ public class CedarConfig extends Configuration {
 
   // Utility methods
 
-  public String getMongoCollectionName(CedarNodeType nt) {
-    String name = getTemplateServerConfig().getCollections().get(nt.getValue());
-    if (name == null) {
-      name = getUserServerConfig().getCollections().get(nt.getValue());
-    }
-    return name;
-  }
-
   public LinkedDataUtil getLinkedDataUtil() {
     return linkedDataUtil;
-  }
-
-  public String getAdminUserId() {
-    return linkedDataUtil.getUserId(getAdminUserConfig().getUuid());
   }
 
 }

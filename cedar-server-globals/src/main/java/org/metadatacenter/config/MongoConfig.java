@@ -1,12 +1,12 @@
 package org.metadatacenter.config;
 
+import org.metadatacenter.model.CedarNodeType;
+
 import java.util.Map;
 
 public class MongoConfig {
 
   private MongoConnection mongoConnection;
-
-  private String databaseNameTest;
 
   private Map<String, String> collections;
 
@@ -18,11 +18,12 @@ public class MongoConfig {
     return mongoConnection.getDatabaseName();
   }
 
-  public String getDatabaseNameTest() {
-    return databaseNameTest;
-  }
-
   public Map<String, String> getCollections() {
     return collections;
   }
+
+  public String getMongoCollectionName(CedarNodeType nt) {
+    return collections.get(nt.getValue());
+  }
+
 }

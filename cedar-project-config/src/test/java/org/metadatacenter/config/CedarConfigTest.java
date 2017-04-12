@@ -12,17 +12,18 @@ import java.util.Map;
 public class CedarConfigTest {
 
   public final static String CEDAR_ADMIN_USER_PASSWORD = "Password123";
-  public final static String CEDAR_ADMIN_USER_UUID = "abcd-efgh";
+  public final static String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
 
   @Before
   public void setEnvironment() {
     Map<String, String> env = new HashMap<>();
     env.put("CEDAR_ADMIN_USER_PASSWORD", CEDAR_ADMIN_USER_PASSWORD);
-    env.put("CEDAR_ADMIN_USER_UUID", CEDAR_ADMIN_USER_UUID);
+    env.put("CEDAR_ADMIN_USER_API_KEY", CEDAR_ADMIN_USER_API_KEY);
     env.put("CEDAR_BIOPORTAL_API_KEY", "apiKey-abcd");
     env.put("CEDAR_HOME", "/Users/CEDAR/");
     env.put("CEDAR_HOST", "metadatacenter.orgx");
     env.put("CEDAR_LD_USER_BASE", "https://metadatacenter.org/users/");
+    env.put("CEDAR_KEYCLOAK_CLIENT_ID", "cedar-angular-app");
     env.put("CEDAR_MONGO_USER_NAME", "cedarUser");
     env.put("CEDAR_MONGO_USER_PASSWORD", "cedarPassword");
     env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
@@ -30,6 +31,7 @@ public class CedarConfigTest {
     env.put("CEDAR_NEO4J_TRANSACTION_URL", "http://");
     env.put("CEDAR_SALT_API_KEY", "salt");
     env.put("CEDAR_PROFILE", "server");
+    env.put("CEDAR_EVERYBODY_GROUP_NAME", "Everybody");
     env.put("CEDAR_TEST_USER1_ID", "https://metadatacenter.org/users/user1-uuid1");
     env.put("CEDAR_TEST_USER2_ID", "https://metadatacenter.org/users/user1-uuid2");
     TestUtil.setEnv(env);
@@ -52,7 +54,7 @@ public class CedarConfigTest {
     Assert.assertNotNull(adminUser);
     Assert.assertEquals("cedar-admin", adminUser.getUserName());
     Assert.assertEquals(CEDAR_ADMIN_USER_PASSWORD, adminUser.getPassword());
-    Assert.assertEquals(CEDAR_ADMIN_USER_UUID, adminUser.getUuid());
+    Assert.assertEquals(CEDAR_ADMIN_USER_API_KEY, adminUser.getApiKey());
   }
 
   @Test
@@ -61,7 +63,6 @@ public class CedarConfigTest {
     MongoConfig templateServerConfig = instance.getTemplateServerConfig();
     Assert.assertNotNull(templateServerConfig);
     Assert.assertEquals("cedar", templateServerConfig.getDatabaseName());
-    Assert.assertEquals("cedar-test", templateServerConfig.getDatabaseNameTest());
 
     Map<String, String> templateServerCollections = templateServerConfig.getCollections();
     Assert.assertNotNull(templateServerCollections);
@@ -73,7 +74,6 @@ public class CedarConfigTest {
     MongoConfig userServerConfig = instance.getUserServerConfig();
     Assert.assertNotNull(userServerConfig);
     Assert.assertEquals("cedar", userServerConfig.getDatabaseName());
-    Assert.assertEquals("cedar-test", userServerConfig.getDatabaseNameTest());
 
     Map<String, String> userServerCollections = userServerConfig.getCollections();
     Assert.assertNotNull(userServerCollections);

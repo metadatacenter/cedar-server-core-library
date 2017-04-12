@@ -2,7 +2,6 @@ package org.metadatacenter.cedar.util.dw;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
-import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jetty.ConnectorFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
@@ -13,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.config.CedarEnvironmentVariableSubstitutor;
 import org.metadatacenter.config.ServerConfig;
 import org.metadatacenter.model.ServerName;
 import org.metadatacenter.constant.CedarHeaderParameters;
@@ -69,7 +69,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     // Enable variable substitution with environment variables
     bootstrap.setConfigurationSourceProvider(
         new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-            new EnvironmentVariableSubstitutor()
+            new CedarEnvironmentVariableSubstitutor()
         )
     );
     //Initialize config
