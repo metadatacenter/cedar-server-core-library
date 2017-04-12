@@ -142,6 +142,10 @@ public abstract class CedarResponse {
     }
   }
 
+  public static CedarResponseBuilder ok() {
+    return newResponseBuilder().status(Response.Status.OK);
+  }
+
   public static CedarResponseBuilder internalServerError() {
     return newResponseBuilder().status(Response.Status.INTERNAL_SERVER_ERROR);
   }
