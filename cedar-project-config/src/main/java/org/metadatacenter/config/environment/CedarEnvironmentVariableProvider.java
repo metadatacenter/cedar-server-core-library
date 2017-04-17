@@ -20,7 +20,10 @@ public class CedarEnvironmentVariableProvider {
         String value = System.getenv(variable.getName());
         env.put(variable.getName(), value);
       } else {
-        log.info("Environment contains not needed variable, holding it back from sandbox: " + variable.getName());
+        String value = System.getenv(variable.getName());
+        if (value != null) {
+          log.info("Environment contains not needed variable, holding it back from sandbox: " + variable.getName());
+        }
       }
     }
     return env;
