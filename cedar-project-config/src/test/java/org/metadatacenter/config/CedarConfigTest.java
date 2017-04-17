@@ -3,6 +3,9 @@ package org.metadatacenter.config;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.metadatacenter.config.environment.CedarEnvironmentVariable;
+import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
+import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.util.test.TestUtil;
 
@@ -17,35 +20,59 @@ public class CedarConfigTest {
   @Before
   public void setEnvironment() {
     Map<String, String> env = new HashMap<>();
-    env.put("CEDAR_ADMIN_USER_PASSWORD", CEDAR_ADMIN_USER_PASSWORD);
-    env.put("CEDAR_ADMIN_USER_API_KEY", CEDAR_ADMIN_USER_API_KEY);
-    env.put("CEDAR_BIOPORTAL_API_KEY", "apiKey-abcd");
-    env.put("CEDAR_HOME", "/Users/CEDAR/");
-    env.put("CEDAR_HOST", "metadatacenter.orgx");
-    env.put("CEDAR_LD_USER_BASE", "https://metadatacenter.org/users/");
-    env.put("CEDAR_KEYCLOAK_CLIENT_ID", "cedar-angular-app");
-    env.put("CEDAR_MONGO_USER_NAME", "cedarUser");
-    env.put("CEDAR_MONGO_USER_PASSWORD", "cedarPassword");
-    env.put("CEDAR_NCBI_SRA_FTP_PASSWORD", "ftpPassword");
-    env.put("CEDAR_NEO4J_AUTH_STRING", "neo-auth");
-    env.put("CEDAR_NEO4J_TRANSACTION_URL", "http://");
-    env.put("CEDAR_SALT_API_KEY", "salt");
-    env.put("CEDAR_PROFILE", "server");
-    env.put("CEDAR_EVERYBODY_GROUP_NAME", "Everybody");
-    env.put("CEDAR_TEST_USER1_ID", "https://metadatacenter.org/users/user1-uuid1");
-    env.put("CEDAR_TEST_USER2_ID", "https://metadatacenter.org/users/user1-uuid2");
+    env.put(CedarEnvironmentVariable.CEDAR_VERSION.getName(), "1.0.0");
+    env.put(CedarEnvironmentVariable.CEDAR_VERSION_MODIFIER.getName(), "");
+
+    env.put(CedarEnvironmentVariable.CEDAR_HOME.getName(), "/home/cedar");
+    env.put(CedarEnvironmentVariable.KEYCLOAK_HOME.getName(), "/home/cedar/keycloak");
+    env.put(CedarEnvironmentVariable.NGINX_HOME.getName(), "/etc/nginx");
+
+    env.put(CedarEnvironmentVariable.CEDAR_FRONTEND_BEHAVIOR.getName(), "server");
+    env.put(CedarEnvironmentVariable.CEDAR_FRONTEND_TARGET.getName(), "local");
+    env.put(CedarEnvironmentVariable.CEDAR_HOST.getName(), "metadatacenter.orgx");
+
+    env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_API_KEY.getName(), "apiKey-abcd");
+    env.put(CedarEnvironmentVariable.CEDAR_ANALYTICS_KEY.getName(), "false");
+    env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD.getName(), "ftpPassword");
+
+    env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
+    env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
+
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_TRANSACTION_URL.getName(), "http://");
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_AUTH_STRING.getName(), "neo-auth");
+
+    env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_SERVER_USER_CALLBACK_URL.getName(), "http://");
+    env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_SERVER_ADMIN_CALLBACK_URL.getName(), "http://");
+    env.put(CedarEnvironmentVariable.CEDAR_KEYCLOAK_CLIENT_ID.getName(), "cedar-angular-app");
+
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_NAME.getName(), "cedarUser");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_PASSWORD.getName(), "cedarPassword");
+
+    env.put(CedarEnvironmentVariable.CEDAR_SALT_API_KEY.getName(), "salt");
+
+    env.put(CedarEnvironmentVariable.CEDAR_LD_USER_BASE.getName(), "https://metadatacenter.org/users/");
+
+    env.put(CedarEnvironmentVariable.CEDAR_EVERYBODY_GROUP_NAME.getName(), "Everybody");
+
+    env.put(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID.getName(), "https://metadatacenter.org/users/user1-uuid");
+    env.put(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID.getName(), "https://metadatacenter.org/users/user2-uuid");
+
     TestUtil.setEnv(env);
+  }
+
+  private CedarConfig getCedarConfig() {
+    return CedarConfig.getInstance(CedarEnvironmentVariableProvider.getFor(SystemComponent.ALL));
   }
 
   @Test
   public void testGetInstance() throws Exception {
-    CedarConfig instance = CedarConfig.getInstance();
+    CedarConfig instance = getCedarConfig();
     Assert.assertNotNull(instance);
   }
 
   @Test
   public void testKeycloakConfig() throws Exception {
-    CedarConfig instance = CedarConfig.getInstance();
+    CedarConfig instance = getCedarConfig();
     KeycloakConfig keycloakConfig = instance.getKeycloakConfig();
     Assert.assertNotNull(keycloakConfig);
     Assert.assertEquals("admin-cli", keycloakConfig.getClientId());
@@ -59,7 +86,7 @@ public class CedarConfigTest {
 
   @Test
   public void testMongoConfig() throws Exception {
-    CedarConfig instance = CedarConfig.getInstance();
+    CedarConfig instance = getCedarConfig();
     MongoConfig templateServerConfig = instance.getTemplateServerConfig();
     Assert.assertNotNull(templateServerConfig);
     Assert.assertEquals("cedar", templateServerConfig.getDatabaseName());
@@ -83,7 +110,7 @@ public class CedarConfigTest {
 
   @Test
   public void testElasticSearchConfig() throws Exception {
-    CedarConfig instance = CedarConfig.getInstance();
+    CedarConfig instance = getCedarConfig();
     ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig = instance
         .getElasticsearchSettingsMappingsConfig();
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig);

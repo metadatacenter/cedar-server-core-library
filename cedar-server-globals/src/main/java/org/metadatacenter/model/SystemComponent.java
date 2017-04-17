@@ -18,7 +18,8 @@ public enum SystemComponent {
   FRONTEND_PRODUCTION("frontend-production"),
   ADMIN_TOOL("admin-tool"),
   KEYCLOAK_EVENT_LISTENER("keycloak-event-listener"), // keycloak standalone.xml
-  UTIL_BIN("util-bin"); // shell scripts in cedar-util/bin
+  UTIL_BIN("util-bin"), // shell scripts in cedar-util/bin
+  ALL("all"); // generic case, include all variables
 
   private ServerName serverName;
   private String useCase;
@@ -37,5 +38,14 @@ public enum SystemComponent {
 
   public String getUseCase() {
     return useCase;
+  }
+
+  public static SystemComponent getFor(ServerName serverName) {
+    for(SystemComponent sc : values()) {
+      if (sc.getServerName() == serverName) {
+        return sc;
+      }
+    }
+    return null;
   }
 }

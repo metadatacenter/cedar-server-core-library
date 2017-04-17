@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.configuration.*;
 import io.dropwizard.jackson.Jackson;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.slf4j.Logger;
@@ -12,14 +13,12 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
+import java.util.Map;
 
 public class CedarConfig extends Configuration {
 
   @JsonProperty("home")
   private String home;
-
-  @JsonProperty("profile")
-  private String profile;
 
   @JsonProperty("host")
   private String host;
@@ -83,22 +82,17 @@ public class CedarConfig extends Configuration {
 
   protected static final Logger log = LoggerFactory.getLogger(CedarConfig.class);
 
-  private final static CedarConfig instance;
-  private final static LinkedDataUtil linkedDataUtil;
+  private static CedarConfig instance;
+  private static LinkedDataUtil linkedDataUtil;
 
-  static {
-    instance = buildInstance();
-    linkedDataUtil = new LinkedDataUtil(instance.getLinkedDataConfig());
-  }
-
-  private static CedarConfig buildInstance() {
+  private static CedarConfig buildInstance(Map<String, String> environment) {
 
     CedarConfig config = null;
 
     final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     final SubstitutingSourceProvider substitutingSourceProvider = new SubstitutingSourceProvider(
-        new ClasspathConfigurationSourceProvider(), new CedarEnvironmentVariableSubstitutor());
+        new ClasspathConfigurationSourceProvider(), new CedarEnvironmentVariableSubstitutor(environment));
 
     // Read main config
     final String mainConfigFileName = "cedar-main.yml";
@@ -135,16 +129,16 @@ public class CedarConfig extends Configuration {
     return config;
   }
 
-  public static CedarConfig getInstance() {
+  public static CedarConfig getInstance(Map<String, String> environment) {
+    if (instance == null) {
+      instance = buildInstance(environment);
+      linkedDataUtil = new LinkedDataUtil(instance.getLinkedDataConfig());
+    }
     return instance;
   }
 
   public String getHome() {
     return home;
-  }
-
-  public String getProfile() {
-    return profile;
   }
 
   public String getHost() {

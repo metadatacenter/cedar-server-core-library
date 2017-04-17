@@ -1,5 +1,4 @@
 home: "${CEDAR_HOME}"
-profile: "${CEDAR_PROFILE}"
 host: "${CEDAR_HOST}"
 
 adminUser:

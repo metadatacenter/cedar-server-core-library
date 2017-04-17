@@ -2,10 +2,12 @@ package org.metadatacenter.config;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 
+import java.util.Map;
+
 public class CedarEnvironmentVariableSubstitutor extends StrSubstitutor {
 
-  public CedarEnvironmentVariableSubstitutor() {
-    super(new CedarEnvironmentVariableLookup(true));
+  public CedarEnvironmentVariableSubstitutor(Map<String, String> environment) {
+    super(new CedarEnvironmentVariableLookup(environment, false));
     this.setEnableSubstitutionInVariables(false);
   }
 }
