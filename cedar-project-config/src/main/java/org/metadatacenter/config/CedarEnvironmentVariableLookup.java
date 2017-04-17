@@ -7,10 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
+
+  private enum VariableStatus {
+    PRESENT_WITH_VALUE, PRESENT_WITHOUT_VALUE, NEEDED_NOT_INCLUDED;
+  }
 
   private static final Logger log = LoggerFactory.getLogger(CedarEnvironmentVariableLookup.class);
 
@@ -20,28 +25,45 @@ public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
   public CedarEnvironmentVariableLookup(Map<String, String> environment, boolean strict) {
     this.environment = environment;
     this.strict = strict;
+
+    Map<String, VariableStatus> status = new LinkedHashMap<>();
     List<String> namesWithNullValue = new ArrayList<>();
+    for (CedarEnvironmentVariable ev : CedarEnvironmentVariable.values()) {
+      String name = ev.getName();
+      if (!environment.containsKey(name)) {
+        status.put(name, VariableStatus.NEEDED_NOT_INCLUDED);
+      } else {
+        String v = environment.get(name);
+        if (v == null) {
+          status.put(name, VariableStatus.PRESENT_WITHOUT_VALUE);
+          namesWithNullValue.add(name);
+        } else {
+          status.put(name, VariableStatus.PRESENT_WITH_VALUE);
+        }
+      }
+    }
+
     log.info("----------------------------------------------------------------------------------------");
     log.info("------------------------- Environment variable sandbox ---------------------------------");
     log.info("With values: ---------------------------------------------------------------------------");
-    for (String name : environment.keySet()) {
-      String v = environment.get(name);
-      if (v != null) {
+    for (String name : status.keySet()) {
+      VariableStatus stat = status.get(name);
+      if (stat == VariableStatus.PRESENT_WITH_VALUE) {
         log.info("---- " + name);
       }
     }
     log.info("Without values: ------------------------------------------------------------------------");
-    for (String name : environment.keySet()) {
-      String v = environment.get(name);
-      if (v == null) {
+    for (String name : status.keySet()) {
+      VariableStatus stat = status.get(name);
+      if (stat == VariableStatus.PRESENT_WITHOUT_VALUE) {
         log.info("---- " + name);
-        namesWithNullValue.add(name);
       }
     }
     log.info("Not included in this sandbox: ----------------------------------------------------------");
-    for (CedarEnvironmentVariable ev : CedarEnvironmentVariable.values()) {
-      if (!environment.containsKey(ev.getName())) {
-        log.info("---- " + ev.getName());
+    for (String name : status.keySet()) {
+      VariableStatus stat = status.get(name);
+      if (stat == VariableStatus.NEEDED_NOT_INCLUDED) {
+        log.info("---- " + name);
       }
     }
     log.info("----------------------------------------------------------------------------------------");

@@ -80,8 +80,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
   public void run(T configuration, Environment environment) throws Exception {
     log.info("********** Initializing CEDAR microservice " + getName());
     // Initialize map with environment vars that this server expects
-    Map<String, String> environmentSandbox =
-        CedarEnvironmentVariableProvider.getFor(SystemComponent.getFor(getServerName()));
+    SystemComponent systemComponent = SystemComponent.getFor(getServerName());
+    Map<String, String> environmentSandbox = CedarEnvironmentVariableProvider.getFor(systemComponent);
     // Initialize config
     cedarConfig = CedarConfig.getInstance(environmentSandbox);
 
