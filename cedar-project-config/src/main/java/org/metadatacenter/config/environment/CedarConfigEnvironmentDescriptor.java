@@ -148,6 +148,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarEverybodyGroup.add(SystemComponent.SERVER_WORKER);
 
     List<SystemComponent> cedarTestUser1Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID);
+    cedarTestUser1Id.add(SystemComponent.SERVER_TEMPLATE);
     cedarTestUser1Id.add(SystemComponent.SERVER_TERMINOLOGY);
 
     List<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
