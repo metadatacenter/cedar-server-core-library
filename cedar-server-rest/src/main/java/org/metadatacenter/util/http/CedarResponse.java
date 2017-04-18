@@ -183,7 +183,7 @@ public abstract class CedarResponse {
   }
 
   public static CedarResponseBuilder created(URI createdResourceLocation) {
-    return newResponseBuilder().created(createdResourceLocation);
+    return newResponseBuilder().status(Response.Status.CREATED).created(createdResourceLocation);
   }
 
   protected static CedarResponseBuilder status(Response.Status status) {
