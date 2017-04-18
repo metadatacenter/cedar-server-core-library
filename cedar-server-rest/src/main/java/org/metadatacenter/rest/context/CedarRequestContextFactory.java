@@ -38,8 +38,8 @@ public class CedarRequestContextFactory {
 
   public static CedarRequestContext fromAdminUser(CedarConfig cedarConfig, UserService userService) {
     try {
-      String adminUserId = cedarConfig.getAdminUserId();
-      CedarUser adminUser = userService.findUser(adminUserId);
+      String adminUserApiKey = cedarConfig.getAdminUserConfig().getApiKey();
+      CedarUser adminUser = userService.findUserByApiKey(adminUserApiKey);
       return CedarRequestContextFactory.fromUser(adminUser);
     } catch (Exception ex) {
       log.error("Error while looking up admin user.", ex);

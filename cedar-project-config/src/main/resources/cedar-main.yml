@@ -1,14 +1,12 @@
 home: "${CEDAR_HOME}"
-profile: "${CEDAR_PROFILE}"
 host: "${CEDAR_HOST}"
 
 adminUser:
   userName: "cedar-admin"
-  #UUID of "cedar-admin" user from Keycloak.
-  #You can find this after logging in  to the admin console of Keycloak.
-  uuid: "${CEDAR_ADMIN_USER_UUID}"
   #Plain text password of "cedar-admin" user
   password: "${CEDAR_ADMIN_USER_PASSWORD}"
+  #apiKey
+  apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
 #Keycloak server related settings.
 keycloak:
@@ -18,7 +16,7 @@ keycloak:
   realm: "CEDAR"
   authServerUrl: "https://auth.${CEDAR_HOST}/auth"
   sslRequired: "ALL"
-  resource: "cedar-angular-app"
+  resource: "${CEDAR_KEYCLOAK_CLIENT_ID}"
   publicClient: true
 
 #MongoDB settings
@@ -29,12 +27,12 @@ templateServer:
     user: "${CEDAR_MONGO_USER_NAME}"
     password: "${CEDAR_MONGO_USER_PASSWORD}"
     databaseName: "cedar"
-  databaseNameTest: "cedar-test"
   collections:
     field: "template-fields"
     element: "template-elements"
     template: "templates"
     instance: "template-instances"
+
 userServer:
   mongoConnection:
     host: localhost
@@ -42,7 +40,6 @@ userServer:
     user: "${CEDAR_MONGO_USER_NAME}"
     password: "${CEDAR_MONGO_USER_PASSWORD}"
     databaseName: "cedar"
-  databaseNameTest: "cedar-test"
   collections:
     user: "users"
 
@@ -90,8 +87,8 @@ folderStructure:
     path: "/Users"
     description: "CEDAR Users"
   everybodyGroup:
-    name: "Everybody"
-    displayName: "Everybody"
+    name: "${CEDAR_EVERYBODY_GROUP_NAME}"
+    displayName: "${CEDAR_EVERYBODY_GROUP_NAME}"
     description: "Group holding all the users"
 
 #Server bases
@@ -225,18 +222,6 @@ submission:
         user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
         submissionDirectory: "submit/Test"
-
-test:
-  port: 3333
-  timeout: 10000
-  template:
-    baseRoute: "/templates"
-  element:
-    baseRoute: "/template-elements"
-  field:
-    baseRoute: "/template-fields"
-  instance:
-    baseRoute: "/template-instances"
 
 testUsers:
   testUser1:
