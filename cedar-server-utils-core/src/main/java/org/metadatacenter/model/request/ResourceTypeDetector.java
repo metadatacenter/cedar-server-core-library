@@ -17,10 +17,10 @@ public class ResourceTypeDetector {
     if (!Strings.isNullOrEmpty(resourceType)) {
       nodeType = ResourceType.forValue(resourceType);
     }
-    return checkNotUnknownFormat(nodeType);
+    return checkNotUnknownType(nodeType);
   }
 
-  private static ResourceType checkNotUnknownFormat(ResourceType nodeType) throws CedarException {
+  private static ResourceType checkNotUnknownType(ResourceType nodeType) throws CedarException {
     if (nodeType == null) {
       throw unknownNodeTypeException();
     }
@@ -32,7 +32,7 @@ public class ResourceTypeDetector {
     errorPack.errorKey(CedarErrorKey.UNKNOWN_NODE_TYPE)
         .errorType(CedarErrorType.INVALID_ARGUMENT)
         .message("Unknown requested resource type")
-        .parameter("expectedFormats", ResourceType.values());
+        .parameter("expectedTypes", ResourceType.values());
     return new CedarException(errorPack) {
     };
   }
