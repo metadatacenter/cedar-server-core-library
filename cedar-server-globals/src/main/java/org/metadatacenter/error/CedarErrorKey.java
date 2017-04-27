@@ -98,7 +98,8 @@ public enum CedarErrorKey {
   GROUP_ALREADY_PRESENT("groupAlreadyPresent"),
   FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged"),
   UNKNOWN_INSTANCE_OUTPUT_FORMAT("unknownInstanceOutputFormat"),
-  FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed");
+  FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed"),
+  METHOD_NOT_IMPLEMENTED("methodNotImplemented");
 
   private final String value;
 

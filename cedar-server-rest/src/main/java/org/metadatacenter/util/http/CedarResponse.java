@@ -1,5 +1,6 @@
 package org.metadatacenter.util.http;
 
+import com.google.common.collect.Maps;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorReasonKey;
@@ -7,6 +8,7 @@ import org.metadatacenter.server.result.BackendCallError;
 import org.metadatacenter.server.result.BackendCallResult;
 
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,8 @@ public abstract class CedarResponse {
     private Exception exception;
     private Response.Status status;
     private Object entity;
+    private URI createdResourceUri;
+    private Map<String, Object> headers = Maps.newHashMap();
 
     protected CedarResponseBuilder() {
       this.parameters = new HashMap<>();
@@ -56,6 +60,14 @@ public abstract class CedarResponse {
       Response.ResponseBuilder responseBuilder = Response.noContent();
       responseBuilder.status(status);
 
+      if (!headers.isEmpty()) {
+        for (String property : headers.keySet()) {
+          responseBuilder.header(property, headers.get(property));
+        }
+      }
+      if (createdResourceUri != null) {
+        responseBuilder.status(Response.Status.CREATED).location(createdResourceUri);
+      }
       if (entity != null) {
         responseBuilder.entity(entity);
       } else {
@@ -118,6 +130,20 @@ public abstract class CedarResponse {
       this.exception = exception;
       return this;
     }
+
+    public CedarResponseBuilder created(URI createdResourceUri) {
+      this.createdResourceUri = createdResourceUri;
+      return this;
+    }
+
+    public CedarResponseBuilder header(String property, Object value) {
+      headers.put(property, value);
+      return this;
+    }
+  }
+
+  public static CedarResponseBuilder ok() {
+    return newResponseBuilder().status(Response.Status.OK);
   }
 
   public static CedarResponseBuilder internalServerError() {
@@ -154,6 +180,10 @@ public abstract class CedarResponse {
 
   public static CedarResponseBuilder httpVersionNotSupported() {
     return newResponseBuilder().status(Response.Status.HTTP_VERSION_NOT_SUPPORTED);
+  }
+
+  public static CedarResponseBuilder created(URI createdResourceLocation) {
+    return newResponseBuilder().status(Response.Status.CREATED).created(createdResourceLocation);
   }
 
   protected static CedarResponseBuilder status(Response.Status status) {
