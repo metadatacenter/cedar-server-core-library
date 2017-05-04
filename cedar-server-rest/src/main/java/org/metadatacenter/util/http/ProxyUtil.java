@@ -1,5 +1,6 @@
 package org.metadatacenter.util.http;
 
+import com.google.common.collect.Lists;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpHeaders;
@@ -7,16 +8,24 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.constant.CustomHttpConstants;
 import org.metadatacenter.constant.HttpConnectionConstants;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 public class ProxyUtil {
 
   public static final String ZERO_LENGTH = "0";
+
+  private static final List<String> CEDAR_HEADERS = Lists.newArrayList(
+      HttpHeaders.CONTENT_TYPE,
+      CustomHttpConstants.HEADER_CEDAR_VALIDATION_STATUS,
+      CustomHttpConstants.HEADER_CEDAR_VALIDATION_REPORT);
 
   public static HttpResponse proxyGet(String url, CedarRequestContext context) throws CedarProcessingException {
     Request proxyRequest = Request.Get(url)
@@ -85,10 +94,8 @@ public class ProxyUtil {
   }
 
   public static void proxyResponseHeaders(HttpResponse proxyResponse, HttpServletResponse response) {
-    HeaderIterator headerIterator = proxyResponse.headerIterator();
-    while (headerIterator.hasNext()) {
-      Header header = headerIterator.nextHeader();
-      if (HttpHeaders.CONTENT_TYPE.equals(header.getName())) {
+    for (Header header : proxyResponse.getAllHeaders()) {
+      if (CEDAR_HEADERS.contains(header.getName())) {
         response.setHeader(header.getName(), header.getValue());
       }
     }

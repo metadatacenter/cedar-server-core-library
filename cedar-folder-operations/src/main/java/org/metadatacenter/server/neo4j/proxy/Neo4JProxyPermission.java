@@ -2,18 +2,20 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.*;
-import org.metadatacenter.server.neo4j.*;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderPermission;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.server.neo4j.CypherQuery;
+import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.RelationLabel;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderPermission;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Neo4JProxyPermission extends AbstractNeo4JProxy {
 
@@ -265,46 +267,6 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listGroups(jsonNode);
-  }
-
-  public Map<String, String> findAccessibleNodeIds(String userURL) {
-    Map<String, String> map = new HashMap<>();
-
-    String cypherOwned = CypherQueryBuilderPermission.findOwnedNodes();
-    CypherParameters params = CypherParamBuilderUser.matchUserId(userURL);
-    CypherQuery qOwned = new CypherQueryWithParameters(cypherOwned, params);
-    JsonNode jsonNodeOwned = executeCypherQueryAndCommit(qOwned);
-    mergeAccessibleNodesIntoMap(map, jsonNodeOwned, RelationLabel.OWNS);
-
-    String cypherWrite = CypherQueryBuilderPermission.findWritableNodes();
-    CypherQuery qWrite = new CypherQueryWithParameters(cypherWrite, params);
-    JsonNode jsonNodeWritable = executeCypherQueryAndCommit(qWrite);
-    mergeAccessibleNodesIntoMap(map, jsonNodeWritable, RelationLabel.CANWRITE);
-
-    String cypherRead = CypherQueryBuilderPermission.findReadableNodes();
-    CypherQuery qRead = new CypherQueryWithParameters(cypherRead, params);
-    JsonNode jsonNodeReadable = executeCypherQueryAndCommit(qRead);
-    mergeAccessibleNodesIntoMap(map, jsonNodeReadable, RelationLabel.CANREAD);
-
-    return map;
-  }
-
-  private void mergeAccessibleNodesIntoMap(Map<String, String> map, JsonNode jsonNode, RelationLabel label) {
-    JsonNode nodeListJsonNode = jsonNode.at("/results/0/data");
-    if (nodeListJsonNode != null && !nodeListJsonNode.isMissingNode()) {
-      nodeListJsonNode.forEach(f -> {
-        JsonNode nodeNode = f.at("/row/0");
-        if (nodeNode != null && !nodeNode.isMissingNode()) {
-          FolderServerNode node = buildNode(nodeNode);
-          if (node != null) {
-            String key = node.getId();
-            if (!map.containsKey(key)) {
-              map.put(key, label.getValue());
-            }
-          }
-        }
-      });
-    }
   }
 
 }

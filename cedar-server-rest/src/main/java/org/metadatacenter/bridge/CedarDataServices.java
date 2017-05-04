@@ -41,7 +41,7 @@ public final class CedarDataServices {
     instance.userService = new UserServiceMongoDB(
         instance.mongoClientFactoryForUsers.getClient(),
         cedarConfig.getUserServerConfig().getDatabaseName(),
-        cedarConfig.getMongoCollectionName(CedarNodeType.USER));
+        cedarConfig.getUserServerConfig().getMongoCollectionName(CedarNodeType.USER));
   }
 
   public static void initializeFolderServices(CedarConfig cedarConfig) {

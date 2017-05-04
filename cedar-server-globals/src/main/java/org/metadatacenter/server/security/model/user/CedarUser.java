@@ -13,12 +13,6 @@ import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_APIKEY_
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarUser implements CedarUserRepresentation {
 
-  public static final String UI_POPULATE_A_TEMPLATE = "populateATemplate";
-  public static final String UI_FOLDER_VIEW = "folderView";
-  public static final String UI_RESOURCE_TYPE_FILTERS = "resourceTypeFilters";
-  public static final String UI_FACETED_SEARCH = "facetedSearch";
-  public static final String UI_INFO_PANEL = "infoPanel";
-
   @NotNull
   private String id;
 

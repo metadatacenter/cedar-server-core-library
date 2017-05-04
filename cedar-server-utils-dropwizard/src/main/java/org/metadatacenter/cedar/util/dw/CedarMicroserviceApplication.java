@@ -13,8 +13,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.config.ServerConfig;
+import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
 import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.model.ServerName;
+import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
@@ -29,6 +32,7 @@ import javax.servlet.FilterRegistration;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import static org.eclipse.jetty.servlets.CrossOriginFilter.*;
 
@@ -64,15 +68,22 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
   @Override
   public void initialize(Bootstrap<T> bootstrap) {
-    log.info("********** Initializing CEDAR microservice " + getName());
     // Enable variable substitution with environment variables
     bootstrap.setConfigurationSourceProvider(
-        new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-            new EnvironmentVariableSubstitutor()
-        )
+        new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor())
     );
-    //Initialize config
-    cedarConfig = CedarConfig.getInstance();
+
+    bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
+  }
+
+  @Override
+  public void run(T configuration, Environment environment) throws Exception {
+    log.info("********** Initializing CEDAR microservice " + getName());
+    // Initialize map with environment vars that this server expects
+    SystemComponent systemComponent = SystemComponent.getFor(getServerName());
+    Map<String, String> environmentSandbox = CedarEnvironmentVariableProvider.getFor(systemComponent);
+    // Initialize config
+    cedarConfig = CedarConfig.getInstance(environmentSandbox);
 
     CedarRequestContextFactory.init(cedarConfig.getLinkedDataUtil());
 
@@ -89,14 +100,16 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     Authorization.setAuthorizationResolver(authResolver);
     Authorization.setUserService(CedarDataServices.getUserService());
 
-    bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
-
     //Continue with the app
-    initializeApp(bootstrap);
-  }
+    initializeApp();
 
-  @Override
-  public void run(T configuration, Environment environment) throws Exception {
+    Integer appPort = getApplicationPort(configuration);
+    DefaultServerFactory serverFactory = (DefaultServerFactory) configuration.getServerFactory();
+    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(appPort);
+    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(appPort + 100);
+    System.setProperty("STOP.PORT", String.valueOf(appPort + 200));
+    System.setProperty("STOP.KEY", "Stop:" + getServerName().getName() + ":Me");
+
     log.info("**************************************************************");
     log.info("********** Running CEDAR microservice " + getName());
     int httpPort = getHttpPort(configuration);
@@ -105,6 +118,11 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     log.info("********** Admin Port:" + adminPort);
     setupEnvironment(environment);
     runApp(configuration, environment);
+  }
+
+  private Integer getApplicationPort(T configuration) {
+    ServerConfig serverConfig = cedarConfig.getServers().get(getServerName());
+    return configuration.getTestPort().orElse(serverConfig.getPort());
   }
 
   private int getHttpPort(T configuration) {
@@ -154,7 +172,15 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
   }
 
-  protected abstract void initializeApp(Bootstrap<T> bootstrap);
+  protected abstract void initializeApp();
 
   protected abstract void runApp(T configuration, Environment environment);
+
+  protected abstract ServerName getServerName();
+
+  @Override
+  public String getName() {
+    return getServerName().getName();
+  }
+
 }

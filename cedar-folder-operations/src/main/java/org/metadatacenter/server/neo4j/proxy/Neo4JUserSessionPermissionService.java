@@ -233,11 +233,6 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public Map<String, String> findAccessibleNodeIds() {
-    return proxies.permission().findAccessibleNodeIds(cu.getId());
-  }
-
-  @Override
   public CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL, FolderOrResource
       folderOrResource) {
     FolderServerNode node;

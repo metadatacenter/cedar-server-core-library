@@ -1,10 +1,12 @@
+home: "${CEDAR_HOME}"
+host: "${CEDAR_HOST}"
+
 adminUser:
   userName: "cedar-admin"
-  #UUID of "cedar-admin" user from Keycloak.
-  #You can find this after logging in  to the admin console of Keycloak.
-  uuid: "${CEDAR_ADMIN_USER_UUID}"
   #Plain text password of "cedar-admin" user
   password: "${CEDAR_ADMIN_USER_PASSWORD}"
+  #apiKey
+  apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
 #Keycloak server related settings.
 keycloak:
@@ -14,7 +16,7 @@ keycloak:
   realm: "CEDAR"
   authServerUrl: "https://auth.${CEDAR_HOST}/auth"
   sslRequired: "ALL"
-  resource: "cedar-angular-app"
+  resource: "${CEDAR_KEYCLOAK_CLIENT_ID}"
   publicClient: true
 
 #MongoDB settings
@@ -25,12 +27,12 @@ templateServer:
     user: "${CEDAR_MONGO_USER_NAME}"
     password: "${CEDAR_MONGO_USER_PASSWORD}"
     databaseName: "cedar"
-  databaseNameTest: "cedar-test"
   collections:
     field: "template-fields"
     element: "template-elements"
     template: "templates"
     instance: "template-instances"
+
 userServer:
   mongoConnection:
     host: localhost
@@ -38,7 +40,6 @@ userServer:
     user: "${CEDAR_MONGO_USER_NAME}"
     password: "${CEDAR_MONGO_USER_PASSWORD}"
     databaseName: "cedar"
-  databaseNameTest: "cedar-test"
   collections:
     user: "users"
 
@@ -86,28 +87,49 @@ folderStructure:
     path: "/Users"
     description: "CEDAR Users"
   everybodyGroup:
-    name: "Everybody"
-    displayName: "Everybody"
+    name: "${CEDAR_EVERYBODY_GROUP_NAME}"
+    displayName: "${CEDAR_EVERYBODY_GROUP_NAME}"
     description: "Group holding all the users"
 
 #Server bases
 #for inter-service REST calls
 servers:
-  template:
-    base: "https://template.${CEDAR_HOST}/"
   folder:
+    port: 9008
     base: "https://folder.${CEDAR_HOST}/"
     users: "https://folder.${CEDAR_HOST}/users"
     groups: "https://folder.${CEDAR_HOST}/groups"
-  user:
-    base: "https://user.${CEDAR_HOST}/"
-    usersBase: "https://user.${CEDAR_HOST}/users/"
+  group:
+    port: 9009
+  repo:
+    port: 9002
   resource:
+    port: 9007
+    apiDoc: true
     base: "https://resource.${CEDAR_HOST}/"
     regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
   schema:
+    port: 9003
     base: "https://schema.${CEDAR_HOST}/"
     coreBase: "https://schema.${CEDAR_HOST}/core/"
+  submission:
+    port: 9010
+  template:
+    port: 9001
+    base: "https://template.${CEDAR_HOST}/"
+  terminology:
+    port: 9004
+    apiDoc: true
+  user:
+    port: 9005
+    base: "https://user.${CEDAR_HOST}/"
+    usersBase: "https://user.${CEDAR_HOST}/users/"
+  valuerecommender:
+    port: 9006
+    apiDoc: true
+  worker:
+    port: 9011
+
 
 #Default values for user profile
 #Used when generating user from blueprint
@@ -200,18 +222,6 @@ submission:
         user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
         submissionDirectory: "submit/Test"
-
-test:
-  port: 3333
-  timeout: 10000
-  template:
-    baseRoute: "/templates"
-  element:
-    baseRoute: "/template-elements"
-  field:
-    baseRoute: "/template-fields"
-  instance:
-    baseRoute: "/template-instances"
 
 testUsers:
   testUser1:

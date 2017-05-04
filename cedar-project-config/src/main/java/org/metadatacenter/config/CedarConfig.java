@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.configuration.*;
 import io.dropwizard.jackson.Jackson;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +12,15 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.IOException;
+import java.util.Map;
 
 public class CedarConfig extends Configuration {
+
+  @JsonProperty("home")
+  private String home;
+
+  @JsonProperty("host")
+  private String host;
 
   @JsonProperty("adminUser")
   private AdminUserConfig adminUserConfig;
@@ -63,9 +70,6 @@ public class CedarConfig extends Configuration {
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
 
-  @JsonProperty("test")
-  private TestConfig testConfig;
-
   @JsonProperty("testUsers")
   private TestUsers testUsers;
 
@@ -77,22 +81,17 @@ public class CedarConfig extends Configuration {
 
   protected static final Logger log = LoggerFactory.getLogger(CedarConfig.class);
 
-  private final static CedarConfig instance;
-  private final static LinkedDataUtil linkedDataUtil;
+  private static CedarConfig instance;
+  private static LinkedDataUtil linkedDataUtil;
 
-  static {
-    instance = buildInstance();
-    linkedDataUtil = new LinkedDataUtil(instance.getLinkedDataConfig());
-  }
-
-  private static CedarConfig buildInstance() {
+  private static CedarConfig buildInstance(Map<String, String> environment) {
 
     CedarConfig config = null;
 
     final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     final SubstitutingSourceProvider substitutingSourceProvider = new SubstitutingSourceProvider(
-        new ClasspathConfigurationSourceProvider(), new EnvironmentVariableSubstitutor());
+        new ClasspathConfigurationSourceProvider(), new CedarEnvironmentVariableSubstitutor(environment));
 
     // Read main config
     final String mainConfigFileName = "cedar-main.yml";
@@ -129,8 +128,20 @@ public class CedarConfig extends Configuration {
     return config;
   }
 
-  public static CedarConfig getInstance() {
+  public static CedarConfig getInstance(Map<String, String> environment) {
+    if (instance == null) {
+      instance = buildInstance(environment);
+      linkedDataUtil = new LinkedDataUtil(instance.getLinkedDataConfig());
+    }
     return instance;
+  }
+
+  public String getHome() {
+    return home;
+  }
+
+  public String getHost() {
+    return host;
   }
 
   public AdminUserConfig getAdminUserConfig() {
@@ -197,10 +208,6 @@ public class CedarConfig extends Configuration {
     return submissionConfig;
   }
 
-  public TestConfig getTestConfig() {
-    return testConfig;
-  }
-
   public TestUsers getTestUsers() {
     return testUsers;
   }
@@ -215,20 +222,8 @@ public class CedarConfig extends Configuration {
 
   // Utility methods
 
-  public String getMongoCollectionName(CedarNodeType nt) {
-    String name = getTemplateServerConfig().getCollections().get(nt.getValue());
-    if (name == null) {
-      name = getUserServerConfig().getCollections().get(nt.getValue());
-    }
-    return name;
-  }
-
   public LinkedDataUtil getLinkedDataUtil() {
     return linkedDataUtil;
-  }
-
-  public String getAdminUserId() {
-    return linkedDataUtil.getUserId(getAdminUserConfig().getUuid());
   }
 
 }

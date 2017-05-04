@@ -18,17 +18,17 @@ public class OutputFormatTypeDetector {
 
   private static OutputFormatType checkNotUnknownFormat(OutputFormatType formatType) throws CedarException {
     if (formatType == null) {
-      return unknownOutputFormatException();
+      throw unknownOutputFormatException();
     }
     return formatType;
   }
 
-  private static OutputFormatType unknownOutputFormatException() throws CedarException {
+  private static CedarException unknownOutputFormatException() {
     final CedarErrorPack errorPack = new CedarErrorPack();
     errorPack.errorKey(CedarErrorKey.UNKNOWN_INSTANCE_OUTPUT_FORMAT)
         .errorType(CedarErrorType.INVALID_ARGUMENT)
         .message("Unknown requested output format")
         .parameter("expectedFormats", OutputFormatType.values());
-    throw new CedarException(errorPack){};
+    return new CedarException(errorPack){};
   }
 }
