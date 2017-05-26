@@ -190,7 +190,7 @@ public abstract class CedarResponse {
     return newResponseBuilder().status(Response.Status.CREATED).created(createdResourceLocation);
   }
 
-  protected static CedarResponseBuilder status(Response.Status status) {
+  public static CedarResponseBuilder status(Response.Status status) {
     return newResponseBuilder().status(status);
   }
 
