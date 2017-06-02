@@ -3,6 +3,7 @@ package org.metadatacenter.server.security.util;
 import org.apache.commons.codec.binary.Hex;
 import org.metadatacenter.config.BlueprintUIPreferences;
 import org.metadatacenter.config.BlueprintUserProfile;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.security.CedarUserRolePermissionUtil;
 import org.metadatacenter.server.security.model.user.*;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ public class CedarUserUtil {
   }
 
   public static CedarUser createUserFromBlueprint(BlueprintUserProfile blueprintProfile, CedarUserRepresentation ur,
-                                                  CedarSuperRole superRole) {
+                                                  CedarSuperRole superRole, CedarConfig cedarConfig, String username) {
     BlueprintUIPreferences uiPref = blueprintProfile.getUiPreferences();
 
     CedarUser user = new CedarUser();
@@ -36,7 +37,12 @@ public class CedarUserUtil {
     LocalDateTime now = LocalDateTime.now();
     // create a default API Key
     CedarUserApiKey apiKeyObject = new CedarUserApiKey();
-    apiKeyObject.setKey(generateApiKey(blueprintProfile.getDefaultAPIKey().getSalt(), (ur.getId())));
+    String adminUserName = cedarConfig.getAdminUserConfig().getUserName();
+    if (adminUserName.equals(username)) {
+      apiKeyObject.setKey(cedarConfig.getAdminUserConfig().getApiKey());
+    } else {
+      apiKeyObject.setKey(generateApiKey(blueprintProfile.getDefaultAPIKey().getSalt(), (ur.getId())));
+    }
     apiKeyObject.setCreationDate(now);
     apiKeyObject.setEnabled(true);
     apiKeyObject.setServiceName(blueprintProfile.getDefaultAPIKey().getServiceName());

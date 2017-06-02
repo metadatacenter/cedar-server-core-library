@@ -38,15 +38,17 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
 
-    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_TRANSACTION_URL.getName(), "http://");
-    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_AUTH_STRING.getName(), "neo-auth");
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME.getName(), "userName");
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD.getName(), "userPassword");
 
     env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_SERVER_USER_CALLBACK_URL.getName(), "http://");
     env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_SERVER_ADMIN_CALLBACK_URL.getName(), "http://");
     env.put(CedarEnvironmentVariable.CEDAR_KEYCLOAK_CLIENT_ID.getName(), "cedar-angular-app");
 
-    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_NAME.getName(), "cedarUser");
-    env.put(CedarEnvironmentVariable.CEDAR_MONGO_USER_PASSWORD.getName(), "cedarPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME.getName(), "cedarUser");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD.getName(), "cedarPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_HOST.getName(), "localhost");
+    env.put(CedarEnvironmentVariable.CEDAR_MONGO_PORT.getName(), "27017");
 
     env.put(CedarEnvironmentVariable.CEDAR_SALT_API_KEY.getName(), "salt");
 

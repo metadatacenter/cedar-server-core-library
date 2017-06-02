@@ -20,9 +20,14 @@ public class CedarEnvironmentVariableProvider {
         String value = System.getenv(variable.getName());
         env.put(variable.getName(), value);
       } else {
-        String value = System.getenv(variable.getName());
-        if (value != null) {
-          log.info("Environment contains not needed variable, holding it back from sandbox: " + variable.getName());
+        if (variable.getNumeric() == CedarEnvironmentVariableNumeric.YES) {
+          env.put(variable.getName(), "0");
+          log.info("Setting default numeric value 0 for                                   : " + variable.getName());
+        } else {
+          String value = System.getenv(variable.getName());
+          if (value != null) {
+            log.info("Environment contains not needed variable, holding it back from sandbox: " + variable.getName());
+          }
         }
       }
     }

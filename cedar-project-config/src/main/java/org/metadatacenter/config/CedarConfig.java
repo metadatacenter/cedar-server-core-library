@@ -103,6 +103,7 @@ public class CedarConfig extends Configuration {
       config = mainConfigurationFactory.build(substitutingSourceProvider, mainConfigFileName);
     } catch (IOException | ConfigurationException e) {
       log.error("Error while reading main config file", e);
+      e.printStackTrace();
       System.exit(-1);
     }
 
@@ -120,6 +121,7 @@ public class CedarConfig extends Configuration {
           elasticSearchSettingsMappingsConfigFileName);
     } catch (IOException | ConfigurationException e) {
       log.error("Error while reading search config file", e);
+      e.printStackTrace();
       System.exit(-2);
     }
 

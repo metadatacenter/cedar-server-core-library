@@ -3,6 +3,7 @@ package org.metadatacenter.config;
 import io.dropwizard.configuration.UndefinedEnvironmentVariableException;
 import org.apache.commons.lang3.text.StrLookup;
 import org.metadatacenter.config.environment.CedarEnvironmentVariable;
+import org.metadatacenter.config.environment.CedarEnvironmentVariableSecure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,9 @@ public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
 
   private final boolean strict;
   private final Map<String, String> environment;
+  private final static String SPACES = "                                        ";
+  private final static String STAR = "*";
+  private final static int SHOW_SECURE_CHARS = 2;
 
   public CedarEnvironmentVariableLookup(Map<String, String> environment, boolean strict) {
     this.environment = environment;
@@ -49,7 +53,36 @@ public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
     for (String name : status.keySet()) {
       VariableStatus stat = status.get(name);
       if (stat == VariableStatus.PRESENT_WITH_VALUE) {
-        log.info("---- " + name);
+        StringBuilder sb = new StringBuilder();
+        sb.append("---- ").append(name);
+        int spacePos = name.length();
+        if (spacePos > SPACES.length()) {
+          spacePos = SPACES.length();
+        }
+        sb.append(SPACES.substring(spacePos));
+        sb.append(":");
+        String value = environment.get(name);
+        CedarEnvironmentVariable var = CedarEnvironmentVariable.forName(name);
+        if (var != null) {
+          if (var.getSecure() == CedarEnvironmentVariableSecure.NO) {
+            sb.append(value);
+          } else {
+            int pos1 = SHOW_SECURE_CHARS;
+            if (pos1 > value.length()) {
+              pos1 = value.length();
+            }
+            int pos2 = value.length() - SHOW_SECURE_CHARS;
+            if (pos2 < pos1) {
+              pos2 = pos1;
+            }
+            sb.append(value.substring(0, pos1));
+            for (int i = 0; i < pos2 - pos1; i++) {
+              sb.append(STAR);
+            }
+            sb.append(value.substring(pos2));
+          }
+        }
+        log.info(sb.toString());
       }
     }
     log.info("Without values: ------------------------------------------------------------------------");

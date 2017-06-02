@@ -22,10 +22,10 @@ keycloak:
 #MongoDB settings
 templateServer:
   mongoConnection:
-    host: localhost
-    port: 27017
-    user: "${CEDAR_MONGO_USER_NAME}"
-    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    host: "${CEDAR_MONGO_HOST}"
+    port: "${CEDAR_MONGO_PORT}"
+    user: "${CEDAR_MONGO_APP_USER_NAME}"
+    password: "${CEDAR_MONGO_APP_USER_PASSWORD}"
     databaseName: "cedar"
   collections:
     field: "template-fields"
@@ -35,10 +35,10 @@ templateServer:
 
 userServer:
   mongoConnection:
-    host: localhost
-    port: 27017
-    user: "${CEDAR_MONGO_USER_NAME}"
-    password: "${CEDAR_MONGO_USER_PASSWORD}"
+    host: "${CEDAR_MONGO_HOST}"
+    port: "${CEDAR_MONGO_PORT}"
+    user: "${CEDAR_MONGO_APP_USER_NAME}"
+    password: "${CEDAR_MONGO_APP_USER_PASSWORD}"
     databaseName: "cedar"
   collections:
     user: "users"
@@ -49,10 +49,10 @@ neo4j:
   #You can find these values from the browser interface: http://localhost:7474/browser/
   #Sample values:
   # transactionUrl = "http://localhost:7474/db/data/transaction/commit",
-  # authString = "Basic {base64(user:pass)}"
   rest:
-    transactionUrl: "${CEDAR_NEO4J_TRANSACTION_URL}"
-    authString: "${CEDAR_NEO4J_AUTH_STRING}"
+    transactionUrl: "http://${CEDAR_NEO4J_HOST}:${CEDAR_NEO4J_REST_PORT}/db/data/transaction/commit"
+    userName: "${CEDAR_NEO4J_USER_NAME}"
+    userPassword: "${CEDAR_NEO4J_USER_PASSWORD}"
 
 searchSettings:
   searchRetrieveSettings:
@@ -67,8 +67,8 @@ elasticsearch:
     users: "users"
     groups: "groups"
     content: "content"
-  host: "127.0.0.1"
-  transportPort: 9300
+  host: "${CEDAR_ELASTICSEARCH_HOST}"
+  transportPort: "${CEDAR_ELASTICSEARCH_TRANSPORT_PORT}"
   size: 1000
   scrollKeepAlive: 60000
 
@@ -95,40 +95,40 @@ folderStructure:
 #for inter-service REST calls
 servers:
   folder:
-    port: 9008
+    port: "${CEDAR_PORT_FOLDER}"
     base: "https://folder.${CEDAR_HOST}/"
     users: "https://folder.${CEDAR_HOST}/users"
     groups: "https://folder.${CEDAR_HOST}/groups"
   group:
-    port: 9009
+    port: "${CEDAR_PORT_GROUP}"
   repo:
-    port: 9002
+    port: "${CEDAR_PORT_REPO}"
   resource:
-    port: 9007
+    port: "${CEDAR_PORT_RESOURCE}"
     apiDoc: true
     base: "https://resource.${CEDAR_HOST}/"
     regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
   schema:
-    port: 9003
+    port: "${CEDAR_PORT_SCHEMA}"
     base: "https://schema.${CEDAR_HOST}/"
     coreBase: "https://schema.${CEDAR_HOST}/core/"
   submission:
-    port: 9010
+    port: "${CEDAR_PORT_SUBMISSION}"
   template:
-    port: 9001
+    port: "${CEDAR_PORT_TEMPLATE}"
     base: "https://template.${CEDAR_HOST}/"
   terminology:
-    port: 9004
+    port: "${CEDAR_PORT_TERMINOLOGY}"
     apiDoc: true
   user:
-    port: 9005
+    port: "${CEDAR_PORT_USER}"
     base: "https://user.${CEDAR_HOST}/"
     usersBase: "https://user.${CEDAR_HOST}/users/"
   valuerecommender:
-    port: 9006
+    port: "${CEDAR_PORT_VALUERECOMMENDER}"
     apiDoc: true
   worker:
-    port: 9011
+    port: "${CEDAR_PORT_WORKER}"
 
 
 #Default values for user profile
@@ -159,13 +159,13 @@ blueprintUserProfile:
 terminology:
   bioPortal:
     apiKey: "${CEDAR_BIOPORTAL_API_KEY}"
-    basePath: "http://data.bioontology.org/"
+    basePath: "${CEDAR_BIOPORTAL_REST_BASE}"
     connectTimeout: 3000
     socketTimeout: 30000
     defaultPageSize: 50
 
 importExport:
-  exportDir: "${CEDAR_HOME}export/"
+  exportDir: "${CEDAR_HOME}/export/"
 
 folderRESTAPI:
   pagination:
@@ -203,15 +203,15 @@ templateRESTAPI:
 cache:
   persistent:
     connection:
-      host: "localhost"
-      port: 6379
+      host: "${CEDAR_REDIS_PERSISTENT_HOST}"
+      port: "${CEDAR_REDIS_PERSISTENT_PORT}"
       timeout: 2000
     queueNames:
       searchPermission: "CEDAR-QUEUE-search-permission"
   nonPersistent:
     connection:
-      host: "localhost"
-      port: 6380
+      host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
+      port: "${CEDAR_REDIS_NONPERSISTENT_PORT}"
       timeout: 2000
 
 submission:
