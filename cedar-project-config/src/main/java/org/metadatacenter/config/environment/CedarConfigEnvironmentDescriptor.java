@@ -149,8 +149,9 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarElasticsearchHost = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ELASTICSEARCH_HOST);
-    cedarElasticsearchHost.add(SystemComponent.SERVER_RESOURCE);
     cedarElasticsearchHost.add(SystemComponent.SERVER_WORKER);
+    cedarElasticsearchHost.add(SystemComponent.SERVER_VALUERECOMMENDER);
+    cedarElasticsearchHost.add(SystemComponent.SERVER_RESOURCE);
 
     Set<SystemComponent> cedarElasticsearchTransportPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ELASTICSEARCH_TRANSPORT_PORT);
@@ -173,9 +174,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_PORT);
-    redisPersistentPort.add(SystemComponent.SERVER_RESOURCE);
-    redisPersistentPort.add(SystemComponent.SERVER_GROUP);
-    redisPersistentPort.add(SystemComponent.SERVER_WORKER);
+    redisPersistentPort.addAll(redisPersistentHost);
 
     Set<SystemComponent> cedarEverybodyGroup = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_EVERYBODY_GROUP_NAME);
