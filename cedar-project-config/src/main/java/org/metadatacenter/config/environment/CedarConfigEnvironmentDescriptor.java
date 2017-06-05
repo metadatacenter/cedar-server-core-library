@@ -98,6 +98,12 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.addAll(cedarNeo4jUserName);
 
+    Set<SystemComponent> cedarNeo4jHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_HOST);
+    cedarNeo4jHost.addAll(cedarNeo4jUserName);
+
+    Set<SystemComponent> cedarNeo4jRestPortd = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_REST_PORT);
+    cedarNeo4jRestPortd.addAll(cedarNeo4jUserName);
+
     Set<SystemComponent> cedarAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ADMIN_USER_API_KEY);
     cedarAdminUserApiKey.add(SystemComponent.ADMIN_TOOL); // all neo4j, keycloak related tasks + search reindex
