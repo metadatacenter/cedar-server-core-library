@@ -99,7 +99,8 @@ public enum CedarErrorKey {
   FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged"),
   UNKNOWN_INSTANCE_OUTPUT_FORMAT("unknownInstanceOutputFormat"),
   FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed"),
-  METHOD_NOT_IMPLEMENTED("methodNotImplemented");
+  METHOD_NOT_IMPLEMENTED("methodNotImplemented"),
+  UPSTREAM_SERVER_ERROR("upstreamServerError");
 
   private final String value;
 

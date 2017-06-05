@@ -150,6 +150,10 @@ public abstract class CedarResponse {
     return newResponseBuilder().status(Response.Status.INTERNAL_SERVER_ERROR);
   }
 
+  public static CedarResponseBuilder badGateway() {
+    return newResponseBuilder().status(Response.Status.BAD_GATEWAY);
+  }
+
   public static CedarResponseBuilder noContent() {
     return newResponseBuilder().status(Response.Status.NO_CONTENT);
   }
@@ -186,7 +190,7 @@ public abstract class CedarResponse {
     return newResponseBuilder().status(Response.Status.CREATED).created(createdResourceLocation);
   }
 
-  protected static CedarResponseBuilder status(Response.Status status) {
+  public static CedarResponseBuilder status(Response.Status status) {
     return newResponseBuilder().status(status);
   }
 
