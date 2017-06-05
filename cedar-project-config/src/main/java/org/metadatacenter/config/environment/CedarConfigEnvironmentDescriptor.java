@@ -165,6 +165,18 @@ public class CedarConfigEnvironmentDescriptor {
     // all the microservices for Keycloak user details reading from token
     cedarLdUserBase.addAll(allMicroservices);
 
+    Set<SystemComponent> redisPersistentHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_REDIS_PERSISTENT_HOST);
+    redisPersistentHost.add(SystemComponent.SERVER_RESOURCE);
+    redisPersistentHost.add(SystemComponent.SERVER_GROUP);
+    redisPersistentHost.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_REDIS_PERSISTENT_PORT);
+    redisPersistentPort.add(SystemComponent.SERVER_RESOURCE);
+    redisPersistentPort.add(SystemComponent.SERVER_GROUP);
+    redisPersistentPort.add(SystemComponent.SERVER_WORKER);
+
     Set<SystemComponent> cedarEverybodyGroup = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_EVERYBODY_GROUP_NAME);
     cedarEverybodyGroup.add(SystemComponent.FRONTEND_DEVELOPMENT);
