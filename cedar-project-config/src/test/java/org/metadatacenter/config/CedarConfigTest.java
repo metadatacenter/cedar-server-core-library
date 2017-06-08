@@ -60,16 +60,48 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_REDIS_NONPERSISTENT_PORT.getName(), "6380");
 
     env.put(CedarEnvironmentVariable.CEDAR_FOLDER_HTTP_PORT.getName(), "9008");
+    env.put(CedarEnvironmentVariable.CEDAR_FOLDER_ADMIN_PORT.getName(), "9108");
+    env.put(CedarEnvironmentVariable.CEDAR_FOLDER_STOP_PORT.getName(), "9208");
+
     env.put(CedarEnvironmentVariable.CEDAR_GROUP_HTTP_PORT.getName(), "9009");
+    env.put(CedarEnvironmentVariable.CEDAR_GROUP_ADMIN_PORT.getName(), "9109");
+    env.put(CedarEnvironmentVariable.CEDAR_GROUP_STOP_PORT.getName(), "9209");
+
     env.put(CedarEnvironmentVariable.CEDAR_REPO_HTTP_PORT.getName(), "9002");
+    env.put(CedarEnvironmentVariable.CEDAR_REPO_ADMIN_PORT.getName(), "9102");
+    env.put(CedarEnvironmentVariable.CEDAR_REPO_STOP_PORT.getName(), "9202");
+
     env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_HTTP_PORT.getName(), "9007");
+    env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_ADMIN_PORT.getName(), "9107");
+    env.put(CedarEnvironmentVariable.CEDAR_RESOURCE_STOP_PORT.getName(), "9207");
+
     env.put(CedarEnvironmentVariable.CEDAR_SCHEMA_HTTP_PORT.getName(), "9003");
-    env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_HTTP_PORT.getName(), "9010");
+    env.put(CedarEnvironmentVariable.CEDAR_SCHEMA_ADMIN_PORT.getName(), "9103");
+    env.put(CedarEnvironmentVariable.CEDAR_SCHEMA_STOP_PORT.getName(), "9203");
+
     env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_HTTP_PORT.getName(), "9001");
+    env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_ADMIN_PORT.getName(), "9101");
+    env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_STOP_PORT.getName(), "9201");
+
+    env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_HTTP_PORT.getName(), "9010");
+    env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_ADMIN_PORT.getName(), "9110");
+    env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_STOP_PORT.getName(), "9210");
+
     env.put(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_HTTP_PORT.getName(), "9004");
+    env.put(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_ADMIN_PORT.getName(), "9104");
+    env.put(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_STOP_PORT.getName(), "9204");
+
     env.put(CedarEnvironmentVariable.CEDAR_USER_HTTP_PORT.getName(), "9005");
+    env.put(CedarEnvironmentVariable.CEDAR_USER_ADMIN_PORT.getName(), "9105");
+    env.put(CedarEnvironmentVariable.CEDAR_USER_STOP_PORT.getName(), "9205");
+
     env.put(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_HTTP_PORT.getName(), "9006");
+    env.put(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_ADMIN_PORT.getName(), "9106");
+    env.put(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_STOP_PORT.getName(), "9206");
+
     env.put(CedarEnvironmentVariable.CEDAR_WORKER_HTTP_PORT.getName(), "9011");
+    env.put(CedarEnvironmentVariable.CEDAR_WORKER_ADMIN_PORT.getName(), "9111");
+    env.put(CedarEnvironmentVariable.CEDAR_WORKER_STOP_PORT.getName(), "9211");
 
     env.put(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID.getName(), "https://metadatacenter.org/users/user1-uuid");
     env.put(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID.getName(), "https://metadatacenter.org/users/user2-uuid");
