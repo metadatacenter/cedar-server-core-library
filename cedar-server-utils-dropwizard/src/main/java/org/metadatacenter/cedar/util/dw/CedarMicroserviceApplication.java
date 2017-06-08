@@ -103,11 +103,12 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     //Continue with the app
     initializeApp();
 
-    Integer appPort = getApplicationPort(configuration);
     DefaultServerFactory serverFactory = (DefaultServerFactory) configuration.getServerFactory();
-    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(appPort);
-    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(appPort + 100);
-    System.setProperty("STOP.PORT", String.valueOf(appPort + 200));
+    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(getApplicationHttpPort
+        (configuration));
+    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(getApplicationAdminPort
+        (configuration));
+    System.setProperty("STOP.PORT", String.valueOf(getServerStopPort(configuration)));
     System.setProperty("STOP.KEY", "Stop:" + getServerName().getName() + ":Me");
 
     log.info("**************************************************************");
@@ -120,9 +121,17 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     runApp(configuration, environment);
   }
 
-  private Integer getApplicationPort(T configuration) {
+  private Integer getApplicationHttpPort(T configuration) {
     ServerConfig serverConfig = cedarConfig.getServers().get(getServerName());
-    return configuration.getTestPort().orElse(serverConfig.getPort());
+    return configuration.getTestPort().orElse(serverConfig.getHttpPort());
+  }
+
+  private Integer getApplicationAdminPort(T configuration) {
+    return cedarConfig.getServers().get(getServerName()).getAdminPort();
+  }
+
+  private Integer getServerStopPort(T configuration) {
+    return cedarConfig.getServers().get(getServerName()).getStopPort();
   }
 
   private int getHttpPort(T configuration) {

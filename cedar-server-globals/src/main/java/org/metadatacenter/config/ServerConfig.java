@@ -2,14 +2,26 @@ package org.metadatacenter.config;
 
 public class ServerConfig {
 
-  private int port;
+  private int httpPort;
+
+  private int adminPort;
+
+  private int stopPort;
 
   private String base;
 
   private boolean apiDoc;
 
-  public int getPort() {
-    return port;
+  public int getHttpPort() {
+    return httpPort;
+  }
+
+  public int getAdminPort() {
+    return adminPort;
+  }
+
+  public int getStopPort() {
+    return stopPort;
   }
 
   public String getBase() {

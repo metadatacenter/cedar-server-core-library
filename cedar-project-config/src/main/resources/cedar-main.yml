@@ -16,7 +16,7 @@ keycloak:
   realm: "CEDAR"
   authServerUrl: "https://auth.${CEDAR_HOST}/auth"
   sslRequired: "ALL"
-  resource: "${CEDAR_KEYCLOAK_CLIENT_ID}"
+  resource: "cedar-angular-app"
   publicClient: true
 
 #MongoDB settings
@@ -51,7 +51,7 @@ neo4j:
   # transactionUrl = "http://localhost:7474/db/data/transaction/commit",
   rest:
     transactionUrl: "http://${CEDAR_NEO4J_HOST}:${CEDAR_NEO4J_REST_PORT}/db/data/transaction/commit"
-    userName: "${CEDAR_NEO4J_USER_NAME}"
+    userName: "neo4j"
     userPassword: "${CEDAR_NEO4J_USER_PASSWORD}"
 
 searchSettings:
@@ -76,7 +76,7 @@ elasticsearch:
 #For ID generation
 linkedData:
   base: "https://repo.${CEDAR_HOST}/"
-  usersBase: "${CEDAR_LD_USER_BASE}"
+  usersBase: "https://metadatacenter.org/users/"
 
 #Folder server global structure
 folderStructure:
@@ -87,48 +87,70 @@ folderStructure:
     path: "/Users"
     description: "CEDAR Users"
   everybodyGroup:
-    name: "${CEDAR_EVERYBODY_GROUP_NAME}"
-    displayName: "${CEDAR_EVERYBODY_GROUP_NAME}"
+    name: "Everybody"
+    displayName: "Everybody"
     description: "Group holding all the users"
 
 #Server bases
 #for inter-service REST calls
 servers:
   folder:
-    port: "${CEDAR_PORT_FOLDER}"
+    httpPort: "${CEDAR_FOLDER_HTTP_PORT}"
+    adminPort: "${CEDAR_FOLDER_ADMIN_PORT}"
+    stopPort: "${CEDAR_FOLDER_STOP_PORT}"
     base: "https://folder.${CEDAR_HOST}/"
     users: "https://folder.${CEDAR_HOST}/users"
     groups: "https://folder.${CEDAR_HOST}/groups"
   group:
-    port: "${CEDAR_PORT_GROUP}"
+    httpPort: "${CEDAR_GROUP_HTTP_PORT}"
+    adminPort: "${CEDAR_GROUP_ADMIN_PORT}"
+    stopPort: "${CEDAR_GROUP_STOP_PORT}"
   repo:
-    port: "${CEDAR_PORT_REPO}"
+    httpPort: "${CEDAR_REPO_HTTP_PORT}"
+    adminPort: "${CEDAR_REPO_ADMIN_PORT}"
+    stopPort: "${CEDAR_REPO_STOP_PORT}"
   resource:
-    port: "${CEDAR_PORT_RESOURCE}"
+    httpPort: "${CEDAR_RESOURCE_HTTP_PORT}"
+    adminPort: "${CEDAR_RESOURCE_ADMIN_PORT}"
+    stopPort: "${CEDAR_RESOURCE_STOP_PORT}"
     apiDoc: true
     base: "https://resource.${CEDAR_HOST}/"
     regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
   schema:
-    port: "${CEDAR_PORT_SCHEMA}"
+    httpPort: "${CEDAR_SCHEMA_HTTP_PORT}"
+    adminPort: "${CEDAR_SCHEMA_ADMIN_PORT}"
+    stopPort: "${CEDAR_SCHEMA_STOP_PORT}"
     base: "https://schema.${CEDAR_HOST}/"
     coreBase: "https://schema.${CEDAR_HOST}/core/"
   submission:
-    port: "${CEDAR_PORT_SUBMISSION}"
+    httpPort: "${CEDAR_SUBMISSION_HTTP_PORT}"
+    adminPort: "${CEDAR_SUBMISSION_ADMIN_PORT}"
+    stopPort: "${CEDAR_SUBMISSION_STOP_PORT}"
   template:
-    port: "${CEDAR_PORT_TEMPLATE}"
+    httpPort: "${CEDAR_TEMPLATE_HTTP_PORT}"
+    adminPort: "${CEDAR_TEMPLATE_ADMIN_PORT}"
+    stopPort: "${CEDAR_TEMPLATE_STOP_PORT}"
     base: "https://template.${CEDAR_HOST}/"
   terminology:
-    port: "${CEDAR_PORT_TERMINOLOGY}"
+    httpPort: "${CEDAR_TERMINOLOGY_HTTP_PORT}"
+    adminPort: "${CEDAR_TERMINOLOGY_ADMIN_PORT}"
+    stopPort: "${CEDAR_TERMINOLOGY_STOP_PORT}"
     apiDoc: true
   user:
-    port: "${CEDAR_PORT_USER}"
+    httpPort: "${CEDAR_USER_HTTP_PORT}"
+    adminPort: "${CEDAR_USER_ADMIN_PORT}"
+    stopPort: "${CEDAR_USER_STOP_PORT}"
     base: "https://user.${CEDAR_HOST}/"
     usersBase: "https://user.${CEDAR_HOST}/users/"
   valuerecommender:
-    port: "${CEDAR_PORT_VALUERECOMMENDER}"
+    httpPort: "${CEDAR_VALUERECOMMENDER_HTTP_PORT}"
+    adminPort: "${CEDAR_VALUERECOMMENDER_ADMIN_PORT}"
+    stopPort: "${CEDAR_VALUERECOMMENDER_STOP_PORT}"
     apiDoc: true
   worker:
-    port: "${CEDAR_PORT_WORKER}"
+    httpPort: "${CEDAR_WORKER_HTTP_PORT}"
+    adminPort: "${CEDAR_WORKER_ADMIN_PORT}"
+    stopPort: "${CEDAR_WORKER_STOP_PORT}"
 
 
 #Default values for user profile
