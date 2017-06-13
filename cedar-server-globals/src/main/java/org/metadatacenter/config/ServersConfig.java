@@ -12,7 +12,7 @@ public class ServersConfig {
 
   private ResourceServerConfig resource;
 
-  private SchemaServerConfig schema;
+  private ServerConfig schema;
 
   private ServerConfig submission;
 
@@ -42,7 +42,7 @@ public class ServersConfig {
     return resource;
   }
 
-  public SchemaServerConfig getSchema() {
+  public ServerConfig getSchema() {
     return schema;
   }
 

@@ -98,9 +98,8 @@ servers:
     httpPort: "${CEDAR_FOLDER_HTTP_PORT}"
     adminPort: "${CEDAR_FOLDER_ADMIN_PORT}"
     stopPort: "${CEDAR_FOLDER_STOP_PORT}"
-    base: "https://folder.${CEDAR_HOST}/"
-    users: "https://folder.${CEDAR_HOST}/users"
-    groups: "https://folder.${CEDAR_HOST}/groups"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_FOLDER_HTTP_PORT}/"
+    users: "http://${CEDAR_NET_GATEWAY}:${CEDAR_FOLDER_HTTP_PORT}/users"
   group:
     httpPort: "${CEDAR_GROUP_HTTP_PORT}"
     adminPort: "${CEDAR_GROUP_ADMIN_PORT}"
@@ -114,14 +113,12 @@ servers:
     adminPort: "${CEDAR_RESOURCE_ADMIN_PORT}"
     stopPort: "${CEDAR_RESOURCE_STOP_PORT}"
     apiDoc: true
-    base: "https://resource.${CEDAR_HOST}/"
-    regenerateIndex: "https://resource.${CEDAR_HOST}/command/regenerate-search-index"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/"
+    regenerateIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-search-index"
   schema:
     httpPort: "${CEDAR_SCHEMA_HTTP_PORT}"
     adminPort: "${CEDAR_SCHEMA_ADMIN_PORT}"
     stopPort: "${CEDAR_SCHEMA_STOP_PORT}"
-    base: "https://schema.${CEDAR_HOST}/"
-    coreBase: "https://schema.${CEDAR_HOST}/core/"
   submission:
     httpPort: "${CEDAR_SUBMISSION_HTTP_PORT}"
     adminPort: "${CEDAR_SUBMISSION_ADMIN_PORT}"
@@ -130,7 +127,7 @@ servers:
     httpPort: "${CEDAR_TEMPLATE_HTTP_PORT}"
     adminPort: "${CEDAR_TEMPLATE_ADMIN_PORT}"
     stopPort: "${CEDAR_TEMPLATE_STOP_PORT}"
-    base: "https://template.${CEDAR_HOST}/"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_TEMPLATE_HTTP_PORT}/"
   terminology:
     httpPort: "${CEDAR_TERMINOLOGY_HTTP_PORT}"
     adminPort: "${CEDAR_TERMINOLOGY_ADMIN_PORT}"
@@ -140,8 +137,7 @@ servers:
     httpPort: "${CEDAR_USER_HTTP_PORT}"
     adminPort: "${CEDAR_USER_ADMIN_PORT}"
     stopPort: "${CEDAR_USER_STOP_PORT}"
-    base: "https://user.${CEDAR_HOST}/"
-    usersBase: "https://user.${CEDAR_HOST}/users/"
+    usersBase: "http://${CEDAR_NET_GATEWAY}:${CEDAR_USER_HTTP_PORT}/users/"
   valuerecommender:
     httpPort: "${CEDAR_VALUERECOMMENDER_HTTP_PORT}"
     adminPort: "${CEDAR_VALUERECOMMENDER_ADMIN_PORT}"
@@ -235,6 +231,8 @@ cache:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
       port: "${CEDAR_REDIS_NONPERSISTENT_PORT}"
       timeout: 2000
+  terminology:
+    folder: "${CEDAR_HOME}/cache/terminology"
 
 submission:
   ncbi:
