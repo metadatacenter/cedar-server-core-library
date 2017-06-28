@@ -56,9 +56,9 @@ public class TemplateElementServiceMongoDB extends GenericTemplateServiceMongoDB
 
   @Override
   @NonNull
-  public JsonNode updateTemplateElement(@NonNull String templateElementId, @NonNull JsonNode modifications)
+  public JsonNode updateTemplateElement(@NonNull String templateElementId, @NonNull JsonNode content)
       throws InstanceNotFoundException, IOException {
-    return templateElementDao.update(templateElementId, modifications);
+    return templateElementDao.update(templateElementId, content);
   }
 
   @Override

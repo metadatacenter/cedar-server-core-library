@@ -20,7 +20,7 @@ public interface GenericDao<K, T> {
 
   T find(@NonNull K id) throws IOException;
 
-  @NonNull T update(@NonNull K id, @NonNull T modifications) throws InstanceNotFoundException, IOException;
+  @NonNull T update(@NonNull K id, @NonNull T content) throws InstanceNotFoundException, IOException;
 
   void delete(@NonNull K id) throws InstanceNotFoundException, IOException;
 

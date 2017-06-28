@@ -20,7 +20,7 @@ public interface TemplateService<K, T> {
 
   T findTemplate(@NonNull K templateId) throws IOException, ProcessingException;
 
-  @NonNull T updateTemplate(@NonNull K templateId, @NonNull T modifications) throws InstanceNotFoundException,
+  @NonNull T updateTemplate(@NonNull K templateId, @NonNull T content) throws InstanceNotFoundException,
       IOException;
 
   void deleteTemplate(@NonNull K templateId) throws InstanceNotFoundException, IOException;

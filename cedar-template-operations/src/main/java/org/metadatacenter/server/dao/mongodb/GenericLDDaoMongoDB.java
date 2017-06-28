@@ -142,7 +142,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * Update an element using its linked data ID  (@id in JSON-LD)
    *
    * @param id            The linked data ID of the element to update
-   * @param modifications The update
+   * @param content       The new content of the document
    * @return The updated JSON representation of the element
    * @throws IllegalArgumentException  If the ID is not valid
    * @throws InstanceNotFoundException If the element is not found
@@ -150,7 +150,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    */
   @Override
   @NonNull
-  public JsonNode update(@NonNull String id, @NonNull JsonNode modifications)
+  public JsonNode update(@NonNull String id, @NonNull JsonNode content)
       throws InstanceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
@@ -159,9 +159,10 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
       throw new InstanceNotFoundException();
     }
     // Adapts all keys not accepted by MongoDB
-    modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
-    Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
-    UpdateResult updateResult = entityCollection.updateOne(eq("@id", id), new Document("$set", modificationsMap));
+    content = jsonUtils.fixMongoDB(content, FixMongoDirection.WRITE_TO_MONGO);
+    Map contentMap = JsonMapper.MAPPER.convertValue(content, Map.class);
+    Document contentDocument = new Document(contentMap);
+    UpdateResult updateResult = entityCollection.replaceOne(eq("@id", id), contentDocument);
     if (updateResult.getMatchedCount() == 1) {
       return find(id);
     } else {

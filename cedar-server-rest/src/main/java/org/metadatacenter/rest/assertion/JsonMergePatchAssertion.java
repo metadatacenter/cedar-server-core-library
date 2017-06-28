@@ -5,9 +5,9 @@ import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.error.CedarAssertionResult;
 
-public class JsonMergePatchAssertion implements CedarAssertion {
+import static org.metadatacenter.constant.HttpConstants.CONTENT_TYPE_APPLICATION_MERGE_PATCH_JSON;
 
-  public static final String APPLICATION_MERGE_PATCH_JSON = "application/merge-patch+json";
+public class JsonMergePatchAssertion implements CedarAssertion {
 
   JsonMergePatchAssertion() {
   }
@@ -20,10 +20,10 @@ public class JsonMergePatchAssertion implements CedarAssertion {
     String contentType;
     CedarRequestNoun cedarRequestNoun = (CedarRequestNoun) target;
     contentType = cedarRequestNoun.getContentType();
-    if (APPLICATION_MERGE_PATCH_JSON.equals(contentType)) {
+    if (CONTENT_TYPE_APPLICATION_MERGE_PATCH_JSON.equals(contentType)) {
       return null;
     }
-    return new CedarAssertionResult("You need to provide a request with '" + APPLICATION_MERGE_PATCH_JSON +
+    return new CedarAssertionResult("You need to provide a request with '" + CONTENT_TYPE_APPLICATION_MERGE_PATCH_JSON +
         "' convert content type!").badRequest();
   }
 

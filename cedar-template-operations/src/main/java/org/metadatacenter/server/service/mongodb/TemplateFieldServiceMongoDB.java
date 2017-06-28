@@ -51,9 +51,9 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public JsonNode updateTemplateField(@NonNull String templateFieldId, @NonNull JsonNode modifications) throws
+  public JsonNode updateTemplateField(@NonNull String templateFieldId, @NonNull JsonNode content) throws
       InstanceNotFoundException, IOException {
-    return templateFieldDao.update(templateFieldId, modifications);
+    return templateFieldDao.update(templateFieldId, content);
   }
 
   @Override

@@ -19,7 +19,7 @@ public interface TemplateFieldService<K, T> {
 
   T findTemplateField(@NonNull String templateFieldId) throws IOException, ProcessingException;
 
-  @NonNull T updateTemplateField(@NonNull K templateFieldId, @NonNull T modifications) throws
+  @NonNull T updateTemplateField(@NonNull K templateFieldId, @NonNull T content) throws
       InstanceNotFoundException, IOException;
 
   void deleteTemplateField(@NonNull K templateFieldId) throws InstanceNotFoundException, IOException;

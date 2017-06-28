@@ -100,7 +100,8 @@ public enum CedarErrorKey {
   UNKNOWN_INSTANCE_OUTPUT_FORMAT("unknownInstanceOutputFormat"),
   FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed"),
   METHOD_NOT_IMPLEMENTED("methodNotImplemented"),
-  UPSTREAM_SERVER_ERROR("upstreamServerError");
+  UPSTREAM_SERVER_ERROR("upstreamServerError"),
+  NOTHING_TO_DO("nothingToDo");
 
   private final String value;
 
