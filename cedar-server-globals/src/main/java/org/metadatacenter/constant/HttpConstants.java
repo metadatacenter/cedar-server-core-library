@@ -23,5 +23,6 @@ public final class HttpConstants {
 
   // Content Types
   public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
+  public static final String CONTENT_TYPE_APPLICATION_MERGE_PATCH_JSON = "application/merge-patch+json";
 
 }
