@@ -2,8 +2,9 @@ package org.metadatacenter.model;
 
 public enum SystemComponent {
 
-  SERVER_FOLDER(ServerName.FOLDER),
+  SERVER_WORKSPACE(ServerName.WORKSPACE),
   SERVER_GROUP(ServerName.GROUP),
+  SERVER_MESSAGING(ServerName.MESSAGING),
   SERVER_REPO(ServerName.REPO),
   SERVER_RESOURCE(ServerName.RESOURCE),
   SERVER_SCHEMA(ServerName.SCHEMA),

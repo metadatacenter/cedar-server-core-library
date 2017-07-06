@@ -9,10 +9,10 @@
   </parent>
 
   <groupId>org.metadatacenter</groupId>
-  <artifactId>cedar-folder-operations</artifactId>
+  <artifactId>cedar-workspace-operations</artifactId>
   <packaging>jar</packaging>
 
-  <name>CEDAR Folder Server Operations</name>
+  <name>CEDAR Workspace Server Operations</name>
 
   <dependencies>
 

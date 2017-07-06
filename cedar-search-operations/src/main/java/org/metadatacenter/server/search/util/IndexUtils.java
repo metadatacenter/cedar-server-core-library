@@ -13,10 +13,11 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldSchema;
 import org.metadatacenter.server.search.elasticsearch.document.field.CedarIndexFieldValue;
-import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.http.CedarEntityUtil;
 import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
-import static org.metadatacenter.constant.ResourceConstants.FOLDER_ALL_NODES;
 
 public class IndexUtils {
 
@@ -42,11 +42,10 @@ public class IndexUtils {
 
   private final String FIELD_SUFFIX = "_field";
 
-  private final String folderBase;
-  private final String templateBase;
   private final int limit;
   private final int maxAttempts;
   private final int delayAttempts;
+  private final MicroserviceUrlUtil microserviceUrlUtil;
 
   private enum ESType {
     STRING, LONG, INTEGER, SHORT, DOUBLE, FLOAT, DATE, BOOLEAN;
@@ -57,8 +56,7 @@ public class IndexUtils {
   }
 
   public IndexUtils(CedarConfig cedarConfig) {
-    this.folderBase = cedarConfig.getServers().getFolder().getBase();
-    this.templateBase = cedarConfig.getServers().getTemplate().getBase();
+    microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
     this.limit = cedarConfig.getFolderRESTAPI().getPagination().getMaxPageSize();
     this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
     this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
@@ -72,7 +70,7 @@ public class IndexUtils {
     log.info("Retrieving all resources:");
     List<FolderServerNode> resources = new ArrayList<>();
     boolean finished = false;
-    String baseUrl = folderBase + FOLDER_ALL_NODES;
+    String baseUrl = microserviceUrlUtil.getWorkspace().getNodes();
     int offset = 0;
     int countSoFar = 0;
     while (!finished) {
@@ -151,7 +149,7 @@ public class IndexUtils {
       CedarProcessingException {
     try {
       CedarPermission permission = null;
-      String resourceUrl = templateBase + nodeType.getPrefix();
+      String resourceUrl = microserviceUrlUtil.getTemplate().getNodeType(nodeType);
       resourceUrl += "/" + CedarUrlUtil.urlEncode(resourceId);
       // Retrieve resource by id
       JsonNode resource = null;
@@ -183,8 +181,10 @@ public class IndexUtils {
       // Instances
       else if (nodeType.equals(CedarNodeType.INSTANCE)) {
         // TODO: avoid calling this method multiple times when posting multiple instances for the same template
-        JsonNode schemaSummary = extractSchemaSummary(nodeType, resourceContent, JsonNodeFactory.instance.objectNode(), context);
-        JsonNode valuesSummary = extractValuesSummary(nodeType, schemaSummary, resourceContent, JsonNodeFactory.instance.objectNode());
+        JsonNode schemaSummary = extractSchemaSummary(nodeType, resourceContent, JsonNodeFactory.instance.objectNode
+            (), context);
+        JsonNode valuesSummary = extractValuesSummary(nodeType, schemaSummary, resourceContent, JsonNodeFactory
+            .instance.objectNode());
         return valuesSummary;
       } else {
         throw new InternalError("Invalid node type: " + nodeType);
@@ -320,7 +320,8 @@ public class IndexUtils {
               } else {
                 if (schemaSummary.has(field.getKey())) {
                   ((ObjectNode) results).set(field.getKey(), JsonNodeFactory.instance.objectNode());
-                  extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), field.getValue(), results.get(field.getKey()));
+                  extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), field.getValue(), results.get
+                      (field.getKey()));
                 }
               }
             }
@@ -336,13 +337,15 @@ public class IndexUtils {
                   if (schemaSummary != null && schemaSummary.has(field.getKey() + FIELD_SUFFIX)) {
                     fieldSchema = schemaSummary.get(field.getKey() + FIELD_SUFFIX);
                   }
-                  // If the field was not found in the template, it is ignored. This may happen if the template is updated.
+                  // If the field was not found in the template, it is ignored. This may happen if the template is
+                  // updated.
                   if (fieldSchema != null) {
                     CedarIndexFieldValue fv = valueToIndexValue(arrayItem.get(fieldValueName), fieldSchema);
                     ((ArrayNode) results.get(field.getKey())).add(JsonMapper.MAPPER.valueToTree(fv));
                   }
                 } else {
-                  // If the field was not found in the template, it is ignored. This may happen if the template is updated.
+                  // If the field was not found in the template, it is ignored. This may happen if the template is
+                  // updated.
                   if (schemaSummary.has(field.getKey())) {
                     ((ArrayNode) results.get(field.getKey())).add(JsonNodeFactory.instance.objectNode());
                     extractValuesSummary(nodeType, schemaSummary.get(field.getKey()), arrayItem, results.get(field

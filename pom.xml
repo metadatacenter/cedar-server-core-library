@@ -24,7 +24,7 @@
   <modules>
     <module>cedar-auth-operations</module>
     <module>cedar-auth-operations-keycloak</module>
-    <module>cedar-folder-operations</module>
+    <module>cedar-workspace-operations</module>
     <module>cedar-project-config</module>
     <module>cedar-server-globals</module>
     <module>cedar-server-utils-core</module>
