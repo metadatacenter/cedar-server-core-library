@@ -4,9 +4,11 @@ import org.metadatacenter.model.ServerName;
 
 public class ServersConfig {
 
-  private FolderServerConfig folder;
+  private WorkspaceServerConfig workspace;
 
   private ServerConfig group;
+
+  private ServerConfig messaging;
 
   private ServerConfig repo;
 
@@ -26,12 +28,16 @@ public class ServersConfig {
 
   private ServerConfig worker;
 
-  public FolderServerConfig getFolder() {
-    return folder;
+  public WorkspaceServerConfig getWorkspace() {
+    return workspace;
   }
 
   public ServerConfig getGroup() {
     return group;
+  }
+
+  public ServerConfig getMessaging() {
+    return messaging;
   }
 
   public ServerConfig getRepo() {
@@ -72,10 +78,12 @@ public class ServersConfig {
 
   public ServerConfig get(ServerName serverName) {
     switch (serverName) {
-      case FOLDER:
-        return folder;
+      case WORKSPACE:
+        return workspace;
       case GROUP:
         return group;
+      case MESSAGING:
+        return messaging;
       case REPO:
         return repo;
       case RESOURCE:

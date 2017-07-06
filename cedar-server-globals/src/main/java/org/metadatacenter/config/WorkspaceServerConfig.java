@@ -1,6 +1,6 @@
 package org.metadatacenter.config;
 
-public class FolderServerConfig extends ServerConfig {
+public class WorkspaceServerConfig extends ServerConfig {
 
   private String users;
 

@@ -94,16 +94,20 @@ folderStructure:
 #Server bases
 #for inter-service REST calls
 servers:
-  folder:
-    httpPort: "${CEDAR_FOLDER_HTTP_PORT}"
-    adminPort: "${CEDAR_FOLDER_ADMIN_PORT}"
-    stopPort: "${CEDAR_FOLDER_STOP_PORT}"
-    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_FOLDER_HTTP_PORT}/"
-    users: "http://${CEDAR_NET_GATEWAY}:${CEDAR_FOLDER_HTTP_PORT}/users"
+  workspace:
+    httpPort: "${CEDAR_WORKSPACE_HTTP_PORT}"
+    adminPort: "${CEDAR_WORKSPACE_ADMIN_PORT}"
+    stopPort: "${CEDAR_WORKSPACE_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_WORKSPACE_HTTP_PORT}/"
+    users: "http://${CEDAR_NET_GATEWAY}:${CEDAR_WORKSPACE_HTTP_PORT}/users"
   group:
     httpPort: "${CEDAR_GROUP_HTTP_PORT}"
     adminPort: "${CEDAR_GROUP_ADMIN_PORT}"
     stopPort: "${CEDAR_GROUP_STOP_PORT}"
+  messaging:
+    httpPort: "${CEDAR_MESSAGING_HTTP_PORT}"
+    adminPort: "${CEDAR_MESSAGING_ADMIN_PORT}"
+    stopPort: "${CEDAR_MESSAGING_STOP_PORT}"
   repo:
     httpPort: "${CEDAR_REPO_HTTP_PORT}"
     adminPort: "${CEDAR_REPO_ADMIN_PORT}"

@@ -9,26 +9,15 @@ import javax.ws.rs.core.UriInfo;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 public abstract class CedarUrlUtil {
 
   public static String urlEncode(String value) {
-    try {
-      return URLEncoder.encode(value, "UTF-8");
-    } catch (Exception e) {
-      // Do nothing
-    }
-    return null;
+    return UrlUtil.urlEncode(value);
   }
 
   public static String urlDecode(String value) {
-    try {
-      return URLDecoder.decode(value, "UTF-8");
-    } catch (Exception e) {
-      // Do nothing
-    }
-    return null;
+    return UrlUtil.urlDecode(value);
   }
 
   public static String encodeIfNeeded(String uri) throws UnsupportedEncodingException {

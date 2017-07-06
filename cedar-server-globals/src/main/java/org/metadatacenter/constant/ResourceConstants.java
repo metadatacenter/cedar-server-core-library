@@ -11,7 +11,4 @@ public final class ResourceConstants {
   public static final String RETRIEVE_MAX_ATTEMPTS = RETRIEVE_PREFIX + "maxAttempts";
   public static final String RETRIEVE_DELAY_ATTEMPTS = RETRIEVE_PREFIX + "delayAttempts";
 
-  // Folder server
-  public static final String FOLDER_ALL_NODES = "nodes";
-
 }
