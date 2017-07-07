@@ -14,8 +14,4 @@ public class UserMicroserviceUrlProvider extends MicroserviceUrlProvider {
   public String UuidSummary(String uuid) {
     return usersBase + uuid + "/" + "summary";
   }
-
-  public String users() {
-    return usersBase;
-  }
 }
