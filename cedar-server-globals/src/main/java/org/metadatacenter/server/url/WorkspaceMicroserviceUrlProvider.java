@@ -8,9 +8,11 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   protected static final String PREFIX_RESOURCES = "resources";
   protected static final String PREFIX_NODES = "nodes";
+  protected final String users;
 
   public WorkspaceMicroserviceUrlProvider(WorkspaceServerConfig server) {
     super(server.getBase());
+    users = server.getUsers();
   }
 
   public String getResources() {
@@ -47,5 +49,9 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   public String getNodes() {
     return base + PREFIX_NODES;
+  }
+
+  public String getUsers() {
+    return users;
   }
 }
