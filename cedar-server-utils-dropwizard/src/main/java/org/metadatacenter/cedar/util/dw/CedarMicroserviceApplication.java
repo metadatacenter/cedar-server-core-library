@@ -74,17 +74,21 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     );
 
     bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
-    initializeWithBootstrap(bootstrap);
-  }
 
-  @Override
-  public void run(T configuration, Environment environment) throws Exception {
-    log.info("********** Initializing CEDAR microservice " + getName());
+    log.info("********** Initializing CEDAR Config for " + getName());
+    System.out.println("********** Initializing CEDAR Config for " + getName());
     // Initialize map with environment vars that this server expects
     SystemComponent systemComponent = SystemComponent.getFor(getServerName());
     Map<String, String> environmentSandbox = CedarEnvironmentVariableProvider.getFor(systemComponent);
     // Initialize config
     cedarConfig = CedarConfig.getInstance(environmentSandbox);
+
+    initializeWithBootstrap(bootstrap, cedarConfig);
+  }
+
+  @Override
+  public void run(T configuration, Environment environment) throws Exception {
+    log.info("********** Initializing CEDAR microservice " + getName());
 
     CedarRequestContextFactory.init(cedarConfig.getLinkedDataUtil());
 
@@ -188,7 +192,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
   protected abstract ServerName getServerName();
 
-  protected abstract void initializeWithBootstrap(Bootstrap<T> bootstrap);
+  protected abstract void initializeWithBootstrap(Bootstrap<T> bootstrap, CedarConfig cedarConfig);
 
   @Override
   public String getName() {

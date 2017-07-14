@@ -144,6 +144,26 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_ELASTICSEARCH_TRANSPORT_PORT);
     cedarElasticsearchTransportPort.addAll(cedarElasticsearchHost);
 
+    Set<SystemComponent> cedarMessagingMysqlHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_HOST);
+    cedarMessagingMysqlHost.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlPort = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_PORT);
+    cedarMessagingMysqlPort.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlDb = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_DB);
+    cedarMessagingMysqlDb.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlUser = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_USER);
+    cedarMessagingMysqlUser.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_PASSWORD);
+    cedarMessagingMysqlPassword.add(SystemComponent.SERVER_MESSAGING);
+
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener

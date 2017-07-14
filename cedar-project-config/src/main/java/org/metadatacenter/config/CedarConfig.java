@@ -37,6 +37,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("userServer")
   private MongoConfig userServerConfig;
 
+  @JsonProperty("messagingServer")
+  private HibernateConfig messagingServerConfig;
+
   @JsonProperty("neo4j")
   private Neo4JConfig neo4jConfig;
 
@@ -165,6 +168,10 @@ public class CedarConfig extends Configuration {
 
   public MongoConfig getUserServerConfig() {
     return userServerConfig;
+  }
+
+  public HibernateConfig getMessagingServerConfig() {
+    return messagingServerConfig;
   }
 
   public Neo4JConfig getNeo4jConfig() {

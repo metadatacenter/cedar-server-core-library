@@ -43,6 +43,16 @@ userServer:
   collections:
     user: "users"
 
+messagingServer:
+  url: "jdbc:mysql://${CEDAR_MESSAGING_MYSQL_HOST}:${CEDAR_MESSAGING_MYSQL_PORT}/${CEDAR_MESSAGING_MYSQL_DB}"
+  user: "${CEDAR_MESSAGING_MYSQL_USER}"
+  password: "${CEDAR_MESSAGING_MYSQL_PASSWORD}"
+  driverClass: "com.mysql.cj.jdbc.Driver"
+  properties:
+    createDatabaseIfNotExist: "true"
+    serverTimezone: "America/Los_Angeles"
+    useSSL: "false"
+
 #Neo4J settings
 neo4j:
   #Rest API settings
