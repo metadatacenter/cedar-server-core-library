@@ -158,7 +158,8 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_REDIS_PERSISTENT_PORT);
     redisPersistentPort.addAll(redisPersistentHost);
 
-    Set<SystemComponent> cedarHttpPortWorkspace = variableToComponent.get(CedarEnvironmentVariable.CEDAR_WORKSPACE_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_WORKSPACE_HTTP_PORT);
     cedarHttpPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
     cedarHttpPortWorkspace.add(SystemComponent.SERVER_RESOURCE);
     cedarHttpPortWorkspace.add(SystemComponent.SERVER_REPO);
@@ -166,7 +167,8 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarAdminPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_WORKSPACE_ADMIN_PORT);
     cedarAdminPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
-    Set<SystemComponent> cedarStopPortWorkspace = variableToComponent.get(CedarEnvironmentVariable.CEDAR_WORKSPACE_STOP_PORT);
+    Set<SystemComponent> cedarStopPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_WORKSPACE_STOP_PORT);
     cedarStopPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
 
     Set<SystemComponent> cedarHttpPortGroup = variableToComponent.get(CedarEnvironmentVariable.CEDAR_GROUP_HTTP_PORT);

@@ -74,6 +74,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     );
 
     bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
+    initializeWithBootstrap(bootstrap);
   }
 
   @Override
@@ -186,6 +187,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
   protected abstract void runApp(T configuration, Environment environment);
 
   protected abstract ServerName getServerName();
+
+  protected abstract void initializeWithBootstrap(Bootstrap<T> bootstrap);
 
   @Override
   public String getName() {
