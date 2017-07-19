@@ -1,9 +1,9 @@
 package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.server.cache.util.CacheService;
+import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.SearchPermissionQueueEventType;
-import org.metadatacenter.server.search.IndexedDocumentId;
 
 import static org.metadatacenter.server.search.SearchPermissionQueueEventType.*;
 

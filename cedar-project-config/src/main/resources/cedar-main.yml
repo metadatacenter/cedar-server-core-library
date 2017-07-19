@@ -137,6 +137,7 @@ servers:
     httpPort: "${CEDAR_SUBMISSION_HTTP_PORT}"
     adminPort: "${CEDAR_SUBMISSION_ADMIN_PORT}"
     stopPort: "${CEDAR_SUBMISSION_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_SUBMISSION_HTTP_PORT}/"
   template:
     httpPort: "${CEDAR_TEMPLATE_HTTP_PORT}"
     adminPort: "${CEDAR_TEMPLATE_ADMIN_PORT}"
@@ -240,6 +241,7 @@ cache:
       timeout: 2000
     queueNames:
       searchPermission: "CEDAR-QUEUE-search-permission"
+      ncbiAirrSubmission: "CEDAR-QUEUE-ncbi-airr-submission"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
