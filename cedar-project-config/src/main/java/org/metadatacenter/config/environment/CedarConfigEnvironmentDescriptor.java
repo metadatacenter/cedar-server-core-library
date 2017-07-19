@@ -173,6 +173,7 @@ public class CedarConfigEnvironmentDescriptor {
     redisPersistentHost.add(SystemComponent.SERVER_RESOURCE);
     redisPersistentHost.add(SystemComponent.SERVER_GROUP);
     redisPersistentHost.add(SystemComponent.SERVER_WORKER);
+    redisPersistentHost.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_PORT);

@@ -240,6 +240,7 @@ cache:
       timeout: 2000
     queueNames:
       searchPermission: "CEDAR-QUEUE-search-permission"
+      ncbiAirrSubmission: "CEDAR-QUEUE-ncbi-airr-submission"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
