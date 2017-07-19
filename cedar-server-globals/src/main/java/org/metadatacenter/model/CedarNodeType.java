@@ -11,7 +11,8 @@ public enum CedarNodeType {
   ELEMENT_INSTANCE(Types.ELEMENT_INSTANCE, Prefix.ELEMENT_INSTANCES, null),
   INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
   USER(Types.USER, Prefix.USERS, null),
-  GROUP(Types.GROUP, Prefix.GROUPS, null);
+  GROUP(Types.GROUP, Prefix.GROUPS, null),
+  MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -22,6 +23,7 @@ public enum CedarNodeType {
     public static final String ELEMENT_INSTANCE = "element-instance";
     public static final String USER = "user";
     public static final String GROUP = "group";
+    public static final String MESSAGE = "message";
   }
 
   public static class Prefix {
@@ -33,6 +35,7 @@ public enum CedarNodeType {
     public static final String INSTANCES = "template-instances";
     public static final String USERS = "users";
     public static final String GROUPS = "groups";
+    public static final String MESSAGES = "messages";
   }
 
   public static class AtType {
