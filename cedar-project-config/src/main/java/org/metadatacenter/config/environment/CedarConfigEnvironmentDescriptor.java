@@ -111,6 +111,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.KEYCLOAK_EVENT_LISTENER); // user login callback, auth with this
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
+    cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ADMIN_USER_PASSWORD);
@@ -294,8 +295,10 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser1Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID);
     cedarTestUser1Id.add(SystemComponent.SERVER_TEMPLATE);
     cedarTestUser1Id.add(SystemComponent.SERVER_TERMINOLOGY);
+    cedarTestUser1Id.add(SystemComponent.SERVER_MESSAGING);
 
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
+    cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
     // Compute the reverse map
     componentToVariable = new LinkedHashMap<>();

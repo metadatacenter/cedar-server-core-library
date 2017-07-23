@@ -1,6 +1,6 @@
 package org.metadatacenter.util.test;
 
-
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.security.CedarApiKeyAuthRequest;
@@ -11,17 +11,14 @@ import java.io.IOException;
 
 public class TestUserUtil {
 
-  public static String getTestUser1AuthHeader(CedarConfig cedarConfig) {
-    String uuid = cedarConfig.getTestUsers().getTestUser1().getId();
-
+  private static String getTestUserAuthHeader(String id) {
     CedarUser user = null;
 
     try {
-      user = CedarDataServices.getUserService().findUser(uuid);
+      user = CedarDataServices.getUserService().findUser(id);
     } catch (IOException e) {
       e.printStackTrace();
-      // TODO: use import javax.ws.rs.ProcessingException
-    } catch (com.github.fge.jsonschema.core.exceptions.ProcessingException e) {
+    } catch (ProcessingException e) {
       e.printStackTrace();
     }
 
@@ -29,4 +26,18 @@ public class TestUserUtil {
     return authRequest.getAuthHeader();
   }
 
+  public static String getTestUser1AuthHeader(CedarConfig cedarConfig) {
+    String uuid = cedarConfig.getTestUsers().getTestUser1().getId();
+    return getTestUserAuthHeader(uuid);
+  }
+
+  public static String getTestUser2AuthHeader(CedarConfig cedarConfig) {
+    String uuid = cedarConfig.getTestUsers().getTestUser2().getId();
+    return getTestUserAuthHeader(uuid);
+  }
+
+  public static String getAdminUserAuthHeader(CedarConfig cedarConfig) {
+    AuthRequest authRequest = new CedarApiKeyAuthRequest(cedarConfig.getAdminUserConfig().getApiKey());
+    return authRequest.getAuthHeader();
+  }
 }
