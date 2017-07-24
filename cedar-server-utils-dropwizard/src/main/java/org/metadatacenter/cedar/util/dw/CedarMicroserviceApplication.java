@@ -1,5 +1,6 @@
 package org.metadatacenter.cedar.util.dw;
 
+import ch.qos.logback.classic.Level;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
@@ -76,7 +77,6 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     bootstrap.addBundle(new AssetsBundle("/assets/swagger-api/swagger.json", "/swagger-api/swagger.json"));
 
     log.info("********** Initializing CEDAR Config for " + getName());
-    System.out.println("********** Initializing CEDAR Config for " + getName());
     // Initialize map with environment vars that this server expects
     SystemComponent systemComponent = SystemComponent.getFor(getServerName());
     Map<String, String> environmentSandbox = CedarEnvironmentVariableProvider.getFor(systemComponent);
@@ -84,6 +84,11 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     cedarConfig = CedarConfig.getInstance(environmentSandbox);
 
     initializeWithBootstrap(bootstrap, cedarConfig);
+  }
+
+  @Override
+  protected Level bootstrapLogLevel() {
+    return Level.DEBUG;
   }
 
   @Override
