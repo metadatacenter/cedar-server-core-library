@@ -12,7 +12,8 @@ public enum CedarNodeType {
   INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
   USER(Types.USER, Prefix.USERS, null),
   GROUP(Types.GROUP, Prefix.GROUPS, null),
-  MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null);
+  MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null),
+  PROCESS(Types.PROCESS_TYPE, Prefix.PROCESS_TYPES, null);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -24,6 +25,7 @@ public enum CedarNodeType {
     public static final String USER = "user";
     public static final String GROUP = "group";
     public static final String MESSAGE = "message";
+    public static final String PROCESS_TYPE = "process-type";
   }
 
   public static class Prefix {
@@ -36,6 +38,7 @@ public enum CedarNodeType {
     public static final String USERS = "users";
     public static final String GROUPS = "groups";
     public static final String MESSAGES = "messages";
+    public static final String PROCESS_TYPES = "process-types";
   }
 
   public static class AtType {
