@@ -112,6 +112,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
     cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
+    cedarAdminUserApiKey.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ADMIN_USER_PASSWORD);
