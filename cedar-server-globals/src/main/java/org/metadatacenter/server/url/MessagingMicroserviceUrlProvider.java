@@ -10,6 +10,6 @@ public class MessagingMicroserviceUrlProvider extends MicroserviceUrlProvider {
   }
 
   public String getMessages() {
-    return base + "/" + CedarNodeType.Prefix.MESSAGES;
+    return base + CedarNodeType.Prefix.MESSAGES;
   }
 }
