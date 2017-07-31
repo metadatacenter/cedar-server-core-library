@@ -118,6 +118,7 @@ servers:
     httpPort: "${CEDAR_MESSAGING_HTTP_PORT}"
     adminPort: "${CEDAR_MESSAGING_ADMIN_PORT}"
     stopPort: "${CEDAR_MESSAGING_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_MESSAGING_HTTP_PORT}/"
   repo:
     httpPort: "${CEDAR_REPO_HTTP_PORT}"
     adminPort: "${CEDAR_REPO_ADMIN_PORT}"
