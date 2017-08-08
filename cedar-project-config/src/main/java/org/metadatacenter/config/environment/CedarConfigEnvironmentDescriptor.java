@@ -91,6 +91,10 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_NCBI_SRA_FTP_PASSWORD);
     cedarNcbiSraFtpPwd.add(SystemComponent.SERVER_SUBMISSION);
 
+    Set<SystemComponent> cedarImmPortSubmissionPwd = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_IMMPORT_SUBMISSION_PASSWORD);
+    cedarImmPortSubmissionPwd.add(SystemComponent.SERVER_SUBMISSION);
+
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL); // reset tasks

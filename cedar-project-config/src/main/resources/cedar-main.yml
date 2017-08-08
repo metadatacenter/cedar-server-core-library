@@ -258,6 +258,18 @@ submission:
         user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
         submissionDirectory: "submit/Test"
+  immPort:
+    authentication:
+      user: cedaruser
+      password: "${CEDAR_IMMPORT_SUBMISSION_PASSWORD}"
+    tokenEndpoint:
+      url: https://auth.dev.immport.org/auth/token
+    workspaceEndpoint:
+      url: https://api.dev.immport.org/users
+    submissionEndpoint:
+      url: https://api.dev.immport.org/data/upload
+    statusEndpoint:
+      url: https://api.dev.immport.org/data/upload/registration
 
 testUsers:
   testUser1:

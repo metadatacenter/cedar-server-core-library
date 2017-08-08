@@ -1,11 +1,9 @@
 package org.metadatacenter.config;
 
-public class NCBIConfig
-{
+public class NCBIConfig {
   private SRAConfig sra;
 
-  public SRAConfig getSra()
-  {
+  public SRAConfig getSra() {
     return sra;
   }
 }

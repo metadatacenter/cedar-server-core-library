@@ -10,6 +10,7 @@ public final class CedarObjectConstants {
   public static final String NOT_WRITABLE_NODE = "not_writable_node";
   public static final String NOT_WRITABLE_NODE_PERMISSIONS = "not_writable_node_permissions";
   public static final String PROCESS_MESSAGE = "process_message";
+  public static final String POST_SUBMISSION = "post_submission";
   //public static final String NOT_WRITABLE_FOLDER = "not_writable_folder";
 
   public static final String ACCESS_CREATE = "create";

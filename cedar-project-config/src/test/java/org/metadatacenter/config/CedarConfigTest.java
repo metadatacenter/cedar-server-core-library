@@ -36,6 +36,7 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_API_KEY.getName(), "apiKey-abcd");
     env.put(CedarEnvironmentVariable.CEDAR_ANALYTICS_KEY.getName(), "false");
     env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD.getName(), "ftpPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD.getName(), "submissionPassword");
 
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);

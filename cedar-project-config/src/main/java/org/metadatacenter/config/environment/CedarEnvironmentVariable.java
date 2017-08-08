@@ -19,6 +19,7 @@ public enum CedarEnvironmentVariable {
 
   CEDAR_ANALYTICS_KEY("CEDAR_ANALYTICS_KEY", CedarEnvironmentVariableSecure.YES),
   CEDAR_NCBI_SRA_FTP_PASSWORD("CEDAR_NCBI_SRA_FTP_PASSWORD", CedarEnvironmentVariableSecure.YES),
+  CEDAR_IMMPORT_SUBMISSION_PASSWORD("CEDAR_IMMPORT_SUBMISSION_PASSWORD", CedarEnvironmentVariableSecure.YES),
 
   CEDAR_ADMIN_USER_PASSWORD("CEDAR_ADMIN_USER_PASSWORD", CedarEnvironmentVariableSecure.YES),
   CEDAR_ADMIN_USER_API_KEY("CEDAR_ADMIN_USER_API_KEY", CedarEnvironmentVariableSecure.YES),
