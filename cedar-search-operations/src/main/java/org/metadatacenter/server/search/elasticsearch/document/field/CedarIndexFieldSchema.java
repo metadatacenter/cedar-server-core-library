@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class CedarIndexFieldSchema {
 
   private String fieldName;
-  // For instances based on controlled terms, it corresponds to the @type field. It is set to null otherwise
+  // For instances based on controlled terms, it corresponds to the value of the @id field. It is set to null otherwise
   private String fieldSemanticType;
   // Field value type, following to the Elasticsearch data types
   private String fieldValueType;
@@ -56,14 +56,6 @@ public class CedarIndexFieldSchema {
         ", fieldSemanticType='" + fieldSemanticType + '\'' +
         ", fieldValueType='" + fieldValueType + '\'' +
         '}';
-  }
-
-  // This method has not been automatically generated - do not remove it
-  public CedarIndexFieldValue toFieldValue() {
-    CedarIndexFieldValue fv = new CedarIndexFieldValue();
-    fv.setFieldName(getFieldName());
-    fv.setFieldSemanticType(getFieldSemanticType());
-    return fv;
   }
 
 }
