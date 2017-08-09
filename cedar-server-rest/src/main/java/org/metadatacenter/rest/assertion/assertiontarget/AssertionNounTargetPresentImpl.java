@@ -1,12 +1,17 @@
 package org.metadatacenter.rest.assertion.assertiontarget;
 
-import org.metadatacenter.rest.assertion.CedarAssertion;
+import org.metadatacenter.error.CedarAssertionResult;
+import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.error.CedarErrorPack;
+import org.metadatacenter.error.CedarSuggestedAction;
 import org.metadatacenter.rest.CedarAssertionNoun;
+import org.metadatacenter.rest.assertion.CedarAssertion;
+import org.metadatacenter.rest.assertion.PermissionChecker;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.error.CedarAssertionResult;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
+import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -35,7 +40,22 @@ public class AssertionNounTargetPresentImpl implements AssertionNounTargetPresen
   }
 
   @Override
-  public void have(CedarPermission... permissions) {
-    // TODO: implement this
+  public void have(CedarPermission... permissions) throws CedarAssertionException {
+    for (CedarAssertionNoun target : targets) {
+      for (CedarPermission permission : permissions) {
+        CedarAssertionResult result = PermissionChecker.check(target, permission);
+        if (result != null) {
+          String permissionName = permission.getPermissionName();
+
+          CedarErrorPack ep = new CedarErrorPack()
+              .message("Missing permission: '" + permissionName + "'.")
+              .errorKey(CedarErrorKey.PERMISSION_MISSING)
+              .suggestedAction(CedarSuggestedAction.REQUEST_ROLE)
+              .status(Response.Status.FORBIDDEN)
+              .parameter("permissionName", permissionName);
+          throw new CedarAssertionException(ep);
+        }
+      }
+    }
   }
 }
