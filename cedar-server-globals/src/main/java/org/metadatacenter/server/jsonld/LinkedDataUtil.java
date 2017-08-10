@@ -20,6 +20,7 @@ public class LinkedDataUtil {
   final String ID_FIELD = "@id";
   final String VALUE_FIELD = "@value";
   final String CONTEXT_FIELD = "@context";
+  final String TYPE_FIELD = "@type";
 
   public LinkedDataUtil(LinkedDataConfig ldConfig) {
     this.ldConfig = ldConfig;
@@ -74,12 +75,13 @@ public class LinkedDataUtil {
   private void addElementInstanceIdsToPotentialElementInstance(JsonNode fieldContent) {
     // Single value
     if (fieldContent.isObject()) {
-      // It is an element instance
-      if (!fieldContent.has(VALUE_FIELD) && !fieldContent.has(ID_FIELD)
-          && Iterators.size(fieldContent.elements()) > 0) {
-        String id = buildNewLinkedDataId(CedarNodeType.ELEMENT_INSTANCE);
-        ((ObjectNode) fieldContent).put(ID_FIELD, id);
-        addElementInstanceIds(fieldContent, CedarNodeType.INSTANCE);
+      // Check that it is an element instance
+      if (!fieldContent.has(VALUE_FIELD) && !fieldContent.has(ID_FIELD)) {
+        if ((!fieldContent.has(TYPE_FIELD) && Iterators.size(fieldContent.elements()) > 0) || (fieldContent.has(TYPE_FIELD) && Iterators.size(fieldContent.elements()) > 1)) {
+          String id = buildNewLinkedDataId(CedarNodeType.ELEMENT_INSTANCE);
+          ((ObjectNode) fieldContent).put(ID_FIELD, id);
+          addElementInstanceIds(fieldContent, CedarNodeType.INSTANCE);
+        }
       }
     }
     // it is an Array (Multi-instance value)
