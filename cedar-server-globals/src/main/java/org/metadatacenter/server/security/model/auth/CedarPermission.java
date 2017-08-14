@@ -44,7 +44,9 @@ public enum CedarPermission {
   UPDATE_PERMISSION_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE_PERMISSIONS, CedarObjectConstants
       .ACCESS_UPDATE),
   READ_NOT_READABLE_NODE(CedarObjectConstants.NOT_READABLE_NODE, CedarObjectConstants.ACCESS_READ),
-  WRITE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_WRITE);
+  WRITE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_WRITE),
+  SEND_PROCESS_MESSAGE(CedarObjectConstants.PROCESS_MESSAGE, CedarObjectConstants.ACCESS_CREATE),
+  POST_SUBMISSION(CedarObjectConstants.POST_SUBMISSION, CedarObjectConstants.ACCESS_CREATE);
 
   private final String resourceType;
   private final String accessType;

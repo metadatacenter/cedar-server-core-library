@@ -43,6 +43,16 @@ userServer:
   collections:
     user: "users"
 
+messagingServer:
+  url: "jdbc:mysql://${CEDAR_MESSAGING_MYSQL_HOST}:${CEDAR_MESSAGING_MYSQL_PORT}/${CEDAR_MESSAGING_MYSQL_DB}"
+  user: "${CEDAR_MESSAGING_MYSQL_USER}"
+  password: "${CEDAR_MESSAGING_MYSQL_PASSWORD}"
+  driverClass: "com.mysql.jdbc.Driver"
+  properties:
+    createDatabaseIfNotExist: "true"
+    serverTimezone: "America/Los_Angeles"
+    useSSL: "false"
+
 #Neo4J settings
 neo4j:
   #Rest API settings
@@ -108,6 +118,7 @@ servers:
     httpPort: "${CEDAR_MESSAGING_HTTP_PORT}"
     adminPort: "${CEDAR_MESSAGING_ADMIN_PORT}"
     stopPort: "${CEDAR_MESSAGING_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_MESSAGING_HTTP_PORT}/"
   repo:
     httpPort: "${CEDAR_REPO_HTTP_PORT}"
     adminPort: "${CEDAR_REPO_ADMIN_PORT}"
@@ -230,6 +241,7 @@ cache:
       timeout: 2000
     queueNames:
       searchPermission: "CEDAR-QUEUE-search-permission"
+      ncbiAirrSubmission: "CEDAR-QUEUE-ncbi-airr-submission"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
@@ -246,6 +258,18 @@ submission:
         user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
         submissionDirectory: "submit/Test"
+  immPort:
+    authentication:
+      user: cedaruser
+      password: "${CEDAR_IMMPORT_SUBMISSION_PASSWORD}"
+    tokenEndpoint:
+      url: https://auth.dev.immport.org/auth/token
+    workspaceEndpoint:
+      url: https://api.dev.immport.org/users
+    submissionEndpoint:
+      url: https://api.dev.immport.org/data/upload
+    statusEndpoint:
+      url: https://api.dev.immport.org/data/upload/registration
 
 testUsers:
   testUser1:

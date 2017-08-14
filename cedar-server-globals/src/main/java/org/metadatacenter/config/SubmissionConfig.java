@@ -1,11 +1,15 @@
 package org.metadatacenter.config;
 
-public class SubmissionConfig
-{
+public class SubmissionConfig {
   private NCBIConfig ncbi;
 
-  public NCBIConfig getNcbi()
-  {
+  private ImmPortConfig immPort;
+
+  public NCBIConfig getNcbi() {
     return ncbi;
+  }
+
+  public ImmPortConfig getImmPort() {
+    return immPort;
   }
 }

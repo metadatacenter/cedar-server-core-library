@@ -91,6 +91,10 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_NCBI_SRA_FTP_PASSWORD);
     cedarNcbiSraFtpPwd.add(SystemComponent.SERVER_SUBMISSION);
 
+    Set<SystemComponent> cedarImmPortSubmissionPwd = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_IMMPORT_SUBMISSION_PASSWORD);
+    cedarImmPortSubmissionPwd.add(SystemComponent.SERVER_SUBMISSION);
+
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL); // reset tasks
@@ -111,6 +115,8 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.KEYCLOAK_EVENT_LISTENER); // user login callback, auth with this
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
+    cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
+    cedarAdminUserApiKey.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ADMIN_USER_PASSWORD);
@@ -144,6 +150,26 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_ELASTICSEARCH_TRANSPORT_PORT);
     cedarElasticsearchTransportPort.addAll(cedarElasticsearchHost);
 
+    Set<SystemComponent> cedarMessagingMysqlHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_HOST);
+    cedarMessagingMysqlHost.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlPort = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_PORT);
+    cedarMessagingMysqlPort.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlDb = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_DB);
+    cedarMessagingMysqlDb.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlUser = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_USER);
+    cedarMessagingMysqlUser.add(SystemComponent.SERVER_MESSAGING);
+
+    Set<SystemComponent> cedarMessagingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_MESSAGING_MYSQL_PASSWORD);
+    cedarMessagingMysqlPassword.add(SystemComponent.SERVER_MESSAGING);
+
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener
@@ -153,6 +179,7 @@ public class CedarConfigEnvironmentDescriptor {
     redisPersistentHost.add(SystemComponent.SERVER_RESOURCE);
     redisPersistentHost.add(SystemComponent.SERVER_GROUP);
     redisPersistentHost.add(SystemComponent.SERVER_WORKER);
+    redisPersistentHost.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_PORT);
@@ -181,6 +208,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarHttpPortMessaging = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_MESSAGING_HTTP_PORT);
     cedarHttpPortMessaging.add(SystemComponent.SERVER_MESSAGING);
+    cedarHttpPortMessaging.add(SystemComponent.SERVER_SUBMISSION);
     Set<SystemComponent> cedarAdminPortMessaging = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_MESSAGING_ADMIN_PORT);
     cedarAdminPortMessaging.add(SystemComponent.SERVER_MESSAGING);
@@ -273,8 +301,10 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser1Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID);
     cedarTestUser1Id.add(SystemComponent.SERVER_TEMPLATE);
     cedarTestUser1Id.add(SystemComponent.SERVER_TERMINOLOGY);
+    cedarTestUser1Id.add(SystemComponent.SERVER_MESSAGING);
 
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
+    cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
     // Compute the reverse map
     componentToVariable = new LinkedHashMap<>();

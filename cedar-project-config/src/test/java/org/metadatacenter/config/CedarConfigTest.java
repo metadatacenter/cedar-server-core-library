@@ -36,6 +36,7 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_API_KEY.getName(), "apiKey-abcd");
     env.put(CedarEnvironmentVariable.CEDAR_ANALYTICS_KEY.getName(), "false");
     env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD.getName(), "ftpPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD.getName(), "submissionPassword");
 
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
@@ -48,6 +49,12 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD.getName(), "cedarPassword");
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_HOST.getName(), "localhost");
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_PORT.getName(), "27017");
+
+    env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_HOST.getName(), "127.0.0.1");
+    env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_PORT.getName(), "3306");
+    env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_DB.getName(), "cedar_messaging");
+    env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_USER.getName(), "cedar_messaging_user");
+    env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_PASSWORD.getName(), "cedar_messaging_password");
 
     env.put(CedarEnvironmentVariable.CEDAR_SALT_API_KEY.getName(), "salt");
 
