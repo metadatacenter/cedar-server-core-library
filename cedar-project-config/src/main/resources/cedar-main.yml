@@ -177,6 +177,7 @@ blueprintUserProfile:
     normal:
       - "templateCreator"
       - "metadataCreator"
+      - "groupAdministrator"
     builtInAdmin:
       - "templateCreator"
       - "metadataCreator"
