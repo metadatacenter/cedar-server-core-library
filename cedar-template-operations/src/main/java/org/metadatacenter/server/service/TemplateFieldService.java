@@ -1,12 +1,12 @@
 package org.metadatacenter.server.service;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,9 +20,9 @@ public interface TemplateFieldService<K, T> {
   T findTemplateField(@NonNull String templateFieldId) throws IOException, ProcessingException;
 
   @NonNull T updateTemplateField(@NonNull K templateFieldId, @NonNull T content) throws
-      InstanceNotFoundException, IOException;
+      TemplateServerResourceNotFoundException, IOException;
 
-  void deleteTemplateField(@NonNull K templateFieldId) throws InstanceNotFoundException, IOException;
+  void deleteTemplateField(@NonNull K templateFieldId) throws TemplateServerResourceNotFoundException, IOException;
 
   void deleteAllTemplateFields();
 

@@ -17,7 +17,7 @@ public class CedarExceptionMapper extends AbstractExceptionMapper implements Exc
   private static final Logger log = LoggerFactory.getLogger(CedarCedarExceptionMapper.class);
 
   public Response toResponse(Exception exception) {
-    log.warn(":CEM:", exception);
+    log.warn(":CEM::", exception);
     if (exception instanceof BadRequestException) {
       return CedarResponse.badRequest().build();
     } else if (exception instanceof ForbiddenException) {

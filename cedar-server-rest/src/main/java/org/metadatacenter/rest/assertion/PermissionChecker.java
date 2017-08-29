@@ -4,12 +4,11 @@ import org.metadatacenter.error.CedarAssertionResult;
 import org.metadatacenter.exception.CedarHelperException;
 import org.metadatacenter.rest.CedarAssertionNoun;
 import org.metadatacenter.rest.assertion.noun.CedarUserNoun;
-import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class PermissionChecker {
-  public static CedarAssertionResult check( CedarAssertionNoun target,
+  public static CedarAssertionResult check(CedarAssertionNoun target,
                                            CedarPermission permission) {
     if (!(target instanceof CedarUserNoun)) {
       return new CedarAssertionResult("Only instances of CedarUserNoun can have permissions");

@@ -9,6 +9,7 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 
 import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_AUTHORIZATION;
 import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_CONTENT_TYPE;
@@ -29,9 +30,16 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   public CedarRequestBody getRequestBody() throws CedarProcessingException {
     if (jsonBodyNode == null) {
       try {
-        jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(nativeRequest.getInputStream());
+        int b;
+        b = pushbackInputStream.read();
+        if (b == -1) {
+          return new HttpRequestEmptyBody();
+        }
+        pushbackInputStream.unread(b);
+        jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(pushbackInputStream));
       } catch (Exception e) {
-        throw new CedarProcessingException(e);
+        throw new CedarProcessingException("There was an error deserializing the request body", e);
       }
     }
 

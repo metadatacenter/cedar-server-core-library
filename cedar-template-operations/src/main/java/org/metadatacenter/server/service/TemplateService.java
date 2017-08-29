@@ -1,9 +1,9 @@
 package org.metadatacenter.server.service;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,10 +20,10 @@ public interface TemplateService<K, T> {
 
   T findTemplate(@NonNull K templateId) throws IOException, ProcessingException;
 
-  @NonNull T updateTemplate(@NonNull K templateId, @NonNull T content) throws InstanceNotFoundException,
+  T updateTemplate(@NonNull K templateId, @NonNull T content) throws TemplateServerResourceNotFoundException,
       IOException;
 
-  void deleteTemplate(@NonNull K templateId) throws InstanceNotFoundException, IOException;
+  void deleteTemplate(@NonNull K templateId) throws TemplateServerResourceNotFoundException, IOException;
 
   @NonNull boolean existsTemplate(@NonNull K templateId) throws IOException;
 

@@ -1,9 +1,9 @@
 package org.metadatacenter.server.dao;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.service.FieldNameInEx;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,9 +20,9 @@ public interface GenericDao<K, T> {
 
   T find(@NonNull K id) throws IOException;
 
-  @NonNull T update(@NonNull K id, @NonNull T content) throws InstanceNotFoundException, IOException;
+  T update(@NonNull K id, @NonNull T content) throws TemplateServerResourceNotFoundException, IOException;
 
-  void delete(@NonNull K id) throws InstanceNotFoundException, IOException;
+  void delete(@NonNull K id) throws TemplateServerResourceNotFoundException, IOException;
 
   boolean exists(@NonNull K id) throws IOException;
 

@@ -7,7 +7,6 @@ import org.metadatacenter.util.http.UrlUtil;
 import java.util.Optional;
 
 import static org.metadatacenter.constant.CedarQueryParameters.QP_FORMAT;
-import static org.metadatacenter.constant.CedarQueryParameters.QP_IMPORT_MODE;
 import static org.metadatacenter.constant.CedarQueryParameters.QP_RESOURCE_TYPE;
 
 public class TemplateMicroserviceUrlProvider extends MicroserviceUrlProvider {
@@ -18,12 +17,8 @@ public class TemplateMicroserviceUrlProvider extends MicroserviceUrlProvider {
     super(server.getBase());
   }
 
-  public String getNodeType(CedarNodeType nodeType, Optional<Boolean> importMode) {
-    String im = "";
-    if (importMode.isPresent()) {
-      im = "?" + QP_IMPORT_MODE + "=" + importMode.get();
-    }
-    return base + nodeType.getPrefix() + im;
+  public String getNodeType(CedarNodeType nodeType) {
+    return base + nodeType.getPrefix();
   }
 
   public String getNodeTypeWithId(CedarNodeType nodeType, String id, Optional<String> format) {
@@ -36,10 +31,6 @@ public class TemplateMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   public String getNodeTypeWithId(CedarNodeType nodeType, String id) {
     return getNodeTypeWithId(nodeType, id, Optional.empty());
-  }
-
-  public String getNodeType(CedarNodeType nodeType) {
-    return getNodeType(nodeType, Optional.empty());
   }
 
   public String getValidateCommand(String resourceType) {

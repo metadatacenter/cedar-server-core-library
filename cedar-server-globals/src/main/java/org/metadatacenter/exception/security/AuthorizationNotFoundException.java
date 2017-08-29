@@ -1,11 +1,15 @@
 package org.metadatacenter.exception.security;
 
 import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.error.CedarSuggestedAction;
+
+import javax.ws.rs.core.Response;
 
 public class AuthorizationNotFoundException extends CedarAccessException {
 
-  public AuthorizationNotFoundException(Exception e, String permissionName) {
-    super("Authorization data not found: '" + permissionName + "'.", CedarErrorKey.AUTHORIZATION_NOT_FOUND, null, e);
-    errorPack.parameter("permissionName", permissionName);
+  public AuthorizationNotFoundException() {
+    super("Authorization not found.", CedarErrorKey.AUTHORIZATION_NOT_FOUND, CedarSuggestedAction
+        .PROVIDE_AUTHORIZATION_HEADER);
+    errorPack.status(Response.Status.FORBIDDEN);
   }
 }

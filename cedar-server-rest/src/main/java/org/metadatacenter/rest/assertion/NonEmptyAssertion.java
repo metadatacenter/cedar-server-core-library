@@ -6,6 +6,7 @@ import org.metadatacenter.rest.assertion.noun.CedarParameter;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.error.CedarAssertionResult;
+import org.metadatacenter.rest.context.HttpRequestEmptyBody;
 
 public class NonEmptyAssertion implements CedarAssertion {
 
@@ -31,9 +32,12 @@ public class NonEmptyAssertion implements CedarAssertion {
             .badRequest();
       }
     } else {
+      if (target instanceof HttpRequestEmptyBody) {
+        return new CedarAssertionResult("You need to provide a non-empty request body").badRequest();
+      }
       CedarRequestBody cedarRequestBody = (CedarRequestBody) target;
       JsonNode jsonNode = cedarRequestBody.asJson();
-      if (jsonNode.isNull() || jsonNode.isMissingNode()) {
+      if (jsonNode.isNull() || jsonNode.isMissingNode() || !jsonNode.isObject()) {
         return new CedarAssertionResult("You need to provide a non-null request body").badRequest();
       } else {
         return null;

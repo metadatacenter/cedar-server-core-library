@@ -2,6 +2,7 @@ package org.metadatacenter.cedar.util.dw;
 
 import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.exception.CedarException;
+import org.metadatacenter.exception.security.AuthorizationNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,11 @@ public class CedarCedarExceptionMapper extends AbstractExceptionMapper implement
   public Response toResponse(CedarException exception) {
     CedarErrorPack errorPack = exception.getErrorPack();
     hideExceptionConditionally(errorPack);
-    log.warn(":CCEM:", exception);
+    if (!(exception instanceof AuthorizationNotFoundException)) {
+      log.warn(":CCEM::", exception);
+    } else {
+      log.warn(":CCEM:Request without auth header:");
+    }
     return Response.status(errorPack.getStatus())
         .entity(errorPack)
         .type(MediaType.APPLICATION_JSON)

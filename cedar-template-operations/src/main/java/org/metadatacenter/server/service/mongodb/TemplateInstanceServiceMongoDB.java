@@ -1,13 +1,13 @@
 package org.metadatacenter.server.service.mongodb;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.mongodb.TemplateInstanceDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateInstanceService;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -57,12 +57,13 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   @Override
   @NonNull
   public JsonNode updateTemplateInstance(@NonNull String templateInstanceId, @NonNull JsonNode content)
-      throws InstanceNotFoundException, IOException {
+      throws TemplateServerResourceNotFoundException, IOException {
     return templateInstanceDao.update(templateInstanceId, content);
   }
 
   @Override
-  public void deleteTemplateInstance(@NonNull String templateInstanceId) throws InstanceNotFoundException, IOException {
+  public void deleteTemplateInstance(@NonNull String templateInstanceId) throws
+      TemplateServerResourceNotFoundException, IOException {
     templateInstanceDao.delete(templateInstanceId);
   }
 

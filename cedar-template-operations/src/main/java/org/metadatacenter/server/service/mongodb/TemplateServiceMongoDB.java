@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.mongodb.TemplateDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateService;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -56,14 +56,13 @@ public class TemplateServiceMongoDB extends GenericTemplateServiceMongoDB<String
   }
 
   @Override
-  @NonNull
   public JsonNode updateTemplate(@NonNull String templateId, @NonNull JsonNode content)
-      throws InstanceNotFoundException, IOException {
+      throws TemplateServerResourceNotFoundException, IOException {
     return templateDao.update(templateId, content);
   }
 
   @Override
-  public void deleteTemplate(@NonNull String templateId) throws InstanceNotFoundException, IOException {
+  public void deleteTemplate(@NonNull String templateId) throws TemplateServerResourceNotFoundException, IOException {
     templateDao.delete(templateId);
   }
 

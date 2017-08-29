@@ -1,8 +1,8 @@
 package org.metadatacenter.server.service;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,9 +20,10 @@ public interface TemplateInstanceService<K, T> {
   T findTemplateInstance(@NonNull K templateInstanceId) throws IOException;
 
   @NonNull T updateTemplateInstance(@NonNull K templateInstanceId, @NonNull T content) throws
-      InstanceNotFoundException, IOException;
+      TemplateServerResourceNotFoundException, IOException;
 
-  void deleteTemplateInstance(@NonNull K templateInstanceId) throws InstanceNotFoundException, IOException;
+  void deleteTemplateInstance(@NonNull K templateInstanceId) throws TemplateServerResourceNotFoundException,
+      IOException;
 
   void deleteAllTemplateInstances();
 
