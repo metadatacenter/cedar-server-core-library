@@ -23,6 +23,11 @@
             ]
           }
         }
+      },
+      "mapping": {
+        "nested_fields": {
+          "limit": "1500"
+        }
       }
     }
   },
