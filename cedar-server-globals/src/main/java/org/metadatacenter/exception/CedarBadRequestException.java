@@ -11,8 +11,9 @@ public class CedarBadRequestException extends CedarException {
     errorPack.status(Response.Status.BAD_REQUEST);
   }
 
-  public CedarBadRequestException(String message) {
-    super(message);
+  public CedarBadRequestException(String message, Exception e) {
+    super(message + " : " + e.getMessage());
     errorPack.status(Response.Status.BAD_REQUEST);
+    errorPack.sourceException(e);
   }
 }

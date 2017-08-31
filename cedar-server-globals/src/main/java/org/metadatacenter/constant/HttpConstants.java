@@ -1,6 +1,9 @@
 package org.metadatacenter.constant;
 
+import javax.ws.rs.core.Response;
+
 public final class HttpConstants {
+
 
   private HttpConstants() {
   }
@@ -24,5 +27,11 @@ public final class HttpConstants {
   // Content Types
   public static final String CONTENT_TYPE_APPLICATION_JSON = "application/json";
   public static final String CONTENT_TYPE_APPLICATION_MERGE_PATCH_JSON = "application/merge-patch+json";
+
+  // StatusCodes
+
+  public static final int FORBIDDEN = Response.Status.FORBIDDEN.getStatusCode();
+  public static final int BAD_REQUEST =  Response.Status.BAD_REQUEST.getStatusCode();
+  public static final int CREATED =  Response.Status.CREATED.getStatusCode();
 
 }

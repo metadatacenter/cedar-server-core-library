@@ -1,5 +1,6 @@
 package org.metadatacenter.rest.context;
 
+import org.metadatacenter.exception.CedarBadRequestException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
@@ -19,7 +20,7 @@ public class LocalRequest extends CedarRequestNoun {
   }
 
   @Override
-  public CedarRequestBody getRequestBody() throws CedarProcessingException {
+  public CedarRequestBody getRequestBody() throws CedarBadRequestException {
     return new HttpRequestEmptyBody();
   }
 

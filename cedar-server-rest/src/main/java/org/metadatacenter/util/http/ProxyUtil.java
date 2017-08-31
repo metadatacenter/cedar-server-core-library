@@ -2,7 +2,6 @@ package org.metadatacenter.util.http;
 
 import com.google.common.collect.Lists;
 import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
@@ -10,12 +9,12 @@ import org.apache.http.entity.ContentType;
 import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.constant.CustomHttpConstants;
 import org.metadatacenter.constant.HttpConnectionConstants;
+import org.metadatacenter.exception.CedarBadRequestException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 public class ProxyUtil {
@@ -55,7 +54,8 @@ public class ProxyUtil {
     }
   }
 
-  public static HttpResponse proxyPost(String url, CedarRequestContext context) throws CedarProcessingException {
+  public static HttpResponse proxyPost(String url, CedarRequestContext context) throws CedarProcessingException,
+      CedarBadRequestException {
     return proxyPost(url, context, context.request().getRequestBody().asJsonString());
   }
 
@@ -74,7 +74,8 @@ public class ProxyUtil {
     }
   }
 
-  public static HttpResponse proxyPut(String url, CedarRequestContext context) throws CedarProcessingException {
+  public static HttpResponse proxyPut(String url, CedarRequestContext context) throws CedarProcessingException,
+      CedarBadRequestException {
     return proxyPut(url, context, context.request().getRequestBody().asJsonString());
   }
 

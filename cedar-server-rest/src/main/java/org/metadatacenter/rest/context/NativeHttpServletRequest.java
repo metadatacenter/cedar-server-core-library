@@ -2,6 +2,7 @@ package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.exception.CedarBadRequestException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
@@ -27,7 +28,7 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   }
 
   @Override
-  public CedarRequestBody getRequestBody() throws CedarProcessingException {
+  public CedarRequestBody getRequestBody() throws CedarBadRequestException {
     if (jsonBodyNode == null) {
       try {
         PushbackInputStream pushbackInputStream = new PushbackInputStream(nativeRequest.getInputStream());
@@ -39,7 +40,7 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
         pushbackInputStream.unread(b);
         jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(pushbackInputStream));
       } catch (Exception e) {
-        throw new CedarProcessingException("There was an error deserializing the request body", e);
+        throw new CedarBadRequestException("There was an error deserializing the request body", e);
       }
     }
 

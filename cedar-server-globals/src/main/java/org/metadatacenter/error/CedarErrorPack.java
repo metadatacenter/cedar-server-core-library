@@ -36,7 +36,6 @@ public class CedarErrorPack {
       originalException = other.getOriginalException();
       sourceException = other.getSourceException();
       operation = other.getOperation();
-      fixRecursionInException(originalException);
     }
   }
 
@@ -72,7 +71,6 @@ public class CedarErrorPack {
     if (other.operation != null) {
       operation = other.getOperation();
     }
-    fixRecursionInException(originalException);
   }
 
   public Response.Status getStatus() {
@@ -145,7 +143,6 @@ public class CedarErrorPack {
   public CedarErrorPack sourceException(Exception sourceException) {
     this.originalException = sourceException;
     this.sourceException = new CedarErrorPackException(sourceException);
-    fixRecursionInException(originalException);
     return this;
   }
 
@@ -170,12 +167,5 @@ public class CedarErrorPack {
     this.originalException = null;
     this.sourceException = null;
   }
-
-  private void fixRecursionInException(Exception exception) {
-    if (exception != null && (exception.getCause() == null || exception.getCause() == exception)) {
-      exception.initCause(new Exception("Recursive cause found, set to null", null));
-    }
-  }
-
 
 }
