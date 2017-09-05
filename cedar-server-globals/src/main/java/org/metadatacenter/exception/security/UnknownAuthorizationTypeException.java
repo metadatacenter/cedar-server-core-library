@@ -11,5 +11,8 @@ public class UnknownAuthorizationTypeException extends CedarAccessException {
         CedarErrorKey.AUTHORIZATION_TYPE_UNKNOWN, null, null);
     errorPack.parameter("authHeader", authHeader);
     errorPack.status(Response.Status.FORBIDDEN);
+    if (authHeader == null || authHeader.isEmpty()) {
+      showFullStackTrace = false;
+    }
   }
 }

@@ -8,6 +8,7 @@ import org.metadatacenter.error.CedarErrorReasonKey;
 public abstract class CedarException extends Exception {
 
   protected CedarErrorPack errorPack;
+  protected boolean showFullStackTrace = true;
 
   private CedarException() {
   }
@@ -35,7 +36,7 @@ public abstract class CedarException extends Exception {
   }
 
   protected CedarException(String message) {
-    this(message, (Exception)null);
+    this(message, (Exception) null);
   }
 
   public CedarException(Exception sourceException) {
@@ -64,5 +65,9 @@ public abstract class CedarException extends Exception {
   public CedarException parameter(String name, Object value) {
     errorPack.parameter(name, value);
     return this;
+  }
+
+  public boolean isShowFullStackTrace() {
+    return showFullStackTrace;
   }
 }

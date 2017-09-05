@@ -11,5 +11,6 @@ public class AuthorizationNotFoundException extends CedarAccessException {
     super("Authorization not found.", CedarErrorKey.AUTHORIZATION_NOT_FOUND, CedarSuggestedAction
         .PROVIDE_AUTHORIZATION_HEADER);
     errorPack.status(Response.Status.FORBIDDEN);
+    showFullStackTrace = false;
   }
 }

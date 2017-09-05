@@ -30,8 +30,12 @@ public final class HttpConstants {
 
   // StatusCodes
 
+  public static final int OK = Response.Status.OK.getStatusCode();
   public static final int FORBIDDEN = Response.Status.FORBIDDEN.getStatusCode();
   public static final int BAD_REQUEST =  Response.Status.BAD_REQUEST.getStatusCode();
   public static final int CREATED =  Response.Status.CREATED.getStatusCode();
+  public static final int METHOD_NOT_ALLOWED = Response.Status.METHOD_NOT_ALLOWED.getStatusCode();
+  public static final int NOT_FOUND = Response.Status.NOT_FOUND.getStatusCode();
+  public static final int NO_CONTENT = Response.Status.NO_CONTENT.getStatusCode();
 
 }
