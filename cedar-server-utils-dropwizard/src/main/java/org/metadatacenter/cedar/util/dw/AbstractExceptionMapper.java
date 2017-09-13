@@ -1,6 +1,5 @@
 package org.metadatacenter.cedar.util.dw;
 
-import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.constant.CedarQueryParameters;
 import org.metadatacenter.error.CedarErrorPack;
