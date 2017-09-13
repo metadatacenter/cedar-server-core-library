@@ -5,6 +5,7 @@ import org.metadatacenter.model.CedarNodeType;
 
 public enum NodeLabel {
 
+  SCOPE(ComposedLabel.SCOPE, SimpleLabel.SCOPE),
   FOLDER(ComposedLabel.FOLDER, SimpleLabel.FOLDER),
   SYSTEM_FOLDER(ComposedLabel.SYSTEM_FOLDER, SimpleLabel.SYSTEM_FOLDER),
   USER_HOME_FOLDER(ComposedLabel.USER_HOME_FOLDER, SimpleLabel.USER_HOME_FOLDER),
@@ -36,6 +37,7 @@ public enum NodeLabel {
   }
 
   public static class ComposedLabel {
+    public static final String SCOPE = SimpleLabel.SCOPE;
     public static final String FOLDER = SimpleLabel.FOLDER + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
     public static final String SYSTEM_FOLDER = SimpleLabel.SYSTEM_FOLDER + S + FOLDER;
     public static final String USER_HOME_FOLDER = SimpleLabel.USER_HOME_FOLDER + S + FOLDER;

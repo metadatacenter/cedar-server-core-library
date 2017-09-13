@@ -38,7 +38,7 @@ public class IndexUtils {
   protected static final Logger log = LoggerFactory.getLogger(IndexUtils.class);
 
   private final String FIELD_SUFFIX = "_field";
-  private final String URI_LABEL_FIELD = "_valueLabel";
+  private final String URI_LABEL_FIELD = "rdfs:label";
 
   private final int limit;
   private final int maxAttempts;

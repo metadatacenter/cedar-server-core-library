@@ -81,4 +81,14 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       proxies.permission().addPermission(usersFolder, everybody, NodePermission.READTHIS);
     }
   }
+
+  @Override
+  public boolean createUniqueConstraint(NodeLabel nodeLabel, NodeProperty property) {
+    return proxies.admin().createUniqueConstraint(nodeLabel, property);
+  }
+
+  @Override
+  public boolean createIndex(NodeLabel nodeLabel, NodeProperty property) {
+    return proxies.admin().createIndex(nodeLabel, property);
+  }
 }
