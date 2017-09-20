@@ -261,7 +261,7 @@ submission:
         submissionDirectory: "submit/Test"
   immPort:
     authentication:
-      user: cedaruser
+      user: "${CEDAR_IMMPORT_SUBMISSION_USER}"
       password: "${CEDAR_IMMPORT_SUBMISSION_PASSWORD}"
     tokenEndpoint:
       url: https://auth.dev.immport.org/auth/token
