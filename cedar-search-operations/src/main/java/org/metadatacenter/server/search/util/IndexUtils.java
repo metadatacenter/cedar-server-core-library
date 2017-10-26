@@ -211,11 +211,13 @@ public class IndexUtils {
             fieldNode = field.getValue().get("items");
           }
           // Field
+          if (fieldKey.equals("disease")) {
+            int a =2;
+          }
           if (fieldNode.get("@type") != null
               && fieldNode.get("@type").asText().equals(CedarNodeType.FIELD.getAtType())
-              && fieldNode.get("_ui") != null
-              && fieldNode.get("_ui").get("title") != null) {
-            String fieldName = fieldNode.get("_ui").get("title").asText();
+              && fieldNode.get("schema:name") != null) {
+            String fieldName = fieldNode.get("schema:name").asText();
             String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
             // Get field semantic type (if it has been defined)
             String fieldSemanticType = null;
