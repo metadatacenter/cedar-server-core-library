@@ -211,9 +211,6 @@ public class IndexUtils {
             fieldNode = field.getValue().get("items");
           }
           // Field
-          if (fieldKey.equals("disease")) {
-            int a =2;
-          }
           if (fieldNode.get("@type") != null
               && fieldNode.get("@type").asText().equals(CedarNodeType.FIELD.getAtType())
               && fieldNode.get("schema:name") != null) {
