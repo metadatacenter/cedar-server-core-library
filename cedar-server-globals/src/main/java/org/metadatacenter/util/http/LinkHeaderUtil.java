@@ -3,7 +3,6 @@ package org.metadatacenter.util.http;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.constant.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ public final class LinkHeaderUtil {
   private LinkHeaderUtil() {
   }
 
-  public static String getPagingLinkHeader(@NonNull String baseUrl, @NonNull Long total, Integer limit, Integer
+  public static String getPagingLinkHeader(String baseUrl, Long total, Integer limit, Integer
       offset) {
 
     Map<String, String> pagingLinkHeaders = getPagingLinkHeaders(baseUrl, total, limit, offset);
@@ -37,12 +36,12 @@ public final class LinkHeaderUtil {
     return links.toString();
   }
 
-  public static Map<String, String> getPagingLinkHeaders(@NonNull URI uri, @NonNull Long total, Integer limit,
+  public static Map<String, String> getPagingLinkHeaders(URI uri, Long total, Integer limit,
                                                          Integer offset) {
     return getPagingLinkHeaders(uri.toString(), total, limit, offset);
   }
 
-  public static Map<String, String> getPagingLinkHeaders(@NonNull String baseUrl, @NonNull Long total, Integer limit,
+  public static Map<String, String> getPagingLinkHeaders(String baseUrl, Long total, Integer limit,
                                                          Integer offset) {
     if (limit == null) {
       limit = 0;
@@ -85,7 +84,7 @@ public final class LinkHeaderUtil {
     }
   }
 
-  private static URI createOnePagingLink(@NonNull String baseUrl, long offset, long limit) {
+  private static URI createOnePagingLink(String baseUrl, long offset, long limit) {
     URI uri = null;
     try {
       URIBuilder ub = new URIBuilder(baseUrl);

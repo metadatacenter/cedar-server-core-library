@@ -1,8 +1,7 @@
 package org.metadatacenter.server.service.mongodb;
 
-import com.mongodb.MongoClient;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.MongoClient;
 import org.metadatacenter.server.dao.mongodb.TemplateInstanceDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateInstanceService;
@@ -14,55 +13,49 @@ import java.util.List;
 public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoDB<String, JsonNode> implements
     TemplateInstanceService<String, JsonNode> {
 
-  @NonNull
   private final TemplateInstanceDaoMongoDB templateInstanceDao;
 
-  public TemplateInstanceServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String
+  public TemplateInstanceServiceMongoDB(MongoClient mongoClient, String db, String
       templateInstancesCollection) {
     this.templateInstanceDao = new TemplateInstanceDaoMongoDB(mongoClient, db, templateInstancesCollection);
   }
 
   @Override
-  @NonNull
-  public JsonNode createTemplateInstance(@NonNull JsonNode templateInstance) throws IOException {
+  public JsonNode createTemplateInstance(JsonNode templateInstance) throws IOException {
     return templateInstanceDao.create(templateInstance);
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAllTemplateInstances() throws IOException {
     return templateInstanceDao.findAll();
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAllTemplateInstances(List<String> fieldNames, FieldNameInEx includeExclude) throws
       IOException {
     return templateInstanceDao.findAll(fieldNames, includeExclude);
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAllTemplateInstances(Integer limit, Integer offset, List<String> fieldNames,
                                                  FieldNameInEx includeExclude) throws IOException {
     return templateInstanceDao.findAll(limit, offset, fieldNames, includeExclude);
   }
 
   @Override
-  public JsonNode findTemplateInstance(@NonNull String templateInstanceId)
+  public JsonNode findTemplateInstance(String templateInstanceId)
       throws IOException {
     return templateInstanceDao.find(templateInstanceId);
   }
 
   @Override
-  @NonNull
-  public JsonNode updateTemplateInstance(@NonNull String templateInstanceId, @NonNull JsonNode content)
+  public JsonNode updateTemplateInstance(String templateInstanceId, JsonNode content)
       throws InstanceNotFoundException, IOException {
     return templateInstanceDao.update(templateInstanceId, content);
   }
 
   @Override
-  public void deleteTemplateInstance(@NonNull String templateInstanceId) throws InstanceNotFoundException, IOException {
+  public void deleteTemplateInstance(String templateInstanceId) throws InstanceNotFoundException, IOException {
     templateInstanceDao.delete(templateInstanceId);
   }
 
@@ -77,7 +70,7 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   }
 
   @Override
-  public long countReferencingTemplate(@NonNull String templateId) {
+  public long countReferencingTemplate(String templateId) {
     return templateInstanceDao.countReferencingTemplate(templateId);
   }
 

@@ -1,7 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
 import com.fasterxml.jackson.core.JsonPointer;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
@@ -10,7 +9,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.dao.GenericUserDao;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -30,18 +28,19 @@ import static com.mongodb.client.model.Filters.eq;
 
 public class UserDaoMongoDB implements GenericUserDao {
 
-  protected final @NonNull MongoCollection<Document> entityCollection;
-  protected final @NonNull JsonUtils jsonUtils;
+  protected final
+  MongoCollection<Document> entityCollection;
+  protected final
+  JsonUtils jsonUtils;
   protected final static String USER_PK_FIELD = "id";
 
-  public UserDaoMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName, @NonNull String collectionName) {
+  public UserDaoMongoDB(MongoClient mongoClient, String dbName, String collectionName) {
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     jsonUtils = new JsonUtils();
   }
 
   @Override
-  @NonNull
-  public CedarUser create(@NonNull CedarUser user) throws IOException {
+  public CedarUser create(CedarUser user) throws IOException {
     JsonNode userNode = JsonMapper.MAPPER.valueToTree(user);
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(userNode, FixMongoDirection.WRITE_TO_MONGO);
@@ -55,7 +54,7 @@ public class UserDaoMongoDB implements GenericUserDao {
   }
 
   @Override
-  public CedarUser find(@NonNull String id) throws IOException {
+  public CedarUser find(String id) throws IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
@@ -82,12 +81,12 @@ public class UserDaoMongoDB implements GenericUserDao {
     return JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class);
   }
 
-  public boolean exists(@NonNull String id) throws IOException {
+  public boolean exists(String id) throws IOException {
     return (find(id) != null);
   }
 
   @Override
-  public @NonNull BackendCallResult<CedarUser> patch(@NonNull String id, JsonNode modifications) {
+  public BackendCallResult<CedarUser> patch(String id, JsonNode modifications) {
     BackendCallResult<CedarUser> result = new BackendCallResult();
     if ((id == null) || (id.length() == 0)) {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
@@ -138,7 +137,7 @@ public class UserDaoMongoDB implements GenericUserDao {
   }
 
   @Override
-  public @NonNull BackendCallResult<CedarUser> update(@NonNull String id, CedarUser user) {
+  public BackendCallResult<CedarUser> update(String id, CedarUser user) {
     BackendCallResult<CedarUser> result = new BackendCallResult();
     if ((id == null) || (id.length() == 0)) {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
