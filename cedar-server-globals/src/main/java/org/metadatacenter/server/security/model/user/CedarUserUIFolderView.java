@@ -1,18 +1,13 @@
 package org.metadatacenter.server.security.model.user;
 
-import javax.validation.constraints.NotNull;
-
 public class CedarUserUIFolderView {
 
   private String currentFolderId;
 
-  @NotNull
   private String sortBy;
 
-  @NotNull
   private SortDirection sortDirection;
 
-  @NotNull
   private ViewMode viewMode;
 
   public CedarUserUIFolderView() {

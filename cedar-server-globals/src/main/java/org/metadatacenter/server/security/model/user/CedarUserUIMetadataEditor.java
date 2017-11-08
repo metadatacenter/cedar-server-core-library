@@ -1,13 +1,9 @@
 package org.metadatacenter.server.security.model.user;
 
-import javax.validation.constraints.NotNull;
-
 public class CedarUserUIMetadataEditor {
 
-  @NotNull
   private boolean templateJsonViewer;
 
-  @NotNull
   private boolean metadataJsonViewer;
 
   public CedarUserUIMetadataEditor() {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,30 +12,22 @@ import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_APIKEY_
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarUser implements CedarUserRepresentation {
 
-  @NotNull
   private String id;
 
-  @NotNull
   private String firstName;
 
-  @NotNull
   private String lastName;
 
-  @NotNull
   private String email;
 
   private String homeFolderId;
 
-  @NotNull
   private List<CedarUserApiKey> apiKeys;
 
-  @NotNull
   private List<CedarUserRole> roles;
 
-  @NotNull
   private List<String> permissions;
 
-  @NotNull
   private CedarUserUIPreferences uiPreferences;
 
   public CedarUser() {
