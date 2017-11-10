@@ -8,15 +8,12 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
-import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +43,12 @@ public class ElasticsearchIndexingWorker {
       while (again) {
         try {
           IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, documentType)
-              .setSource(JsonMapper.MAPPER.writeValueAsString(json), XContentType.JSON);
+              .setSource(json.toString());
           if (parent != null && parent.getId() != null) {
             indexRequestBuilder.setParent(parent.getId());
           }
           IndexResponse response = indexRequestBuilder.get();
-          if (response.status() == RestStatus.CREATED) {
+          if (response.isCreated()) {
             log.debug("The " + documentType + " has been indexed");
             again = false;
             newId = new IndexedDocumentId(response.getId());
@@ -81,14 +78,14 @@ public class ElasticsearchIndexingWorker {
       long removedCount = 0;
       // Delete by Elasticsearch id
       for (SearchHit hit : responseSearch.getHits()) {
-        String hitId = hit.getId();
+        String hitId = hit.id();
         log.debug(("Try to delete " + documentType + " _id:" + hitId));
-        DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(indexName, documentType, hit.getId());
+        DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(indexName, documentType, hit.id());
         if (parent != null) {
           deleteRequestBuilder.setParent(parent.getId());
         }
         DeleteResponse responseDelete = deleteRequestBuilder.execute().actionGet();
-        if (responseDelete.status() != RestStatus.FOUND) {
+        if (!responseDelete.isFound()) {
           throw new CedarProcessingException("Failed to remove " + documentType
               + " _id:" + hitId + " cid:" + resourceId + " from the index");
         } else {
