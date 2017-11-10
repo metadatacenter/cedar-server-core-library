@@ -1,5 +1,6 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -8,6 +9,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
+import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
@@ -45,7 +47,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
-    log.debug("Searching for parent documents: " + searchRequest.internalBuilder());
+    log.debug("Searching for parent documents: " + searchRequest);
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
@@ -73,7 +75,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     searchRequest.setScroll(timeout);
     searchRequest.setSize(offset + limit);
 
-    log.debug("Search query in Query DSL: " + searchRequest.internalBuilder());
+    log.debug("Search query in Query DSL: " + searchRequest);
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
@@ -107,8 +109,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       // Filter by user
-      QueryBuilder userChildQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.USERS.getValue(),
-          QueryBuilders.termQuery("users.id", userId)
+      QueryBuilder userChildQuery = JoinQueryBuilders.hasChildQuery(IndexedDocumentType.USERS.getValue(),
+          QueryBuilders.termQuery("users.id", userId), ScoreMode.Avg
       );
 
       mainQuery.must(userChildQuery);
@@ -136,8 +138,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       contentQuery.must(templateIdQuery);
     }
 
-    QueryBuilder contentChildQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
-        contentQuery
+    QueryBuilder contentChildQuery = JoinQueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
+        contentQuery, ScoreMode.Avg
     );
     mainQuery.must(contentChildQuery);
 
@@ -161,9 +163,9 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           searchRequestBuilder.addSort("_score", sortOrder);
           QueryBuilder scoreQuery = QueryBuilders.functionScoreQuery(ScoreFunctionBuilders.scriptFunction(new Script
               ("doc['info.lastUpdatedOnTS'].value")));
-          contentChildScoreQuery = QueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
-              scoreQuery
-          ).scoreMode("max");
+          contentChildScoreQuery = JoinQueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
+              scoreQuery, ScoreMode.Max
+          );
           mainQuery.must(contentChildScoreQuery);
         } else if (ES_RESOURCE_SORT_CREATEDONTS_FIELD.equals(s)) {
           searchRequestBuilder.addSort("_score", sortOrder);
@@ -180,7 +182,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
         .setSize(nodeIdResultList.getCount());
     searchRequestBuilder.setQuery(withParentIds);
 
-    log.debug("Searching for content documents: " + searchRequestBuilder.internalBuilder());
+    log.debug("Searching for content documents: " + searchRequestBuilder);
 
     return new SearchResponseResult(searchRequestBuilder.execute().actionGet(), nodeIdResultList);
   }
