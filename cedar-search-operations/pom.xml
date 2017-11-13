@@ -59,6 +59,11 @@
       <artifactId>transport</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.elasticsearch.plugin</groupId>
+      <artifactId>parent-join-client</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
