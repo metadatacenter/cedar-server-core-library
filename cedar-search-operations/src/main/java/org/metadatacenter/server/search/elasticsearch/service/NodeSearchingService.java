@@ -49,7 +49,7 @@ public class NodeSearchingService extends AbstractSearchingService {
           .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {
-          Map<String, Object> map = hit.sourceAsMap();
+          Map<String, Object> map = hit.getSourceAsMap();
           return new IndexedDocumentNode(
               hit.getId(),
               (String) map.get(ES_DOCUMENT_CEDAR_ID),

@@ -88,7 +88,7 @@ public class ElasticsearchIndexingWorker {
           deleteRequestBuilder.setParent(parent.getId());
         }
         DeleteResponse responseDelete = deleteRequestBuilder.execute().actionGet();
-        if (responseDelete.status() != RestStatus.FOUND) {
+        if (responseDelete.status() != RestStatus.OK) {
           throw new CedarProcessingException("Failed to remove " + documentType
               + " _id:" + hitId + " cid:" + resourceId + " from the index");
         } else {
