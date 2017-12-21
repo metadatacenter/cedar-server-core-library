@@ -1,7 +1,6 @@
 package org.metadatacenter.server.service;
 
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
@@ -12,17 +11,17 @@ import java.util.List;
 
 public interface TemplateFieldService<K, T> {
 
-  @NonNull T createTemplateField(@NonNull T templateField) throws IOException;
+  T createTemplateField(T templateField) throws IOException;
 
-  @NonNull List<T> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldName, FieldNameInEx
+  List<T> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldName, FieldNameInEx
       includeExclude) throws IOException;
 
-  T findTemplateField(@NonNull String templateFieldId) throws IOException, ProcessingException;
+  T findTemplateField(String templateFieldId) throws IOException, ProcessingException;
 
-  @NonNull T updateTemplateField(@NonNull K templateFieldId, @NonNull T content) throws
+  T updateTemplateField(K templateFieldId, T content) throws
       TemplateServerResourceNotFoundException, IOException;
 
-  void deleteTemplateField(@NonNull K templateFieldId) throws TemplateServerResourceNotFoundException, IOException;
+  void deleteTemplateField(K templateFieldId) throws TemplateServerResourceNotFoundException, IOException;
 
   void deleteAllTemplateFields();
 

@@ -10,7 +10,7 @@ public class UnknownAuthorizationTypeException extends CedarAccessException {
     super("Found unknown Authorization data: '" + authHeader + "'.",
         CedarErrorKey.AUTHORIZATION_TYPE_UNKNOWN, null, null);
     errorPack.parameter("authHeader", authHeader);
-    errorPack.status(Response.Status.FORBIDDEN);
+    errorPack.status(Response.Status.UNAUTHORIZED);
     if (authHeader == null || authHeader.isEmpty()) {
       showFullStackTrace = false;
     }

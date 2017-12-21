@@ -6,7 +6,8 @@ import org.metadatacenter.model.CedarNodeType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.metadatacenter.model.ModelPaths.*;
+import static org.metadatacenter.model.ModelPaths.SCHEMA_DESCRIPTION;
+import static org.metadatacenter.model.ModelPaths.SCHEMA_NAME;
 
 public class ModelUtil {
 
@@ -25,11 +26,7 @@ public class ModelUtil {
 
   public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
     JsonPointerValuePair r = new JsonPointerValuePair();
-    if (nodeType.isFielOrElementOrTemplate()) {
-      r.setPointer(UI_TITLE);
-    } else if (nodeType == CedarNodeType.INSTANCE) {
-      r.setPointer(SCHEMA_NAME);
-    }
+    r.setPointer(SCHEMA_NAME);
     JsonNode titleNode = jsonNode.at(r.getPointer());
     if (titleNode != null && !titleNode.isMissingNode()) {
       r.setValue(titleNode.textValue());
@@ -39,11 +36,7 @@ public class ModelUtil {
 
   public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
     JsonPointerValuePair r = new JsonPointerValuePair();
-    if (nodeType.isFielOrElementOrTemplate()) {
-      r.setPointer(UI_DESCRIPTION);
-    } else if (nodeType == CedarNodeType.INSTANCE) {
-      r.setPointer(SCHEMA_DESCRIPTION);
-    }
+    r.setPointer(SCHEMA_DESCRIPTION);
     JsonNode descriptionNode = jsonNode.at(r.getPointer());
     if (descriptionNode != null && !descriptionNode.isMissingNode()) {
       r.setValue(descriptionNode.textValue());

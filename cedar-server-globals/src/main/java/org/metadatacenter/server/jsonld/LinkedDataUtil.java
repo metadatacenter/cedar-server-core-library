@@ -7,16 +7,19 @@ import org.metadatacenter.config.LinkedDataConfig;
 import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.model.CedarNodeType;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class LinkedDataUtil {
 
   private final LinkedDataConfig ldConfig;
+  private List<String> knownPrefixes;
 
   public LinkedDataUtil(LinkedDataConfig ldConfig) {
     this.ldConfig = ldConfig;
+    knownPrefixes = new ArrayList<>();
+    for (CedarNodeType nt : CedarNodeType.values()) {
+      knownPrefixes.add(getLinkedDataPrefix(nt));
+    }
   }
 
   private String getLinkedDataPrefix(CedarNodeType nodeType) {
@@ -84,5 +87,22 @@ public class LinkedDataUtil {
         addElementInstanceIdsToPotentialElementInstance(fieldContent.get(i));
       }
     }
+  }
+
+  public boolean isValidId(String id) {
+    String uuid = null;
+    if (id != null) {
+      for (String prefix : knownPrefixes) {
+        if (uuid == null && id.startsWith(prefix)) {
+          uuid = id.substring(prefix.length());
+        }
+      }
+    }
+    if (uuid != null) {
+      if (uuid.trim().length() > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

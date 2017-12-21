@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.model.CedarNodeType;
@@ -24,40 +23,38 @@ import java.util.Map;
 public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<String, JsonNode> implements
     TemplateFieldService<String, JsonNode> {
 
-  @NonNull
   private final TemplateFieldDaoMongoDB templateFieldDao;
 
-  public TemplateFieldServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String
+  public TemplateFieldServiceMongoDB(MongoClient mongoClient, String db, String
       templateFieldsCollection) {
     this.templateFieldDao = new TemplateFieldDaoMongoDB(mongoClient, db, templateFieldsCollection);
   }
 
   @Override
-  public JsonNode createTemplateField(@NonNull JsonNode templateField) throws IOException {
+  public JsonNode createTemplateField(JsonNode templateField) throws IOException {
     return templateFieldDao.create(templateField);
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAllTemplateFields(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
       includeExclude) throws IOException {
     return templateFieldDao.findAll(limit, offset, fieldNames, includeExclude);
   }
 
   @Override
-  public JsonNode findTemplateField(@NonNull String templateFieldId) throws IOException,
+  public JsonNode findTemplateField(String templateFieldId) throws IOException,
       ProcessingException {
     return templateFieldDao.find(templateFieldId);
   }
 
   @Override
-  public JsonNode updateTemplateField(@NonNull String templateFieldId, @NonNull JsonNode content) throws
+  public JsonNode updateTemplateField(String templateFieldId, JsonNode content) throws
       TemplateServerResourceNotFoundException, IOException {
     return templateFieldDao.update(templateFieldId, content);
   }
 
   @Override
-  public void deleteTemplateField(@NonNull String templateFieldId) throws TemplateServerResourceNotFoundException,
+  public void deleteTemplateField(String templateFieldId) throws TemplateServerResourceNotFoundException,
       IOException {
     templateFieldDao.delete(templateFieldId);
   }

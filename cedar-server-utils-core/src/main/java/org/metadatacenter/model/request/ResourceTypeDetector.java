@@ -6,12 +6,10 @@ import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.exception.CedarException;
 
-import javax.annotation.Nonnull;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ResourceTypeDetector {
-  public static ResourceType detectType(@Nonnull String resourceType) throws CedarException {
+  public static ResourceType detectType(String resourceType) throws CedarException {
     checkNotNull(resourceType);
     ResourceType nodeType = null;
     if (!Strings.isNullOrEmpty(resourceType)) {

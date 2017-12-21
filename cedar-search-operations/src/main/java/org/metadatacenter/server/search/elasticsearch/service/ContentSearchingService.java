@@ -65,7 +65,7 @@ public class ContentSearchingService extends AbstractSearchingService {
 
     // Get the object from the result
     for (SearchHit hit : searchResult.getResponse().getHits()) {
-      String hitJson = hit.sourceAsString();
+      String hitJson = hit.getSourceAsString();
       try {
         IndexingDocumentContent content = JsonMapper.MAPPER.readValue(hitJson, IndexingDocumentContent.class);
         cidToContentMap.put(content.getCid(), content);

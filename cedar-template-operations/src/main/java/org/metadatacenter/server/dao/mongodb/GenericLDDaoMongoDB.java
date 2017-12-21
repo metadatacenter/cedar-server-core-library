@@ -10,7 +10,6 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
@@ -30,11 +29,10 @@ import static com.mongodb.client.model.Filters.eq;
  */
 public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
 
-  @NonNull
   protected final MongoCollection<Document> entityCollection;
-  private final @NonNull JsonUtils jsonUtils;
+  private final JsonUtils jsonUtils;
 
-  public GenericLDDaoMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName, @NonNull String collectionName) {
+  public GenericLDDaoMongoDB(MongoClient mongoClient, String dbName, String collectionName) {
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);
     jsonUtils = new JsonUtils();
   }
@@ -50,8 +48,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException If an occurs during creation
    */
   @Override
-  @NonNull
-  public JsonNode create(@NonNull JsonNode element) throws IOException {
+  public JsonNode create(JsonNode element) throws IOException {
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(element, FixMongoDirection.WRITE_TO_MONGO);
     Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
@@ -68,19 +65,16 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException If an error occurs during retrieval
    */
   @Override
-  @NonNull
   public List<JsonNode> findAll() throws IOException {
     return findAll(null, null, null, FieldNameInEx.UNDEFINED);
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAll(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException {
     return findAll(null, null, fieldNames, includeExclude);
   }
 
   @Override
-  @NonNull
   public List<JsonNode> findAll(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx includeExclude)
       throws IOException {
     FindIterable<Document> findIterable = entityCollection.find();
@@ -127,7 +121,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException              If an error occurs during retrieval
    */
   @Override
-  public JsonNode find(@NonNull String id) throws IOException {
+  public JsonNode find(String id) throws IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
@@ -149,7 +143,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException                             If an error occurs during update
    */
   @Override
-  public JsonNode update(@NonNull String id, @NonNull JsonNode content)
+  public JsonNode update(String id, JsonNode content)
       throws TemplateServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
@@ -178,7 +172,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException                             If an error occurs during deletion
    */
   @Override
-  public void delete(@NonNull String id) throws TemplateServerResourceNotFoundException, IOException {
+  public void delete(String id) throws TemplateServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
@@ -199,7 +193,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @throws IOException If an error occurs during the existence check
    */
   @Override
-  public boolean exists(@NonNull String id) throws IOException {
+  public boolean exists(String id) throws IOException {
     return (find(id) != null);
   }
 

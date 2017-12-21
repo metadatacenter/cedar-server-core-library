@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public class HttpServletRequestContext extends AbstractRequestContext {
 
-  private CedarAccessException userCreationException;
-
   HttpServletRequestContext(LinkedDataUtil linkedDataUtil, HttpServletRequest request) {
     if (request == null) {
       throw new IllegalArgumentException("The HttpServletRequest should never be null at this point");
@@ -25,9 +23,6 @@ public class HttpServletRequestContext extends AbstractRequestContext {
       userCreationException = e;
     }
     user = new CedarUserNoun(currentUser);
-  }
-
-  public CedarAccessException getUserCreationException() {
-    return userCreationException;
+    this.linkedDataUtil = linkedDataUtil;
   }
 }
