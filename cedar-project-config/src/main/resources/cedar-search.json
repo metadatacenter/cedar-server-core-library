@@ -26,10 +26,10 @@
       },
       "mapping": {
         "nested_fields": {
-          "limit": "3000"
+          "limit": "4000"
         },
         "total_fields": {
-          "limit": "3000"
+          "limit": "4000"
         }
       }
     }
