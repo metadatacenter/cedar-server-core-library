@@ -7,7 +7,6 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.conversions.Bson;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.service.DiagnosticsService;
 
 import java.util.Date;
@@ -16,11 +15,10 @@ public class DiagnosticsServiceMongoDB implements DiagnosticsService<JsonNode> {
 
   private MongoDatabase database = null;
 
-  public DiagnosticsServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String dbName) {
+  public DiagnosticsServiceMongoDB(MongoClient mongoClient, String dbName) {
     database = mongoClient.getDatabase(dbName);
   }
 
-  @NonNull
   public JsonNode heartbeat() {
     ObjectNode json = JsonNodeFactory.instance.objectNode();
     boolean connected = false;

@@ -20,7 +20,7 @@ public class AbstractSearchingService {
           .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {
-          return new IndexedDocumentId(hit.id());
+          return new IndexedDocumentId(hit.getId());
         }
       }
     } catch (Exception e) {

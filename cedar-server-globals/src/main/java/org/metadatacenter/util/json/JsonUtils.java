@@ -8,7 +8,6 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.github.fge.jsonschema.main.JsonValidator;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.util.mongo.FixMongoDirection;
@@ -21,7 +20,7 @@ import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
 public class JsonUtils {
 
   /* JSON Schema Validation */
-  public void validate(@NonNull JsonNode schema, @NonNull JsonNode instance) throws ProcessingException {
+  public void validate(JsonNode schema, JsonNode instance) throws ProcessingException {
     JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
     ProcessingReport report = validator.validate(schema, instance);
     if (!report.isSuccess()) {
@@ -33,8 +32,7 @@ public class JsonUtils {
   // Rename JSON field to be stored into MongoDB
   // direction: WRITE_TO_MONGO  -> update field names for MongoDB storage (e.g. $schema -> _$schema)
   // direction: READ_FROM_MONGO -> update field names after reading them from MongoDB (e.g. _$schema -> $schema)
-  @NonNull
-  public JsonNode fixMongoDB(@NonNull JsonNode node, FixMongoDirection direction) {
+  public JsonNode fixMongoDB(JsonNode node, FixMongoDirection direction) {
     boolean reverse = false;
     if (direction == FixMongoDirection.READ_FROM_MONGO) {
       reverse = true;
@@ -49,8 +47,7 @@ public class JsonUtils {
     return node;
   }
 
-  @NonNull
-  private JsonNode updateFieldName(@NonNull JsonNode node, @NonNull String fieldName, @NonNull String newFieldName,
+  private JsonNode updateFieldName(JsonNode node, String fieldName, String newFieldName,
                                    boolean reverse) {
     if (reverse) {
       String swap = fieldName;
@@ -65,14 +62,14 @@ public class JsonUtils {
   }
 
   // Remove a particular field from a JsonNode object
-  public static @NonNull JsonNode removeField(@NonNull JsonNode node, @NonNull String fieldName) {
+  public static JsonNode removeField(JsonNode node, String fieldName) {
     ObjectNode object = (ObjectNode) node;
     object.remove(fieldName);
     return object;
   }
 
   // TODO: move the below 5 functions into a separate class, all of them are dealing with id replacement
-  public static @NonNull JsonNode localizeAtIdsAndTemplateId(@NonNull JsonNode node, @NonNull LinkedDataUtil
+  public static JsonNode localizeAtIdsAndTemplateId(JsonNode node, LinkedDataUtil
       linkedDataUtil) {
     ObjectNode object = (ObjectNode) node;
     localizeFieldValueAsId(object, SCHEMA_IS_BASED_ON, linkedDataUtil, CedarNodeType.TEMPLATE);
@@ -80,7 +77,7 @@ public class JsonUtils {
     return object;
   }
 
-  private static void localizeAtIdRecursively(ObjectNode object, @NonNull LinkedDataUtil linkedDataUtil) {
+  private static void localizeAtIdRecursively(ObjectNode object, LinkedDataUtil linkedDataUtil) {
     String atType = getKeyValueIfString(object, "@type");
     CedarNodeType nodeType = CedarNodeType.forAtType(atType);
     if (nodeType != null) {
@@ -100,7 +97,7 @@ public class JsonUtils {
     }
   }
 
-  private static void localizeAtIdRecursivelyInArray(ArrayNode array, @NonNull LinkedDataUtil linkedDataUtil) {
+  private static void localizeAtIdRecursivelyInArray(ArrayNode array, LinkedDataUtil linkedDataUtil) {
     for (int i = 0; i < array.size(); i++) {
       JsonNode element = array.get(i);
       if (element.isObject()) {
@@ -121,7 +118,7 @@ public class JsonUtils {
     return null;
   }
 
-  private static void localizeFieldValueAsId(ObjectNode object, String fieldName, @NonNull LinkedDataUtil
+  private static void localizeFieldValueAsId(ObjectNode object, String fieldName, LinkedDataUtil
       linkedDataUtil, CedarNodeType nodeType) {
     String v = getKeyValueIfString(object, fieldName);
     if (v != null) {

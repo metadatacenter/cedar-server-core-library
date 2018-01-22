@@ -7,11 +7,11 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.config.ElasticsearchMappingsConfig;
 import org.metadatacenter.config.ElasticsearchSettingsMappingsConfig;
@@ -40,14 +40,14 @@ public class ElasticsearchManagementService {
     this.config = config;
     this.indexSettings = settingsMappings.getSettings();
     this.indexMappings = settingsMappings.getMappings();
-    this.settings = Settings.settingsBuilder().put("cluster.name", config.getClusterName()).build();
+    this.settings = Settings.builder().put("cluster.name", config.getClusterName()).build();
   }
 
   Client getClient() {
     try {
       if (elasticClient == null) {
-        elasticClient = TransportClient.builder().settings(settings).build().addTransportAddress(new
-            InetSocketTransportAddress(InetAddress.getByName(config.getHost()), config.getTransportPort()));
+        elasticClient = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress
+            (InetAddress.getByName(config.getHost()), config.getTransportPort()));
       }
       return elasticClient;
     } catch (Exception e) {
@@ -136,7 +136,7 @@ public class ElasticsearchManagementService {
         .getMetaData().getIndices();
     for (ObjectCursor<IndexMetaData> indexMetaDataObjectCursor : indices.values()) {
       IndexMetaData value = indexMetaDataObjectCursor.value;
-      indexNames.add(value.getIndex());
+      indexNames.add(value.getIndex().getName());
     }
     return indexNames;
   }

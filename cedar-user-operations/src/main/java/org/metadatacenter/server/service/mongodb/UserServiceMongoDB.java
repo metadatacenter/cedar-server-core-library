@@ -3,7 +3,6 @@ package org.metadatacenter.server.service.mongodb;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.metadatacenter.server.dao.mongodb.UserDaoMongoDB;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -14,36 +13,35 @@ import java.util.List;
 
 public class UserServiceMongoDB implements UserService {
 
-  @NonNull
   private final UserDaoMongoDB userDao;
 
 
-  public UserServiceMongoDB(@NonNull MongoClient mongoClient, @NonNull String db, @NonNull String usersCollection) {
+  public UserServiceMongoDB(MongoClient mongoClient, String db, String usersCollection) {
     this.userDao = new UserDaoMongoDB(mongoClient, db, usersCollection);
   }
 
   @Override
-  public @NonNull CedarUser createUser(@NonNull CedarUser user) throws IOException {
+  public CedarUser createUser(CedarUser user) throws IOException {
     return userDao.create(user);
   }
 
   @Override
-  public CedarUser findUser(@NonNull String userId) throws IOException, ProcessingException {
+  public CedarUser findUser(String userId) throws IOException, ProcessingException {
     return userDao.find(userId);
   }
 
   @Override
-  public CedarUser findUserByApiKey(@NonNull String apiKey) throws IOException, ProcessingException {
+  public CedarUser findUserByApiKey(String apiKey) throws IOException, ProcessingException {
     return userDao.findByApiKey(apiKey);
   }
 
   @Override
-  public BackendCallResult<CedarUser> updateUser(@NonNull String userId, CedarUser user) {
+  public BackendCallResult<CedarUser> updateUser(String userId, CedarUser user) {
     return userDao.update(userId, user);
   }
 
   @Override
-  public BackendCallResult<CedarUser> patchUser(@NonNull String userId, JsonNode modifications) {
+  public BackendCallResult<CedarUser> patchUser(String userId, JsonNode modifications) {
     return userDao.patch(userId, modifications);
   }
 

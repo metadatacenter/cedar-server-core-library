@@ -1,25 +1,17 @@
 package org.metadatacenter.server.security.model.user;
 
-import javax.validation.constraints.NotNull;
-
 public class CedarUserUIPreferences {
 
-  @NotNull
   private CedarUserUIFolderView folderView;
 
-  @NotNull
   private CedarUserUIResourceTypeFilters resourceTypeFilters;
 
-  @NotNull
   private CedarUserUIInfoPanel infoPanel;
 
-  @NotNull
   private CedarUserUITemplateEditor templateEditor;
 
-  @NotNull
   private CedarUserUIMetadataEditor metadataEditor;
 
-  @NotNull
   private String stylesheet;
 
   public CedarUserUIPreferences() {
