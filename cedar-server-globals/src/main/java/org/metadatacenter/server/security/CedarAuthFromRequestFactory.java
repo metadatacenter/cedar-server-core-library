@@ -16,6 +16,8 @@ public abstract class CedarAuthFromRequestFactory {
           return new CedarBearerAuthRequest(request);
         } else if (auth.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
           return new CedarApiKeyAuthRequest(request);
+        } else {
+          return new CedarUnknownAuthRequest(request);
         }
       }
     }

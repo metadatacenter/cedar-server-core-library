@@ -61,7 +61,7 @@ public class IndexUtils {
   }
 
   /**
-   * This method retrieves all the resources from the Folder Server that are expected to be in the search index. Those
+   * This method retrieves all the resources from the Workspace Server that are expected to be in the search index. Those
    * resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
@@ -73,7 +73,7 @@ public class IndexUtils {
     int countSoFar = 0;
     while (!finished) {
       String url = baseUrl + "?offset=" + offset + "&limit=" + limit;
-      log.info("Retrieving resources from Folder Server. Url: " + url);
+      log.info("Retrieving resources from Workspace Server. Url: " + url);
       int statusCode = -1;
       int attemp = 1;
       HttpResponse response = null;
@@ -83,7 +83,7 @@ public class IndexUtils {
         if ((statusCode != HttpStatus.SC_BAD_GATEWAY) || (attemp > maxAttempts)) {
           break;
         } else {
-          log.error("Failed to retrieve resource. The Folder Server might have not been started yet. " +
+          log.error("Failed to retrieve resource. The Workspace Server might have not been started yet. " +
               "Retrying... (attemp " + attemp + "/" + maxAttempts + ")");
           attemp++;
           try {
@@ -120,7 +120,7 @@ public class IndexUtils {
           offset = offset + count;
         }
       } else {
-        throw new CedarProcessingException("Error retrieving resources from the folder server. HTTP status code: " +
+        throw new CedarProcessingException("Error retrieving resources from the Workspace server. HTTP status code: " +
             statusCode + " (" + response.getStatusLine().getReasonPhrase() + ")");
       }
     }

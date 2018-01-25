@@ -1,29 +1,25 @@
 package org.metadatacenter.server.jsonld;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterators;
 import org.metadatacenter.config.LinkedDataConfig;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.util.json.JsonMapper;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class LinkedDataUtil {
 
   private final LinkedDataConfig ldConfig;
-  final String ID_FIELD = "@id";
-  final String VALUE_FIELD = "@value";
-  final String CONTEXT_FIELD = "@context";
-  final String TYPE_FIELD = "@type";
+  private List<String> knownPrefixes;
 
   public LinkedDataUtil(LinkedDataConfig ldConfig) {
     this.ldConfig = ldConfig;
+    knownPrefixes = new ArrayList<>();
+    for (CedarNodeType nt : CedarNodeType.values()) {
+      knownPrefixes.add(getLinkedDataPrefix(nt));
+    }
   }
 
   private String getLinkedDataPrefix(CedarNodeType nodeType) {
@@ -64,7 +60,7 @@ public class LinkedDataUtil {
       while (fieldsIterator.hasNext()) {
         Map.Entry<String, JsonNode> field = fieldsIterator.next();
         if (field.getValue().isContainerNode()) {
-          if (!field.getKey().equals(CONTEXT_FIELD)) {
+          if (!field.getKey().equals(LinkedData.CONTEXT)) {
             addElementInstanceIdsToPotentialElementInstance(field.getValue());
           }
         }
@@ -76,10 +72,11 @@ public class LinkedDataUtil {
     // Single value
     if (fieldContent.isObject()) {
       // Check that it is an element instance
-      if (!fieldContent.has(VALUE_FIELD) && !fieldContent.has(ID_FIELD)) {
-        if ((!fieldContent.has(TYPE_FIELD) && Iterators.size(fieldContent.elements()) > 0) || (fieldContent.has(TYPE_FIELD) && Iterators.size(fieldContent.elements()) > 1)) {
+      if (!fieldContent.has(LinkedData.VALUE) && !fieldContent.has(LinkedData.ID)) {
+        if ((!fieldContent.has(LinkedData.TYPE) && Iterators.size(fieldContent.elements()) > 0) || (fieldContent.has
+            (LinkedData.TYPE) && Iterators.size(fieldContent.elements()) > 1)) {
           String id = buildNewLinkedDataId(CedarNodeType.ELEMENT_INSTANCE);
-          ((ObjectNode) fieldContent).put(ID_FIELD, id);
+          ((ObjectNode) fieldContent).put(LinkedData.ID, id);
           addElementInstanceIds(fieldContent, CedarNodeType.INSTANCE);
         }
       }
@@ -90,5 +87,22 @@ public class LinkedDataUtil {
         addElementInstanceIdsToPotentialElementInstance(fieldContent.get(i));
       }
     }
+  }
+
+  public boolean isValidId(String id) {
+    String uuid = null;
+    if (id != null) {
+      for (String prefix : knownPrefixes) {
+        if (uuid == null && id.startsWith(prefix)) {
+          uuid = id.substring(prefix.length());
+        }
+      }
+    }
+    if (uuid != null) {
+      if (uuid.trim().length() > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -8,6 +8,7 @@ public final class CedarConstants {
   private CedarConstants() {
   }
 
+  //TODO: remove this, move the CedarModelVocabulary to a central place
   public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
 
   // JSON ID constants

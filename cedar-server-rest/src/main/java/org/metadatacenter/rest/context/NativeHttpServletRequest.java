@@ -2,6 +2,7 @@ package org.metadatacenter.rest.context;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarHeaderParameters;
+import org.metadatacenter.exception.CedarBadRequestException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
@@ -9,6 +10,7 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 
 import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_AUTHORIZATION;
 import static org.metadatacenter.constant.HttpConstants.HTTP_HEADER_CONTENT_TYPE;
@@ -26,12 +28,19 @@ public class NativeHttpServletRequest extends CedarRequestNoun {
   }
 
   @Override
-  public CedarRequestBody getRequestBody() throws CedarProcessingException {
+  public CedarRequestBody getRequestBody() throws CedarBadRequestException {
     if (jsonBodyNode == null) {
       try {
-        jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(nativeRequest.getInputStream()));
+        PushbackInputStream pushbackInputStream = new PushbackInputStream(nativeRequest.getInputStream());
+        int b;
+        b = pushbackInputStream.read();
+        if (b == -1) {
+          return new HttpRequestEmptyBody();
+        }
+        pushbackInputStream.unread(b);
+        jsonBodyNode = JsonMapper.MAPPER.readTree(new InputStreamReader(pushbackInputStream));
       } catch (Exception e) {
-        throw new CedarProcessingException(e);
+        throw new CedarBadRequestException("There was an error deserializing the request body", e);
       }
     }
 

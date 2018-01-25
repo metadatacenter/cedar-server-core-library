@@ -8,4 +8,5 @@ public class GenericAssertions {
   public static final CedarAssertion JsonMergePatch = new JsonMergePatchAssertion();
   public static final CedarAssertion True = new TrueAssertion();
   public static final SuccessfulAssertion Successful = new SuccessfulAssertion();
+  public static final ValidIdAssertion ValidId = new ValidIdAssertion();
 }

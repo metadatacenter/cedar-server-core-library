@@ -1,6 +1,7 @@
 package org.metadatacenter.server.service;
 
-import javax.management.InstanceNotFoundException;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -17,10 +18,9 @@ public interface TemplateInstanceService<K, T> {
 
   T findTemplateInstance(K templateInstanceId) throws IOException;
 
-  T updateTemplateInstance(K templateInstanceId, T content) throws
-      InstanceNotFoundException, IOException;
+  T updateTemplateInstance(K templateInstanceId, T content) throws TemplateServerResourceNotFoundException, IOException;
 
-  void deleteTemplateInstance(K templateInstanceId) throws InstanceNotFoundException, IOException;
+  void deleteTemplateInstance(K templateInstanceId) throws TemplateServerResourceNotFoundException, IOException;
 
   void deleteAllTemplateInstances();
 

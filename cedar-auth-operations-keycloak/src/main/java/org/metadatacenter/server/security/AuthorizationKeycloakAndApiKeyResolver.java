@@ -23,7 +23,7 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
     } else {
       String cn = permission.getPermissionName();
       if (user.getPermissions() == null || !user.getPermissions().contains(cn)) {
-        throw new AuthorizationNotFoundException(null, cn);
+        throw new PermissionNotOwnedException(cn);
       }
     }
     return user;
@@ -50,8 +50,10 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
       } else {
         return user;
       }
+    } else if (authRequest instanceof CedarUnknownAuthRequest) {
+      throw new UnknownAuthorizationTypeException(authRequest.getAuthHeader());
     } else {
-      throw new AuthorizationTypeNotFoundException();
+      throw new AuthorizationNotFoundException();
     }
   }
 

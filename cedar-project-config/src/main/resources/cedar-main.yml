@@ -88,7 +88,7 @@ linkedData:
   base: "https://repo.${CEDAR_HOST}/"
   usersBase: "https://metadatacenter.org/users/"
 
-#Folder server global structure
+#Workspace server global structure
 folderStructure:
   rootFolder:
     path: "/"
