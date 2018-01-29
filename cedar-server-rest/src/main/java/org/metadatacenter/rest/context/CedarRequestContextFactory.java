@@ -29,7 +29,7 @@ public class CedarRequestContextFactory {
   }
 
   public static CedarRequestContext fromUser(CedarUser user) throws CedarAccessException {
-    LocalRequestContext lrc = new LocalRequestContext(user);
+    LocalRequestContext lrc = new LocalRequestContext(linkedDataUtil, user);
     if (lrc.getUserCreationException() != null) {
       throw lrc.getUserCreationException();
     }

@@ -10,13 +10,13 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,18 +138,18 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @param id      The linked data ID of the element to update
    * @param content The new content of the document
    * @return The updated JSON representation of the element
-   * @throws IllegalArgumentException  If the ID is not valid
-   * @throws InstanceNotFoundException If the element is not found
-   * @throws IOException               If an error occurs during update
+   * @throws IllegalArgumentException                If the ID is not valid
+   * @throws TemplateServerResourceNotFoundException If the element is not found
+   * @throws IOException                             If an error occurs during update
    */
   @Override
   public JsonNode update(String id, JsonNode content)
-      throws InstanceNotFoundException, IOException {
+      throws TemplateServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
     if (!exists(id)) {
-      throw new InstanceNotFoundException();
+      throw new TemplateServerResourceNotFoundException();
     }
     // Adapts all keys not accepted by MongoDB
     content = jsonUtils.fixMongoDB(content, FixMongoDirection.WRITE_TO_MONGO);
@@ -167,17 +167,17 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * Delete an element using its linked data ID  (@id in JSON-LD)
    *
    * @param id The linked data ID of the element to delete
-   * @throws IllegalArgumentException  If the ID is not valid
-   * @throws InstanceNotFoundException If the element is not found
-   * @throws IOException               If an error occurs during deletion
+   * @throws IllegalArgumentException                If the ID is not valid
+   * @throws TemplateServerResourceNotFoundException If the element is not found
+   * @throws IOException                             If an error occurs during deletion
    */
   @Override
-  public void delete(String id) throws InstanceNotFoundException, IOException {
+  public void delete(String id) throws TemplateServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
     if (!exists(id)) {
-      throw new InstanceNotFoundException();
+      throw new TemplateServerResourceNotFoundException();
     }
     DeleteResult deleteResult = entityCollection.deleteOne(eq("@id", id));
     if (deleteResult.getDeletedCount() != 1) {

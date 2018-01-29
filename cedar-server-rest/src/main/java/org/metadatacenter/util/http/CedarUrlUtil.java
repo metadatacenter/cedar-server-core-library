@@ -37,6 +37,11 @@ public abstract class CedarUrlUtil {
     return builder.path(CedarUrlUtil.urlEncode(id)).build();
   }
 
+  public static URI getURI(UriInfo uriInfo) {
+    UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+    return builder.build();
+  }
+
   public static URI getLocationURI(HttpResponse httpResponse) {
     URI location = null;
     if (httpResponse != null) {

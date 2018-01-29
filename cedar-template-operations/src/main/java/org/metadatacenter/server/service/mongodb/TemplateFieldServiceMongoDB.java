@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
@@ -14,7 +15,6 @@ import org.metadatacenter.server.service.TemplateFieldService;
 import org.metadatacenter.util.ModelUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 
-import javax.management.InstanceNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -49,12 +49,13 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
 
   @Override
   public JsonNode updateTemplateField(String templateFieldId, JsonNode content) throws
-      InstanceNotFoundException, IOException {
+      TemplateServerResourceNotFoundException, IOException {
     return templateFieldDao.update(templateFieldId, content);
   }
 
   @Override
-  public void deleteTemplateField(String templateFieldId) throws InstanceNotFoundException, IOException {
+  public void deleteTemplateField(String templateFieldId) throws TemplateServerResourceNotFoundException,
+      IOException {
     templateFieldDao.delete(templateFieldId);
   }
 

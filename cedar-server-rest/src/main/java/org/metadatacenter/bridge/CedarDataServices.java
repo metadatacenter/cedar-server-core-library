@@ -52,7 +52,7 @@ public final class CedarDataServices {
 
   public static GroupServiceSession getGroupServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
-      log.error("You need to initialize folder services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {
@@ -62,7 +62,7 @@ public final class CedarDataServices {
 
   public static PermissionServiceSession getPermissionServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
-      log.error("You need to initialize folder services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {
@@ -72,7 +72,7 @@ public final class CedarDataServices {
 
   public static AdminServiceSession getAdminServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
-      log.error("You need to initialize folder services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {
@@ -82,7 +82,7 @@ public final class CedarDataServices {
 
   public static FolderServiceSession getFolderServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
-      log.error("You need to initialize folder services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {
@@ -92,7 +92,7 @@ public final class CedarDataServices {
 
   public static UserServiceSession getUserServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
-      log.error("You need to initialize folder services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {

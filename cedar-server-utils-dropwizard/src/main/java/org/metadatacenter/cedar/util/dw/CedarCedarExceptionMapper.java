@@ -18,7 +18,11 @@ public class CedarCedarExceptionMapper extends AbstractExceptionMapper implement
   public Response toResponse(CedarException exception) {
     CedarErrorPack errorPack = exception.getErrorPack();
     hideExceptionConditionally(errorPack);
-    log.warn(":CCEM:", exception);
+    if (exception.isShowFullStackTrace()) {
+      log.warn(":CCEM:full:", exception);
+    } else {
+      log.warn(":CCEM:msg :" + exception.getMessage());
+    }
     return Response.status(errorPack.getStatus())
         .entity(errorPack)
         .type(MediaType.APPLICATION_JSON)
