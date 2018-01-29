@@ -16,22 +16,18 @@ public class CedarAssertionException extends CedarException {
     if (operation != null) {
       this.errorPack.operation(operation);
     }
-    showFullStackTrace = false;
   }
 
   public CedarAssertionException(CedarErrorPack errorPack) {
     super(errorPack);
-    showFullStackTrace = false;
   }
 
   public CedarAssertionException(CedarAssertionResult result) {
     super(result.getErrorPack());
-    showFullStackTrace = false;
   }
 
   public CedarAssertionException(Exception sourceException) {
     super(sourceException);
-    showFullStackTrace = false;
   }
 
 }
