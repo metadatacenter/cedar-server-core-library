@@ -8,7 +8,7 @@ import org.metadatacenter.error.CedarErrorReasonKey;
 public abstract class CedarException extends Exception {
 
   protected CedarErrorPack errorPack;
-  protected boolean showFullStackTrace = true;
+  protected boolean showFullStackTrace = false;
 
   private CedarException() {
   }
