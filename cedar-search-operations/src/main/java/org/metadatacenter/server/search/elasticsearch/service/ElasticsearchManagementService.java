@@ -69,16 +69,20 @@ public class ElasticsearchManagementService {
     }
     // Put mappings
     if (indexMappings.getNode() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.NODE), indexMappings.getNode());
+      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+          getType(IndexedDocumentType.NODE), indexMappings.getNode());
     }
     if (indexMappings.getUsers() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.USERS), indexMappings.getUsers());
+      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+          getType(IndexedDocumentType.USERS), indexMappings.getUsers());
     }
     if (indexMappings.getGroups() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.GROUPS), indexMappings.getGroups());
+      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+          getType(IndexedDocumentType.GROUPS), indexMappings.getGroups());
     }
     if (indexMappings.getContent() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.CONTENT), indexMappings.getContent());
+      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+          getType(IndexedDocumentType.CONTENT), indexMappings.getContent());
     }
     // Create index
     CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();

@@ -38,7 +38,7 @@ public class RegenerateSearchIndexTask {
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
     NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexName();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
     boolean regenerate = true;
     try {

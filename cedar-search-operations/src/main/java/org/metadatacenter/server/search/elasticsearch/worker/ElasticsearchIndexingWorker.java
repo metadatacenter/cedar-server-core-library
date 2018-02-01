@@ -34,7 +34,7 @@ public class ElasticsearchIndexingWorker {
       indexedDocumentType) {
     this.client = client;
     this.indexName = indexName;
-    this.documentType = config.getType(indexedDocumentType);
+    this.documentType = config.getIndexes().getSearchIndex().getType(indexedDocumentType);
   }
 
   public IndexedDocumentId addToIndex(JsonNode json, IndexedDocumentId parent) throws CedarProcessingException {

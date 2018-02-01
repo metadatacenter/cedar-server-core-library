@@ -31,7 +31,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService() {
-    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) {
@@ -39,7 +39,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public UserPermissionIndexingService userPermissionsIndexingService() {
-    return userPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return userPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public UserPermissionIndexingService userPermissionsIndexingService(String indexName) {
@@ -47,7 +47,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public GroupPermissionIndexingService groupPermissionsIndexingService() {
-    return groupPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return groupPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public GroupPermissionIndexingService groupPermissionsIndexingService(String indexName) {
@@ -55,7 +55,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public ContentIndexingService contentIndexingService() {
-    return contentIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return contentIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public ContentIndexingService contentIndexingService(String indexName) {

@@ -37,15 +37,16 @@ public class NodeSearchingService extends AbstractSearchingService {
   }
 
   public IndexedDocumentId getByCedarId(String resourceId) throws CedarProcessingException {
-    return getByCedarId(client, resourceId, config.getIndexName(), config.getType(IndexedDocumentType.NODE));
+    return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(), config
+        .getIndexes().getSearchIndex().getType(IndexedDocumentType.NODE));
   }
 
   public IndexedDocumentNode getDocumentByCedarId(String resourceId) throws CedarProcessingException {
     try {
       // Get resources by resource id
-      SearchResponse responseSearch = client.prepareSearch(config.getIndexName()).setTypes(config.getType
-          (IndexedDocumentType.NODE))
-          .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
+      SearchResponse responseSearch = client.prepareSearch(config.getIndexes().getSearchIndex().getName())
+          .setTypes(config.getIndexes().getSearchIndex().getType
+              (IndexedDocumentType.NODE)).setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {

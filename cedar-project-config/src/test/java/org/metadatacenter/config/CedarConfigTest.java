@@ -185,11 +185,24 @@ public class CedarConfigTest {
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getGroups());
 
     ElasticsearchConfig elasticsearchConfig = instance.getElasticsearchConfig();
-    Assert.assertNotNull(elasticsearchConfig.getTypes());
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.NODE));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.CONTENT));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.USERS));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.GROUPS));
+    Assert.assertNotNull(elasticsearchConfig.getIndexes());
+
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getName());
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getTypes());
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getTypes()
+        .get(IndexedDocumentType.NODE));
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getTypes()
+        .get(IndexedDocumentType.CONTENT));
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getTypes()
+        .get(IndexedDocumentType.USERS));
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getSearchIndex().getTypes()
+        .get(IndexedDocumentType.GROUPS));
+
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex());
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex().getTypes());
+    Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex().getTypes()
+        .get(IndexedDocumentType.RULES));
+
 
     Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");

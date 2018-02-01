@@ -39,7 +39,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   public ElasticsearchPermissionEnabledContentSearchingWorker(CedarConfig cedarConfig, Client client) {
     ElasticsearchConfig config = cedarConfig.getElasticsearchConfig();
     this.client = client;
-    this.indexName = config.getIndexName();
+    this.indexName = config.getIndexes().getSearchIndex().getName();
   }
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>

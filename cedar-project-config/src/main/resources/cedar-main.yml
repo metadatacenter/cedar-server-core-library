@@ -71,12 +71,18 @@ searchSettings:
 
 elasticsearch:
   clusterName: "elasticsearch_cedar"
-  indexName: "cedar-search"
-  types:
-    node: "node"
-    users: "users"
-    groups: "groups"
-    content: "content"
+  indexes:
+    searchIndex:
+      name: "cedar-search"
+      types:
+        node: "node"
+        users: "users"
+        groups: "groups"
+        content: "content"
+    valueRecommenderIndex:
+      name: "cedar-value-recommender"
+      types:
+        rules: "rules"
   host: "${CEDAR_ELASTICSEARCH_HOST}"
   transportPort: "${CEDAR_ELASTICSEARCH_TRANSPORT_PORT}"
   size: 1000

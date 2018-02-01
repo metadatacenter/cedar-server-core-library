@@ -9,6 +9,7 @@ public enum IndexedDocumentType {
   USERS("users"),
   GROUPS("groups"),
   CONTENT("content"),
+  RULES("rules"),
   UNKNOWN("");
 
   private final String value;

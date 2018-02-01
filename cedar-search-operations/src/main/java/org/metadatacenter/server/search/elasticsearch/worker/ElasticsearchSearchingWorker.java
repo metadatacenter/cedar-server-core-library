@@ -31,8 +31,8 @@ public class ElasticsearchSearchingWorker {
       indexedDocumentType) {
     this.config = config;
     this.client = client;
-    this.indexName = config.getIndexName();
-    this.documentType = config.getType(indexedDocumentType);
+    this.indexName = config.getIndexes().getSearchIndex().getName();
+    this.documentType = config.getIndexes().getSearchIndex().getType(indexedDocumentType);
     this.keepAlive = new TimeValue(config.getScrollKeepAlive());
   }
 
