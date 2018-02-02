@@ -12,9 +12,7 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.metadatacenter.config.ElasticsearchConfig;
-import org.metadatacenter.config.ElasticsearchMappingsConfig;
-import org.metadatacenter.config.ElasticsearchSettingsMappingsConfig;
+import org.metadatacenter.config.*;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.slf4j.Logger;
@@ -31,15 +29,19 @@ public class ElasticsearchManagementService {
 
   private final ElasticsearchConfig config;
   private final Settings settings;
-  private final HashMap<String, Object> indexSettings;
-  private final ElasticsearchMappingsConfig indexMappings;
+  private final HashMap<String, Object> searchIndexSettings;
+  private final ElasticsearchSearchIndexMappingsConfig searchIndexMappings;
+  private final HashMap<String, Object> vrIndexSettings;
+  private final ElasticsearchVrIndexMappingsConfig vrIndexMappings;
   private Client elasticClient = null;
 
-  public ElasticsearchManagementService(ElasticsearchConfig config, ElasticsearchSettingsMappingsConfig
-      settingsMappings) {
+  public ElasticsearchManagementService(ElasticsearchConfig config, ElasticsearchSearchIndexSettingsMappingsConfig
+      searchIndexSettingsMappings, ElasticsearchVrIndexSettingsMappingsConfig vrIndexSettingsMappings) {
     this.config = config;
-    this.indexSettings = settingsMappings.getSettings();
-    this.indexMappings = settingsMappings.getMappings();
+    this.searchIndexSettings = searchIndexSettingsMappings.getSettings();
+    this.searchIndexMappings = searchIndexSettingsMappings.getMappings();
+    this.vrIndexSettings = vrIndexSettingsMappings.getSettings();
+    this.vrIndexMappings = vrIndexSettingsMappings.getMappings();
     this.settings = Settings.builder().put("cluster.name", config.getClusterName()).build();
   }
 
@@ -63,27 +65,43 @@ public class ElasticsearchManagementService {
   public void createIndex(String indexName) throws CedarProcessingException {
     Client client = getClient();
     CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
-    // Set settings
-    if (indexSettings != null) {
-      createIndexRequestBuilder.setSettings(indexSettings);
+
+    // Search Index
+    if (indexName.equals(config.getIndexes().getSearchIndex().getName())) {
+
+      // Set settings
+      if (searchIndexSettings != null) {
+        createIndexRequestBuilder.setSettings(searchIndexSettings);
+      }
+      // Put mappings
+      if (searchIndexMappings.getNode() != null) {
+        createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+            getType(IndexedDocumentType.NODE), searchIndexMappings.getNode());
+      }
+      if (searchIndexMappings.getUsers() != null) {
+        createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+            getType(IndexedDocumentType.USERS), searchIndexMappings.getUsers());
+      }
+      if (searchIndexMappings.getGroups() != null) {
+        createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+            getType(IndexedDocumentType.GROUPS), searchIndexMappings.getGroups());
+      }
+      if (searchIndexMappings.getContent() != null) {
+        createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
+            getType(IndexedDocumentType.CONTENT), searchIndexMappings.getContent());
+      }
+
+    } else if (indexName.equals(config.getIndexes().getValueRecommenderIndex().getName())) {
+
+      // Set settings
+      if (vrIndexSettings != null) {
+        createIndexRequestBuilder.setSettings(vrIndexSettings);
+      }
+      // Put mappings
+      // (no mappings defined yet)
+
     }
-    // Put mappings
-    if (indexMappings.getNode() != null) {
-      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
-          getType(IndexedDocumentType.NODE), indexMappings.getNode());
-    }
-    if (indexMappings.getUsers() != null) {
-      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
-          getType(IndexedDocumentType.USERS), indexMappings.getUsers());
-    }
-    if (indexMappings.getGroups() != null) {
-      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
-          getType(IndexedDocumentType.GROUPS), indexMappings.getGroups());
-    }
-    if (indexMappings.getContent() != null) {
-      createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
-          getType(IndexedDocumentType.CONTENT), indexMappings.getContent());
-    }
+
     // Create index
     CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();
     if (!response.isAcknowledged()) {

@@ -23,7 +23,7 @@ public class ElasticsearchServiceFactory {
   private void init(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
     this.managementService = new ElasticsearchManagementService(cedarConfig.getElasticsearchConfig(), cedarConfig
-        .getElasticsearchSettingsMappingsConfig());
+        .getElasticsearchSearchIndexSettingsMappingsConfig(), cedarConfig.getElasticsearchVrIndexSettingsMappingsConfig());
   }
 
   public ElasticsearchManagementService getManagementService() {

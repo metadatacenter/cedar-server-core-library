@@ -55,8 +55,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("elasticsearch")
   private ElasticsearchConfig elasticsearchConfig;
 
-  // This is read from a different config file
-  private ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig;
+  // This is read from different config files
+  private ElasticsearchSearchIndexSettingsMappingsConfig elasticsearchSearchIndexSettingsMappingsConfig;
+  private ElasticsearchVrIndexSettingsMappingsConfig elasticsearchVrIndexSettingsMappingsConfig;
 
   @JsonProperty("servers")
   private ServersConfig servers;
@@ -115,24 +116,33 @@ public class CedarConfig extends Configuration {
     }
 
     // Read search config
-    final String elasticSearchSettingsMappingsConfigFileName = "cedar-search.json";
+    final String elasticsearchSearchIndexSettingsMappingsConfigFileName = "cedar-search.json";
+    final String elasticsearchVrIndexSettingsMappingsConfigFileName = "cedar-value-recommender.json";
 
-    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappings = null;
+    ElasticsearchSearchIndexSettingsMappingsConfig elasticsearchSearchIndexSettingsMappings = null;
+    ElasticsearchVrIndexSettingsMappingsConfig elasticsearchVrIndexSettingsMappings = null;
 
-    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> searchConfigurationFactory = new
-        YamlConfigurationFactory<>(
-        ElasticsearchSettingsMappingsConfig.class, validator, Jackson.newObjectMapper(), "cedar");
+    final ConfigurationFactory<ElasticsearchSearchIndexSettingsMappingsConfig> searchIndexConfigurationFactory =
+        new YamlConfigurationFactory<>(ElasticsearchSearchIndexSettingsMappingsConfig.class,
+            validator, Jackson.newObjectMapper(), "cedar");
+
+    final ConfigurationFactory<ElasticsearchVrIndexSettingsMappingsConfig> vrIndexConfigurationFactory =
+        new YamlConfigurationFactory<>(ElasticsearchVrIndexSettingsMappingsConfig.class, validator,
+            Jackson.newObjectMapper(), "");
 
     try {
-      elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider,
-          elasticSearchSettingsMappingsConfigFileName);
+      elasticsearchSearchIndexSettingsMappings = searchIndexConfigurationFactory.build(substitutingSourceProvider,
+          elasticsearchSearchIndexSettingsMappingsConfigFileName);
+      elasticsearchVrIndexSettingsMappings = vrIndexConfigurationFactory.build(substitutingSourceProvider,
+          elasticsearchVrIndexSettingsMappingsConfigFileName);
     } catch (IOException | ConfigurationException e) {
       log.error("Error while reading search config file", e);
       e.printStackTrace();
       System.exit(-2);
     }
 
-    config.elasticsearchSettingsMappingsConfig = elasticsearchSettingsMappings;
+    config.elasticsearchSearchIndexSettingsMappingsConfig = elasticsearchSearchIndexSettingsMappings;
+    config.elasticsearchVrIndexSettingsMappingsConfig = elasticsearchVrIndexSettingsMappings;
 
     return config;
   }
@@ -194,8 +204,12 @@ public class CedarConfig extends Configuration {
     return elasticsearchConfig;
   }
 
-  public ElasticsearchSettingsMappingsConfig getElasticsearchSettingsMappingsConfig() {
-    return elasticsearchSettingsMappingsConfig;
+  public ElasticsearchSearchIndexSettingsMappingsConfig getElasticsearchSearchIndexSettingsMappingsConfig() {
+    return elasticsearchSearchIndexSettingsMappingsConfig;
+  }
+
+  public ElasticsearchVrIndexSettingsMappingsConfig getElasticsearchVrIndexSettingsMappingsConfig() {
+    return elasticsearchVrIndexSettingsMappingsConfig;
   }
 
   public ServersConfig getServers() {

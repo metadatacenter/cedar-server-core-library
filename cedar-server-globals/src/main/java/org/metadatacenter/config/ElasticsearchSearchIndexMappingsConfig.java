@@ -2,7 +2,7 @@ package org.metadatacenter.config;
 
 import java.util.HashMap;
 
-public class ElasticsearchMappingsConfig {
+public class ElasticsearchSearchIndexMappingsConfig {
 
   private HashMap<String, Object> node;
 

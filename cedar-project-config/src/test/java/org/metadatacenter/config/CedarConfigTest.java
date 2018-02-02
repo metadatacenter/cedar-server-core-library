@@ -174,15 +174,18 @@ public class CedarConfigTest {
   @Test
   public void testElasticSearchConfig() throws Exception {
     CedarConfig instance = getCedarConfig();
-    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig = instance
-        .getElasticsearchSettingsMappingsConfig();
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig);
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getSettings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getNode());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getContent());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getUsers());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getGroups());
+
+    // Search Index
+
+    ElasticsearchSearchIndexSettingsMappingsConfig elasticsearchSearchIndexSettingsMappingsConfig = instance
+        .getElasticsearchSearchIndexSettingsMappingsConfig();
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig);
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getMappings().getNode());
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getMappings().getContent());
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getMappings().getUsers());
+    Assert.assertNotNull(elasticsearchSearchIndexSettingsMappingsConfig.getMappings().getGroups());
 
     ElasticsearchConfig elasticsearchConfig = instance.getElasticsearchConfig();
     Assert.assertNotNull(elasticsearchConfig.getIndexes());
@@ -203,14 +206,21 @@ public class CedarConfigTest {
     Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex().getTypes()
         .get(IndexedDocumentType.RULES));
 
-
-    Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
+    Map<String, Object> settings = elasticsearchSearchIndexSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");
     Map<String, Object> analysis = (Map<String, Object>) index.get("analysis");
     Map<String, Object> tokenizer = (Map<String, Object>) analysis.get("tokenizer");
     Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("ngram_tokenizer");
 
     Assert.assertEquals("ngram", ngram_tokenizer.get("type"));
+
+    // Value Recommender Index
+    ElasticsearchVrIndexSettingsMappingsConfig elasticsearchVrIndexSettingsMappingsConfig = instance
+        .getElasticsearchVrIndexSettingsMappingsConfig();
+    Assert.assertNotNull(elasticsearchVrIndexSettingsMappingsConfig);
+    Assert.assertNotNull(elasticsearchVrIndexSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(elasticsearchVrIndexSettingsMappingsConfig.getMappings());
+
   }
 
 }
