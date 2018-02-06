@@ -9,4 +9,6 @@ public interface UserServiceSession {
   FolderServerUser ensureUserExists();
 
   List<FolderServerUser> findUsers();
+
+  FolderServerUser getUser(String id);
 }

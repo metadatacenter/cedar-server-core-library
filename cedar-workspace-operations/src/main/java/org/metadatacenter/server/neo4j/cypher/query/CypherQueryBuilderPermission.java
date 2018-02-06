@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.server.neo4j.RelationLabel;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {

@@ -9,7 +9,7 @@ import org.metadatacenter.server.security.model.auth.CedarGroupUsersRequest;
 import java.util.List;
 import java.util.Map;
 
-public interface GroupServiceSession extends ServiceSession {
+public interface GroupServiceSession {
 
   List<FolderServerGroup> findGroups();
 
