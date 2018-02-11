@@ -80,12 +80,11 @@ public class RegenerateSearchIndexTask {
         String newIndexName = indexUtils.getNewIndexName(indexName);
         esManagementService.createIndex(newIndexName);
 
-        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
-        ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService(newIndexName);
-        UserPermissionIndexingService userPermissionIndexingService = esServiceFactory.userPermissionsIndexingService
-            (newIndexName);
+        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService();
+        ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService();
+        UserPermissionIndexingService userPermissionIndexingService = esServiceFactory.userPermissionsIndexingService();
         GroupPermissionIndexingService groupPermissionIndexingService = esServiceFactory
-            .groupPermissionsIndexingService(newIndexName);
+            .groupPermissionsIndexingService();
 
         // Get resources content and index it
         int count = 1;

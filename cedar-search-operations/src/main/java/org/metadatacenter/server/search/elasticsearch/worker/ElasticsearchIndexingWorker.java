@@ -17,9 +17,9 @@ public abstract class ElasticsearchIndexingWorker {
 
   private static final Logger log = LoggerFactory.getLogger(ElasticsearchIndexingWorker.class);
 
-  private Client client;
-  private String indexName;
-  private String documentType;
+  protected Client client;
+  protected String indexName;
+  protected String documentType;
 
   public IndexedDocumentId addToIndex(JsonNode json) throws CedarProcessingException {
     return addToIndex(json, null);

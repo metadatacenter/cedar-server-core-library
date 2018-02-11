@@ -10,10 +10,6 @@ public class ValueRecommenderIndexingWorker extends ElasticsearchIndexingWorker 
 
   private static final Logger log = LoggerFactory.getLogger(ValueRecommenderIndexingWorker.class);
 
-  private final Client client;
-  private final String indexName;
-  private final String documentType;
-
   public ValueRecommenderIndexingWorker(ElasticsearchConfig config, Client client, IndexedDocumentType
       indexedDocumentType) {
     this.client = client;

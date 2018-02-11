@@ -26,10 +26,6 @@ public class ContentIndexingWorker extends ElasticsearchIndexingWorker {
 
   private static final Logger log = LoggerFactory.getLogger(ContentIndexingWorker.class);
 
-  private final Client client;
-  private final String documentType;
-  private final String indexName;
-
   public ContentIndexingWorker(ElasticsearchConfig config, Client client, IndexedDocumentType
       indexedDocumentType) {
     this.client = client;
