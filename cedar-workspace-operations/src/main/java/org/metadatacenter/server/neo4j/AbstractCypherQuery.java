@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j;
 
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.*;

@@ -11,6 +11,8 @@ import java.util.*;
 
 public class LinkedDataUtil {
 
+  protected static final String SEPARATOR = "/";
+  
   private final LinkedDataConfig ldConfig;
   private List<String> knownPrefixes;
 
@@ -26,7 +28,7 @@ public class LinkedDataUtil {
     if (nodeType == CedarNodeType.USER) {
       return ldConfig.getUsersBase();
     } else {
-      return ldConfig.getBase() + nodeType.getPrefix() + "/";
+      return ldConfig.getBase() + nodeType.getPrefix() + SEPARATOR;
     }
   }
 
@@ -43,9 +45,9 @@ public class LinkedDataUtil {
   }
 
   public String getUUID(String resourceId, CedarNodeType nodeType) {
-    String prefix = getLinkedDataPrefix(nodeType);
-    if (resourceId != null && resourceId.startsWith(prefix)) {
-      return resourceId.substring(prefix.length());
+    if (resourceId != null) {
+      int pos = resourceId.lastIndexOf(SEPARATOR);
+      return resourceId.substring(pos + 1);
     } else {
       return null;
     }

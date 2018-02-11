@@ -2,7 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.server.folder.QuerySortOptions;
 import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.RelationLabel;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.List;

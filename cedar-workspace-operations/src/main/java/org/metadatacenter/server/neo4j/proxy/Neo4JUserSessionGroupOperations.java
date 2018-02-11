@@ -1,8 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.server.neo4j.RelationLabel;
-import org.metadatacenter.server.neo4j.proxy.Neo4JProxyGroup;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.security.model.auth.CedarGroupUser;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsers;
 import org.metadatacenter.server.security.model.auth.NodePermissionGroupPermissionPair;

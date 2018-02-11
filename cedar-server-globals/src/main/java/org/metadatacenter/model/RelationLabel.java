@@ -1,4 +1,4 @@
-package org.metadatacenter.server.neo4j;
+package org.metadatacenter.model;
 
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
