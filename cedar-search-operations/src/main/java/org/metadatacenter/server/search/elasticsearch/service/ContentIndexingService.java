@@ -13,6 +13,7 @@ import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentContent;
+import org.metadatacenter.server.search.elasticsearch.worker.ContentIndexingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
 import org.metadatacenter.server.search.util.IndexUtils;
 import org.metadatacenter.util.json.JsonMapper;
@@ -25,11 +26,11 @@ public class ContentIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(ContentIndexingService.class);
 
-  private final ElasticsearchIndexingWorker indexWorker;
+  private final ContentIndexingWorker indexWorker;
   private final IndexUtils indexUtils;
 
-  ContentIndexingService(String indexName, CedarConfig cedarConfig, Client client)  {
-    indexWorker = new ElasticsearchIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,
+  ContentIndexingService(CedarConfig cedarConfig, Client client)  {
+    indexWorker = new ContentIndexingWorker(cedarConfig.getElasticsearchConfig(), client,
         IndexedDocumentType.CONTENT);
     indexUtils = new IndexUtils(cedarConfig);
   }

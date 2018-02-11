@@ -36,7 +36,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) throws CedarProcessingException {
-    return new NodeIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+    return new NodeIndexingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
   public UserPermissionIndexingService userPermissionsIndexingService() {
@@ -44,7 +44,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public UserPermissionIndexingService userPermissionsIndexingService(String indexName) {
-    return new UserPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+    return new UserPermissionIndexingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
   public GroupPermissionIndexingService groupPermissionsIndexingService() {
@@ -52,7 +52,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public GroupPermissionIndexingService groupPermissionsIndexingService(String indexName) {
-    return new GroupPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+    return new GroupPermissionIndexingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
   public ContentIndexingService contentIndexingService() {
@@ -60,7 +60,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public ContentIndexingService contentIndexingService(String indexName) {
-    return new ContentIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+    return new ContentIndexingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
   public ContentSearchingService contentSearchingService() {
