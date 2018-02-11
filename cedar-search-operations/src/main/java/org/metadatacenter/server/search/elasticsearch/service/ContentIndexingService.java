@@ -28,7 +28,7 @@ public class ContentIndexingService extends AbstractIndexingService {
   private final ElasticsearchIndexingWorker indexWorker;
   private final IndexUtils indexUtils;
 
-  ContentIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
+  ContentIndexingService(String indexName, CedarConfig cedarConfig, Client client)  {
     indexWorker = new ElasticsearchIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,
         IndexedDocumentType.CONTENT);
     indexUtils = new IndexUtils(cedarConfig);

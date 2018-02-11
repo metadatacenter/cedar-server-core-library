@@ -1,6 +1,7 @@
 package org.metadatacenter.server.search.elasticsearch.service;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 
 public class ElasticsearchServiceFactory {
 
@@ -30,11 +31,11 @@ public class ElasticsearchServiceFactory {
     return managementService;
   }
 
-  public NodeIndexingService nodeIndexingService() {
+  public NodeIndexingService nodeIndexingService() throws CedarProcessingException {
     return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
-  public NodeIndexingService nodeIndexingService(String indexName) {
+  public NodeIndexingService nodeIndexingService(String indexName) throws CedarProcessingException {
     return new NodeIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
   }
 
@@ -73,4 +74,13 @@ public class ElasticsearchServiceFactory {
   public GroupPermissionSearchingService groupPermissionSearchingService() {
     return new GroupPermissionSearchingService(instance.cedarConfig, instance.managementService.getClient());
   }
+
+  public ValueRecommenderIndexingService valueRecommenderIndexingService() {
+    return valueRecommenderIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getValueRecommenderIndex().getName());
+  }
+
+  public ValueRecommenderIndexingService valueRecommenderIndexingService(String indexName) {
+    return new ValueRecommenderIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+  }
+
 }
