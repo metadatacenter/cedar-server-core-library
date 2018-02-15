@@ -206,6 +206,7 @@ terminology:
 
 importExport:
   exportDir: "${CEDAR_HOME}/export/"
+  importDir: "${CEDAR_HOME}/import/"
 
 folderRESTAPI:
   pagination:
