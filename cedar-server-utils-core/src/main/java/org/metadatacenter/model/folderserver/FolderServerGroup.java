@@ -11,9 +11,10 @@ import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 public class FolderServerGroup extends AbstractCedarSuperNode {
 
   private String name;
-  private String displayName;
   private String description;
   private String specialGroup;
+  private String createdBy;
+  private String lastUpdatedBy;
 
   public FolderServerGroup() {
     this.nodeType = CedarNodeType.GROUP;
@@ -69,14 +70,6 @@ public class FolderServerGroup extends AbstractCedarSuperNode {
     this.createdOnTS = createdOnTS;
   }
 
-  public String getDisplayName() {
-    return displayName;
-  }
-
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
-
   public String getName() {
     return name;
   }
@@ -101,7 +94,23 @@ public class FolderServerGroup extends AbstractCedarSuperNode {
     this.specialGroup = specialGroup;
   }
 
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public String getLastUpdatedBy() {
+    return lastUpdatedBy;
+  }
+
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
+
   public CedarGroupExtract buildExtract() {
-    return new CedarGroupExtract(getId(), getDisplayName());
+    return new CedarGroupExtract(getId(), getName());
   }
 }

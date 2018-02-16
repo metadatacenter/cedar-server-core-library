@@ -1,6 +1,9 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
@@ -30,13 +33,10 @@ public interface FolderServiceSession {
       description, NodeLabel label);
 
   FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
+      description, NodeLabel label, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label);
-
-  FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties);
 
   FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
 

@@ -61,19 +61,33 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.nodeType = nodeType;
   }
 
+  @JsonGetter("schema:name")
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  @JsonSetter("name")
+  public void setName1(String name) {
     this.name = name;
   }
 
+  @JsonSetter("schema:name")
+  public void setName2(String name) {
+    this.name = name;
+  }
+
+  @JsonGetter("schema:description")
   public String getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
+  @JsonSetter("description")
+  public void setDescription1(String description) {
+    this.description = description;
+  }
+
+  @JsonSetter("schema:description")
+  public void setDescription2(String description) {
     this.description = description;
   }
 

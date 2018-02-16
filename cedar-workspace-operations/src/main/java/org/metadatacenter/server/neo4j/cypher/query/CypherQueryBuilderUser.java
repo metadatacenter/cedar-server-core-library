@@ -9,7 +9,6 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
         " CREATE (user:<COMPOSEDLABEL.USER> {" +
         buildCreateAssignment(NodeProperty.ID) + "," +
         buildCreateAssignment(NodeProperty.NAME) + "," +
-        buildCreateAssignment(NodeProperty.DISPLAY_NAME) + "," +
         buildCreateAssignment(NodeProperty.FIRST_NAME) + "," +
         buildCreateAssignment(NodeProperty.LAST_NAME) + "," +
         buildCreateAssignment(NodeProperty.EMAIL) + "," +
@@ -26,7 +25,7 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
         " RETURN user" +
-        " ORDER BY LOWER(user.<PROP.DISPLAY_NAME>)";
+        " ORDER BY LOWER(user.<PROP.NAME>)";
   }
 
   public static String getUserById() {

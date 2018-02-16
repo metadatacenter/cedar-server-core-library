@@ -1,15 +1,18 @@
 package org.metadatacenter.server.neo4j.proxy;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.folderserver.FolderServerArc;
-import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGraph;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGraph;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGroup;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderUser;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.util.json.JsonMapper;
+import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,5 +64,25 @@ public class Neo4JProxyGraph extends AbstractNeo4JProxy {
     }
 
     return arcList;
+  }
+
+  public FolderServerUser createUser(JsonNode node) {
+    String cypher = CypherQueryBuilderUser.createUser();
+    CypherParameters params = CypherParamBuilderUser.mapAllProperties(node);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
+    return proxies.user().buildUser(userNode);
+  }
+
+  public FolderServerGroup createGroup(JsonNode node) {
+    String cypher = CypherQueryBuilderGroup.createGroup();
+    CypherParameters params = CypherParamBuilderUser.mapAllProperties(node);
+    params.put(NodeProperty.CREATED_BY, null);
+    params.put(NodeProperty.LAST_UPDATED_BY, null);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");
+    return proxies.user().buildGroup(groupNode);
   }
 }

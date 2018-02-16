@@ -2,6 +2,9 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
@@ -17,7 +20,6 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,14 +36,8 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label) {
-    return createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, label, null);
-  }
-
-  @Override
-  public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
-    return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name,
-        description, cu.getId(), label, extraProperties);
+    return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, cu
+        .getId(), label);
   }
 
   @Override
@@ -144,7 +140,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
           addSeparator = true;
         }
       }
-      sb.append(node.getDisplayName());
+      sb.append(node.getName());
     }
     return sb.length() == 0 ? null : sb.toString();
   }
@@ -208,14 +204,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
       description, NodeLabel label) {
-    return createFolderAsChildOfId(parentFolderURL, name, displayName, description, label, null);
+    return createFolderAsChildOfId(parentFolderURL, name, displayName, description, label, IsRoot.FALSE, IsSystem
+        .FALSE, IsUserHome.FALSE, null);
   }
 
   @Override
   public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
+      description, NodeLabel label, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
     return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, displayName, description, cu.getId(),
-        label, extraProperties);
+        label, isRoot, isSystem, isUserHome, homeOf);
   }
 
   @Override
@@ -297,13 +294,10 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     FolderServerFolder currentUserHomeFolder;
     FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
     // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
-    Map<NodeProperty, Object> extraParams = new HashMap<>();
-    extraParams.put(NodeProperty.IS_USER_HOME, true);
-    extraParams.put(NodeProperty.HOME_OF, userId);
     String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
     currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), displayName, displayName, description,
-        NodeLabel.USER_HOME_FOLDER, extraParams);
+        NodeLabel.USER_HOME_FOLDER, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.TRUE, userId);
     if (currentUserHomeFolder != null) {
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       if (everybody != null) {

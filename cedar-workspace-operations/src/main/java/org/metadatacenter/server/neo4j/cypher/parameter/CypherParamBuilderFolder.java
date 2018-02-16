@@ -2,6 +2,9 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.PathUtil;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -54,15 +57,11 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
   }
 
   public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, String parentId, String name, String
-      displayName, String description, String createdBy, Map<? extends CypherQueryParameter, Object> extraProperties) {
+      displayName, String description, String createdBy, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome,
+                                              String homeOf) {
     String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
-    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy,
-        extraProperties);
-  }
-
-  public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, String parentId, String name, String
-      displayName, String description, String createdBy) {
-    return createFolder(linkedDataUtil, parentId, name, displayName, description, createdBy, null);
+    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy, isRoot,
+        isSystem, isUserHome, homeOf);
   }
 
   public static CypherParameters getFolderById(String folderURL) {
