@@ -1,8 +1,13 @@
 {
   "settings": {
-
   },
   "mappings": {
-
+    "doc": {
+      "properties": {
+        "templateId": {
+          "type": "keyword"
+        }
+      }
+    }
   }
 }
