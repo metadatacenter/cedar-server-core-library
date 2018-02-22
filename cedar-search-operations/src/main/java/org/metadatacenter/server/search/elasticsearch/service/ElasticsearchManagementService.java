@@ -62,12 +62,17 @@ public class ElasticsearchManagementService {
     elasticClient.close();
   }
 
-  public void createIndex(String indexName) throws CedarProcessingException {
+  /**
+   * @param index     Name used to identify the index (e.g., cedar-search)
+   * @param indexName Name with which the index will be created
+   * @throws CedarProcessingException
+   */
+  public void createIndex(String index, String indexName) throws CedarProcessingException {
     Client client = getClient();
     CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
 
     // Search Index
-    if (indexName.equals(config.getIndexes().getSearchIndex().getName())) {
+    if (index.equals(config.getIndexes().getSearchIndex().getName())) {
 
       // Set settings
       if (searchIndexSettings != null) {
@@ -90,16 +95,22 @@ public class ElasticsearchManagementService {
         createIndexRequestBuilder.addMapping(config.getIndexes().getSearchIndex().
             getType(IndexedDocumentType.CONTENT), searchIndexMappings.getContent());
       }
-
-    } else if (indexName.equals(config.getIndexes().getValueRecommenderIndex().getName())) {
+      // Value Recommender Index
+    } else if (index.equals(config.getIndexes().getValueRecommenderIndex().getName())) {
 
       // Set settings
       if (vrIndexSettings != null) {
         createIndexRequestBuilder.setSettings(vrIndexSettings);
       }
       // Put mappings
-      // (no mappings defined yet)
+      if (vrIndexMappings.getRulesDoc() != null) {
+        createIndexRequestBuilder.addMapping(config.getIndexes().getValueRecommenderIndex().
+            getType(IndexedDocumentType.RULES_DOC), vrIndexMappings.getRulesDoc());
+      }
 
+    }
+    else {
+      throw new CedarProcessingException("Invalid index: " + index);
     }
 
     // Create index

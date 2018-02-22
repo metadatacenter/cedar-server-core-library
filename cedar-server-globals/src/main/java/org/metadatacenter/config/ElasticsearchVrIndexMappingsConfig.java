@@ -4,10 +4,10 @@ import java.util.HashMap;
 
 public class ElasticsearchVrIndexMappingsConfig {
 
-  private HashMap<String, Object> doc;
+  private HashMap<String, Object> rulesDoc;
 
-  public HashMap<String, Object> getDoc() {
-    return doc;
+  public HashMap<String, Object> getRulesDoc() {
+     return rulesDoc;
   }
 
 }

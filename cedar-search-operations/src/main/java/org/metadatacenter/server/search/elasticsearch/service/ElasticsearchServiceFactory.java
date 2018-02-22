@@ -59,12 +59,12 @@ public class ElasticsearchServiceFactory {
     return new GroupPermissionSearchingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
-  public ValueRecommenderIndexingService valueRecommenderIndexingService() {
+  public ValueRecommenderIndexingService valueRecommenderIndexingService() throws CedarProcessingException {
     return valueRecommenderIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getValueRecommenderIndex().getName());
   }
 
-  public ValueRecommenderIndexingService valueRecommenderIndexingService(String indexName) {
-    return new ValueRecommenderIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
+  public ValueRecommenderIndexingService valueRecommenderIndexingService(String indexName) throws CedarProcessingException {
+    return new ValueRecommenderIndexingService(instance.cedarConfig, instance.managementService.getClient());
   }
 
 }

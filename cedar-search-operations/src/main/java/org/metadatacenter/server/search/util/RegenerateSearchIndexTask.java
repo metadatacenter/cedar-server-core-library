@@ -78,7 +78,7 @@ public class RegenerateSearchIndexTask {
         log.info("Regenerating index");
         // Create new index and set it up
         String newIndexName = indexUtils.getNewIndexName(indexName);
-        esManagementService.createIndex(newIndexName);
+        esManagementService.createIndex(cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName(), newIndexName);
 
         NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService();
         ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService();

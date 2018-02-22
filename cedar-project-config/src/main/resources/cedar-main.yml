@@ -82,7 +82,7 @@ elasticsearch:
     valueRecommenderIndex:
       name: "cedar-value-recommender"
       types:
-        rules: "rules"
+        rulesDoc: "rulesDoc"
   host: "${CEDAR_ELASTICSEARCH_HOST}"
   transportPort: "${CEDAR_ELASTICSEARCH_TRANSPORT_PORT}"
   size: 1000

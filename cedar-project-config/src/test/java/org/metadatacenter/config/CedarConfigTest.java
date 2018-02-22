@@ -204,7 +204,7 @@ public class CedarConfigTest {
     Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex());
     Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex().getTypes());
     Assert.assertNotNull(elasticsearchConfig.getIndexes().getValueRecommenderIndex().getTypes()
-        .get(IndexedDocumentType.RULES));
+        .get(IndexedDocumentType.RULES_DOC));
 
     Map<String, Object> settings = elasticsearchSearchIndexSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");

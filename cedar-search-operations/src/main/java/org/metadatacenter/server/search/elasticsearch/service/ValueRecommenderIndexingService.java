@@ -14,6 +14,8 @@ import org.metadatacenter.server.search.util.IndexUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+
 public class ValueRecommenderIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(ValueRecommenderIndexingService.class);
@@ -21,23 +23,32 @@ public class ValueRecommenderIndexingService extends AbstractIndexingService {
   private final ElasticsearchIndexingWorker indexWorker;
   private final IndexUtils indexUtils;
 
-  ValueRecommenderIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
+  ValueRecommenderIndexingService(CedarConfig cedarConfig, Client client) throws CedarProcessingException {
     indexWorker = new ValueRecommenderIndexingWorker(cedarConfig.getElasticsearchConfig(), client,
-        IndexedDocumentType.RULES);
+        IndexedDocumentType.RULES_DOC);
     indexUtils = new IndexUtils(cedarConfig);
+
+    // If the cedar-value-recommender index does not exist, create it
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getValueRecommenderIndex().getName();
+    // Check if the index exists. If it does not exist, create it
+    if (!esManagementService.indexExists(indexName)) {
+      log.info("The " + indexName + " index does not exist. Creating it...");
+      esManagementService.createIndex(indexName, indexName);
+    }
   }
 
-  /**
-   * Indexes all the rules generated for a template
-   *
-   * @param templateRules
-   * @return
-   * @throws CedarProcessingException
-   */
-  public IndexedDocumentId indexTemplateRules(JsonNode templateRules, String templateId) throws
-      CedarProcessingException {
+  public void indexTemplateRules(JsonNode rules, String templateId) throws CedarProcessingException {
     log.info("Indexing template rules for template: " + templateId);
-    return indexWorker.addToIndex(templateRules);
+    Iterator it = rules.iterator();
+    while (it.hasNext()) {
+      indexTemplateRule((JsonNode) it.next());
+    }
+  }
+
+  public IndexedDocumentId indexTemplateRule(JsonNode rule) throws CedarProcessingException {
+    return indexWorker.addToIndex(rule);
   }
 
   public void removeTemplateRulesFromIndex(String templateId) throws CedarProcessingException {

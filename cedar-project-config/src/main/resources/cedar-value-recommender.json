@@ -2,10 +2,59 @@
   "settings": {
   },
   "mappings": {
-    "doc": {
+    "rulesDoc": {
       "properties": {
         "templateId": {
           "type": "keyword"
+        },
+        "support": {
+          "type": "float"
+        },
+        "confidence": {
+          "type": "float"
+        },
+        "lift": {
+          "type": "float"
+        },
+        "leverage": {
+          "type": "float"
+        },
+        "conviction": {
+          "type": "float"
+        },
+        "premiseSize": {
+          "type": "integer"
+        },
+        "consequenceSize": {
+          "type": "integer"
+        },
+        "premise": {
+          "type": "nested",
+          "properties": {
+            "fieldId": {
+              "type": "keyword"
+            },
+            "fieldPath": {
+              "type": "keyword"
+            },
+            "fieldValue": {
+              "type": "keyword"
+            }
+          }
+        },
+        "consequence": {
+          "type": "nested",
+          "properties": {
+            "fieldId": {
+              "type": "keyword"
+            },
+            "fieldPath": {
+              "type": "keyword"
+            },
+            "fieldValue": {
+              "type": "keyword"
+            }
+          }
         }
       }
     }
