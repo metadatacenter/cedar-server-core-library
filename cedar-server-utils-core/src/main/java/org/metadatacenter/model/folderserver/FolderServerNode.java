@@ -51,7 +51,7 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.id = id;
   }
 
-  @JsonGetter("nodeType")
+  @JsonIgnore
   public CedarNodeType getType() {
     return nodeType;
   }
