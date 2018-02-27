@@ -57,10 +57,10 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
   }
 
   public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, String parentId, String name, String
-      displayName, String description, String createdBy, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome,
+      description, String createdBy, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome,
                                               String homeOf) {
     String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
-    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, displayName, description, createdBy, isRoot,
+    return createNode(parentId, nodeId, CedarNodeType.FOLDER, name, description, createdBy, isRoot,
         isSystem, isUserHome, homeOf);
   }
 

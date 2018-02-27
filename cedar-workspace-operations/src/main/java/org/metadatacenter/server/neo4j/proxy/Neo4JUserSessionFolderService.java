@@ -202,17 +202,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label) {
-    return createFolderAsChildOfId(parentFolderURL, name, displayName, description, label, IsRoot.FALSE, IsSystem
-        .FALSE, IsUserHome.FALSE, null);
+  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description) {
+    return createFolderAsChildOfId(parentFolderURL, name, description, IsRoot.FALSE, IsSystem.FALSE, IsUserHome
+        .FALSE, null);
   }
 
   @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
-    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, displayName, description, cu.getId(),
-        label, isRoot, isSystem, isUserHome, homeOf);
+  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot
+      isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
+    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, description, cu.getId(), isRoot, isSystem,
+        isUserHome, homeOf);
   }
 
   @Override
@@ -294,10 +293,10 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     FolderServerFolder currentUserHomeFolder;
     FolderServerFolder usersFolder = findFolderByPath(config.getUsersFolderPath());
     // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
-    String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
+    String name = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
-    currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), displayName, displayName, description,
-        NodeLabel.USER_HOME_FOLDER, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.TRUE, userId);
+    currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), name, description, IsRoot.FALSE, IsSystem
+        .FALSE, IsUserHome.TRUE, userId);
     if (currentUserHomeFolder != null) {
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       if (everybody != null) {

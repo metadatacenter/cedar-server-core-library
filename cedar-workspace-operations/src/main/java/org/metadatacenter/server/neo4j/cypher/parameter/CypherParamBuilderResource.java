@@ -14,7 +14,7 @@ public class CypherParamBuilderResource extends AbstractCypherParamBuilder {
 
   public static CypherParameters createResource(String parentId, String childURL, CedarNodeType nodeType,
                                                 String name, String description, String createdBy) {
-    return createNode(parentId, childURL, nodeType, name, name, description, createdBy, IsRoot.FALSE, IsSystem.FALSE,
+    return createNode(parentId, childURL, nodeType, name, description, createdBy, IsRoot.FALSE, IsSystem.FALSE,
         IsUserHome.FALSE, null);
   }
 

@@ -20,8 +20,8 @@ public abstract class AbstractCypherParamBuilder {
   }
 
   protected static CypherParameters createNode(String parentId, String childId, CedarNodeType nodeType, String name,
-                                               String displayName, String description, String createdBy, IsRoot
-                                                   isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
+                                               String description, String createdBy, IsRoot isRoot, IsSystem
+                                                   isSystem, IsUserHome isUserHome, String homeOf) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -138,10 +138,20 @@ public abstract class AbstractCypherParamBuilder {
     CypherParameters params = new CypherParameters();
     for (Map.Entry<String, JsonNode> entry : (Iterable<Map.Entry<String, JsonNode>>) () -> node.fields()) {
       String key = entry.getKey();
-      System.out.println("aa:" + key);
-      CypherQueryParameter param = NodeProperty.forValue(key);
-      params.put(param, entry.getValue());
+      if (key != null) {
+        CypherQueryParameter param = NodeProperty.forValue(key);
+        if (param != null) {
+          params.put(param, entry.getValue());
+        }
+      }
     }
+    return params;
+  }
+
+  public static CypherParameters matchSourceAndTarget(String sourceId, String targetId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.SOURCE_ID, sourceId);
+    params.put(ParameterPlaceholder.TARGET_ID, targetId);
     return params;
   }
 }

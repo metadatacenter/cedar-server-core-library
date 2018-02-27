@@ -73,9 +73,8 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerFolder usersFolder = proxies.folder().findFolderByPath(config.getUsersFolderPath());
     if (usersFolder == null) {
       String name = pathUtil.extractName(config.getUsersFolderPath());
-      usersFolder = proxies.folder().createFolderAsChildOfId(rootFolderURL, name, name, config
-          .getUsersFolderDescription(), cedarAdmin.getId(), NodeLabel.SYSTEM_FOLDER, IsRoot.FALSE, IsSystem.TRUE,
-          IsUserHome.FALSE, null);
+      usersFolder = proxies.folder().createFolderAsChildOfId(rootFolderURL, name, config.getUsersFolderDescription(),
+          cedarAdmin.getId(), IsRoot.FALSE, IsSystem.TRUE, IsUserHome.FALSE, null);
       proxies.permission().addPermission(usersFolder, everybody, NodePermission.READTHIS);
     }
   }

@@ -29,11 +29,10 @@ public interface FolderServiceSession {
 
   FolderServerResource findResourceById(String resourceURL);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label);
+  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String displayName, String
-      description, NodeLabel label, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf);
+  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot isRoot,
+                                             IsSystem isSystem, IsUserHome isUserHome, String homeOf);
 
   FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
       nodeType, String name, String description, NodeLabel label);

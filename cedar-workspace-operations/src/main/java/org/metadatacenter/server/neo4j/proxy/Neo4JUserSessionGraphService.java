@@ -2,8 +2,10 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.GraphServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -39,6 +41,16 @@ public class Neo4JUserSessionGraphService extends AbstractNeo4JUserSession imple
   @Override
   public FolderServerGroup createGroup(JsonNode node) {
     return proxies.graph().createGroup(node);
+  }
+
+  @Override
+  public FolderServerNode createNode(JsonNode node) {
+    return proxies.graph().createNode(node);
+  }
+
+  @Override
+  public boolean createArc(String sourceId, RelationLabel relationLabel, String targetId) {
+    return proxies.graph().createArc(sourceId, relationLabel, targetId);
   }
 
 }

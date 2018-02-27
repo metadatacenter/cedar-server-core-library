@@ -80,5 +80,9 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-
+  public static String createResourceWithoutParent(NodeLabel nodeLabel) {
+    return "" +
+        createFSResource(ALIAS_FOO, nodeLabel) +
+        " RETURN " + ALIAS_FOO;
+  }
 }

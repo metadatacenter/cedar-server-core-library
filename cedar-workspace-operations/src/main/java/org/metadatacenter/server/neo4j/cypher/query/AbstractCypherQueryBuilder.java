@@ -14,6 +14,7 @@ public abstract class AbstractCypherQueryBuilder {
 
   protected final static int ORDER_FOLDER = 1;
   protected final static int ORDER_NON_FOLDER = 2;
+  protected static final String ALIAS_FOO = "foo";
 
   protected static String buildCreateAssignment(NodeProperty property) {
     return property.getValue() + ": {" + property.getValue() + "}";
@@ -31,9 +32,18 @@ public abstract class AbstractCypherQueryBuilder {
     return createFSNode(nodeAlias, label, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.FALSE);
   }
 
-  protected static String createFSFolder(String nodeAlias, NodeLabel label, IsRoot isRoot, IsSystem isSystem,
-                                         IsUserHome isUserHome) {
-    return createFSNode(nodeAlias, label, isRoot, isSystem, isUserHome);
+  protected static String createFSFolder(String nodeAlias, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
+    return createFSNode(nodeAlias, getFolderLabel(isRoot, isSystem, isUserHome), isRoot, isSystem, isUserHome);
+  }
+
+  private static NodeLabel getFolderLabel(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
+    if (isUserHome == IsUserHome.TRUE) {
+      return NodeLabel.USER_HOME_FOLDER;
+    } else if (isSystem == IsSystem.TRUE) {
+      return NodeLabel.SYSTEM_FOLDER;
+    } else {
+      return NodeLabel.FOLDER;
+    }
   }
 
   private static String createFSNode(String nodeAlias, NodeLabel label, IsRoot isRoot, IsSystem isSystem,
@@ -132,12 +142,11 @@ public abstract class AbstractCypherQueryBuilder {
         " RETURN child";
   }
 
-  protected static String createFSFolderAsChildOfId(NodeLabel label, IsRoot isRoot, IsSystem isSystem, IsUserHome
-      isUserHome) {
+  protected static String createFSFolderAsChildOfId(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createFSFolder("child", label, isRoot, isSystem, isUserHome) +
+        createFSFolder("child", isRoot, isSystem, isUserHome) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";

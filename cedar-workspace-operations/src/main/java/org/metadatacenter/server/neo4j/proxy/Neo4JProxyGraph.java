@@ -1,18 +1,18 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.metadatacenter.model.folderserver.FolderServerArc;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
-import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.*;
+import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGraph;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGraph;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGroup;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderUser;
+import org.metadatacenter.server.neo4j.cypher.query.*;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +78,38 @@ public class Neo4JProxyGraph extends AbstractNeo4JProxy {
   public FolderServerGroup createGroup(JsonNode node) {
     String cypher = CypherQueryBuilderGroup.createGroup();
     CypherParameters params = CypherParamBuilderUser.mapAllProperties(node);
-    params.put(NodeProperty.CREATED_BY, null);
-    params.put(NodeProperty.LAST_UPDATED_BY, null);
+    CypherParamBuilderGraph.tweakGroupProperties(node, params);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");
     return proxies.user().buildGroup(groupNode);
+  }
+
+  public FolderServerNode createNode(JsonNode node) {
+    FolderServerNode folderServerNode = proxies.folder().buildNode(node);
+    CedarNodeType type = folderServerNode.getType();
+    String cypher = null;
+    if (type == CedarNodeType.FOLDER) {
+      FolderServerFolder fsFolder = proxies.folder().buildFolder(node);
+      cypher = CypherQueryBuilderFolder.createFolderWithoutParent(IsRoot.forValue(fsFolder.isRoot()),
+          IsSystem.forValue(fsFolder.isSystem()), IsUserHome.forValue(fsFolder.isUserHome()));
+    } else {
+      FolderServerResource fsResource = proxies.resource().buildResource(node);
+      cypher = CypherQueryBuilderResource.createResourceWithoutParent(NodeLabel.forCedarNodeType(fsResource.getType()));
+    }
+    CypherParameters params = CypherParamBuilderGraph.mapAllProperties(node);
+    CypherParamBuilderGraph.tweakNodeProperties(node, params);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    JsonNode nodeNode = jsonNode.at("/results/0/data/0/row/0");
+    return proxies.node().buildNode(nodeNode);
+  }
+
+  public boolean createArc(String sourceId, RelationLabel relationLabel, String targetId) {
+    String cypher = CypherQueryBuilderGraph.createArc(relationLabel);
+    CypherParameters params = AbstractCypherParamBuilder.matchSourceAndTarget(sourceId, targetId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    return successOrLogAndThrowException(jsonNode, "Error while creating arc:");
   }
 }
