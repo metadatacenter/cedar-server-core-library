@@ -80,11 +80,11 @@ public class RegenerateSearchIndexTask {
         String newIndexName = indexUtils.getNewIndexName(indexName);
         esManagementService.createIndex(cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName(), newIndexName);
 
-        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService();
-        ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService();
-        UserPermissionIndexingService userPermissionIndexingService = esServiceFactory.userPermissionsIndexingService();
+        ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService(newIndexName);
+        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
+        UserPermissionIndexingService userPermissionIndexingService = esServiceFactory.userPermissionsIndexingService(newIndexName);
         GroupPermissionIndexingService groupPermissionIndexingService = esServiceFactory
-            .groupPermissionsIndexingService();
+            .groupPermissionsIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;

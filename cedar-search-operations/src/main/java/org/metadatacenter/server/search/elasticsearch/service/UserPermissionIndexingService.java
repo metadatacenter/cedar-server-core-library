@@ -20,8 +20,8 @@ public class UserPermissionIndexingService extends AbstractIndexingService {
 
   private final ContentIndexingWorker indexWorker;
 
-  UserPermissionIndexingService(CedarConfig cedarConfig, Client client) {
-    indexWorker = new ContentIndexingWorker(cedarConfig.getElasticsearchConfig(), client,
+  UserPermissionIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
+    indexWorker = new ContentIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,
         IndexedDocumentType.USERS);
   }
 

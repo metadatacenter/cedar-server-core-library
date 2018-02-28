@@ -32,19 +32,35 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService() {
-    return new NodeIndexingService(instance.cedarConfig, instance.managementService.getClient());
+    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
+  }
+
+  public NodeIndexingService nodeIndexingService(String indexName) {
+    return new NodeIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
   }
 
   public UserPermissionIndexingService userPermissionsIndexingService() {
-    return new UserPermissionIndexingService(instance.cedarConfig, instance.managementService.getClient());
+    return userPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
+  }
+
+  public UserPermissionIndexingService userPermissionsIndexingService(String indexName) {
+    return new UserPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
   }
 
   public GroupPermissionIndexingService groupPermissionsIndexingService() {
-    return new GroupPermissionIndexingService(instance.cedarConfig, instance.managementService.getClient());
+    return groupPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
+  }
+
+  public GroupPermissionIndexingService groupPermissionsIndexingService(String indexName) {
+    return new GroupPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
   }
 
   public ContentIndexingService contentIndexingService() {
-    return new ContentIndexingService(instance.cedarConfig, instance.managementService.getClient());
+    return contentIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
+  }
+
+  public ContentIndexingService contentIndexingService(String indexName) {
+    return new ContentIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
   }
 
   public ContentSearchingService contentSearchingService() {

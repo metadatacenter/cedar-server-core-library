@@ -20,8 +20,8 @@ public class GroupPermissionIndexingService extends AbstractIndexingService {
 
   private final ContentIndexingWorker indexWorker;
 
-  GroupPermissionIndexingService(CedarConfig cedarConfig, Client client) {
-    indexWorker = new ContentIndexingWorker(cedarConfig.getElasticsearchConfig(), client,
+  GroupPermissionIndexingService(String indexName, CedarConfig cedarConfig, Client client) {
+    indexWorker = new ContentIndexingWorker(indexName, cedarConfig.getElasticsearchConfig(), client,
         IndexedDocumentType.GROUPS);
   }
 
