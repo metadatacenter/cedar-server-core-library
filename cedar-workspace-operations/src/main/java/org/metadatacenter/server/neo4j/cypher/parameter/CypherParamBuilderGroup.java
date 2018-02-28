@@ -12,14 +12,13 @@ import java.util.Map;
 public class CypherParamBuilderGroup extends AbstractCypherParamBuilder {
 
   public static CypherParameters createGroup(String groupURL, String name, String displayName, String description,
-                                             String ownerURL, Map<NodeProperty, Object> extraProperties) {
+                                             String ownerURL, String specialGroup) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
     CypherParameters params = new CypherParameters();
     params.put(NodeProperty.ID, groupURL);
     params.put(NodeProperty.NAME, name);
-    params.put(NodeProperty.DISPLAY_NAME, displayName);
     params.put(NodeProperty.DESCRIPTION, description);
     params.put(NodeProperty.CREATED_BY, ownerURL);
     params.put(NodeProperty.CREATED_ON, nowString);
@@ -28,10 +27,8 @@ public class CypherParamBuilderGroup extends AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.NODE_TYPE, CedarNodeType.GROUP.getValue());
+    params.put(NodeProperty.SPECIAL_GROUP, specialGroup);
     params.put(ParameterPlaceholder.USER_ID, ownerURL);
-    if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach(params::put);
-    }
     return params;
   }
 

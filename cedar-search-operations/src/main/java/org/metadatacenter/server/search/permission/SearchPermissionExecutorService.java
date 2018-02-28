@@ -94,7 +94,7 @@ public class SearchPermissionExecutorService {
   private void createOneResource(String id, IndexedDocumentId parent) {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
-      log.debug("Create one resource:" + resource.getDisplayName());
+      log.debug("Create one resource:" + resource.getName());
       upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.RESOURCE, parent);
     } else {
       log.error("Resource was not found:" + id);
@@ -105,7 +105,7 @@ public class SearchPermissionExecutorService {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
       try {
-        log.debug("Update one resource:" + resource.getDisplayName());
+        log.debug("Update one resource:" + resource.getName());
         IndexedDocumentId parentId = nodeSearchingService.getByCedarId(id);
         upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE, parentId);
       } catch (CedarProcessingException e) {
@@ -119,7 +119,7 @@ public class SearchPermissionExecutorService {
   private void createOneFolder(String id, IndexedDocumentId parent) {
     FolderServerFolder folder = folderSession.findFolderById(id);
     if (folder != null) {
-      log.debug("Create one folder:" + folder.getDisplayName());
+      log.debug("Create one folder:" + folder.getName());
       upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.FOLDER, parent);
     } else {
       log.error("Folder was not found:" + id);

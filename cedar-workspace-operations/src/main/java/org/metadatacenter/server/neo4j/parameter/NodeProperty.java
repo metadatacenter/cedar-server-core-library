@@ -12,7 +12,6 @@ public enum NodeProperty implements CypherQueryParameter {
   DESCRIPTION("description"),
   OWNED_BY("ownedBy"),
   NAME("name"),
-  DISPLAY_NAME("displayName"),
   FIRST_NAME("firstName"),
   LAST_NAME("lastName"),
   EMAIL("email"),

@@ -266,5 +266,4 @@ public abstract class AbstractNeo4JProxy {
     return arc;
   }
 
-
 }

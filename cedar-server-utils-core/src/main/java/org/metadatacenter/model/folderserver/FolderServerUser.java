@@ -14,7 +14,7 @@ public class FolderServerUser extends AbstractCedarSuperNode implements CedarUse
   private String firstName;
   private String lastName;
   private String email;
-  private String displayName;
+  private String name;
 
   public FolderServerUser() {
     this.nodeType = CedarNodeType.USER;
@@ -95,12 +95,12 @@ public class FolderServerUser extends AbstractCedarSuperNode implements CedarUse
     this.email = email;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  public String getName() {
+    return name;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public CedarUserExtract buildExtract() {

@@ -10,6 +10,7 @@ public class FolderServerFolder extends FolderServerNode {
   private boolean userHome;
   private boolean system;
   private boolean root;
+  private String homeOf;
 
   public FolderServerFolder() {
     super(CedarNodeType.FOLDER);
@@ -43,5 +44,15 @@ public class FolderServerFolder extends FolderServerNode {
   @JsonProperty("isRoot")
   public void setRoot(boolean root) {
     this.root = root;
+  }
+
+  @JsonProperty("homeOf")
+  public String getHomeOf() {
+    return homeOf;
+  }
+
+  @JsonProperty("homeOf")
+  public void setHomeOf(String homeOf) {
+    this.homeOf = homeOf;
   }
 }
