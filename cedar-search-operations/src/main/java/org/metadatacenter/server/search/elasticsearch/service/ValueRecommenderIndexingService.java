@@ -20,7 +20,7 @@ public class ValueRecommenderIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(ValueRecommenderIndexingService.class);
 
-  private final ElasticsearchIndexingWorker indexWorker;
+  private final ValueRecommenderIndexingWorker indexWorker;
   private final IndexUtils indexUtils;
 
   ValueRecommenderIndexingService(CedarConfig cedarConfig, Client client) throws CedarProcessingException {
@@ -51,10 +51,9 @@ public class ValueRecommenderIndexingService extends AbstractIndexingService {
     return indexWorker.addToIndex(rule);
   }
 
-  public void removeTemplateRulesFromIndex(String templateId) throws CedarProcessingException {
+  public long removeTemplateRulesFromIndex(String templateId) throws CedarProcessingException {
     if (templateId != null) {
-      log.debug("Removing template rules from index (templateId = " + templateId + ")");
-      //indexWorker.removeAllFromIndex(resourceId, parent);
+      return indexWorker.removeAllFromIndex(templateId);
     } else {
       throw new CedarProcessingException("TemplateId is null");
     }
