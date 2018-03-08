@@ -2,10 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
+import org.metadatacenter.model.*;
 import org.metadatacenter.server.neo4j.parameter.*;
 
 import java.time.Instant;
@@ -20,8 +17,9 @@ public abstract class AbstractCypherParamBuilder {
   }
 
   protected static CypherParameters createNode(String parentId, String childId, CedarNodeType nodeType, String name,
-                                               String description, String createdBy, IsRoot isRoot, IsSystem
-                                                   isSystem, IsUserHome isUserHome, String homeOf) {
+                                               String description, String createdBy, ResourceVersion version,
+                                               BiboStatus status, IsRoot isRoot, IsSystem isSystem, IsUserHome
+                                                   isUserHome, String homeOf) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -41,6 +39,8 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.OWNED_BY, createdBy);
     params.put(NodeProperty.NODE_TYPE, nodeType.getValue());
+    params.put(NodeProperty.VERSION, version.getValue());
+    params.put(NodeProperty.STATUS, status.getValue());
     params.put(NodeProperty.IS_ROOT, isRoot);
     params.put(NodeProperty.IS_SYSTEM, isSystem);
     params.put(NodeProperty.IS_USER_HOME, isUserHome);

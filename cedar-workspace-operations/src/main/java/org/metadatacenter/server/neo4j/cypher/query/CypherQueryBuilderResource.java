@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
+import org.metadatacenter.model.BiboStatus;
+import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
@@ -7,8 +9,8 @@ import java.util.Map;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(NodeLabel label) {
-    return createFSResourceAsChildOfId(label);
+  public static String createResourceAsChildOfId(NodeLabel label, ResourceVersion version, BiboStatus status) {
+    return createFSResourceAsChildOfId(label, version, status);
   }
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {
@@ -80,9 +82,9 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-  public static String createResourceWithoutParent(NodeLabel nodeLabel) {
+  public static String createResourceWithoutParent(NodeLabel nodeLabel, ResourceVersion version, BiboStatus status) {
     return "" +
-        createFSResource(ALIAS_FOO, nodeLabel) +
+        createFSResource(ALIAS_FOO, nodeLabel, version, status) +
         " RETURN " + ALIAS_FOO;
   }
 }

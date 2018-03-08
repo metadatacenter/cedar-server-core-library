@@ -1,9 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
-import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.model.*;
 import org.metadatacenter.server.folder.QuerySortOptions;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
@@ -28,12 +25,14 @@ public abstract class AbstractCypherQueryBuilder {
     return " SET " + nodeAlias + "." + buildUpdateAssignment(property);
   }
 
-  protected static String createFSResource(String nodeAlias, NodeLabel label) {
-    return createFSNode(nodeAlias, label, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.FALSE);
+  protected static String createFSResource(String nodeAlias, NodeLabel label, ResourceVersion version, BiboStatus
+      status) {
+    return createFSNode(nodeAlias, label, version, status, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.FALSE);
   }
 
   protected static String createFSFolder(String nodeAlias, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
-    return createFSNode(nodeAlias, getFolderLabel(isRoot, isSystem, isUserHome), isRoot, isSystem, isUserHome);
+    return createFSNode(nodeAlias, getFolderLabel(isRoot, isSystem, isUserHome), null, null, isRoot, isSystem,
+        isUserHome);
   }
 
   private static NodeLabel getFolderLabel(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
@@ -46,8 +45,8 @@ public abstract class AbstractCypherQueryBuilder {
     }
   }
 
-  private static String createFSNode(String nodeAlias, NodeLabel label, IsRoot isRoot, IsSystem isSystem,
-                                     IsUserHome isUserHome) {
+  private static String createFSNode(String nodeAlias, NodeLabel label, ResourceVersion version, BiboStatus status,
+                                     IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (").append(nodeAlias).append(":").append(label).append(" {");
 
@@ -61,6 +60,12 @@ public abstract class AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.OWNED_BY)).append(",");
+    if (version != null) {
+      sb.append(buildCreateAssignment(NodeProperty.VERSION)).append(",");
+    }
+    if (status != null) {
+      sb.append(buildCreateAssignment(NodeProperty.STATUS)).append(",");
+    }
     if (isRoot == IsRoot.TRUE) {
       sb.append(buildCreateAssignment(NodeProperty.IS_ROOT)).append(",");
     }
@@ -132,11 +137,11 @@ public abstract class AbstractCypherQueryBuilder {
         " RETURN fromNode";
   }
 
-  protected static String createFSResourceAsChildOfId(NodeLabel label) {
+  protected static String createFSResourceAsChildOfId(NodeLabel label, ResourceVersion version, BiboStatus status) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createFSResource("child", label) +
+        createFSResource("child", label, version, status) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";

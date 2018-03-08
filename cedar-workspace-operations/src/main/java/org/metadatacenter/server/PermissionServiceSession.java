@@ -29,4 +29,6 @@ public interface PermissionServiceSession {
   boolean userHasWriteAccessToResource(String resourceURL);
 
   boolean userIsOwnerOfNode(FolderServerNode node);
+
+  boolean userIsOwnerOfNode(String nodeURL);
 }

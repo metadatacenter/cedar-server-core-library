@@ -136,7 +136,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
                                              IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
     String cypher = CypherQueryBuilderFolder.createFolderAsChildOfId(isRoot, isSystem, isUserHome);
     CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), parentId, name,
-        description, creatorId, isRoot, isSystem, isUserHome, homeOf);
+        description, creatorId, null, null, isRoot, isSystem, isUserHome, homeOf);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");
@@ -179,8 +179,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   FolderServerFolder createRootFolder(String creatorId) {
     String cypher = CypherQueryBuilderFolder.createRootFolder();
     CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), null, proxies.config
-        .getRootFolderPath(), proxies.config.getRootFolderDescription(), creatorId, IsRoot.TRUE, IsSystem.TRUE,
-        IsUserHome.FALSE, null);
+            .getRootFolderPath(), proxies.config.getRootFolderDescription(), creatorId, null, null, IsRoot.TRUE,
+        IsSystem.TRUE, IsUserHome.FALSE, null);
 
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);

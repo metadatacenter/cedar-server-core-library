@@ -1,10 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
+import org.metadatacenter.model.*;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
@@ -35,9 +32,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label) {
+      nodeType, String name, String description, NodeLabel label, ResourceVersion version, BiboStatus status) {
     return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, cu
-        .getId(), label);
+        .getId(), label, version, status);
   }
 
   @Override
@@ -65,7 +62,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     node.setPath(getPathString(path));
     node.setParentPath(getParentPathString(path));
     node.setDisplayPath(getDisplayPathString(path));
-    node.setDisplayParentPath(getDisplayParentPathString(path));
   }
 
   @Override
@@ -114,18 +110,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
       sb.append(node.getName());
     }
     return sb.length() == 0 ? null : sb.toString();
-  }
-
-
-  private String getDisplayParentPathString(List<? extends FolderServerNode> path) {
-    List<FolderServerNode> p = new ArrayList<>();
-    p.addAll(path);
-    if (path.size() > 0) {
-      p.remove(p.size() - 1);
-    } else {
-      return null;
-    }
-    return getDisplayPathString(p);
   }
 
   private String getDisplayPathString(List<? extends FolderServerNode> path) {

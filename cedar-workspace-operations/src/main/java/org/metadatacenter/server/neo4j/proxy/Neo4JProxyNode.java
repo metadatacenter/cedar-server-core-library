@@ -108,7 +108,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     }
   }
 
-  FolderServerUser getNodeOwner(String nodeURL) {
+  public FolderServerUser getNodeOwner(String nodeURL) {
     String cypher = CypherQueryBuilderNode.getNodeOwner();
     CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);

@@ -18,6 +18,7 @@ public class Neo4JProxies {
   private final Neo4JProxyResource resourceProxy;
   private final Neo4JProxyNode nodeProxy;
   private final Neo4JProxyGraph graphProxy;
+  private final Neo4JProxyVersion versionProxy;
 
   public Neo4JProxies(Neo4jConfig config, LinkedDataUtil linkedDataUtil) {
     this.config = config;
@@ -32,6 +33,7 @@ public class Neo4JProxies {
     this.resourceProxy = new Neo4JProxyResource(this);
     this.nodeProxy = new Neo4JProxyNode(this);
     this.graphProxy = new Neo4JProxyGraph(this);
+    this.versionProxy = new Neo4JProxyVersion(this);
   }
 
   public Neo4JProxyAdmin admin() {
@@ -64,6 +66,10 @@ public class Neo4JProxies {
 
   public Neo4JProxyGraph graph() {
     return graphProxy;
+  }
+
+  public Neo4JProxyVersion version() {
+    return versionProxy;
   }
 
   public LinkedDataUtil getLinkedDataUtil() {

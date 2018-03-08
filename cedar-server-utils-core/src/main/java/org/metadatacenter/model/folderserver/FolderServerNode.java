@@ -29,7 +29,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
   protected String displayPath;
-  protected String displayParentPath;
 
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
@@ -177,14 +176,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
 
   public void setDisplayPath(String displayPath) {
     this.displayPath = displayPath;
-  }
-
-  public String getDisplayParentPath() {
-    return displayParentPath;
-  }
-
-  public void setDisplayParentPath(String displayParentPath) {
-    this.displayParentPath = displayParentPath;
   }
 
   public void setCreatedByUserName(String createdByUserName) {

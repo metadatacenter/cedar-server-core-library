@@ -1,7 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
@@ -9,11 +11,10 @@ import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
@@ -28,10 +29,10 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   FolderServerResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType nodeType, String
-      name, String description, String creatorId, NodeLabel label) {
-    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(label);
+      name, String description, String creatorId, NodeLabel label, ResourceVersion version, BiboStatus status) {
+    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(label, version, status);
     CypherParameters params = CypherParamBuilderResource.createResource(parentId, childURL, nodeType, name,
-        description, creatorId);
+        description, creatorId, version, status);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");

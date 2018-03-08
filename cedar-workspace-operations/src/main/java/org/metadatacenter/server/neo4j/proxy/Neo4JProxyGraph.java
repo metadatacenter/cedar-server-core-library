@@ -11,8 +11,6 @@ import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGraph;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.*;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
-import org.metadatacenter.server.security.model.auth.NodePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +93,8 @@ public class Neo4JProxyGraph extends AbstractNeo4JProxy {
           IsSystem.forValue(fsFolder.isSystem()), IsUserHome.forValue(fsFolder.isUserHome()));
     } else {
       FolderServerResource fsResource = proxies.resource().buildResource(node);
-      cypher = CypherQueryBuilderResource.createResourceWithoutParent(NodeLabel.forCedarNodeType(fsResource.getType()));
+      cypher = CypherQueryBuilderResource.createResourceWithoutParent(NodeLabel.forCedarNodeType(fsResource.getType()
+      ), fsResource.getVersion(), fsResource.getStatus());
     }
     CypherParameters params = CypherParamBuilderGraph.mapAllProperties(node);
     CypherParamBuilderGraph.tweakNodeProperties(node, params);
