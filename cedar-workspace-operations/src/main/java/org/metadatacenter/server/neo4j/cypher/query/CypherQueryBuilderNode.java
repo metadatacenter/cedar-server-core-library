@@ -46,7 +46,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
         " AND node.<PROP.OWNED_BY> <> {userId}" +
         " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
-        " RETURN node" +
+        " RETURN DISTINCT(node)" +
         " ORDER BY node.<PROP.NODE_SORT_ORDER>," + getOrderByExpression("node", sortList) +
         " SKIP {offset}" +
         " LIMIT {limit}";

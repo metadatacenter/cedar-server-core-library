@@ -91,7 +91,7 @@ public class RegenerateSearchIndexTask {
         for (FolderServerNode resource : resources) {
           try {
             CedarNodeMaterializedPermissions perm = null;
-            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId(), resource.getDisplayName(), resource.getType());
+            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId(), resource.getName(), resource.getType());
             if (resource.getType() == CedarNodeType.FOLDER) {
               contentIndexingService.indexFolder(resource, requestContext, indexedNodeId);
               perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);

@@ -10,10 +10,8 @@ import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuild
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderUser;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.List;
-import java.util.Map;
 
 public class Neo4JProxyUser extends AbstractNeo4JProxy {
 
@@ -23,27 +21,13 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
 
   FolderServerUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
       email) {
-    return createUser(userURL, name, displayName, firstName, lastName, email, null, null);
-  }
-
-  FolderServerUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
-      email, Map<NodeProperty, Object> extraProperties) {
     String cypher = CypherQueryBuilderUser.createUser();
     CypherParameters params = CypherParamBuilderUser.createUser(userURL, name, displayName, firstName, lastName,
-        email, extraProperties);
+        email);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
     return buildUser(userNode);
-  }
-
-  FolderServerUser createUser(String userURL, String name, String displayName, String firstName, String lastName, String
-      email, Map<NodeProperty, Object> extraProperties, FolderServerGroup group) {
-    FolderServerUser newUser = createUser(userURL, name, displayName, firstName, lastName, email, extraProperties);
-    if (group != null) {
-      addGroupToUser(newUser, group);
-    }
-    return newUser;
   }
 
   boolean addGroupToUser(FolderServerUser user, FolderServerGroup group) {

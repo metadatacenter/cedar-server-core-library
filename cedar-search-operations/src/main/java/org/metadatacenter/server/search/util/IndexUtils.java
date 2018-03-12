@@ -9,8 +9,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ModelNodeNames;
+import org.metadatacenter.model.ModelPaths;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -61,8 +64,8 @@ public class IndexUtils {
   }
 
   /**
-   * This method retrieves all the resources from the Workspace Server that are expected to be in the search index. Those
-   * resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
+   * This method retrieves all the resources from the Workspace Server that are expected to be in the search index.
+   * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
     log.info("Retrieving all resources:");
@@ -111,7 +114,7 @@ public class IndexUtils {
           if (needsIndexing(folderServerNode)) {
             resources.add(folderServerNode);
           } else {
-            log.info("The node '" + resource.get("name").asText() + "' has been ignored");
+            log.info("The node '" + resource.at(ModelPaths.SCHEMA_NAME).asText() + "' has been ignored");
           }
         }
         if (currentOffset + count >= totalCount) {
@@ -211,29 +214,32 @@ public class IndexUtils {
             fieldNode = field.getValue().get("items");
           }
           // Field
-          if (fieldNode.get("@type") != null
-              && fieldNode.get("@type").asText().equals(CedarNodeType.FIELD.getAtType())
-              && fieldNode.get("schema:name") != null) {
-            String fieldName = fieldNode.get("schema:name").asText();
-            String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
-            // Get field semantic type (if it has been defined)
-            String fieldSemanticType = null;
-            if ((fieldNode.get("properties").get("@type").get("oneOf") != null) && (fieldNode.get("properties").get
-                ("@type").get("oneOf").get(0).get("enum") != null)) {
-              fieldSemanticType = fieldNode.get("properties").get("@type").get("oneOf").get(0).get("enum").get(0)
-                  .asText();
+          if (fieldNode.get(LinkedData.TYPE) != null
+              && fieldNode.get(LinkedData.TYPE).asText().equals(CedarNodeType.FIELD.getAtType())
+              && fieldNode.get(ModelNodeNames.SCHEMA_NAME) != null) {
+            if (!(fieldNode.get("_ui").get("inputType").asText().equals("attribute-value"))) {
+
+              String fieldName = fieldNode.get(ModelNodeNames.SCHEMA_NAME).asText();
+              String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
+              // Get field semantic type (if it has been defined)
+              String fieldSemanticType = null;
+              if ((fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf") != null) && (fieldNode.get
+                  ("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum") != null)) {
+                fieldSemanticType = fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum")
+                    .get(0).asText();
+              }
+              CedarIndexFieldSchema f = new CedarIndexFieldSchema();
+              f.setFieldName(fieldName);
+              f.setFieldSemanticType(fieldSemanticType);
+              f.setFieldValueType(fieldType);
+              String outputFieldKey = fieldKey + FIELD_SUFFIX;
+              // Add object to the results
+              ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(f));
             }
-            CedarIndexFieldSchema f = new CedarIndexFieldSchema();
-            f.setFieldName(fieldName);
-            f.setFieldSemanticType(fieldSemanticType);
-            f.setFieldValueType(fieldType);
-            String outputFieldKey = fieldKey + FIELD_SUFFIX;
-            // Add object to the results
-            ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(f));
           } else {
             // Element
-            if (fieldNode.get("@type") != null && fieldNode.get("@type").asText().equals(CedarNodeType.ELEMENT
-                .getAtType())) {
+            if (fieldNode.get(LinkedData.TYPE) != null && fieldNode.get(LinkedData.TYPE).asText().equals
+                (CedarNodeType.ELEMENT.getAtType())) {
               // Add empty object to the results
               ((ObjectNode) results).set(fieldKey, JsonNodeFactory.instance.objectNode());
               extractSchemaSummary(nodeType, fieldNode, results.get(fieldKey), context);
@@ -255,7 +261,7 @@ public class IndexUtils {
           results = extractSchemaSummary(CedarNodeType.TEMPLATE, templateJson, results, context);
         } catch (CedarProcessingException e) {
           log.error("Error while accessing the reference template for the instance. It may have been removed");
-          log.error("Instance id: " + resourceContent.get("@id"));
+          log.error("Instance id: " + resourceContent.get(LinkedData.ID));
           log.error("Template id: " + templateId);
         }
       }
@@ -279,7 +285,7 @@ public class IndexUtils {
       while (fieldsIterator.hasNext()) {
         Map.Entry<String, JsonNode> field = fieldsIterator.next();
         if (field.getValue().isContainerNode()) {
-          if (!field.getKey().equals("@context")) {
+          if (!field.getKey().equals(LinkedData.CONTEXT)) {
             // Single value
             if (field.getValue().isObject()) {
               // If it is a Template Field (single instance)
@@ -367,10 +373,10 @@ public class IndexUtils {
   }
 
   private String getFieldValueName(JsonNode item) {
-    if (item.has("@value")) {
-      return "@value";
+    if (item.has(LinkedData.VALUE)) {
+      return LinkedData.VALUE;
     }
-    return "@id";
+    return LinkedData.ID;
   }
 
   private Optional<CedarIndexFieldValue> valueToIndexValue(JsonNode valueNode, JsonNode fieldSchema) throws
