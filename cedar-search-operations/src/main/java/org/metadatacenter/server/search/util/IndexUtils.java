@@ -217,22 +217,25 @@ public class IndexUtils {
           if (fieldNode.get(LinkedData.TYPE) != null
               && fieldNode.get(LinkedData.TYPE).asText().equals(CedarNodeType.FIELD.getAtType())
               && fieldNode.get(ModelNodeNames.SCHEMA_NAME) != null) {
-            String fieldName = fieldNode.get(ModelNodeNames.SCHEMA_NAME).asText();
-            String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
-            // Get field semantic type (if it has been defined)
-            String fieldSemanticType = null;
-            if ((fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf") != null) && (fieldNode.get
-                ("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum") != null)) {
-              fieldSemanticType = fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum")
-                  .get(0).asText();
+            if (!(fieldNode.get("_ui").get("inputType").asText().equals("attribute-value"))) {
+
+              String fieldName = fieldNode.get(ModelNodeNames.SCHEMA_NAME).asText();
+              String fieldType = getFieldType(fieldNode.get("_ui").get("inputType").asText());
+              // Get field semantic type (if it has been defined)
+              String fieldSemanticType = null;
+              if ((fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf") != null) && (fieldNode.get
+                  ("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum") != null)) {
+                fieldSemanticType = fieldNode.get("properties").get(LinkedData.TYPE).get("oneOf").get(0).get("enum")
+                    .get(0).asText();
+              }
+              CedarIndexFieldSchema f = new CedarIndexFieldSchema();
+              f.setFieldName(fieldName);
+              f.setFieldSemanticType(fieldSemanticType);
+              f.setFieldValueType(fieldType);
+              String outputFieldKey = fieldKey + FIELD_SUFFIX;
+              // Add object to the results
+              ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(f));
             }
-            CedarIndexFieldSchema f = new CedarIndexFieldSchema();
-            f.setFieldName(fieldName);
-            f.setFieldSemanticType(fieldSemanticType);
-            f.setFieldValueType(fieldType);
-            String outputFieldKey = fieldKey + FIELD_SUFFIX;
-            // Add object to the results
-            ((ObjectNode) results).set(outputFieldKey, JsonMapper.MAPPER.valueToTree(f));
           } else {
             // Element
             if (fieldNode.get(LinkedData.TYPE) != null && fieldNode.get(LinkedData.TYPE).asText().equals
