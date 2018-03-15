@@ -16,8 +16,8 @@ public class ModelPaths {
   public static final String OSLC_MODIFIED_BY = "/oslc:modifiedBy";
   public static final String PAV_LAST_UPDATED_ON = "/pav:lastUpdatedOn";
 
-  public static final String PAV_VERSION = "/pav:version";
-  public static final String BIBO_STATUS = "/bibo:status";
+  public static final String PAV_VERSION = "/" + ModelNodeNames.PAV_VERSION;
+  public static final String BIBO_STATUS = "/" + ModelNodeNames.BIBO_STATUS;
 
   public static final String AT_ID = "/@id";
 }

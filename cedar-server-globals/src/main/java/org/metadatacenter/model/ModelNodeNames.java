@@ -11,6 +11,8 @@ public class ModelNodeNames {
   //public static final String TITLE = "title";
   public static final String SCHEMA_NAME = "schema:name";
 
+  public static final String PAV_VERSION = "pav:version";
+  public static final String BIBO_STATUS = "bibo:status";
 
 
 }

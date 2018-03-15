@@ -89,6 +89,7 @@ public enum CedarErrorKey {
   NODE_ALREADY_PRESENT("nodeAlreadyPresent"),
   FOLDER_NOT_CREATED("folderNotCreated"),
   MISSING_NAME_AND_DESCRIPTION("missingNameAndDescription"),
+  MISSING_DATA("missingData"),
   FOLDER_NOT_DELETED("folderNotDeleted"),
   RESOURCE_NOT_DELETED("resourceNotDeleted"),
   RESOURCE_NOT_CREATED("resourceNotCreated"),
