@@ -9,4 +9,5 @@ public class GenericAssertions {
   public static final CedarAssertion True = new TrueAssertion();
   public static final SuccessfulAssertion Successful = new SuccessfulAssertion();
   public static final ValidIdAssertion ValidId = new ValidIdAssertion();
+  public static final ValidUrlAssertion ValidUrl = new ValidUrlAssertion();
 }

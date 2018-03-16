@@ -60,6 +60,16 @@ public final class CedarDataServices {
     }
   }
 
+  public static GraphServiceSession getGraphServiceSession(CedarRequestContext context) {
+    if (instance.proxies == null) {
+      log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionGraphService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+    }
+  }
+
   public static PermissionServiceSession getPermissionServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
       log.error("You need to initialize Workspace services: CedarDataServices.initializeWorkspaceServices(cedarConfig)");

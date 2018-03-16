@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(NodeLabel label, Map<NodeProperty, Object> extraProperties) {
-    return createFSNodeAsChildOfId(label, extraProperties);
+  public static String createResourceAsChildOfId(NodeLabel label) {
+    return createFSResourceAsChildOfId(label);
   }
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {
@@ -80,5 +80,9 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-
+  public static String createResourceWithoutParent(NodeLabel nodeLabel) {
+    return "" +
+        createFSResource(ALIAS_FOO, nodeLabel) +
+        " RETURN " + ALIAS_FOO;
+  }
 }

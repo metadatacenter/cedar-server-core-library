@@ -1,7 +1,11 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.server.neo4j.parameter.*;
 
 import java.time.Instant;
@@ -16,8 +20,9 @@ public abstract class AbstractCypherParamBuilder {
   }
 
   protected static CypherParameters createNode(String parentId, String childId, CedarNodeType nodeType, String name,
-                                               String displayName, String description, String createdBy, Map<? extends
-      CypherQueryParameter, Object> extraProperties) {
+                                               String description, String createdBy, IsRoot isRoot, IsSystem
+                                                   isSystem, IsUserHome isUserHome, String homeOf) {
+
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -27,7 +32,6 @@ public abstract class AbstractCypherParamBuilder {
 
     params.put(NodeProperty.ID, childId);
     params.put(NodeProperty.NAME, name);
-    params.put(NodeProperty.DISPLAY_NAME, displayName);
     params.put(NodeProperty.DESCRIPTION, description);
     params.put(NodeProperty.CREATED_BY, createdBy);
     params.put(NodeProperty.CREATED_ON, nowString);
@@ -37,10 +41,11 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.OWNED_BY, createdBy);
     params.put(NodeProperty.NODE_TYPE, nodeType.getValue());
+    params.put(NodeProperty.IS_ROOT, isRoot);
+    params.put(NodeProperty.IS_SYSTEM, isSystem);
+    params.put(NodeProperty.IS_USER_HOME, isUserHome);
+    params.put(NodeProperty.HOME_OF, homeOf);
 
-    if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach(params::put);
-    }
     return params;
   }
 
@@ -129,4 +134,24 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
+  public static CypherParameters mapAllProperties(JsonNode node) {
+    CypherParameters params = new CypherParameters();
+    for (Map.Entry<String, JsonNode> entry : (Iterable<Map.Entry<String, JsonNode>>) () -> node.fields()) {
+      String key = entry.getKey();
+      if (key != null) {
+        CypherQueryParameter param = NodeProperty.forValue(key);
+        if (param != null) {
+          params.put(param, entry.getValue());
+        }
+      }
+    }
+    return params;
+  }
+
+  public static CypherParameters matchSourceAndTarget(String sourceId, String targetId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.SOURCE_ID, sourceId);
+    params.put(ParameterPlaceholder.TARGET_ID, targetId);
+    return params;
+  }
 }

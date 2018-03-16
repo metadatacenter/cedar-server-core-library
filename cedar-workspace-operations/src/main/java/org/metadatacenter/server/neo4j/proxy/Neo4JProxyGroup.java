@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.*;
@@ -21,10 +22,10 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
   }
 
   FolderServerGroup createGroup(String groupURL, String name, String displayName, String description, String
-      ownerURL, Map<NodeProperty, Object> extraProperties) {
-    String cypher = CypherQueryBuilderGroup.createGroup(extraProperties);
+      ownerURL, String specialGroup ) {
+    String cypher = CypherQueryBuilderGroup.createGroupWithAdministrator();
     CypherParameters params = CypherParamBuilderGroup.createGroup(groupURL, name, displayName, description, ownerURL,
-        extraProperties);
+        specialGroup);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode groupNode = jsonNode.at("/results/0/data/0/row/0");

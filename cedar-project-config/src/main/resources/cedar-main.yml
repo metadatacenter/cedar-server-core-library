@@ -200,6 +200,7 @@ terminology:
 
 importExport:
   exportDir: "${CEDAR_HOME}/export/"
+  importDir: "${CEDAR_HOME}/import/"
 
 folderRESTAPI:
   pagination:
@@ -258,7 +259,7 @@ submission:
         host: "ftp-private.ncbi.nlm.nih.gov"
         user: "CEDAR"
         password: "${CEDAR_NCBI_SRA_FTP_PASSWORD}"
-        submissionDirectory: "submit/Test"
+        submissionDirectory: "submit/Production"
   immPort:
     authentication:
       user: "${CEDAR_IMMPORT_SUBMISSION_USER}"

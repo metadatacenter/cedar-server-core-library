@@ -1,19 +1,18 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.server.neo4j.RelationLabel;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 
 import java.util.Map;
 
 public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
 
-  public static String createGroup(Map<NodeProperty, Object> extraProperties) {
+  public static String createGroup() {
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (group:<COMPOSEDLABEL.GROUP> {");
 
     sb.append(buildCreateAssignment(NodeProperty.ID)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.NAME)).append(",");
-    sb.append(buildCreateAssignment(NodeProperty.DISPLAY_NAME)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.DESCRIPTION)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.CREATED_BY)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.CREATED_ON)).append(",");
@@ -21,10 +20,28 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_BY)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.SPECIAL_GROUP)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.NODE_TYPE));
+    sb.append("})");
 
-    if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach((key, value) -> sb.append(buildCreateAssignment(key)).append(","));
-    }
+    sb.append(" RETURN group");
+    return sb.toString();
+  }
+
+  public static String createGroupWithAdministrator() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" CREATE (group:<COMPOSEDLABEL.GROUP> {");
+
+    sb.append(buildCreateAssignment(NodeProperty.ID)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.NAME)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.DESCRIPTION)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.CREATED_BY)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.CREATED_ON)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.CREATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_BY)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.SPECIAL_GROUP)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.NODE_TYPE));
     sb.append("})");
 
@@ -43,7 +60,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (group:<LABEL.GROUP>)" +
         " RETURN group" +
-        " ORDER BY LOWER(group.<PROP.DISPLAY_NAME>)";
+        " ORDER BY LOWER(group.<PROP.NAME>)";
   }
 
   public static String updateGroupById(Map<NodeProperty, String> updateFields) {

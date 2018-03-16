@@ -28,10 +28,10 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   FolderServerResource createResourceAsChildOfId(String parentId, String childURL, CedarNodeType nodeType, String
-      name, String description, String creatorId, NodeLabel label, Map<NodeProperty, Object> extraProperties) {
-    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(label, extraProperties);
+      name, String description, String creatorId, NodeLabel label) {
+    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(label);
     CypherParameters params = CypherParamBuilderResource.createResource(parentId, childURL, nodeType, name,
-        description, creatorId, extraProperties);
+        description, creatorId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode newNode = jsonNode.at("/results/0/data/0/row/0");

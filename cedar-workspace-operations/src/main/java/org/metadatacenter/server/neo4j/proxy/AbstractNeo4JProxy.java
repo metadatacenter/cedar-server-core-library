@@ -7,6 +7,7 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.constant.HttpConnectionConstants;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
@@ -254,6 +255,15 @@ public abstract class AbstractNeo4JProxy {
     } else {
       return -1;
     }
+  }
+
+  protected FolderServerArc buildArc(JsonNode a) {
+    FolderServerArc arc = null;
+    if (a != null && !a.isMissingNode()) {
+      arc = new FolderServerArc(a.at("/0").textValue(), RelationLabel.forValue(a.at("/1").textValue()), a.at("/2")
+          .textValue());
+    }
+    return arc;
   }
 
 }

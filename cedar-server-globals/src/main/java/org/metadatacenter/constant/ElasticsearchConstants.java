@@ -9,7 +9,7 @@ public final class ElasticsearchConstants {
 
   // Searchable fields
   public static final String ES_DOCUMENT_CEDAR_ID = "cid";
-  public static final String ES_RESOURCE_NAME_FIELD = "name";
+  public static final String ES_RESOURCE_NAME_FIELD = "schema:name";
   public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "nodeType";
 
   public static final String ES_TEMPLATEID_FIELD = "templateId";

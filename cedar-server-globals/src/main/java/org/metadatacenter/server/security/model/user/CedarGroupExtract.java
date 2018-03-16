@@ -3,11 +3,11 @@ package org.metadatacenter.server.security.model.user;
 public class CedarGroupExtract {
 
   private String id;
-  private String displayName;
+  private String name;
 
-  public CedarGroupExtract(String id, String displayName) {
+  public CedarGroupExtract(String id, String name) {
     this.id = id;
-    this.displayName = displayName;
+    this.name = name;
   }
 
   public String getId() {
@@ -18,11 +18,11 @@ public class CedarGroupExtract {
     this.id = id;
   }
 
-  public String getDisplayName() {
-    return displayName;
+  public String getName() {
+    return name;
   }
 
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
+  public void setName(String name) {
+    this.name = name;
   }
 }

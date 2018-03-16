@@ -128,7 +128,7 @@
               "type": "string",
               "index": "not_analyzed"
             },
-            "name": {
+            "schema:name": {
               "type": "string",
               "analyzer": "ngram_analyzer",
               "search_analyzer": "standard",

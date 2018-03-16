@@ -12,14 +12,13 @@ import java.util.Map;
 public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
 
   public static CypherParameters createUser(String userURL, String name, String displayName, String firstName,
-                                            String lastName, String email, Map<NodeProperty, Object> extraProperties) {
+                                            String lastName, String email) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
     CypherParameters params = new CypherParameters();
     params.put(NodeProperty.ID, userURL);
     params.put(NodeProperty.NAME, name);
-    params.put(NodeProperty.DISPLAY_NAME, displayName);
     params.put(NodeProperty.FIRST_NAME, firstName);
     params.put(NodeProperty.LAST_NAME, lastName);
     params.put(NodeProperty.EMAIL, email);
@@ -28,9 +27,6 @@ public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.NODE_TYPE, CedarNodeType.USER.getValue());
-    if (extraProperties != null && !extraProperties.isEmpty()) {
-      extraProperties.forEach(params::put);
-    }
     return params;
   }
 

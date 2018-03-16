@@ -8,7 +8,7 @@ import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.RelationLabel;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderPermission;

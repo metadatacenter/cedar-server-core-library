@@ -40,4 +40,9 @@ public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implem
     return currentUser;
   }
 
+  @Override
+  public FolderServerUser getUser(String userId) {
+    return proxies.user().findUserById(userId);
+  }
+
 }
