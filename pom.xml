@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-parent</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <version>1.7.1-SNAPSHOT</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-server-core-library</artifactId>
-  <version>1.6.4-SNAPSHOT</version>
+  <version>1.7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CEDAR Server Core Library</name>
 
