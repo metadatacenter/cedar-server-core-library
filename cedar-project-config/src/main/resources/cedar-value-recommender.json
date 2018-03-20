@@ -39,6 +39,9 @@
             },
             "fieldValue": {
               "type": "keyword"
+            },
+            "fieldNormalizedValue": {
+              "type": "keyword"
             }
           }
         },
@@ -52,6 +55,9 @@
               "type": "keyword"
             },
             "fieldValue": {
+              "type": "keyword"
+            },
+            "fieldNormalizedValue": {
               "type": "keyword"
             }
           }
