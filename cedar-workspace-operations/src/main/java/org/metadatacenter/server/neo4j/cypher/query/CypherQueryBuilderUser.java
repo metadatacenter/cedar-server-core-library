@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
 

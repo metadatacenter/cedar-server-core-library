@@ -3,11 +3,10 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.time.Instant;
-import java.util.Map;
 
 public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
 

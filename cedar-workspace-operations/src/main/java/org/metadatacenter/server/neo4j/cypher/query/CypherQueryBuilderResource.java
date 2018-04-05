@@ -1,16 +1,14 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(NodeLabel label, ResourceVersion version, BiboStatus status) {
-    return createFSResourceAsChildOfId(label, version, status);
+  public static String createResourceAsChildOfId(FolderServerResource newResource) {
+    return createFSResourceAsChildOfId(newResource);
   }
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {
@@ -82,9 +80,27 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-  public static String createResourceWithoutParent(NodeLabel nodeLabel, ResourceVersion version, BiboStatus status) {
+  public static String createResourceWithoutParent(FolderServerResource newResource) {
     return "" +
-        createFSResource(ALIAS_FOO, nodeLabel, version, status) +
+        createFSResource(ALIAS_FOO, newResource) +
         " RETURN " + ALIAS_FOO;
+  }
+
+  public static String setPreviousVersion() {
+    return "" +
+        " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +
+        " MATCH (or:<LABEL.RESOURCE> {id:{targetId}})" +
+        " CREATE (nr)-[:<REL.PREVIOUSVERSION>]->(or)" +
+        " SET nr.<PROP.PREVIOUS_VERSION> = {targetId}" +
+        " RETURN nr";
+  }
+
+  public static String setDerivedFrom() {
+    return "" +
+        " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +
+        " MATCH (or:<LABEL.RESOURCE> {id:{targetId}})" +
+        " CREATE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
+        " SET nr.<PROP.DERIVED_FROM> = {targetId}" +
+        " RETURN nr";
   }
 }

@@ -4,8 +4,7 @@ import org.metadatacenter.model.*;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -26,13 +25,9 @@ public interface FolderServiceSession {
 
   FolderServerResource findResourceById(String resourceURL);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description);
+  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot isRoot,
-                                             IsSystem isSystem, IsUserHome isUserHome, String homeOf);
-
-  FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, ResourceVersion version, BiboStatus status);
+  FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL);
 
   FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
 
@@ -83,4 +78,8 @@ public interface FolderServiceSession {
   FolderServerFolder findHomeFolderOf();
 
   FolderServerFolder createUserHomeFolder();
+
+  boolean setPreviousVersion(String newId, String oldId);
+
+  boolean setDerivedFrom(String newId, String oldId);
 }

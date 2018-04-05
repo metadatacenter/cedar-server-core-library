@@ -2,7 +2,6 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.util.ArrayList;

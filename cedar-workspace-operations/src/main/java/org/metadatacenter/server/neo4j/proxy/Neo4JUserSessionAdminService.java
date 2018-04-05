@@ -2,15 +2,12 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.AdminServiceSession;
 import org.metadatacenter.server.neo4j.*;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarUserNameUtil;
@@ -73,8 +70,17 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerFolder usersFolder = proxies.folder().findFolderByPath(config.getUsersFolderPath());
     if (usersFolder == null) {
       String name = pathUtil.extractName(config.getUsersFolderPath());
-      usersFolder = proxies.folder().createFolderAsChildOfId(rootFolderURL, name, config.getUsersFolderDescription(),
-          cedarAdmin.getId(), IsRoot.FALSE, IsSystem.TRUE, IsUserHome.FALSE, null);
+
+      FolderServerFolder newUsersFolder = new FolderServerFolder();
+      newUsersFolder.setName1(name);
+      newUsersFolder.setDescription1(config.getUsersFolderDescription());
+      newUsersFolder.setOwnedBy(cedarAdmin.getId());
+      newUsersFolder.setLastUpdatedBy1(cedarAdmin.getId());
+      newUsersFolder.setRoot(false);
+      newUsersFolder.setSystem(true);
+      newUsersFolder.setUserHome(false);
+
+      usersFolder = proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
       proxies.permission().addPermission(usersFolder, everybody, NodePermission.READTHIS);
     }
   }

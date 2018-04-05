@@ -103,7 +103,9 @@ public enum CedarErrorKey {
   FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed"),
   METHOD_NOT_IMPLEMENTED("methodNotImplemented"),
   UPSTREAM_SERVER_ERROR("upstreamServerError"),
-  NOTHING_TO_DO("nothingToDo");
+  NOTHING_TO_DO("nothingToDo"),
+
+  DRAFT_NOT_CREATED("draftNotCreated");
 
   private final String value;
 

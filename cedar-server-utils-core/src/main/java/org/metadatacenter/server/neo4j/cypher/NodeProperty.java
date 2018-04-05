@@ -1,4 +1,4 @@
-package org.metadatacenter.server.neo4j.parameter;
+package org.metadatacenter.server.neo4j.cypher;
 
 public enum NodeProperty implements CypherQueryParameter {
 
@@ -23,7 +23,9 @@ public enum NodeProperty implements CypherQueryParameter {
   IS_SYSTEM("isSystem"),
   IS_USER_HOME("isUserHome"),
   NODE_SORT_ORDER("nodeSortOrder"),
-  HOME_OF("homeOf");
+  HOME_OF("homeOf"),
+  PREVIOUS_VERSION("previousVersion"),
+  DERIVED_FROM("derivedFrom");
 
   private final String value;
 

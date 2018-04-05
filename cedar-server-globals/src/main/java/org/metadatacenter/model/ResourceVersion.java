@@ -3,7 +3,7 @@ package org.metadatacenter.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public class ResourceVersion {
+public class ResourceVersion implements Comparable<ResourceVersion> {
 
   private String value;
   private boolean valid;
@@ -11,11 +11,9 @@ public class ResourceVersion {
   private Integer minor;
   private Integer patch;
 
-  private ResourceVersion(String value) {
-    this(value, false);
-  }
+  public static ResourceVersion ZERO_ZERO_ONE = ResourceVersion.forValue("0.0.1");
 
-  public ResourceVersion(String value, boolean validate) {
+  private ResourceVersion(String value, boolean validate) {
     this.value = value;
     this.valid = false;
     if (validate) {
@@ -30,7 +28,7 @@ public class ResourceVersion {
 
   @JsonCreator
   public static ResourceVersion forValue(String value) {
-    return new ResourceVersion(value);
+    return ResourceVersion.forValueWithoutValidation(value);
   }
 
   public void validate() {
@@ -57,6 +55,10 @@ public class ResourceVersion {
     return new ResourceVersion(value, true);
   }
 
+  public static ResourceVersion forValueWithoutValidation(String value) {
+    return new ResourceVersion(value, false);
+  }
+
   private static Integer getInteger(String s) {
     try {
       return Integer.parseInt(s);
@@ -65,4 +67,38 @@ public class ResourceVersion {
     }
   }
 
+  @Override
+  public int compareTo(ResourceVersion o) {
+    if (o == null) {
+      return 1;
+    }
+    if (!o.isValid()) {
+      return 1;
+    } else if (!this.isValid()) {
+      return -1;
+    }
+    if (this.major != o.major) {
+      return this.major - o.major;
+    } else if (this.minor != o.minor) {
+      return this.minor - o.minor;
+    } else if (this.patch != o.patch) {
+      return this.patch - o.patch;
+    } else {
+      return 0;
+    }
+  }
+
+  public boolean isBefore(ResourceVersion o) {
+    return this.compareTo(o) < 0;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj != null && obj instanceof ResourceVersion && this.value != null) {
+      ResourceVersion other = (ResourceVersion) obj;
+      return this.valid == other.valid && this.value.equals(other.value) && this.major == other.major &&
+          this.minor == other.minor && this.patch == other.patch;
+    }
+    return false;
+  }
 }

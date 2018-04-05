@@ -2,8 +2,14 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.*;
-import org.metadatacenter.server.neo4j.parameter.*;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.neo4j.parameter.ParameterLiteral;
+import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.time.Instant;
 import java.util.Map;
@@ -16,36 +22,48 @@ public abstract class AbstractCypherParamBuilder {
     return new ParameterLiteral(FOLDER_ALIAS_PREFIX + i);
   }
 
-  protected static CypherParameters createNode(String parentId, String childId, CedarNodeType nodeType, String name,
-                                               String description, String createdBy, ResourceVersion version,
-                                               BiboStatus status, IsRoot isRoot, IsSystem isSystem, IsUserHome
-                                                   isUserHome, String homeOf) {
+  protected static CypherParameters createNode(FolderServerNode newNode, String parentId) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.PARENT_ID, parentId);
-    params.put(ParameterPlaceholder.USER_ID, createdBy);
+    params.put(ParameterPlaceholder.USER_ID, newNode.getOwnedBy());
 
-    params.put(NodeProperty.ID, childId);
-    params.put(NodeProperty.NAME, name);
-    params.put(NodeProperty.DESCRIPTION, description);
-    params.put(NodeProperty.CREATED_BY, createdBy);
+    params.put(NodeProperty.ID, newNode.getId());
+    params.put(NodeProperty.NAME, newNode.getName());
+    params.put(NodeProperty.DESCRIPTION, newNode.getDescription());
+    params.put(NodeProperty.CREATED_BY, newNode.getCreatedBy());
     params.put(NodeProperty.CREATED_ON, nowString);
     params.put(NodeProperty.CREATED_ON_TS, nowTS);
-    params.put(NodeProperty.LAST_UPDATED_BY, createdBy);
+    params.put(NodeProperty.LAST_UPDATED_BY, newNode.getLastUpdatedBy());
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
-    params.put(NodeProperty.OWNED_BY, createdBy);
-    params.put(NodeProperty.NODE_TYPE, nodeType.getValue());
-    params.put(NodeProperty.VERSION, version.getValue());
-    params.put(NodeProperty.STATUS, status.getValue());
-    params.put(NodeProperty.IS_ROOT, isRoot);
-    params.put(NodeProperty.IS_SYSTEM, isSystem);
-    params.put(NodeProperty.IS_USER_HOME, isUserHome);
-    params.put(NodeProperty.HOME_OF, homeOf);
+    params.put(NodeProperty.OWNED_BY, newNode.getOwnedBy());
+    params.put(NodeProperty.NODE_TYPE, newNode.getType().getValue());
 
+    if (newNode instanceof FolderServerResource) {
+      FolderServerResource newResource = (FolderServerResource) newNode;
+      if (newResource.getVersion() != null) {
+        params.put(NodeProperty.VERSION, newResource.getVersion().getValue());
+      }
+      if (newResource.getStatus() != null) {
+        params.put(NodeProperty.STATUS, newResource.getStatus().getValue());
+      }
+      if (newResource.getDerivedFrom() != null) {
+        params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());
+      }
+      if (newResource.getPreviousVersion() != null) {
+        params.put(NodeProperty.PREVIOUS_VERSION, newResource.getPreviousVersion());
+      }
+    } else if (newNode instanceof FolderServerFolder) {
+      FolderServerFolder newFolder = (FolderServerFolder) newNode;
+      params.put(NodeProperty.IS_ROOT, newFolder.isRoot());
+      params.put(NodeProperty.IS_SYSTEM, newFolder.isSystem());
+      params.put(NodeProperty.IS_USER_HOME, newFolder.isUserHome());
+      params.put(NodeProperty.HOME_OF, newFolder.getHomeOf());
+    }
     return params;
   }
 

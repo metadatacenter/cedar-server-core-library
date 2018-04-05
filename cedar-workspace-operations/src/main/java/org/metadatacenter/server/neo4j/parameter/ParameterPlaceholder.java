@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j.parameter;
 
+import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
+
 public enum ParameterPlaceholder implements CypherQueryParameter {
 
   ID("id"),

@@ -1,9 +1,15 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.*;
-import org.metadatacenter.server.folder.QuerySortOptions;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
+import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.workspace.QuerySortOptions;
 
 import java.util.List;
 
@@ -25,14 +31,12 @@ public abstract class AbstractCypherQueryBuilder {
     return " SET " + nodeAlias + "." + buildUpdateAssignment(property);
   }
 
-  protected static String createFSResource(String nodeAlias, NodeLabel label, ResourceVersion version, BiboStatus
-      status) {
-    return createFSNode(nodeAlias, label, version, status, IsRoot.FALSE, IsSystem.FALSE, IsUserHome.FALSE);
+  protected static String createFSResource(String nodeAlias, FolderServerResource newResource) {
+    return createFSNode(nodeAlias, newResource);
   }
 
-  protected static String createFSFolder(String nodeAlias, IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
-    return createFSNode(nodeAlias, getFolderLabel(isRoot, isSystem, isUserHome), null, null, isRoot, isSystem,
-        isUserHome);
+  protected static String createFSFolder(String nodeAlias, FolderServerFolder newFolder) {
+    return createFSNode(nodeAlias, newFolder);
   }
 
   private static NodeLabel getFolderLabel(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
@@ -45,8 +49,16 @@ public abstract class AbstractCypherQueryBuilder {
     }
   }
 
-  private static String createFSNode(String nodeAlias, NodeLabel label, ResourceVersion version, BiboStatus status,
-                                     IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
+  private static String createFSNode(String nodeAlias, FolderServerNode newNode) {
+
+    NodeLabel label = NodeLabel.forCedarNodeType(newNode.getType());
+    if (label == null) {
+      FolderServerFolder f = (FolderServerFolder) newNode;
+      label = getFolderLabel(IsRoot.forValue(f.isRoot()),
+          IsSystem.forValue(f.isSystem()),
+          IsUserHome.forValue(f.isUserHome()));
+    }
+
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (").append(nodeAlias).append(":").append(label).append(" {");
 
@@ -60,21 +72,32 @@ public abstract class AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.OWNED_BY)).append(",");
-    if (version != null) {
-      sb.append(buildCreateAssignment(NodeProperty.VERSION)).append(",");
-    }
-    if (status != null) {
-      sb.append(buildCreateAssignment(NodeProperty.STATUS)).append(",");
-    }
-    if (isRoot == IsRoot.TRUE) {
-      sb.append(buildCreateAssignment(NodeProperty.IS_ROOT)).append(",");
-    }
-    if (isSystem == IsSystem.TRUE) {
-      sb.append(buildCreateAssignment(NodeProperty.IS_SYSTEM)).append(",");
-    }
-    if (isUserHome == IsUserHome.TRUE) {
-      sb.append(buildCreateAssignment(NodeProperty.IS_USER_HOME)).append(",");
-      sb.append(buildCreateAssignment(NodeProperty.HOME_OF)).append(",");
+    if (newNode instanceof FolderServerResource) {
+      FolderServerResource newResource = (FolderServerResource) newNode;
+      if (newResource.getVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.VERSION)).append(",");
+      }
+      if (newResource.getStatus() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.STATUS)).append(",");
+      }
+      if (newResource.getDerivedFrom() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.DERIVED_FROM)).append(",");
+      }
+      if (newResource.getPreviousVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.PREVIOUS_VERSION)).append(",");
+      }
+    } else if (newNode instanceof FolderServerFolder) {
+      FolderServerFolder newFolder = (FolderServerFolder) newNode;
+      if (newFolder.isRoot()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_ROOT)).append(",");
+      }
+      if (newFolder.isSystem()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_SYSTEM)).append(",");
+      }
+      if (newFolder.isUserHome()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_USER_HOME)).append(",");
+        sb.append(buildCreateAssignment(NodeProperty.HOME_OF)).append(",");
+      }
     }
 
     sb.append(NodeProperty.NODE_SORT_ORDER).append(":")
@@ -137,21 +160,21 @@ public abstract class AbstractCypherQueryBuilder {
         " RETURN fromNode";
   }
 
-  protected static String createFSResourceAsChildOfId(NodeLabel label, ResourceVersion version, BiboStatus status) {
+  protected static String createFSResourceAsChildOfId(FolderServerResource newResource) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createFSResource("child", label, version, status) +
+        createFSResource("child", newResource) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";
   }
 
-  protected static String createFSFolderAsChildOfId(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
+  protected static String createFSFolderAsChildOfId(FolderServerFolder newFolder) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createFSFolder("child", isRoot, isSystem, isUserHome) +
+        createFSFolder("child", newFolder) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";

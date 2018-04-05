@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.*;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
@@ -10,8 +10,7 @@ import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.neo4j.Neo4jConfig;
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.util.CedarUserNameUtil;
@@ -31,10 +30,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label, ResourceVersion version, BiboStatus status) {
-    return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, cu
-        .getId(), label, version, status);
+  public FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL) {
+    newResource.setOwnedBy(cu.getId());
+    newResource.setLastUpdatedBy1(cu.getId());
+    newResource.setCreatedBy1(cu.getId());
+    return proxies.resource().createResourceAsChildOfId(newResource, parentFolderURL);
   }
 
   @Override
@@ -186,16 +186,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description) {
-    return createFolderAsChildOfId(parentFolderURL, name, description, IsRoot.FALSE, IsSystem.FALSE, IsUserHome
-        .FALSE, null);
-  }
-
-  @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot
-      isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
-    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, description, cu.getId(), isRoot, isSystem,
-        isUserHome, homeOf);
+  public FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL) {
+    newFolder.setOwnedBy(cu.getId());
+    newFolder.setCreatedBy1(cu.getId());
+    newFolder.setLastUpdatedBy1(cu.getId());
+    return proxies.folder().createFolderAsChildOfId(newFolder, parentFolderURL);
   }
 
   @Override
@@ -279,8 +274,17 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
     String name = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
-    currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), name, description, IsRoot.FALSE, IsSystem
-        .FALSE, IsUserHome.TRUE, userId);
+    FolderServerFolder newUserHome = new FolderServerFolder();
+    newUserHome.setName1(name);
+    newUserHome.setDescription1(description);
+    newUserHome.setRoot(false);
+    newUserHome.setSystem(false);
+    newUserHome.setUserHome(true);
+    newUserHome.setOwnedBy(userId);
+    newUserHome.setCreatedBy1(userId);
+    newUserHome.setLastUpdatedBy1(userId);
+    newUserHome.setHomeOf(userId);
+    currentUserHomeFolder = createFolderAsChildOfId(newUserHome, usersFolder.getId());
     if (currentUserHomeFolder != null) {
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       if (everybody != null) {
@@ -290,5 +294,14 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return currentUserHomeFolder;
   }
 
+  @Override
+  public boolean setPreviousVersion(String newId, String oldId) {
+    return proxies.resource().setPreviousVersion(newId, oldId);
+  }
+
+  @Override
+  public boolean setDerivedFrom(String newId, String oldId) {
+    return proxies.resource().setDerivedFrom(newId, oldId);
+  }
 
 }
