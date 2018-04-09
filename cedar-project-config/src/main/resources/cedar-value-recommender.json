@@ -31,16 +31,22 @@
         "premise": {
           "type": "nested",
           "properties": {
-            "fieldId": {
+            "fieldPath": {
               "type": "keyword"
             },
-            "fieldPath": {
+            "fieldInstanceType": {
               "type": "keyword"
             },
             "fieldValue": {
               "type": "keyword"
             },
+            "fieldValueLabel": {
+              "type": "keyword"
+            },
             "fieldNormalizedValue": {
+              "type": "keyword"
+            },
+            "fieldNormalizedPath": {
               "type": "keyword"
             }
           }
@@ -48,16 +54,22 @@
         "consequence": {
           "type": "nested",
           "properties": {
-            "fieldId": {
+            "fieldPath": {
               "type": "keyword"
             },
-            "fieldPath": {
+            "fieldInstanceType": {
               "type": "keyword"
             },
             "fieldValue": {
               "type": "keyword"
             },
+            "fieldValueLabel": {
+              "type": "keyword"
+            },
             "fieldNormalizedValue": {
+              "type": "keyword"
+            },
+            "fieldNormalizedPath": {
               "type": "keyword"
             }
           }
