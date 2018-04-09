@@ -105,7 +105,7 @@ public class ContentSearchingService extends AbstractSearchingService {
     req.setOffset(offset);
     req.setSort(sortList);
     req.setQ(query);
-    req.setDerivedFromId(templateId);
+    req.setIsBasedOn(templateId);
     response.setRequest(req);
 
     return response;

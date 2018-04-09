@@ -88,7 +88,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
           && isValidURL(derivedFromIdInput.get())) {
         derivedFromId = derivedFromIdInput.get();
       } else {
-        throw new CedarAssertionException("You must pass in 'derived_from_id' as a valid template identifier!")
+        throw new CedarAssertionException("You must pass in 'is_based_on' as a valid template identifier!")
             .parameter("template_id", derivedFromIdInput.get());
       }
     }
@@ -99,9 +99,10 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     if (derivedFromId != null) {
       if (resourceTypesInput.isPresent()) {
         throw new CedarAssertionException(
-            "You must pass not specify 'resource_types' if the 'derived_from_id' is specified!")
-            .parameter("derived_from_id", derivedFromId)
-            .parameter("resource_types", resourceTypesInput.get());
+            "You must pass not specify 'resource_types' if the 'is_based_on' is specified!")
+            .parameter("is_based_on", derivedFromId)
+            .parameter("resource_types", resourceTypesInput.get())
+            .badRequest();
       } else {
         nodeTypeList = new ArrayList<>();
         nodeTypeList.add(CedarNodeType.INSTANCE);

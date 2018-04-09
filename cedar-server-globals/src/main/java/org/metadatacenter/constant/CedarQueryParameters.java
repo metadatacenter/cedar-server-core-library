@@ -15,7 +15,7 @@ public final class CedarQueryParameters {
   public static final String QP_SUMMARY = "summary";
   public static final String QP_FIELD_NAMES = "field_names";
   public static final String QP_TEMPLATE_ID = "template_id";
-  public static final String QP_DERIVED_FROM_ID = "derived_from_id";
+  public static final String QP_IS_BASED_ON = "is_based_on";
   public static final String QP_Q = "q";
   public static final String QP_SHARING = "sharing";
   public static final String QP_FORMAT = "format";

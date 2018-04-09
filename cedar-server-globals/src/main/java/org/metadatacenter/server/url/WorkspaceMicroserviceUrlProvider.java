@@ -54,4 +54,8 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
   public String getUsers() {
     return users;
   }
+
+  public String getResourceWithIdReport(String id) {
+    return base + PREFIX_RESOURCES + "/" + UrlUtil.urlEncode(id) + "/report";
+  }
 }

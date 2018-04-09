@@ -13,8 +13,8 @@ public class NodeListRequest {
   private long offset;
   private List<String> sort;
   private String q;
-  @JsonProperty("derived_from_id")
-  private String derivedFromId;
+  @JsonProperty("is_based_on")
+  private String isBasedOn;
 
   public List<CedarNodeType> getNodeTypes() {
     return nodeTypes;
@@ -56,11 +56,11 @@ public class NodeListRequest {
     this.q = q;
   }
 
-  public String getDerivedFromId() {
-    return derivedFromId;
+  public String getIsBasedOn() {
+    return isBasedOn;
   }
 
-  public void setDerivedFromId(String derivedFromId) {
-    this.derivedFromId = derivedFromId;
+  public void setIsBasedOn(String isBasedOn) {
+    this.isBasedOn = isBasedOn;
   }
 }

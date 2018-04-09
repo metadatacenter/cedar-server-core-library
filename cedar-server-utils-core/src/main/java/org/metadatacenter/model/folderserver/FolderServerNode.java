@@ -28,7 +28,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
-  protected String displayPath;
 
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
@@ -170,14 +169,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.ownedByUserName = ownedByUserName;
   }
 
-  public String getDisplayPath() {
-    return displayPath;
-  }
-
-  public void setDisplayPath(String displayPath) {
-    this.displayPath = displayPath;
-  }
-
   public void setCreatedByUserName(String createdByUserName) {
     this.createdByUserName = createdByUserName;
   }
@@ -236,4 +227,11 @@ public abstract class FolderServerNode extends AbstractCedarNode {
   public boolean currentUserCan(NodePermission permission) {
     return currentUserPermissions.contains(permission);
   }
+
+  public void setCreatedByTotal(String createdBy) {
+    this.createdBy = createdBy;
+    this.ownedBy = createdBy;
+    this.lastUpdatedBy = createdBy;
+  }
+
 }

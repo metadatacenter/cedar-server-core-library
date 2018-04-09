@@ -16,7 +16,7 @@ public class NodeListQueryTypeDetector {
     }
 
     if (derivedFromId != null && derivedFromId.isPresent() && !derivedFromId.get().isEmpty()) {
-      return NodeListQueryType.SEARCH_DERIVED_FROM;
+      return NodeListQueryType.SEARCH_IS_BASED_ON;
     }
 
     if (sharing != null && sharing.isPresent() && !sharing.get().isEmpty()) {

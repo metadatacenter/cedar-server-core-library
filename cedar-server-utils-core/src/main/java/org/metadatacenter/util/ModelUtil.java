@@ -23,7 +23,7 @@ public class ModelUtil {
     return m.find();
   }
 
-  private static JsonPointerValuePair extractStringFromPointer(CedarNodeType nodeType, JsonNode jsonNode, String
+  private static JsonPointerValuePair extractStringFromPointer(JsonNode jsonNode, String
       pointer) {
     JsonPointerValuePair r = new JsonPointerValuePair();
     r.setPointer(pointer);
@@ -35,21 +35,24 @@ public class ModelUtil {
   }
 
   public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
-    return extractStringFromPointer(nodeType, jsonNode, SCHEMA_NAME);
+    return extractStringFromPointer(jsonNode, SCHEMA_NAME);
   }
 
   public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
-    return extractStringFromPointer(nodeType, jsonNode, SCHEMA_DESCRIPTION);
+    return extractStringFromPointer(jsonNode, SCHEMA_DESCRIPTION);
   }
 
   public static JsonPointerValuePair extractVersionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
-    return extractStringFromPointer(nodeType, jsonNode, PAV_VERSION);
+    return extractStringFromPointer(jsonNode, PAV_VERSION);
   }
 
   public static JsonPointerValuePair extractStatusFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
-    return extractStringFromPointer(nodeType, jsonNode, BIBO_STATUS);
+    return extractStringFromPointer(jsonNode, BIBO_STATUS);
   }
 
+  public static JsonPointerValuePair extractIsBasedOnFromInstance(JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, PAV_IS_BASED_ON);
+  }
 }
 
 

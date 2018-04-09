@@ -175,8 +175,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     FolderServerFolder newRoot = new FolderServerFolder();
     newRoot.setName1(proxies.config.getRootFolderPath());
     newRoot.setDescription1(proxies.config.getRootFolderDescription());
-    newRoot.setOwnedBy(creatorId);
-    newRoot.setLastUpdatedBy1(creatorId);
+    newRoot.setCreatedByTotal(creatorId);
     newRoot.setRoot(true);
     newRoot.setSystem(true);
     newRoot.setUserHome(false);

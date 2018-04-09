@@ -5,6 +5,8 @@ import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorPackException;
 import org.metadatacenter.error.CedarErrorReasonKey;
 
+import javax.ws.rs.core.Response;
+
 public abstract class CedarException extends Exception {
 
   protected CedarErrorPack errorPack;
@@ -69,5 +71,10 @@ public abstract class CedarException extends Exception {
 
   public boolean isShowFullStackTrace() {
     return showFullStackTrace;
+  }
+
+  public CedarException badRequest() {
+    errorPack.status(Response.Status.BAD_REQUEST);
+    return this;
   }
 }

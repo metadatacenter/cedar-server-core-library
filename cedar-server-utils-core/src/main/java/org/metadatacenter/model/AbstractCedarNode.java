@@ -12,7 +12,6 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
   protected static final Map<String, String> CONTEXT;
   protected String path;
   protected String parentPath;
-  protected String displayPath;
   protected String ownedBy;
 
   static {
@@ -36,14 +35,6 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
 
   public void setParentPath(String parentPath) {
     this.parentPath = parentPath;
-  }
-
-  public String getDisplayPath() {
-    return displayPath;
-  }
-
-  public void setDisplayPath(String displayPath) {
-    this.displayPath = displayPath;
   }
 
   public String getOwnedBy() {

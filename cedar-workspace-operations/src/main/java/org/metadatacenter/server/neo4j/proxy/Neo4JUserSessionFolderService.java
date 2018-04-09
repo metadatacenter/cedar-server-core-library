@@ -31,9 +31,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL) {
-    newResource.setOwnedBy(cu.getId());
-    newResource.setLastUpdatedBy1(cu.getId());
-    newResource.setCreatedBy1(cu.getId());
+    newResource.setCreatedByTotal(cu.getId());
     return proxies.resource().createResourceAsChildOfId(newResource, parentFolderURL);
   }
 
@@ -61,7 +59,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   private void setPaths(FolderServerNode node, List<? extends FolderServerNode> path) {
     node.setPath(getPathString(path));
     node.setParentPath(getParentPathString(path));
-    node.setDisplayPath(getDisplayPathString(path));
   }
 
   @Override
@@ -96,23 +93,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   private String getPathString(List<? extends FolderServerNode> path) {
-    StringBuilder sb = new StringBuilder();
-    boolean addSeparator = false;
-    for (FolderServerNode node : path) {
-      if (addSeparator) {
-        sb.append(proxies.pathUtil.getSeparator());
-      }
-      if (node instanceof FolderServerFolder) {
-        if (!((FolderServerFolder) node).isRoot()) {
-          addSeparator = true;
-        }
-      }
-      sb.append(node.getName());
-    }
-    return sb.length() == 0 ? null : sb.toString();
-  }
-
-  private String getDisplayPathString(List<? extends FolderServerNode> path) {
     StringBuilder sb = new StringBuilder();
     boolean addSeparator = false;
     for (FolderServerNode node : path) {
@@ -187,9 +167,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL) {
-    newFolder.setOwnedBy(cu.getId());
-    newFolder.setCreatedBy1(cu.getId());
-    newFolder.setLastUpdatedBy1(cu.getId());
+    newFolder.setCreatedByTotal(cu.getId());
     return proxies.folder().createFolderAsChildOfId(newFolder, parentFolderURL);
   }
 
@@ -280,9 +258,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     newUserHome.setRoot(false);
     newUserHome.setSystem(false);
     newUserHome.setUserHome(true);
-    newUserHome.setOwnedBy(userId);
-    newUserHome.setCreatedBy1(userId);
-    newUserHome.setLastUpdatedBy1(userId);
+    newUserHome.setCreatedByTotal(userId);
     newUserHome.setHomeOf(userId);
     currentUserHomeFolder = createFolderAsChildOfId(newUserHome, usersFolder.getId());
     if (currentUserHomeFolder != null) {
