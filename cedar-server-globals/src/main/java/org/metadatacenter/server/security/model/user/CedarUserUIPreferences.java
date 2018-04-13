@@ -6,6 +6,10 @@ public class CedarUserUIPreferences {
 
   private CedarUserUIResourceTypeFilters resourceTypeFilters;
 
+  private CedarUserUIResourceStatusFilter resourceStatusFilter;
+
+  private CedarUserUIResourceVersionFilter resourceVersionFilter;
+
   private CedarUserUIInfoPanel infoPanel;
 
   private CedarUserUITemplateEditor templateEditor;
@@ -17,6 +21,8 @@ public class CedarUserUIPreferences {
   public CedarUserUIPreferences() {
     folderView = new CedarUserUIFolderView();
     resourceTypeFilters = new CedarUserUIResourceTypeFilters();
+    resourceStatusFilter = new CedarUserUIResourceStatusFilter();
+    resourceVersionFilter = new CedarUserUIResourceVersionFilter();
     infoPanel = new CedarUserUIInfoPanel();
     templateEditor = new CedarUserUITemplateEditor();
     metadataEditor = new CedarUserUIMetadataEditor();
@@ -36,6 +42,22 @@ public class CedarUserUIPreferences {
 
   public void setResourceTypeFilters(CedarUserUIResourceTypeFilters resourceTypeFilters) {
     this.resourceTypeFilters = resourceTypeFilters;
+  }
+
+  public CedarUserUIResourceStatusFilter getResourceStatusFilter() {
+    return resourceStatusFilter;
+  }
+
+  public void setResourceStatusFilter(CedarUserUIResourceStatusFilter resourceStatusFilter) {
+    this.resourceStatusFilter = resourceStatusFilter;
+  }
+
+  public CedarUserUIResourceVersionFilter getResourceVersionFilter() {
+    return resourceVersionFilter;
+  }
+
+  public void setResourceVersionFilter(CedarUserUIResourceVersionFilter resourceVersionFilter) {
+    this.resourceVersionFilter = resourceVersionFilter;
   }
 
   public CedarUserUIInfoPanel getInfoPanel() {
