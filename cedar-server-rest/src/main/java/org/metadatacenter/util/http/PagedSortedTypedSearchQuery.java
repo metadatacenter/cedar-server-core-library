@@ -4,6 +4,8 @@ import org.metadatacenter.config.PaginationConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +36,18 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
   @Override
   public PagedSortedTypedSearchQuery resourceTypes(Optional<String> resourceTypesInput) {
     super.resourceTypes(resourceTypesInput);
+    return this;
+  }
+
+  @Override
+  public PagedSortedTypedSearchQuery version(Optional<String> v) {
+    super.version(v);
+    return this;
+  }
+
+  @Override
+  public PagedSortedTypedSearchQuery publicationStatus(Optional<String> v) {
+    super.publicationStatus(v);
     return this;
   }
 

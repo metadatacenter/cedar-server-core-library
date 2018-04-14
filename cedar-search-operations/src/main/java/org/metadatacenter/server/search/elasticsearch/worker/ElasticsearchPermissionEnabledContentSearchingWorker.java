@@ -21,6 +21,8 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +44,13 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     this.indexName = config.getIndexName();
   }
 
-  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>
-      sortList, String templateId, int limit, int offset) throws CedarProcessingException {
+  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
+                                     ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                         publicationStatus, List<String> sortList, String templateId, int limit, int
+                                         offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, sortList, templateId);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
+        publicationStatus, sortList, templateId);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -67,10 +72,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // intended for real time user requests, but rather for processing large amounts of data.
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                         List<String> sortList, String templateId, int limit, int offset) throws
-      CedarProcessingException {
+                                         ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                             publicationStatus, List<String> sortList, String templateId, int limit,
+                                         int offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, sortList, templateId);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
+        publicationStatus, sortList, templateId);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -100,7 +107,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String>
-      resourceTypes, List<String> sortList, String templateId) {
+      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, List<String>
+      sortList, String templateId) {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.NODE.getValue());
@@ -133,6 +141,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           resourceTypes);
       contentQuery.must(resourceTypesQuery);
     }
+
+    // TODO: USE VERSION AND PUBLICATION STATUS HERE
 
     // Filter by template id
     if (templateId != null) {

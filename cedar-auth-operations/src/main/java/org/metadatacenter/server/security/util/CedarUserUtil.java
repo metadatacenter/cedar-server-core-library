@@ -71,8 +71,8 @@ public class CedarUserUtil {
     CedarUserUIResourceVersionFilter resourceVersionFilter = user.getUiPreferences().getResourceVersionFilter();
     resourceVersionFilter.setVersion(ResourceVersionFilter.ALL);
 
-    CedarUserUIResourceStatusFilter resourceStatusFilter = user.getUiPreferences().getResourceStatusFilter();
-    resourceStatusFilter.setStatus(ResourceStatusFilter.ALL);
+    CedarUserUIResourcePublicationStatusFilter resourceStatusFilter = user.getUiPreferences().getResourceStatusFilter();
+    resourceStatusFilter.setPublicationStatus(ResourcePublicationStatusFilter.ALL);
 
     CedarUserUIInfoPanel infoPanel = user.getUiPreferences().getInfoPanel();
     infoPanel.setOpened(false);

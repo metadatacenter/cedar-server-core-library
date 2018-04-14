@@ -12,6 +12,8 @@ public final class CedarQueryParameters {
   public static final String QP_SORT = "sort";
   public static final String QP_LIMIT = "limit";
   public static final String QP_OFFSET = "offset";
+  public static final String QP_VERSION = "version";
+  public static final String QP_PUBLICATION_STATUS = "publicationStatus";
   public static final String QP_SUMMARY = "summary";
   public static final String QP_FIELD_NAMES = "field_names";
   public static final String QP_TEMPLATE_ID = "template_id";

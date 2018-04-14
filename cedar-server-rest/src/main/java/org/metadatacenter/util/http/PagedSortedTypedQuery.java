@@ -6,6 +6,8 @@ import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.CedarNodeTypeUtil;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   protected Optional<String> resourceTypesInput;
   protected List<CedarNodeType> nodeTypeList;
+  protected ResourceVersionFilter version;
+  protected ResourcePublicationStatusFilter publicationStatus;
 
   public PagedSortedTypedQuery(PaginationConfig config) {
     super(config);
@@ -26,6 +30,16 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   public PagedSortedTypedQuery resourceTypes(Optional<String> resourceTypesInput) {
     this.resourceTypesInput = resourceTypesInput;
+    return this;
+  }
+
+  public PagedSortedTypedQuery version(Optional<String> v) {
+    this.version = ResourceVersionFilter.forValue(v.get());
+    return this;
+  }
+
+  public PagedSortedTypedQuery publicationStatus(Optional<String> v) {
+    this.publicationStatus = ResourcePublicationStatusFilter.forValue(v.get());
     return this;
   }
 
@@ -109,4 +123,11 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
     }
   }
 
+  public ResourceVersionFilter getVersion() {
+    return version;
+  }
+
+  public ResourcePublicationStatusFilter getPublicationStatus() {
+    return publicationStatus;
+  }
 }

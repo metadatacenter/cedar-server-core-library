@@ -3,7 +3,7 @@ package org.metadatacenter.server.security.model.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum ResourceStatusFilter {
+public enum ResourcePublicationStatusFilter {
 
   DRAFT("bibo:draft"),
   PUBLISHED("bibo:published"),
@@ -11,7 +11,7 @@ public enum ResourceStatusFilter {
 
   private final String value;
 
-  ResourceStatusFilter(String value) {
+  ResourcePublicationStatusFilter(String value) {
     this.value = value;
   }
 
@@ -21,8 +21,8 @@ public enum ResourceStatusFilter {
   }
 
   @JsonCreator
-  public static ResourceStatusFilter forValue(String value) {
-    for (ResourceStatusFilter t : values()) {
+  public static ResourcePublicationStatusFilter forValue(String value) {
+    for (ResourcePublicationStatusFilter t : values()) {
       if (t.getValue().equals(value)) {
         return t;
       }
