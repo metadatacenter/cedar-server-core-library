@@ -40,4 +40,21 @@ public class CedarNodePermissions {
   public void addGroupPermissions(CedarNodeGroupPermission groupPermission) {
     groupPermissions.add(groupPermission);
   }
+
+  public CedarNodePermissionsRequest toRequest() {
+    CedarNodePermissionsRequest r = new CedarNodePermissionsRequest();
+    // copy owner
+    NodePermissionUser newOwner = new NodePermissionUser();
+    newOwner.setId(owner.getId());
+    r.setOwner(newOwner);
+    // copy users
+    for (CedarNodeUserPermission up : userPermissions) {
+      r.getUserPermissions().add(up.getAsUserIdPermissionPair());
+    }
+    // copy groups
+    for (CedarNodeGroupPermission gp : groupPermissions) {
+      r.getGroupPermissions().add(gp.getAsGroupIdPermissionPair());
+    }
+    return r;
+  }
 }
