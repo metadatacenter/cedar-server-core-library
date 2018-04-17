@@ -73,10 +73,12 @@ public interface FolderServiceSession {
   long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
                              ResourcePublicationStatusFilter publicationStatus);
 
-  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
-      sortList);
+  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                 ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                 List<String> sortList);
 
-  long viewAllCount(List<CedarNodeType> nodeTypeList);
+  long viewAllCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus);
 
   List<FolderServerNode> findAllDescendantNodesById(String id);
 

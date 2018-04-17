@@ -65,12 +65,16 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getAllLookupParameters(List<CedarNodeType> nodeTypes, int limit, int
-      offset, String ownerId, boolean addPermissionConditions) {
+  public static CypherParameters getAllLookupParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                        ResourcePublicationStatusFilter publicationStatus, int limit,
+                                                        int offset, String ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    if (publicationStatus != null) {
+      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
     if (addPermissionConditions) {
@@ -79,12 +83,16 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getAllCountParameters(List<CedarNodeType> nodeTypes, String ownerId,
-                                                       boolean addPermissionConditions) {
+  public static CypherParameters getAllCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                       ResourcePublicationStatusFilter publicationStatus, String
+                                                           ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    if (publicationStatus != null) {
+      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
     if (addPermissionConditions) {
       params.put(ParameterPlaceholder.USER_ID, ownerId);
     }

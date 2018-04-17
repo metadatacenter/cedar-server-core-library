@@ -227,14 +227,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
-      sortList) {
-    return proxies.node().viewAllFiltered(nodeTypes, limit, offset, sortList, cu);
+  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                        List<String> sortList) {
+    return proxies.node().viewAllFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
   }
 
   @Override
-  public long viewAllCount(List<CedarNodeType> nodeTypes) {
-    return proxies.node().viewAllFilteredCount(nodeTypes, cu);
+  public long viewAllCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                           ResourcePublicationStatusFilter publicationStatus) {
+    return proxies.node().viewAllFilteredCount(nodeTypes, version, publicationStatus, cu);
   }
 
   @Override

@@ -143,28 +143,31 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return count(jsonNode);
   }
 
-  public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
-      sortList, CedarUser cu) {
+  public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                    offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
     }
-    String cypher = CypherQueryBuilderNode.getAllLookupQuery(sortList, addPermissionConditions);
-    CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(nodeTypes, limit, offset, cu.getId(),
+    String cypher = CypherQueryBuilderNode.getAllLookupQuery(version, publicationStatus, sortList,
         addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(nodeTypes, version, publicationStatus,
+        limit, offset, cu.getId(), addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
-  public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
+  public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                   ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
     }
-    String cypher = CypherQueryBuilderNode.getAllCountQuery(addPermissionConditions);
-    CypherParameters params = CypherParamBuilderNode.getAllCountParameters(nodeTypes, cu.getId(),
-        addPermissionConditions);
+    String cypher = CypherQueryBuilderNode.getAllCountQuery(version, publicationStatus, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllCountParameters(nodeTypes, version, publicationStatus, cu
+        .getId(), addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return count(jsonNode);
