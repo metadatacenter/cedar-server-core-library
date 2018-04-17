@@ -46,11 +46,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                         publicationStatus, List<String> sortList, String templateId, int limit, int
+                                         publicationStatus, List<String> sortList, String isBasedOn, int limit, int
                                          offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList, templateId);
+        publicationStatus, sortList, isBasedOn);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -73,11 +73,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                          ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                             publicationStatus, List<String> sortList, String templateId, int limit,
+                                             publicationStatus, List<String> sortList, String isBasedOn, int limit,
                                          int offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList, templateId);
+        publicationStatus, sortList, isBasedOn);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -108,7 +108,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, List<String>
-                                                           sortList, String templateId) {
+                                                           sortList, String isBasedOn) {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.NODE.getValue());
@@ -175,8 +175,9 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     }
 
     // Filter by template id
-    if (templateId != null) {
-      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(ES_TEMPLATEID_FIELD, templateId);
+    if (isBasedOn != null) {
+      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(ES_RESOURCE_PREFIX + ES_RESOURCE_IS_BASED_ON_FIELD,
+          isBasedOn);
       contentQuery.must(templateIdQuery);
     }
 

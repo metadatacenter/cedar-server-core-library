@@ -8,6 +8,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 
+import static org.metadatacenter.model.ModelNodeNames.*;
+
 public abstract class FolderServerResource extends FolderServerNode {
 
   protected ResourceVersion version;
@@ -20,7 +22,7 @@ public abstract class FolderServerResource extends FolderServerNode {
     super(nodeType);
   }
 
-  @JsonGetter("pav:version")
+  @JsonGetter(PAV_VERSION)
   public ResourceVersion getVersion() {
     return version;
   }
@@ -30,12 +32,12 @@ public abstract class FolderServerResource extends FolderServerNode {
     this.version = ResourceVersion.forValue(v);
   }
 
-  @JsonSetter("pav:version")
+  @JsonSetter(PAV_VERSION)
   public void setVersion2(String v) {
     this.version = ResourceVersion.forValue(v);
   }
 
-  @JsonGetter("pav:previousVersion")
+  @JsonGetter(PAV_PREVIOUS_VERSION)
   public ResourceUri getPreviousVersion() {
     return previousVersion;
   }
@@ -45,12 +47,12 @@ public abstract class FolderServerResource extends FolderServerNode {
     this.previousVersion = ResourceUri.forValue(pv);
   }
 
-  @JsonSetter("pav:previousVersion")
+  @JsonSetter(PAV_PREVIOUS_VERSION)
   public void setPreviousVersion2(String pv) {
     this.previousVersion = ResourceUri.forValue(pv);
   }
 
-  @JsonGetter("bibo:status")
+  @JsonGetter(BIBO_STATUS)
   public BiboStatus getPublicationStatus() {
     return publicationStatus;
   }
@@ -60,12 +62,12 @@ public abstract class FolderServerResource extends FolderServerNode {
     this.publicationStatus = BiboStatus.forValue(s);
   }
 
-  @JsonSetter("bibo:status")
+  @JsonSetter(BIBO_STATUS)
   public void setPublicationStatus2(String s) {
     this.publicationStatus = BiboStatus.forValue(s);
   }
 
-  @JsonGetter("pav:derivedFrom")
+  @JsonGetter(PAV_DERIVED_FROM)
   public ResourceUri getDerivedFrom() {
     return derivedFrom;
   }
@@ -75,7 +77,7 @@ public abstract class FolderServerResource extends FolderServerNode {
     this.derivedFrom = ResourceUri.forValue(df);
   }
 
-  @JsonSetter("pav:derivedFrom")
+  @JsonSetter(PAV_DERIVED_FROM)
   public void setDerivedFrom2(String df) {
     this.derivedFrom = ResourceUri.forValue(df);
   }

@@ -37,13 +37,13 @@ public class ContentSearchingService extends AbstractSearchingService {
 
   public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                 publicationStatus, String templateId, List<String> sortList, int
+                                                 publicationStatus, String isBasedOn, List<String> sortList, int
                                                  limit, int offset, String absoluteUrl) throws
       CedarProcessingException {
     try {
       SearchResponseResult searchResult = searchWorker.search(rctx, query, resourceTypes, version, publicationStatus,
-          sortList, templateId, limit, offset);
-      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, templateId, sortList,
+          sortList, isBasedOn, limit, offset);
+      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, isBasedOn, sortList,
           limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
@@ -53,13 +53,13 @@ public class ContentSearchingService extends AbstractSearchingService {
 
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                                  ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                     publicationStatus, String templateId, List<String> sortList, int
+                                                     publicationStatus, String isBasedOn, List<String> sortList, int
                                                      limit, int offset, String absoluteUrl) throws
       CedarProcessingException {
     try {
       SearchResponseResult searchResult = searchWorker.searchDeep(rctx, query, resourceTypes, version,
-          publicationStatus, sortList, templateId, limit, offset);
-      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, templateId, sortList,
+          publicationStatus, sortList, isBasedOn, limit, offset);
+      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, isBasedOn, sortList,
           limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);

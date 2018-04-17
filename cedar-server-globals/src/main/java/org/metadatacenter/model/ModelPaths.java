@@ -7,6 +7,7 @@ public class ModelPaths {
 
   public static final String SCHEMA_DESCRIPTION = "/schema:description";
   public static final String SCHEMA_NAME = "/schema:name";
+  public static final String SCHEMA_IS_BASED_ON = "/" + ModelNodeNames.SCHEMA_IS_BASED_ON;
 
   public static final String CREATED_BY = "/createdBy";
   public static final String PAV_CREATED_BY = "/pav:createdBy";
@@ -17,7 +18,6 @@ public class ModelPaths {
   public static final String PAV_LAST_UPDATED_ON = "/pav:lastUpdatedOn";
 
   public static final String PAV_VERSION = "/" + ModelNodeNames.PAV_VERSION;
-  public static final String PAV_IS_BASED_ON = "/" + ModelNodeNames.PAV_IS_BASED_ON;
   public static final String BIBO_STATUS = "/" + ModelNodeNames.BIBO_STATUS;
 
   public static final String AT_ID = "/@id";

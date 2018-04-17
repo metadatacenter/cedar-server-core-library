@@ -51,7 +51,7 @@ public class ModelUtil {
   }
 
   public static JsonPointerValuePair extractIsBasedOnFromInstance(JsonNode jsonNode) {
-    return extractStringFromPointer(jsonNode, PAV_IS_BASED_ON);
+    return extractStringFromPointer(jsonNode, SCHEMA_IS_BASED_ON);
   }
 }
 
