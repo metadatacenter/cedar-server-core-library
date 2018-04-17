@@ -6,7 +6,7 @@ public class CedarUserUIPreferences {
 
   private CedarUserUIResourceTypeFilters resourceTypeFilters;
 
-  private CedarUserUIResourcePublicationStatusFilter resourceStatusFilter;
+  private CedarUserUIResourcePublicationStatusFilter resourcePublicationStatusFilter;
 
   private CedarUserUIResourceVersionFilter resourceVersionFilter;
 
@@ -21,7 +21,7 @@ public class CedarUserUIPreferences {
   public CedarUserUIPreferences() {
     folderView = new CedarUserUIFolderView();
     resourceTypeFilters = new CedarUserUIResourceTypeFilters();
-    resourceStatusFilter = new CedarUserUIResourcePublicationStatusFilter();
+    resourcePublicationStatusFilter = new CedarUserUIResourcePublicationStatusFilter();
     resourceVersionFilter = new CedarUserUIResourceVersionFilter();
     infoPanel = new CedarUserUIInfoPanel();
     templateEditor = new CedarUserUITemplateEditor();
@@ -44,12 +44,12 @@ public class CedarUserUIPreferences {
     this.resourceTypeFilters = resourceTypeFilters;
   }
 
-  public CedarUserUIResourcePublicationStatusFilter getResourceStatusFilter() {
-    return resourceStatusFilter;
+  public CedarUserUIResourcePublicationStatusFilter getResourcePublicationStatusFilter() {
+    return resourcePublicationStatusFilter;
   }
 
-  public void setResourceStatusFilter(CedarUserUIResourcePublicationStatusFilter resourceStatusFilter) {
-    this.resourceStatusFilter = resourceStatusFilter;
+  public void setResourcePublicationStatusFilter(CedarUserUIResourcePublicationStatusFilter resourcePublicationStatusFilter) {
+    this.resourcePublicationStatusFilter = resourcePublicationStatusFilter;
   }
 
   public CedarUserUIResourceVersionFilter getResourceVersionFilter() {

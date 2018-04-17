@@ -46,7 +46,7 @@ public class ModelUtil {
     return extractStringFromPointer(jsonNode, PAV_VERSION);
   }
 
-  public static JsonPointerValuePair extractStatusFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractPublicationStatusFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, BIBO_STATUS);
   }
 

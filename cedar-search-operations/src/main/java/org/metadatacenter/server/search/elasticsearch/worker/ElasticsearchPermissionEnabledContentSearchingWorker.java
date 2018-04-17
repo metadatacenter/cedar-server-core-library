@@ -108,7 +108,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, List<String>
-      sortList, String templateId) {
+                                                           sortList, String templateId) {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.NODE.getValue());
@@ -142,7 +142,28 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       contentQuery.must(resourceTypesQuery);
     }
 
-    // TODO: USE VERSION AND PUBLICATION STATUS HERE
+    // Filter version
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      //TODO: Filter version / latest here
+    }
+
+    // Filter publicationStatus
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
+      BoolQueryBuilder publicationStatusQuery = QueryBuilders.boolQuery();
+      BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
+      QueryBuilder publicationstatusEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
+      inner1Query.must(publicationstatusEqualsQuery);
+      BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
+      QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_PUBLICATION_STATUS_FIELD);
+      inner2Query.mustNot(publicationStatusExistsQuery);
+      publicationStatusQuery.should(inner1Query);
+      publicationStatusQuery.should(inner2Query);
+      contentQuery.must(publicationStatusQuery);
+    }
 
     // Filter by template id
     if (templateId != null) {

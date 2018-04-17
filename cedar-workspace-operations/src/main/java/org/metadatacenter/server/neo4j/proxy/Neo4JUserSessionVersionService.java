@@ -26,7 +26,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public boolean resourceCanBePublished(FolderServerResource resource) {
-    if (resource.getStatus() == BiboStatus.DRAFT) {
+    if (resource.getPublicationStatus() == BiboStatus.DRAFT) {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       if (nextVersion == null) {
         return true;
@@ -37,7 +37,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public boolean resourceCanBeDrafted(FolderServerResource resource) {
-    if (resource.getStatus() == BiboStatus.PUBLISHED) {
+    if (resource.getPublicationStatus() == BiboStatus.PUBLISHED) {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       if (nextVersion == null) {
         return true;

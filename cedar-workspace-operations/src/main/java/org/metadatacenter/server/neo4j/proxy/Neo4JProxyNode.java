@@ -18,6 +18,8 @@ import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderCont
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,14 +32,16 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     super(proxies);
   }
 
-  long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList, CedarUser cu) {
+  long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
     }
-    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery(addPermissionConditions);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery(version, publicationStatus,
+        addPermissionConditions);
     CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredCountParameters(folderId,
-        nodeTypeList, cu.getId());
+        nodeTypeList, version, publicationStatus, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return count(jsonNode);
@@ -66,17 +70,18 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return count(jsonNode);
   }
 
-  List<FolderServerNode> findFolderContentsFiltered(String folderId, Collection<CedarNodeType> nodeTypes, int
-      limit, int offset, List<String> sortList, CedarUser cu) {
+  List<FolderServerNode> findFolderContentsFiltered(String folderId, Collection<CedarNodeType> nodeTypes,
+                                                    ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                        publicationStatus, int limit, int offset, List<String>
+                                                        sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
     }
-    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList,
-        addPermissionConditions);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version,
+        publicationStatus, addPermissionConditions);
     CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId,
-        nodeTypes,
-        limit, offset, cu.getId());
+        nodeTypes, version, publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
@@ -117,19 +122,22 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return buildUser(userNode);
   }
 
-  public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, int limit, int offset,
-                                                         List<String> sortList, CedarUser cu) {
-    String cypher = CypherQueryBuilderNode.getSharedWithMeLookupQuery(sortList);
-    CypherParameters params = CypherParamBuilderNode.getSharedWithMeLookupParameters(nodeTypes, limit, offset, cu
-        .getId());
+  public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus, int limit, int offset, List<String> sortList,
+                                                         CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithMeLookupQuery(version, publicationStatus, sortList);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeLookupParameters(nodeTypes, version,
+        publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return listNodes(jsonNode);
   }
 
-  public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, CedarUser cu) {
-    String cypher = CypherQueryBuilderNode.getSharedWithMeCountQuery();
-    CypherParameters params = CypherParamBuilderNode.getSharedWithMeCountParameters(nodeTypes, cu.getId());
+  public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                            ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithMeCountQuery(version, publicationStatus);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeCountParameters(nodeTypes, version,
+        publicationStatus, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return count(jsonNode);

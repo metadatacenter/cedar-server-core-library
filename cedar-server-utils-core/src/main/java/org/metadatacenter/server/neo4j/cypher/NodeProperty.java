@@ -17,7 +17,7 @@ public enum NodeProperty implements CypherQueryParameter {
   EMAIL("email"),
   NODE_TYPE("nodeType"),
   VERSION("version"),
-  STATUS("status"),
+  PUBLICATION_STATUS("publicationStatus"),
   SPECIAL_GROUP("specialGroup"),
   IS_ROOT("isRoot"),
   IS_SYSTEM("isSystem"),

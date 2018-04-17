@@ -34,12 +34,20 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
   }
 
   public PagedSortedTypedQuery version(Optional<String> v) {
-    this.version = ResourceVersionFilter.forValue(v.get());
+    if (v.isPresent()) {
+      this.version = ResourceVersionFilter.forValue(v.get());
+    } else {
+      this.version = null;
+    }
     return this;
   }
 
   public PagedSortedTypedQuery publicationStatus(Optional<String> v) {
-    this.publicationStatus = ResourcePublicationStatusFilter.forValue(v.get());
+    if (v.isPresent()) {
+      this.publicationStatus = ResourcePublicationStatusFilter.forValue(v.get());
+    } else {
+      this.publicationStatus = null;
+    }
     return this;
   }
 
@@ -129,5 +137,13 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   public ResourcePublicationStatusFilter getPublicationStatus() {
     return publicationStatus;
+  }
+
+  public String getVersionAsString() {
+    return version != null ? version.getValue() : "";
+  }
+
+  public String getPublicationStatusAsString() {
+    return publicationStatus != null ? publicationStatus.getValue() : "";
   }
 }

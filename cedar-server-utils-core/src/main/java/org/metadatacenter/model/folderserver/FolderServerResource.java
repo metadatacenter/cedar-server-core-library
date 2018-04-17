@@ -11,7 +11,7 @@ public abstract class FolderServerResource extends FolderServerNode {
 
   protected ResourceVersion version;
   protected ResourceUri previousVersion;
-  protected BiboStatus status;
+  protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
 
   public FolderServerResource(CedarNodeType nodeType) {
@@ -49,18 +49,18 @@ public abstract class FolderServerResource extends FolderServerNode {
   }
 
   @JsonGetter("bibo:status")
-  public BiboStatus getStatus() {
-    return status;
+  public BiboStatus getPublicationStatus() {
+    return publicationStatus;
   }
 
-  @JsonSetter("status")
-  public void setStatus1(String s) {
-    this.status = BiboStatus.forValue(s);
+  @JsonSetter("publicationStatus")
+  public void setPublicationStatus1(String s) {
+    this.publicationStatus = BiboStatus.forValue(s);
   }
 
   @JsonSetter("bibo:status")
-  public void setStatus2(String s) {
-    this.status = BiboStatus.forValue(s);
+  public void setPublicationStatus2(String s) {
+    this.publicationStatus = BiboStatus.forValue(s);
   }
 
   @JsonGetter("pav:derivedFrom")

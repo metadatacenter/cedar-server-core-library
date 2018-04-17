@@ -13,6 +13,8 @@ import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.util.ArrayList;
@@ -115,8 +117,10 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList) {
-    return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList, cu);
+  public long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList,
+                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                  publicationStatus) {
+    return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList, version, publicationStatus, cu);
   }
 
   @Override
@@ -140,9 +144,12 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList, int
-      limit, int offset, List<String> sortList) {
-    return proxies.node().findFolderContentsFiltered(folderURL, nodeTypeList, limit, offset, sortList, cu);
+  public List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
+                                                           ResourceVersionFilter version,
+                                                           ResourcePublicationStatusFilter publicationStatus, int
+                                                               limit, int offset, List<String> sortList) {
+    return proxies.node().findFolderContentsFiltered(folderURL, nodeTypeList, version, publicationStatus, limit,
+        offset, sortList, cu);
   }
 
   @Override
@@ -207,14 +214,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
-      sortList) {
-    return proxies.node().viewSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
+  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                 ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                     offset, List<String> sortList) {
+    return proxies.node().viewSharedWithMeFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
   }
 
   @Override
-  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes) {
-    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, cu);
+  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                    ResourcePublicationStatusFilter publicationStatus) {
+    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, version, publicationStatus, cu);
   }
 
   @Override

@@ -48,8 +48,8 @@ public abstract class AbstractCypherParamBuilder {
       if (newResource.getVersion() != null) {
         params.put(NodeProperty.VERSION, newResource.getVersion().getValue());
       }
-      if (newResource.getStatus() != null) {
-        params.put(NodeProperty.STATUS, newResource.getStatus().getValue());
+      if (newResource.getPublicationStatus() != null) {
+        params.put(NodeProperty.PUBLICATION_STATUS, newResource.getPublicationStatus().getValue());
       }
       if (newResource.getDerivedFrom() != null) {
         params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());

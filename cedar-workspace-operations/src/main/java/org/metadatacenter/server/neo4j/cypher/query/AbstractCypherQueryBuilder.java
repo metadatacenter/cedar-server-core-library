@@ -77,8 +77,8 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.getVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.VERSION)).append(",");
       }
-      if (newResource.getStatus() != null) {
-        sb.append(buildCreateAssignment(NodeProperty.STATUS)).append(",");
+      if (newResource.getPublicationStatus() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.PUBLICATION_STATUS)).append(",");
       }
       if (newResource.getDerivedFrom() != null) {
         sb.append(buildCreateAssignment(NodeProperty.DERIVED_FROM)).append(",");
@@ -203,6 +203,22 @@ public abstract class AbstractCypherQueryBuilder {
         getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, nodeAlias) +
         " OR " +
         getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, nodeAlias) +
+        ")";
+  }
+
+  protected static String getVersionConditions(String relationPrefix, String nodeAlias) {
+    return "" +
+        " " + relationPrefix + " " +
+        "(" + nodeAlias + ".<PROP.VERSION> = {version}" + ")";
+  }
+
+  protected static String getPublicationStatusConditions(String relationPrefix, String nodeAlias) {
+    return "" +
+        " " + relationPrefix + " " +
+        "(" +
+        nodeAlias + ".<PROP.PUBLICATION_STATUS> = {publicationStatus}" +
+        " OR " +
+        nodeAlias + ".<PROP.PUBLICATION_STATUS> IS NULL" +
         ")";
   }
 
