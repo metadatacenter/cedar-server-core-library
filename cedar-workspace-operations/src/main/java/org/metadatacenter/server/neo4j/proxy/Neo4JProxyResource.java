@@ -146,4 +146,12 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     return successOrLogAndThrowException(jsonNode, "Error while setting derivedFrom version:");
   }
+
+  public boolean unsetLatestVersion(String resourceId) {
+    String cypher = CypherQueryBuilderResource.unsetLatestVersion();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    JsonNode jsonNode = executeCypherQueryAndCommit(q);
+    return successOrLogAndThrowException(jsonNode, "Error while unsetting isLatestVersion:");
+  }
 }

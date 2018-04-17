@@ -25,6 +25,7 @@ public enum NodeProperty implements CypherQueryParameter {
   NODE_SORT_ORDER("nodeSortOrder"),
   HOME_OF("homeOf"),
   PREVIOUS_VERSION("previousVersion"),
+  IS_LATEST_VERSION("isLatestVersion"),
   DERIVED_FROM("derivedFrom");
 
   private final String value;

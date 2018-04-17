@@ -103,4 +103,11 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " SET nr.<PROP.DERIVED_FROM> = {targetId}" +
         " RETURN nr";
   }
+
+  public static String unsetLatestVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_VERSION> = false" +
+        " RETURN resource";
+  }
 }

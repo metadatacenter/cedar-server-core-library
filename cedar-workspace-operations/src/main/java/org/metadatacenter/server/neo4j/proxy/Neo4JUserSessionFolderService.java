@@ -289,4 +289,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return proxies.resource().setDerivedFrom(newId, oldId);
   }
 
+  @Override
+  public boolean unsetLatestVersion(String id) {
+    return proxies.resource().unsetLatestVersion(id);
+  }
+
 }

@@ -19,9 +19,6 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
-    if (version != null) {
-      params.put(ParameterPlaceholder.VERSION, version.getValue());
-    }
     if (publicationStatus != null) {
       params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -37,9 +34,6 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     List<String> ntl = new ArrayList<>();
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
-    if (version != null) {
-      params.put(ParameterPlaceholder.VERSION, version.getValue());
-    }
     if (publicationStatus != null) {
       params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
     }

@@ -86,6 +86,9 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.getPreviousVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.PREVIOUS_VERSION)).append(",");
       }
+      if (newResource.isLatestVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_VERSION)).append(",");
+      }
     } else if (newNode instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newNode;
       if (newFolder.isRoot()) {
@@ -209,7 +212,11 @@ public abstract class AbstractCypherQueryBuilder {
   protected static String getVersionConditions(String relationPrefix, String nodeAlias) {
     return "" +
         " " + relationPrefix + " " +
-        "(" + nodeAlias + ".<PROP.VERSION> = {version}" + ")";
+        "(" +
+        nodeAlias + ".<PROP.IS_LATEST_VERSION> = true" +
+        " OR " +
+        nodeAlias + ".<PROP.IS_LATEST_VERSION> IS NULL" +
+        ")";
   }
 
   protected static String getPublicationStatusConditions(String relationPrefix, String nodeAlias) {

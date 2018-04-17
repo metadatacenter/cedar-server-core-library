@@ -144,18 +144,27 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter version
     if (version != null && version != ResourceVersionFilter.ALL) {
-      //TODO: Filter version / latest here
+      BoolQueryBuilder versionQuery = QueryBuilders.boolQuery();
+      BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
+      QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_IS_LATEST_VERSION_FIELD, true);
+      inner1Query.must(versionEqualsQuery);
+      BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
+      QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_IS_LATEST_VERSION_FIELD);
+      inner2Query.mustNot(versionExistsQuery);
+      versionQuery.should(inner1Query);
+      versionQuery.should(inner2Query);
+      contentQuery.must(versionQuery);
     }
 
     // Filter publicationStatus
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
-      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
-          ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
       BoolQueryBuilder publicationStatusQuery = QueryBuilders.boolQuery();
       BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
-      QueryBuilder publicationstatusEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
           ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
-      inner1Query.must(publicationstatusEqualsQuery);
+      inner1Query.must(publicationStatusEqualsQuery);
       BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
       QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
           ES_RESOURCE_PUBLICATION_STATUS_FIELD);

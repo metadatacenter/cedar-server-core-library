@@ -57,6 +57,9 @@ public abstract class AbstractCypherParamBuilder {
       if (newResource.getPreviousVersion() != null) {
         params.put(NodeProperty.PREVIOUS_VERSION, newResource.getPreviousVersion());
       }
+      if (newResource.isLatestVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_VERSION, newResource.isLatestVersion());
+      }
     } else if (newNode instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newNode;
       params.put(NodeProperty.IS_ROOT, newFolder.isRoot());

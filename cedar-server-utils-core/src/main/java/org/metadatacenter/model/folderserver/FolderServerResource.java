@@ -1,6 +1,7 @@
 package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
@@ -13,6 +14,7 @@ public abstract class FolderServerResource extends FolderServerNode {
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
+  protected Boolean latestVersion;
 
   public FolderServerResource(CedarNodeType nodeType) {
     super(nodeType);
@@ -76,5 +78,15 @@ public abstract class FolderServerResource extends FolderServerNode {
   @JsonSetter("pav:derivedFrom")
   public void setDerivedFrom2(String df) {
     this.derivedFrom = ResourceUri.forValue(df);
+  }
+
+  @JsonProperty("isLatestVersion")
+  public Boolean isLatestVersion() {
+    return latestVersion;
+  }
+
+  @JsonProperty("isLatestVersion")
+  public void setLatestVersion(Boolean latestVersion) {
+    this.latestVersion = latestVersion;
   }
 }

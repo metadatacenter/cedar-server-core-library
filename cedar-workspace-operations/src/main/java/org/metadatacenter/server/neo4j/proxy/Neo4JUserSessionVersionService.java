@@ -2,7 +2,6 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -20,8 +19,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public boolean userCanPerformVersioning(FolderServerResource resource) {
-    return userIsOwnerOfNode(resource.getId()) &&
-        (resource.getType() == CedarNodeType.TEMPLATE || resource.getType() == CedarNodeType.ELEMENT);
+    return userIsOwnerOfNode(resource.getId()) && resource.getType().isVersioned();
   }
 
   @Override
