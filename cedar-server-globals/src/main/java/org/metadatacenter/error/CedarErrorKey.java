@@ -106,6 +106,8 @@ public enum CedarErrorKey {
   UPSTREAM_SERVER_ERROR("upstreamServerError"),
   NOTHING_TO_DO("nothingToDo"),
 
+  PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
+
   DRAFT_NOT_CREATED("draftNotCreated");
 
   private final String value;
