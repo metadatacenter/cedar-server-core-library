@@ -107,6 +107,9 @@ public enum CedarErrorKey {
   NOTHING_TO_DO("nothingToDo"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
+  VERSIONING_ONLY_ON_LATEST("versioningOnlyOnLatest"),
+  CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
+  PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
 
   DRAFT_NOT_CREATED("draftNotCreated");
 
