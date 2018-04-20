@@ -58,12 +58,12 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "node"));
     }
-    sb.append(
-        " RETURN DISTINCT(node)" +
-            " ORDER BY node.<PROP.NODE_SORT_ORDER>," + getOrderByExpression("node", sortList) +
-            " SKIP {offset}" +
-            " LIMIT {limit}"
-    );
+    sb.append(" RETURN DISTINCT(node)");
+    sb.append(" ORDER BY node.<PROP.NODE_SORT_ORDER>,");
+    sb.append(getOrderByExpression("node", sortList));
+    sb.append(", node.<PROP.VERSION> DESC");
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
     return sb.toString();
   }
 
