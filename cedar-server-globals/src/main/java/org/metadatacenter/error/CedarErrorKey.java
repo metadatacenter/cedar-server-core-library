@@ -48,6 +48,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
   NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
 
+  NO_READ_ACCESS_TO_NODE("noWriteAccessToNode"),
+
   FOLDER_NOT_FOUND("folderNotFound"),
 
   RESOURCE_NOT_FOUND("resourceNotFound"),
