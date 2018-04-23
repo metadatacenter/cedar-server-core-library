@@ -110,4 +110,12 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " SET resource.<PROP.IS_LATEST_VERSION> = false" +
         " RETURN resource";
   }
+
+  public static String setLatestVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_VERSION> = true" +
+        " RETURN resource";
+  }
+
 }

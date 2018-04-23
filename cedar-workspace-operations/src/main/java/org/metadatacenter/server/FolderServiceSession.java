@@ -93,4 +93,6 @@ public interface FolderServiceSession {
   boolean setDerivedFrom(String newId, String oldId);
 
   boolean unsetLatestVersion(String id);
+
+  boolean setLatestVersion(String id);
 }
