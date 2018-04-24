@@ -1,12 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
-import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -187,6 +184,17 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     }
   }
 
+  @Override
+  public boolean userIsOwnerOfNode(FolderServerNode node) {
+    FolderServerUser owner = getNodeOwner(node.getId());
+    return owner != null && owner.getId().equals(cu.getId());
+  }
+
+  @Override
+  public boolean userHas(CedarPermission permission) {
+    return cu.has(permission);
+  }
+
   private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers,
                                                 List<FolderServerUser> writeUsers, List<FolderServerGroup>
                                                     readGroups, List<FolderServerGroup> writeGroups) {
@@ -277,14 +285,12 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   private List<FolderServerUser> getUsersWithTransitivePermission(String nodeURL, NodePermission permission,
-                                                                  FolderOrResource
-                                                                      folderOrResource) {
+                                                                  FolderOrResource folderOrResource) {
     return proxies.permission().getUsersWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
   }
 
   private List<FolderServerGroup> getGroupsWithTransitivePermission(String nodeURL, NodePermission permission,
-                                                                    FolderOrResource
-                                                                        folderOrResource) {
+                                                                    FolderOrResource folderOrResource) {
     return proxies.permission().getGroupsWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
   }
 
