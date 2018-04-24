@@ -2,9 +2,6 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
@@ -13,10 +10,11 @@ import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.neo4j.Neo4jConfig;
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.CedarUserNameUtil;
 
 import java.util.ArrayList;
@@ -34,10 +32,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label) {
-    return proxies.resource().createResourceAsChildOfId(parentFolderURL, childURL, nodeType, name, description, cu
-        .getId(), label);
+  public FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL) {
+    newResource.setCreatedByTotal(cu.getId());
+    return proxies.resource().createResourceAsChildOfId(newResource, parentFolderURL);
   }
 
   @Override
@@ -64,8 +61,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   private void setPaths(FolderServerNode node, List<? extends FolderServerNode> path) {
     node.setPath(getPathString(path));
     node.setParentPath(getParentPathString(path));
-    node.setDisplayPath(getDisplayPathString(path));
-    node.setDisplayParentPath(getDisplayParentPathString(path));
   }
 
   @Override
@@ -116,43 +111,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return sb.length() == 0 ? null : sb.toString();
   }
 
-
-  private String getDisplayParentPathString(List<? extends FolderServerNode> path) {
-    List<FolderServerNode> p = new ArrayList<>();
-    p.addAll(path);
-    if (path.size() > 0) {
-      p.remove(p.size() - 1);
-    } else {
-      return null;
-    }
-    return getDisplayPathString(p);
-  }
-
-  private String getDisplayPathString(List<? extends FolderServerNode> path) {
-    StringBuilder sb = new StringBuilder();
-    boolean addSeparator = false;
-    for (FolderServerNode node : path) {
-      if (addSeparator) {
-        sb.append(proxies.pathUtil.getSeparator());
-      }
-      if (node instanceof FolderServerFolder) {
-        if (!((FolderServerFolder) node).isRoot()) {
-          addSeparator = true;
-        }
-      }
-      sb.append(node.getName());
-    }
-    return sb.length() == 0 ? null : sb.toString();
-  }
-
   @Override
   public String sanitizeName(String name) {
     return proxies.pathUtil.sanitizeName(name);
   }
 
   @Override
-  public long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList) {
-    return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList, cu);
+  public long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList,
+                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                  publicationStatus) {
+    return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList, version, publicationStatus, cu);
   }
 
   @Override
@@ -176,9 +144,12 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList, int
-      limit, int offset, List<String> sortList) {
-    return proxies.node().findFolderContentsFiltered(folderURL, nodeTypeList, limit, offset, sortList, cu);
+  public List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
+                                                           ResourceVersionFilter version,
+                                                           ResourcePublicationStatusFilter publicationStatus, int
+                                                               limit, int offset, List<String> sortList) {
+    return proxies.node().findFolderContentsFiltered(folderURL, nodeTypeList, version, publicationStatus, limit,
+        offset, sortList, cu);
   }
 
   @Override
@@ -202,16 +173,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description) {
-    return createFolderAsChildOfId(parentFolderURL, name, description, IsRoot.FALSE, IsSystem.FALSE, IsUserHome
-        .FALSE, null);
-  }
-
-  @Override
-  public FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot
-      isRoot, IsSystem isSystem, IsUserHome isUserHome, String homeOf) {
-    return proxies.folder().createFolderAsChildOfId(parentFolderURL, name, description, cu.getId(), isRoot, isSystem,
-        isUserHome, homeOf);
+  public FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL) {
+    newFolder.setCreatedByTotal(cu.getId());
+    return proxies.folder().createFolderAsChildOfId(newFolder, parentFolderURL);
   }
 
   @Override
@@ -250,25 +214,29 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
-      sortList) {
-    return proxies.node().viewSharedWithMeFiltered(nodeTypes, limit, offset, sortList, cu);
+  public List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                 ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                     offset, List<String> sortList) {
+    return proxies.node().viewSharedWithMeFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
   }
 
   @Override
-  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes) {
-    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, cu);
+  public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                    ResourcePublicationStatusFilter publicationStatus) {
+    return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, version, publicationStatus, cu);
   }
 
   @Override
-  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, int limit, int offset, List<String>
-      sortList) {
-    return proxies.node().viewAllFiltered(nodeTypes, limit, offset, sortList, cu);
+  public List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                        List<String> sortList) {
+    return proxies.node().viewAllFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
   }
 
   @Override
-  public long viewAllCount(List<CedarNodeType> nodeTypes) {
-    return proxies.node().viewAllFilteredCount(nodeTypes, cu);
+  public long viewAllCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                           ResourcePublicationStatusFilter publicationStatus) {
+    return proxies.node().viewAllFilteredCount(nodeTypes, version, publicationStatus, cu);
   }
 
   @Override
@@ -295,8 +263,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     // usersFolder should not be null at this point. If it is, we let the NPE to be thrown
     String name = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
-    currentUserHomeFolder = createFolderAsChildOfId(usersFolder.getId(), name, description, IsRoot.FALSE, IsSystem
-        .FALSE, IsUserHome.TRUE, userId);
+    FolderServerFolder newUserHome = new FolderServerFolder();
+    newUserHome.setName1(name);
+    newUserHome.setDescription1(description);
+    newUserHome.setRoot(false);
+    newUserHome.setSystem(false);
+    newUserHome.setUserHome(true);
+    newUserHome.setCreatedByTotal(userId);
+    newUserHome.setHomeOf(userId);
+    currentUserHomeFolder = createFolderAsChildOfId(newUserHome, usersFolder.getId());
     if (currentUserHomeFolder != null) {
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       if (everybody != null) {
@@ -306,5 +281,24 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return currentUserHomeFolder;
   }
 
+  @Override
+  public boolean setPreviousVersion(String newId, String oldId) {
+    return proxies.resource().setPreviousVersion(newId, oldId);
+  }
+
+  @Override
+  public boolean setDerivedFrom(String newId, String oldId) {
+    return proxies.resource().setDerivedFrom(newId, oldId);
+  }
+
+  @Override
+  public boolean unsetLatestVersion(String id) {
+    return proxies.resource().unsetLatestVersion(id);
+  }
+
+  @Override
+  public boolean setLatestVersion(String id) {
+    return proxies.resource().setLatestVersion(id);
+  }
 
 }

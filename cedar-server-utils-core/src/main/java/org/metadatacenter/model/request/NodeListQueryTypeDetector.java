@@ -3,10 +3,10 @@ package org.metadatacenter.model.request;
 import java.util.Optional;
 
 public class NodeListQueryTypeDetector {
-  public static NodeListQueryType detect(Optional<String> q, Optional<String> derivedFromId, Optional<String> sharing) {
+  public static NodeListQueryType detect(Optional<String> q, Optional<String> isBasedOn, Optional<String> sharing) {
 
     if ((q == null || !q.isPresent() || q.get().isEmpty() || "*".equals(q.get())) &&
-        (derivedFromId == null || !derivedFromId.isPresent() || derivedFromId.get().isEmpty()) &&
+        (isBasedOn == null || !isBasedOn.isPresent() || isBasedOn.get().isEmpty()) &&
         (sharing == null || !sharing.isPresent() || sharing.get().isEmpty())) {
       return NodeListQueryType.VIEW_ALL;
     }
@@ -15,8 +15,8 @@ public class NodeListQueryTypeDetector {
       return NodeListQueryType.SEARCH_TERM;
     }
 
-    if (derivedFromId != null && derivedFromId.isPresent() && !derivedFromId.get().isEmpty()) {
-      return NodeListQueryType.SEARCH_DERIVED_FROM;
+    if (isBasedOn != null && isBasedOn.isPresent() && !isBasedOn.get().isEmpty()) {
+      return NodeListQueryType.SEARCH_IS_BASED_ON;
     }
 
     if (sharing != null && sharing.isPresent() && !sharing.get().isEmpty()) {

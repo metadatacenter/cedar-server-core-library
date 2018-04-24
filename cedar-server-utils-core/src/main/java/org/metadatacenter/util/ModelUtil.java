@@ -6,8 +6,7 @@ import org.metadatacenter.model.CedarNodeType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.metadatacenter.model.ModelPaths.SCHEMA_DESCRIPTION;
-import static org.metadatacenter.model.ModelPaths.SCHEMA_NAME;
+import static org.metadatacenter.model.ModelPaths.*;
 
 public class ModelUtil {
 
@@ -24,9 +23,10 @@ public class ModelUtil {
     return m.find();
   }
 
-  public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  private static JsonPointerValuePair extractStringFromPointer(JsonNode jsonNode, String
+      pointer) {
     JsonPointerValuePair r = new JsonPointerValuePair();
-    r.setPointer(SCHEMA_NAME);
+    r.setPointer(pointer);
     JsonNode titleNode = jsonNode.at(r.getPointer());
     if (titleNode != null && !titleNode.isMissingNode()) {
       r.setValue(titleNode.textValue());
@@ -34,17 +34,25 @@ public class ModelUtil {
     return r;
   }
 
-  public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
-    JsonPointerValuePair r = new JsonPointerValuePair();
-    r.setPointer(SCHEMA_DESCRIPTION);
-    JsonNode descriptionNode = jsonNode.at(r.getPointer());
-    if (descriptionNode != null && !descriptionNode.isMissingNode()) {
-      r.setValue(descriptionNode.textValue());
-    }
-    return r;
+  public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, SCHEMA_NAME);
   }
 
+  public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, SCHEMA_DESCRIPTION);
+  }
 
+  public static JsonPointerValuePair extractVersionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, PAV_VERSION);
+  }
+
+  public static JsonPointerValuePair extractPublicationStatusFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, BIBO_STATUS);
+  }
+
+  public static JsonPointerValuePair extractIsBasedOnFromInstance(JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, SCHEMA_IS_BASED_ON);
+  }
 }
 
 

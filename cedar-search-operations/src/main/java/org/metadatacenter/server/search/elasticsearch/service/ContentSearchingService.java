@@ -12,6 +12,8 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentContent;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.SearchResponseResult;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.http.LinkHeaderUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -34,12 +36,15 @@ public class ContentSearchingService extends AbstractSearchingService {
   }
 
   public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                             String templateId, List<String> sortList, int limit, int offset, String
-                                                 absoluteUrl) throws CedarProcessingException {
+                                             ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                 publicationStatus, String isBasedOn, List<String> sortList, int
+                                                 limit, int offset, String absoluteUrl) throws
+      CedarProcessingException {
     try {
-      SearchResponseResult searchResult = searchWorker.search(rctx, query, resourceTypes, sortList, templateId,
-          limit, offset);
-      return assembleResponse(searchResult, query, resourceTypes, templateId, sortList, limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = searchWorker.search(rctx, query, resourceTypes, version, publicationStatus,
+          sortList, isBasedOn, limit, offset);
+      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, isBasedOn, sortList,
+          limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
@@ -47,20 +52,23 @@ public class ContentSearchingService extends AbstractSearchingService {
 
 
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                                 String templateId, List<String> sortList, int limit, int offset, String
-                                                     absoluteUrl) throws
+                                                 ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                     publicationStatus, String isBasedOn, List<String> sortList, int
+                                                     limit, int offset, String absoluteUrl) throws
       CedarProcessingException {
     try {
-      SearchResponseResult searchResult = searchWorker.searchDeep(rctx, query, resourceTypes, sortList, templateId,
-          limit, offset);
-      return assembleResponse(searchResult, query, resourceTypes, templateId, sortList, limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = searchWorker.searchDeep(rctx, query, resourceTypes, version,
+          publicationStatus, sortList, isBasedOn, limit, offset);
+      return assembleResponse(searchResult, query, resourceTypes, version, publicationStatus, isBasedOn, sortList,
+          limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
   private FolderServerNodeListResponse assembleResponse(SearchResponseResult searchResult, String query, List<String>
-      resourceTypes, String templateId, List<String> sortList, int limit, int offset, String absoluteUrl) {
+      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String
+      templateId, List<String> sortList, int limit, int offset, String absoluteUrl) {
     Map<String, IndexingDocumentContent> cidToContentMap = new HashMap<>();
 
     // Get the object from the result
@@ -101,11 +109,13 @@ public class ContentSearchingService extends AbstractSearchingService {
 
     NodeListRequest req = new NodeListRequest();
     req.setNodeTypes(nodeTypeList);
+    req.setVersion(version);
+    req.setPublicationStatus(publicationStatus);
     req.setLimit(limit);
     req.setOffset(offset);
     req.setSort(sortList);
     req.setQ(query);
-    req.setDerivedFromId(templateId);
+    req.setIsBasedOn(templateId);
     response.setRequest(req);
 
     return response;

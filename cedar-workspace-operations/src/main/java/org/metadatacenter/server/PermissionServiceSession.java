@@ -31,5 +31,7 @@ public interface PermissionServiceSession {
 
   boolean userIsOwnerOfNode(FolderServerNode node);
 
+  boolean userIsOwnerOfNode(String nodeURL);
+
   boolean userHas(CedarPermission permission);
 }

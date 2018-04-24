@@ -1,5 +1,8 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
+
 import java.util.List;
 
 public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
@@ -36,36 +39,61 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " RETURN user";
   }
 
-  public static String getSharedWithMeLookupQuery(List<String> sortList) {
-    return "" +
+  public static String getSharedWithMeLookupQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus, List<String> sortList) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
         " MATCH (user:<LABEL.USER> {id:{userId}})-" +
-        "[:<REL.MEMBEROF>*0..1]->" +
-        "()-" +
-        "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
-        "(node)" +
-        " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
-        " AND node.<PROP.OWNED_BY> <> {userId}" +
-        " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
-        " RETURN DISTINCT(node)" +
-        " ORDER BY node.<PROP.NODE_SORT_ORDER>," + getOrderByExpression("node", sortList) +
-        " SKIP {offset}" +
-        " LIMIT {limit}";
+            "[:<REL.MEMBEROF>*0..1]->" +
+            "()-" +
+            "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+            "(node)" +
+            " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND node.<PROP.OWNED_BY> <> {userId}" +
+            " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(" AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
+    }
+    sb.append(" RETURN DISTINCT(node)");
+    sb.append(" ORDER BY node.<PROP.NODE_SORT_ORDER>,");
+    sb.append(getOrderByExpression("node", sortList));
+    sb.append(", node.<PROP.VERSION> DESC");
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
   }
 
-  public static String getSharedWithMeCountQuery() {
-    return "" +
+  public static String getSharedWithMeCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
         " MATCH (user:<LABEL.USER> {id:{userId}})-" +
-        "[:<REL.MEMBEROF>*0..1]->" +
-        "()-" +
-        "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
-        "(node)" +
-        " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
-        " AND node.<PROP.OWNED_BY> <> {userId}" +
-        " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) " +
-        " RETURN count(node)";
+            "[:<REL.MEMBEROF>*0..1]->" +
+            "()-" +
+            "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+            "(node)" +
+            " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND node.<PROP.OWNED_BY> <> {userId}" +
+            " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(" AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
+    }
+    sb.append(
+        " RETURN count(node)"
+    );
+    return sb.toString();
   }
 
-  public static String getAllLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+  public static String getAllLookupQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus, List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
       sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
@@ -75,6 +103,12 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
+    }
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(" AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
     }
     sb.append(" RETURN node");
     sb.append(" ORDER BY node.<PROP.NODE_SORT_ORDER>,").append(getOrderByExpression("node", sortList));
@@ -83,7 +117,8 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getAllCountQuery(boolean addPermissionConditions) {
+  public static String getAllCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
       sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
@@ -93,6 +128,12 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
+    }
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(" AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
     }
     sb.append(" RETURN count(node)");
     return sb.toString();

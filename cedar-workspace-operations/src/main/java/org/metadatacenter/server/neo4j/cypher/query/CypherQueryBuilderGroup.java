@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;
 

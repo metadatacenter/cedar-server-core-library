@@ -8,7 +8,7 @@ public enum NodeListQueryType {
   VIEW_SHARED_WITH_ME("view-shared-with-me"),
   VIEW_ALL("view-all"),
   SEARCH_TERM("search-term"),
-  SEARCH_DERIVED_FROM("search-derived-from"),
+  SEARCH_IS_BASED_ON("search-is-based-on"),
   FOLDER_CONTENT("folder-content"),
   ALL_NODES("all-nodes"),
   UNKNOWN("unknown");

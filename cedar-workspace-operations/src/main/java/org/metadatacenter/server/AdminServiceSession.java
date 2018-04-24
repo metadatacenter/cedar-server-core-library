@@ -1,7 +1,7 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public interface AdminServiceSession {
 

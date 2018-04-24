@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.CypherQueryParameter;
+import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 
 import java.util.HashMap;
 import java.util.List;

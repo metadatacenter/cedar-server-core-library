@@ -47,10 +47,6 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     }
   }
 
-  private FolderServerUser getNodeOwner(String nodeURL) {
-    return proxies.node().getNodeOwner(nodeURL);
-  }
-
   private List<FolderServerUser> getUsersWithDirectPermission(String nodeURL, NodePermission permission) {
     return proxies.permission().getUsersWithDirectPermissionOnNode(nodeURL, permission);
   }

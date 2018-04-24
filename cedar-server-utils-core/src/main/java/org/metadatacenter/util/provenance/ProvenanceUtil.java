@@ -16,7 +16,7 @@ public class ProvenanceUtil {
   public static final String PAV_CREATED_ON = "pav:createdOn";
   public static final String PAV_CREATED_BY = "pav:createdBy";
   public static final String PAV_LAST_UPDATED_ON = "pav:lastUpdatedOn";
-  public static final String LAST_UPDATED_BY = "oslc:modifiedBy";
+  public static final String OSLC_MODIFIED_BY = "oslc:modifiedBy";
 
   private static final Logger log = LoggerFactory.getLogger(ProvenanceUtil.class);
 
@@ -30,7 +30,7 @@ public class ProvenanceUtil {
       resource.put(PAV_CREATED_BY, pi.getCreatedBy());
     }
     resource.put(PAV_LAST_UPDATED_ON, pi.getLastUpdatedOn());
-    resource.put(LAST_UPDATED_BY, pi.getLastUpdatedBy());
+    resource.put(OSLC_MODIFIED_BY, pi.getLastUpdatedBy());
   }
 
   public void addProvenanceInfo(JsonNode node, ProvenanceInfo pi) {

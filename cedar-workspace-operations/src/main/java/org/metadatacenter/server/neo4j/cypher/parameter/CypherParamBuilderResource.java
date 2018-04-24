@@ -1,21 +1,16 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
+import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.util.Map;
 
 public class CypherParamBuilderResource extends AbstractCypherParamBuilder {
 
-  public static CypherParameters createResource(String parentId, String childURL, CedarNodeType nodeType,
-                                                String name, String description, String createdBy) {
-    return createNode(parentId, childURL, nodeType, name, description, createdBy, IsRoot.FALSE, IsSystem.FALSE,
-        IsUserHome.FALSE, null);
+  public static CypherParameters createResource(FolderServerResource newResource, String parentId) {
+    return createNode(newResource, parentId);
   }
 
   public static CypherParameters updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
