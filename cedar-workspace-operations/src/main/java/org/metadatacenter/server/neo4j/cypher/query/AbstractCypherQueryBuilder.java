@@ -164,13 +164,20 @@ public abstract class AbstractCypherQueryBuilder {
   }
 
   protected static String createFSResourceAsChildOfId(FolderServerResource newResource) {
-    return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
-        createFSResource("child", newResource) +
-        " CREATE (user)-[:<REL.OWNS>]->(child)" +
-        " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
-        " RETURN child";
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{parentId}})");
+    if (newResource.getPreviousVersion() != null) {
+      sb.append(" MATCH (pvNode:<LABEL.RESOURCE> {id:{previousVersion}})");
+    }
+    sb.append(createFSResource("child", newResource));
+    sb.append(" CREATE (user)-[:<REL.OWNS>]->(child)");
+    sb.append(" CREATE (parent)-[:<REL.CONTAINS>]->(child)");
+    if (newResource.getPreviousVersion() != null) {
+      sb.append("CREATE (child)-[:<REL.PREVIOUSVERSION>]->(pvNode)");
+    }
+    sb.append(" RETURN child");
+    return sb.toString();
   }
 
   protected static String createFSFolderAsChildOfId(FolderServerFolder newFolder) {
