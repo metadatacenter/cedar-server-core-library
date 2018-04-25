@@ -15,7 +15,7 @@ import org.metadatacenter.util.mongo.FixMongoDirection;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
+import static org.metadatacenter.model.ModelNodeNames.SCHEMA_IS_BASED_ON;
 
 public class JsonUtils {
 
