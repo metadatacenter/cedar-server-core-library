@@ -86,15 +86,6 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN " + ALIAS_FOO;
   }
 
-  public static String setPreviousVersion() {
-    return "" +
-        " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +
-        " MATCH (or:<LABEL.RESOURCE> {id:{targetId}})" +
-        " CREATE (nr)-[:<REL.PREVIOUSVERSION>]->(or)" +
-        " SET nr.<PROP.PREVIOUS_VERSION> = {targetId}" +
-        " RETURN nr";
-  }
-
   public static String setDerivedFrom() {
     return "" +
         " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +

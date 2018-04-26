@@ -7,12 +7,12 @@ import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentId) {
+    // TODO:NOW
     String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(newResource);
     CypherParameters params = CypherParamBuilderResource.createResource(newResource, parentId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -129,14 +130,6 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
       });
     }
     return pathList;
-  }
-
-  public boolean setPreviousVersion(String newId, String oldId) {
-    String cypher = CypherQueryBuilderResource.setPreviousVersion();
-    CypherParameters params = CypherParamBuilderResource.matchSourceAndTarget(newId, oldId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    JsonNode jsonNode = executeCypherQueryAndCommit(q);
-    return successOrLogAndThrowException(jsonNode, "Error while setting previous version:");
   }
 
   public boolean setDerivedFrom(String newId, String oldId) {

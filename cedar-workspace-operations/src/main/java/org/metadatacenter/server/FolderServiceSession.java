@@ -88,8 +88,6 @@ public interface FolderServiceSession {
 
   FolderServerFolder createUserHomeFolder();
 
-  boolean setPreviousVersion(String newId, String oldId);
-
   boolean setDerivedFrom(String newId, String oldId);
 
   boolean unsetLatestVersion(String id);
