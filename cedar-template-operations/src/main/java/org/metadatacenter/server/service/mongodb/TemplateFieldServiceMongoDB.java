@@ -1,24 +1,17 @@
 package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
-import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
-import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
-import org.metadatacenter.util.ModelUtil;
-import org.metadatacenter.util.provenance.ProvenanceUtil;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<String, JsonNode> implements
     TemplateFieldService<String, JsonNode> {
@@ -67,10 +60,6 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   @Override
   public long count() {
     return templateFieldDao.count();
-  }
-
-  private String generateNewId(LinkedDataUtil linkedDataUtil) {
-    return linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FIELD);
   }
 
 }

@@ -8,6 +8,9 @@ public final class CedarConstants {
   private CedarConstants() {
   }
 
+  // JSON ID constants
+  public static final String TEMP_ID_PREFIX = "tmp-";
+
   // Date formats
   public static final String xsdDateTimeFormatterString = "uuuu-MM-dd'T'HH:mm:ssZ";
   public static final DateTimeFormatter xsdDateTimeFormatter = DateTimeFormatter.ofPattern(xsdDateTimeFormatterString)
