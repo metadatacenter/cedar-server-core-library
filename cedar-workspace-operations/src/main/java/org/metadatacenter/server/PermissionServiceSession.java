@@ -6,6 +6,7 @@ import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 public interface PermissionServiceSession {
 
@@ -29,4 +30,8 @@ public interface PermissionServiceSession {
   boolean userHasWriteAccessToResource(String resourceURL);
 
   boolean userIsOwnerOfNode(FolderServerNode node);
+
+  boolean userIsOwnerOfNode(String nodeURL);
+
+  boolean userHas(CedarPermission permission);
 }

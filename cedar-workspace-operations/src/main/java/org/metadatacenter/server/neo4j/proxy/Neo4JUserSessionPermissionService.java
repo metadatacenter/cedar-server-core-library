@@ -1,12 +1,12 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
@@ -15,7 +15,6 @@ import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession implements PermissionServiceSession {
@@ -46,10 +45,6 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     } else {
       return null;
     }
-  }
-
-  private FolderServerUser getNodeOwner(String nodeURL) {
-    return proxies.node().getNodeOwner(nodeURL);
   }
 
   private List<FolderServerUser> getUsersWithDirectPermission(String nodeURL, NodePermission permission) {
@@ -195,6 +190,11 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
     return owner != null && owner.getId().equals(cu.getId());
   }
 
+  @Override
+  public boolean userHas(CedarPermission permission) {
+    return cu.has(permission);
+  }
+
   private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers,
                                                 List<FolderServerUser> writeUsers, List<FolderServerGroup>
                                                     readGroups, List<FolderServerGroup> writeGroups) {
@@ -285,14 +285,12 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   private List<FolderServerUser> getUsersWithTransitivePermission(String nodeURL, NodePermission permission,
-                                                                  FolderOrResource
-                                                                      folderOrResource) {
+                                                                  FolderOrResource folderOrResource) {
     return proxies.permission().getUsersWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
   }
 
   private List<FolderServerGroup> getGroupsWithTransitivePermission(String nodeURL, NodePermission permission,
-                                                                    FolderOrResource
-                                                                        folderOrResource) {
+                                                                    FolderOrResource folderOrResource) {
     return proxies.permission().getGroupsWithTransitivePermissionOnNode(nodeURL, permission, folderOrResource);
   }
 

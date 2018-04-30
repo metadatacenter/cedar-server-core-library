@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.metadatacenter.model.ModelNodeNames.SCHEMA_DESCRIPTION;
+import static org.metadatacenter.model.ModelNodeNames.SCHEMA_NAME;
+import static org.metadatacenter.util.provenance.ProvenanceUtil.*;
+
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
@@ -28,8 +32,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
-  protected String displayPath;
-  protected String displayParentPath;
 
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
@@ -61,7 +63,7 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.nodeType = nodeType;
   }
 
-  @JsonGetter("schema:name")
+  @JsonGetter(SCHEMA_NAME)
   public String getName() {
     return name;
   }
@@ -71,12 +73,12 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.name = name;
   }
 
-  @JsonSetter("schema:name")
+  @JsonSetter(SCHEMA_NAME)
   public void setName2(String name) {
     this.name = name;
   }
 
-  @JsonGetter("schema:description")
+  @JsonGetter(SCHEMA_DESCRIPTION)
   public String getDescription() {
     return description;
   }
@@ -86,12 +88,12 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.description = description;
   }
 
-  @JsonSetter("schema:description")
+  @JsonSetter(SCHEMA_DESCRIPTION)
   public void setDescription2(String description) {
     this.description = description;
   }
 
-  @JsonGetter("pav:createdOn")
+  @JsonGetter(PAV_CREATED_ON)
   public ProvenanceTime getCreatedOn() {
     return createdOn;
   }
@@ -101,12 +103,12 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.createdOn = createdOn;
   }
 
-  @JsonSetter("pav:createdOn")
+  @JsonSetter(PAV_CREATED_ON)
   public void setCreatedOn2(ProvenanceTime createdOn) {
     this.createdOn = createdOn;
   }
 
-  @JsonGetter("pav:lastUpdatedOn")
+  @JsonGetter(PAV_LAST_UPDATED_ON)
   public ProvenanceTime getLastUpdatedOn() {
     return lastUpdatedOn;
   }
@@ -116,12 +118,12 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonSetter("pav:lastUpdatedOn")
+  @JsonSetter(PAV_LAST_UPDATED_ON)
   public void setLastUpdatedOn2(ProvenanceTime lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonGetter("pav:createdBy")
+  @JsonGetter(PAV_CREATED_BY)
   public String getCreatedBy() {
     return createdBy;
   }
@@ -131,12 +133,12 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.createdBy = createdBy;
   }
 
-  @JsonSetter("pav:createdBy")
+  @JsonSetter(PAV_CREATED_BY)
   public void setCreatedBy2(String createdBy) {
     this.createdBy = createdBy;
   }
 
-  @JsonGetter("oslc:modifiedBy")
+  @JsonGetter(OSLC_MODIFIED_BY)
   public String getLastUpdatedBy() {
     return lastUpdatedBy;
   }
@@ -146,7 +148,7 @@ public abstract class FolderServerNode extends AbstractCedarNode {
     this.lastUpdatedBy = lastUpdatedBy;
   }
 
-  @JsonSetter("oslc:modifiedBy")
+  @JsonSetter(OSLC_MODIFIED_BY)
   public void setLastUpdatedBy2(String lastUpdatedBy) {
     this.lastUpdatedBy = lastUpdatedBy;
   }
@@ -169,22 +171,6 @@ public abstract class FolderServerNode extends AbstractCedarNode {
 
   public void setOwnedByUserName(String ownedByUserName) {
     this.ownedByUserName = ownedByUserName;
-  }
-
-  public String getDisplayPath() {
-    return displayPath;
-  }
-
-  public void setDisplayPath(String displayPath) {
-    this.displayPath = displayPath;
-  }
-
-  public String getDisplayParentPath() {
-    return displayParentPath;
-  }
-
-  public void setDisplayParentPath(String displayParentPath) {
-    this.displayParentPath = displayParentPath;
   }
 
   public void setCreatedByUserName(String createdByUserName) {
@@ -245,4 +231,11 @@ public abstract class FolderServerNode extends AbstractCedarNode {
   public boolean currentUserCan(NodePermission permission) {
     return currentUserPermissions.contains(permission);
   }
+
+  public void setCreatedByTotal(String createdBy) {
+    this.createdBy = createdBy;
+    this.ownedBy = createdBy;
+    this.lastUpdatedBy = createdBy;
+  }
+
 }

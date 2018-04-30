@@ -46,7 +46,8 @@ public enum CedarPermission {
   READ_NOT_READABLE_NODE(CedarObjectConstants.NOT_READABLE_NODE, CedarObjectConstants.ACCESS_READ),
   WRITE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_WRITE),
   SEND_PROCESS_MESSAGE(CedarObjectConstants.PROCESS_MESSAGE, CedarObjectConstants.ACCESS_CREATE),
-  POST_SUBMISSION(CedarObjectConstants.POST_SUBMISSION, CedarObjectConstants.ACCESS_CREATE);
+  POST_SUBMISSION(CedarObjectConstants.POST_SUBMISSION, CedarObjectConstants.ACCESS_CREATE),
+  UPDATE_NOT_ADMINISTERED_GROUP(CedarObjectConstants.NOT_ADMINISTERED_GROUP, CedarObjectConstants.ACCESS_UPDATE);
 
   private final String resourceType;
   private final String accessType;

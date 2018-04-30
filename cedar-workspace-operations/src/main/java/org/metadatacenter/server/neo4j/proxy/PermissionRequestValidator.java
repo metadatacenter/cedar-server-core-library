@@ -238,6 +238,10 @@ public class PermissionRequestValidator {
     CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL, folderOrResource);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
+      // if it has the role, we do not check
+      if (permissionService.userHas(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
+        return;
+      }
       if (!permissionService.userIsOwnerOfNode(node)) {
         callResult.addError(AUTHORIZATION)
             .errorKey(CedarErrorKey.NOT_AUTHORIZED)

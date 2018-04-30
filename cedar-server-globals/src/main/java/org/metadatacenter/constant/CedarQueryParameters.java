@@ -12,10 +12,12 @@ public final class CedarQueryParameters {
   public static final String QP_SORT = "sort";
   public static final String QP_LIMIT = "limit";
   public static final String QP_OFFSET = "offset";
+  public static final String QP_VERSION = "version";
+  public static final String QP_PUBLICATION_STATUS = "publicationStatus";
   public static final String QP_SUMMARY = "summary";
   public static final String QP_FIELD_NAMES = "field_names";
   public static final String QP_TEMPLATE_ID = "template_id";
-  public static final String QP_DERIVED_FROM_ID = "derived_from_id";
+  public static final String QP_IS_BASED_ON = "is_based_on";
   public static final String QP_Q = "q";
   public static final String QP_SHARING = "sharing";
   public static final String QP_FORMAT = "format";

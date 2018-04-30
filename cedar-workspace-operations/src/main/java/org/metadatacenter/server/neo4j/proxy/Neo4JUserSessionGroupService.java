@@ -6,7 +6,7 @@ import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.GroupServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarGroupUser;

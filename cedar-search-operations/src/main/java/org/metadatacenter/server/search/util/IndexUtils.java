@@ -34,7 +34,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
+import static org.metadatacenter.model.ModelNodeNames.SCHEMA_IS_BASED_ON;
 
 public class IndexUtils {
 
@@ -174,7 +174,8 @@ public class IndexUtils {
       context) throws CedarProcessingException {
     try {
       // Templates and Elements
-      if (nodeType.equals(CedarNodeType.TEMPLATE) || (nodeType.equals(CedarNodeType.ELEMENT))) {
+      if (nodeType.equals(CedarNodeType.TEMPLATE) || nodeType.equals(CedarNodeType.ELEMENT) || nodeType.equals
+          (CedarNodeType.FIELD)) {
         JsonNode schemaSummary = extractSchemaSummary(nodeType, resourceContent, JsonNodeFactory.instance.objectNode
             (), null);
         return schemaSummary;

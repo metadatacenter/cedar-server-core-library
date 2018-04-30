@@ -1,4 +1,8 @@
-package org.metadatacenter.server.folder;
+package org.metadatacenter.server.workspace;
+
+import org.metadatacenter.server.folder.QuerySortField;
+import org.metadatacenter.server.folder.QuerySortFieldType;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,10 +15,12 @@ public class QuerySortOptions {
 
   static {
     knownSortKeys = new HashMap<>();
-    DEFAULT_SORT_FIELD = new QuerySortField("name", "displayName", QuerySortFieldType.TEXTUAL);
+    DEFAULT_SORT_FIELD = new QuerySortField("name", NodeProperty.NAME.getValue(), QuerySortFieldType.TEXTUAL);
     addField(DEFAULT_SORT_FIELD);
-    addField(new QuerySortField("createdOnTS", "createdOnTS", QuerySortFieldType.NUMERIC));
-    addField(new QuerySortField("lastUpdatedOnTS", "lastUpdatedOnTS", QuerySortFieldType.NUMERIC));
+    addField(
+        new QuerySortField("createdOnTS", NodeProperty.CREATED_ON_TS.getValue(), QuerySortFieldType.NUMERIC));
+    addField(
+        new QuerySortField("lastUpdatedOnTS", NodeProperty.LAST_UPDATED_ON_TS.getValue(), QuerySortFieldType.NUMERIC));
   }
 
   private static void addField(QuerySortField field) {

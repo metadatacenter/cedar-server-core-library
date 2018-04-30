@@ -1,18 +1,16 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;
 
 public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
-  public static String createRootFolder() {
+  public static String createRootFolder(FolderServerFolder newRoot) {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        createFSFolder("root", IsRoot.TRUE, IsSystem.TRUE, IsUserHome.FALSE) +
+        createFSFolder("root", newRoot) +
         " CREATE (user)-[:<REL.OWNS>]->(root)" +
         " RETURN root";
   }
@@ -36,9 +34,8 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolderAsChildOfId(IsRoot isRoot, IsSystem isSystem, IsUserHome
-      isUserHome) {
-    return createFSFolderAsChildOfId(isRoot, isSystem, isUserHome);
+  public static String createFolderAsChildOfId(FolderServerFolder newFolder) {
+    return createFSFolderAsChildOfId(newFolder);
   }
 
   public static String unlinkFolderFromParent() {
@@ -132,9 +129,9 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String createFolderWithoutParent(IsRoot isRoot, IsSystem isSystem, IsUserHome isUserHome) {
+  public static String createFolderWithoutParent(FolderServerFolder newFolder) {
     return "" +
-        createFSFolder(ALIAS_FOO, isRoot, isSystem, isUserHome) +
+        createFSFolder(ALIAS_FOO, newFolder) +
         " RETURN " + ALIAS_FOO;
   }
 }

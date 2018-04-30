@@ -12,14 +12,13 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
   protected static final Map<String, String> CONTEXT;
   protected String path;
   protected String parentPath;
-  protected String displayPath;
-  protected String displayParentPath;
   protected String ownedBy;
 
   static {
     CONTEXT = new HashMap<>();
     CONTEXT.put("pav", "http://purl.org/pav/");
     CONTEXT.put("oslc", "http://open-services.net/ns/core#");
+    CONTEXT.put("bibo", "http://purl.org/ontology/bibo/");
     CONTEXT.put("schema", "http://schema.org/");
   }
 
@@ -37,22 +36,6 @@ public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
 
   public void setParentPath(String parentPath) {
     this.parentPath = parentPath;
-  }
-
-  public String getDisplayPath() {
-    return displayPath;
-  }
-
-  public void setDisplayPath(String displayPath) {
-    this.displayPath = displayPath;
-  }
-
-  public String getDisplayParentPath() {
-    return displayParentPath;
-  }
-
-  public void setDisplayParentPath(String displayParentPath) {
-    this.displayParentPath = displayParentPath;
   }
 
   public String getOwnedBy() {

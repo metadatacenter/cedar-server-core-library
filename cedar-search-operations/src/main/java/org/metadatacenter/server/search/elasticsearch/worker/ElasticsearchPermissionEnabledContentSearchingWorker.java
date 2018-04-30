@@ -21,6 +21,8 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,10 +44,13 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     this.indexName = config.getIndexName();
   }
 
-  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, List<String>
-      sortList, String templateId, int limit, int offset) throws CedarProcessingException {
+  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
+                                     ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                         publicationStatus, List<String> sortList, String isBasedOn, int limit, int
+                                         offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, sortList, templateId);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
+        publicationStatus, sortList, isBasedOn);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -67,10 +72,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // intended for real time user requests, but rather for processing large amounts of data.
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                         List<String> sortList, String templateId, int limit, int offset) throws
-      CedarProcessingException {
+                                         ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                             publicationStatus, List<String> sortList, String isBasedOn, int limit,
+                                         int offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, sortList, templateId);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
+        publicationStatus, sortList, isBasedOn);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -100,7 +107,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String>
-      resourceTypes, List<String> sortList, String templateId) {
+      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, List<String>
+                                                           sortList, String isBasedOn) {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.NODE.getValue());
@@ -134,9 +142,42 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       contentQuery.must(resourceTypesQuery);
     }
 
+    // Filter version
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      BoolQueryBuilder versionQuery = QueryBuilders.boolQuery();
+      BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
+      QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_IS_LATEST_VERSION_FIELD, true);
+      inner1Query.must(versionEqualsQuery);
+      BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
+      QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_IS_LATEST_VERSION_FIELD);
+      inner2Query.mustNot(versionExistsQuery);
+      versionQuery.should(inner1Query);
+      versionQuery.should(inner2Query);
+      contentQuery.must(versionQuery);
+    }
+
+    // Filter publicationStatus
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      BoolQueryBuilder publicationStatusQuery = QueryBuilders.boolQuery();
+      BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
+      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
+      inner1Query.must(publicationStatusEqualsQuery);
+      BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
+      QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
+          ES_RESOURCE_PUBLICATION_STATUS_FIELD);
+      inner2Query.mustNot(publicationStatusExistsQuery);
+      publicationStatusQuery.should(inner1Query);
+      publicationStatusQuery.should(inner2Query);
+      contentQuery.must(publicationStatusQuery);
+    }
+
     // Filter by template id
-    if (templateId != null) {
-      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(ES_TEMPLATEID_FIELD, templateId);
+    if (isBasedOn != null) {
+      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(ES_RESOURCE_PREFIX + ES_RESOURCE_IS_BASED_ON_FIELD,
+          isBasedOn);
       contentQuery.must(templateIdQuery);
     }
 

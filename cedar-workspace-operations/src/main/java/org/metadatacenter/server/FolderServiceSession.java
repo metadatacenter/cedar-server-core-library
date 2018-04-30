@@ -1,14 +1,12 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -29,13 +27,9 @@ public interface FolderServiceSession {
 
   FolderServerResource findResourceById(String resourceURL);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description);
+  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL);
 
-  FolderServerFolder createFolderAsChildOfId(String parentFolderURL, String name, String description, IsRoot isRoot,
-                                             IsSystem isSystem, IsUserHome isUserHome, String homeOf);
-
-  FolderServerResource createResourceAsChildOfId(String parentFolderURL, String childURL, CedarNodeType
-      nodeType, String name, String description, NodeLabel label);
+  FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL);
 
   FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
 
@@ -52,10 +46,13 @@ public interface FolderServiceSession {
 
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
-  List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList, int
-      limit, int offset, List<String> sortList);
+  List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
+                                                    ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                        publicationStatus, int limit, int offset, List<String>
+                                                        sortList);
 
-  long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList);
+  long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus);
 
   long findFolderContentsUnfilteredCount(String folderURL);
 
@@ -69,15 +66,19 @@ public interface FolderServiceSession {
 
   FolderServerFolder ensureUserHomeExists();
 
-  List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
-      sortList);
+  List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                          ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                          List<String> sortList);
 
-  long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList);
+  long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                             ResourcePublicationStatusFilter publicationStatus);
 
-  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, int limit, int offset, List<String>
-      sortList);
+  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                 ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                 List<String> sortList);
 
-  long viewAllCount(List<CedarNodeType> nodeTypeList);
+  long viewAllCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus);
 
   List<FolderServerNode> findAllDescendantNodesById(String id);
 
@@ -86,4 +87,10 @@ public interface FolderServiceSession {
   FolderServerFolder findHomeFolderOf();
 
   FolderServerFolder createUserHomeFolder();
+
+  boolean setDerivedFrom(String newId, String oldId);
+
+  boolean unsetLatestVersion(String id);
+
+  boolean setLatestVersion(String id);
 }

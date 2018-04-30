@@ -106,10 +106,6 @@
           "type": "string",
           "index": "not_analyzed"
         },
-        "templateId": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
         "info": {
           "properties": {
             "@id": {
@@ -120,7 +116,15 @@
               "type": "string",
               "index": "not_analyzed"
             },
-            "cedar:lastUpdatedBy": {
+            "oslc:modifiedBy": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "schema:isBasedOn": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "pav:derivedFrom": {
               "type": "string",
               "index": "not_analyzed"
             },

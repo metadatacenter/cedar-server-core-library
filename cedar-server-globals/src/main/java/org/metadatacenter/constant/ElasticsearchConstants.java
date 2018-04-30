@@ -2,6 +2,7 @@ package org.metadatacenter.constant;
 
 public final class ElasticsearchConstants {
 
+
   private ElasticsearchConstants() {
   }
 
@@ -11,8 +12,9 @@ public final class ElasticsearchConstants {
   public static final String ES_DOCUMENT_CEDAR_ID = "cid";
   public static final String ES_RESOURCE_NAME_FIELD = "schema:name";
   public static final String ES_RESOURCE_RESOURCETYPE_FIELD = "nodeType";
-
-  public static final String ES_TEMPLATEID_FIELD = "templateId";
+  public static final String ES_RESOURCE_IS_LATEST_VERSION_FIELD = "isLatestVersion";
+  public static final String ES_RESOURCE_PUBLICATION_STATUS_FIELD = "bibo:status";
+  public static final String ES_RESOURCE_IS_BASED_ON_FIELD = "schema:isBasedOn";
 
   // Sortable fields
   public static final String ES_RESOURCE_SORT_NAME_FIELD = "name";

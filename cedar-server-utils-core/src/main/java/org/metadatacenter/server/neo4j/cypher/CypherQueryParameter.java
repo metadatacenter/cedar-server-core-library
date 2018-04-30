@@ -1,4 +1,4 @@
-package org.metadatacenter.server.neo4j.parameter;
+package org.metadatacenter.server.neo4j.cypher;
 
 public interface CypherQueryParameter {
 

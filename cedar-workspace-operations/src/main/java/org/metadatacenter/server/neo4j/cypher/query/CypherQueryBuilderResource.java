@@ -1,14 +1,14 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.server.neo4j.NodeLabel;
-import org.metadatacenter.server.neo4j.parameter.NodeProperty;
+import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(NodeLabel label) {
-    return createFSResourceAsChildOfId(label);
+  public static String createResourceAsChildOfId(FolderServerResource newResource) {
+    return createFSResourceAsChildOfId(newResource);
   }
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {
@@ -80,9 +80,33 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-  public static String createResourceWithoutParent(NodeLabel nodeLabel) {
+  public static String createResourceWithoutParent(FolderServerResource newResource) {
     return "" +
-        createFSResource(ALIAS_FOO, nodeLabel) +
+        createFSResource(ALIAS_FOO, newResource) +
         " RETURN " + ALIAS_FOO;
   }
+
+  public static String setDerivedFrom() {
+    return "" +
+        " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +
+        " MATCH (or:<LABEL.RESOURCE> {id:{targetId}})" +
+        " CREATE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
+        " SET nr.<PROP.DERIVED_FROM> = {targetId}" +
+        " RETURN nr";
+  }
+
+  public static String unsetLatestVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_VERSION> = false" +
+        " RETURN resource";
+  }
+
+  public static String setLatestVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_VERSION> = true" +
+        " RETURN resource";
+  }
+
 }

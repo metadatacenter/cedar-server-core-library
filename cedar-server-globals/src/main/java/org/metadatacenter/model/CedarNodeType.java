@@ -94,7 +94,8 @@ public enum CedarNodeType {
     return null;
   }
 
-  public boolean isFielOrElementOrTemplate() {
-    return this == CedarNodeType.FIELD || this == CedarNodeType.ELEMENT || this == CedarNodeType.TEMPLATE;
+  public boolean isVersioned() {
+    return this == ELEMENT || this == TEMPLATE || this == FIELD;
   }
+
 }

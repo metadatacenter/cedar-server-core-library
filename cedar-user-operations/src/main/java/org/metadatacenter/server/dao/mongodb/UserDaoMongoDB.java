@@ -232,6 +232,12 @@ public class UserDaoMongoDB implements GenericUserDao {
     if (uiPreferences.getResourceTypeFilters() == null) {
       return false;
     }
+    if (uiPreferences.getResourceVersionFilter() == null) {
+      return false;
+    }
+    if (uiPreferences.getResourcePublicationStatusFilter() == null) {
+      return false;
+    }
     if (uiPreferences.getFolderView() == null) {
       return false;
     } else {

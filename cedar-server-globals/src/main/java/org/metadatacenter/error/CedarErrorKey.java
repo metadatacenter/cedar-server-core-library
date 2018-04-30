@@ -48,6 +48,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
   NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
 
+  NO_READ_ACCESS_TO_NODE("noWriteAccessToNode"),
+
   FOLDER_NOT_FOUND("folderNotFound"),
 
   RESOURCE_NOT_FOUND("resourceNotFound"),
@@ -85,10 +87,12 @@ public enum CedarErrorKey {
   PARENT_FOLDER_SPECIFIED_TWICE("parentFolderSpecifiedTwice"),
   PATH_NOT_NORMALIZED("pathNotNormalized"),
   PARENT_FOLDER_NOT_FOUND("parentFolderNotFound"),
-  INVALID_FOLDER_NAME("invalidFolderName"),
+  UPDATE_INVALID_FOLDER_NAME("updateInvalidFolderName"),
+  CREATE_INVALID_FOLDER_NAME("createInvalidFolderName"),
   NODE_ALREADY_PRESENT("nodeAlreadyPresent"),
   FOLDER_NOT_CREATED("folderNotCreated"),
   MISSING_NAME_AND_DESCRIPTION("missingNameAndDescription"),
+  MISSING_DATA("missingData"),
   FOLDER_NOT_DELETED("folderNotDeleted"),
   RESOURCE_NOT_DELETED("resourceNotDeleted"),
   RESOURCE_NOT_CREATED("resourceNotCreated"),
@@ -97,12 +101,23 @@ public enum CedarErrorKey {
   UPDATE_OTHER_PROFILE_FORBIDDEN("updateOtherProfileForbidden"),
   FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted"),
   GROUP_ALREADY_PRESENT("groupAlreadyPresent"),
+  GROUP_CAN_BY_MODIFIED_ONLY_BY_GROUP_ADMIN("groupCanBeModifiedOnlyByGroupAdmin"),
+  GROUP_CAN_BY_DELETED_ONLY_BY_GROUP_ADMIN("groupCanBeDeletedOnlyByGroupAdmin"),
+  SPECIAL_GROUP_CAN_NOT_BE_DELETED("specialGroupCanNotBeDeleted"),
   FOLDER_PERMISSIONS_CAN_NOT_BE_CHANGED("folderPermissionsCanNotBeChanged"),
   UNKNOWN_INSTANCE_OUTPUT_FORMAT("unknownInstanceOutputFormat"),
   FOLDER_COPY_NOT_ALLOWED("folderCopyNotAllowed"),
   METHOD_NOT_IMPLEMENTED("methodNotImplemented"),
   UPSTREAM_SERVER_ERROR("upstreamServerError"),
-  NOTHING_TO_DO("nothingToDo");
+  NOTHING_TO_DO("nothingToDo"),
+
+  PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
+  PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),
+  VERSIONING_ONLY_ON_LATEST("versioningOnlyOnLatest"),
+  CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
+  PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
+
+  DRAFT_NOT_CREATED("draftNotCreated");
 
   private final String value;
 

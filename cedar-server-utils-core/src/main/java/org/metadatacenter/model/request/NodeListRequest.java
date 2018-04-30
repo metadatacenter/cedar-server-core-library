@@ -2,6 +2,8 @@ package org.metadatacenter.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
 import java.util.List;
 
@@ -9,12 +11,14 @@ public class NodeListRequest {
 
   @JsonProperty("resource_types")
   private List<CedarNodeType> nodeTypes;
+  private ResourceVersionFilter version;
+  private ResourcePublicationStatusFilter publicationStatus;
   private long limit;
   private long offset;
   private List<String> sort;
   private String q;
-  @JsonProperty("derived_from_id")
-  private String derivedFromId;
+  @JsonProperty("is_based_on")
+  private String isBasedOn;
 
   public List<CedarNodeType> getNodeTypes() {
     return nodeTypes;
@@ -22,6 +26,22 @@ public class NodeListRequest {
 
   public void setNodeTypes(List<CedarNodeType> nodeTypes) {
     this.nodeTypes = nodeTypes;
+  }
+
+  public ResourceVersionFilter getVersion() {
+    return version;
+  }
+
+  public void setVersion(ResourceVersionFilter version) {
+    this.version = version;
+  }
+
+  public ResourcePublicationStatusFilter getPublicationStatus() {
+    return publicationStatus;
+  }
+
+  public void setPublicationStatus(ResourcePublicationStatusFilter publicationStatus) {
+    this.publicationStatus = publicationStatus;
   }
 
   public long getLimit() {
@@ -56,11 +76,11 @@ public class NodeListRequest {
     this.q = q;
   }
 
-  public String getDerivedFromId() {
-    return derivedFromId;
+  public String getIsBasedOn() {
+    return isBasedOn;
   }
 
-  public void setDerivedFromId(String derivedFromId) {
-    this.derivedFromId = derivedFromId;
+  public void setIsBasedOn(String isBasedOn) {
+    this.isBasedOn = isBasedOn;
   }
 }

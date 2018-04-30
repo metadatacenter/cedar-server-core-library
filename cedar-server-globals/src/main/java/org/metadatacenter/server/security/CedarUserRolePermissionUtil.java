@@ -53,6 +53,7 @@ public abstract class CedarUserRolePermissionUtil {
     groupAdministratorPermissions.add(CedarPermission.GROUP_READ.getPermissionName());
     groupAdministratorPermissions.add(CedarPermission.GROUP_UPDATE.getPermissionName());
     groupAdministratorPermissions.add(CedarPermission.GROUP_DELETE.getPermissionName());
+    groupAdministratorPermissions.add(CedarPermission.UPDATE_NOT_ADMINISTERED_GROUP.getPermissionName());
 
     filesystemAdministratorPermissions = new HashSet<>();
     filesystemAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE.getPermissionName());
