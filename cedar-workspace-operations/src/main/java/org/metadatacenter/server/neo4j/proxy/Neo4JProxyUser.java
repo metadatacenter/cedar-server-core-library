@@ -10,7 +10,10 @@ import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuild
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderUser;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.neo4j.driver.v1.*;
+import org.neo4j.driver.v1.types.Node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Neo4JProxyUser extends AbstractNeo4JProxy {
@@ -49,6 +52,30 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderUser.getUserById();
     CypherParameters params = CypherParamBuilderUser.getUserById(userURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
+
+    try (Session session = driver.session()) {
+
+      List<Record> records = session.readTransaction(new TransactionWork<List<Record>>() {
+        @Override
+        public List<Record> execute(Transaction tx) {
+          List<Record> nodes = new ArrayList<>();
+          StatementResult result = tx.run(q.getRunnableQuery(), ((CypherQueryWithParameters) q).getParameterMap());
+          while (result.hasNext()) {
+            nodes.add(result.next());
+          }
+          return nodes;
+        }
+      });
+      System.out.println("*****************////////////////////////////////////////////////////");
+      for (Record r : records) {
+        System.out.println(r);
+        Node n = r.get(0).asNode();
+        System.out.println(n);
+        System.out.println(n.asMap());
+      }
+    }
+
+
     JsonNode jsonNode = executeCypherQueryAndCommit(q);
     JsonNode userNode = jsonNode.at("/results/0/data/0/row/0");
     return buildUser(userNode);

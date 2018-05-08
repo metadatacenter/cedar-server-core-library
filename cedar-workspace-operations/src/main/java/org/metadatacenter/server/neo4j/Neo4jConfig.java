@@ -14,6 +14,11 @@ public class Neo4jConfig {
   private final String everybodyGroupDisplayName;
   private final String everybodyGroupDescription;
 
+  private final String uri;
+  private final String userName;
+  private final String userPassword;
+
+
   private Neo4jConfig(CedarConfig cedarConfig) {
     this.transactionUrl = cedarConfig.getNeo4jConfig().getRest().getTransactionUrl();
     this.authString = cedarConfig.getNeo4jConfig().getRest().getAuthString();
@@ -24,6 +29,9 @@ public class Neo4jConfig {
     this.everybodyGroupName = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getName();
     this.everybodyGroupDisplayName = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDisplayName();
     this.everybodyGroupDescription = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDescription();
+    this.uri = cedarConfig.getNeo4jConfig().getBolt().getUri();
+    this.userName = cedarConfig.getNeo4jConfig().getBolt().getUserName();
+    this.userPassword = cedarConfig.getNeo4jConfig().getBolt().getUserPassword();
   }
 
   public String getTransactionUrl() {
@@ -64,5 +72,17 @@ public class Neo4jConfig {
 
   public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
     return new Neo4jConfig(cedarConfig);
+  }
+
+  public String getUri() {
+    return uri;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public String getUserPassword() {
+    return userPassword;
   }
 }

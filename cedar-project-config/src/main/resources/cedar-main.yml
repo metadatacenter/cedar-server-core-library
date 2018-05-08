@@ -63,6 +63,10 @@ neo4j:
     transactionUrl: "http://${CEDAR_NEO4J_HOST}:${CEDAR_NEO4J_REST_PORT}/db/data/transaction/commit"
     userName: "neo4j"
     userPassword: "${CEDAR_NEO4J_USER_PASSWORD}"
+  bolt:
+    uri: "bolt://${CEDAR_NEO4J_HOST}:${CEDAR_NEO4J_BOLT_PORT}"
+    userName: "${CEDAR_NEO4J_USER_NAME}"
+    userPassword: "${CEDAR_NEO4J_USER_PASSWORD}"
 
 searchSettings:
   searchRetrieveSettings:

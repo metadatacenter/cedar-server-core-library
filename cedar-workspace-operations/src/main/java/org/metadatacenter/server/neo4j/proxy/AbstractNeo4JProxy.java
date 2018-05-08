@@ -13,6 +13,9 @@ import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.util.json.JsonMapper;
+import org.neo4j.driver.v1.AuthTokens;
+import org.neo4j.driver.v1.Driver;
+import org.neo4j.driver.v1.GraphDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +28,14 @@ public abstract class AbstractNeo4JProxy {
 
   protected final Neo4JProxies proxies;
 
+  protected final Driver driver;
+
   protected static final Logger log = LoggerFactory.getLogger(AbstractNeo4JProxy.class);
 
   protected AbstractNeo4JProxy(Neo4JProxies proxies) {
     this.proxies = proxies;
+    driver = GraphDatabase.driver(proxies.config.getUri(),
+        AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
 
   protected JsonNode executeCypherQueryAndCommit(CypherQuery query) {
