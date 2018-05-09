@@ -2,16 +2,16 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.time.Instant;
 
 public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
 
-  public static CypherParameters createUser(String userURL, String name, String displayName, String firstName,
-                                            String lastName, String email) {
+  public static CypherParameters createUser(String userURL, String name, String firstName, String lastName, String
+      email) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();

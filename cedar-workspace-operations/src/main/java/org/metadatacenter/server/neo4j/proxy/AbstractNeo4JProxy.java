@@ -7,15 +7,16 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.constant.HttpConnectionConstants;
+import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.util.json.JsonMapper;
-import org.neo4j.driver.v1.AuthTokens;
-import org.neo4j.driver.v1.Driver;
-import org.neo4j.driver.v1.GraphDatabase;
+import org.neo4j.driver.v1.*;
+import org.neo4j.driver.v1.exceptions.ClientException;
+import org.neo4j.driver.v1.types.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,130 @@ public abstract class AbstractNeo4JProxy {
     driver = GraphDatabase.driver(proxies.config.getUri(),
         AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
+
+  protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
+    Record record = null;
+    try (Session session = driver.session()) {
+
+      if (q instanceof CypherQueryWithParameters) {
+        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+        final String runnableQuery = qp.getRunnableQuery();
+        final Map<String, Object> parameterMap = qp.getParameterMap();
+        record = session.writeTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery, parameterMap);
+          return result.hasNext() ? result.next() : null;
+        });
+      } else if (q instanceof CypherQueryLiteral) {
+        final String runnableQuery = q.getRunnableQuery();
+        record = session.writeTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery);
+          return result.hasNext() ? result.next() : null;
+        });
+      }
+    } catch (ClientException ex) {
+      log.error("Error executing Cypher query:", ex);
+      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+    }
+
+    if (record != null) {
+      Node n = record.get(0).asNode();
+      if (n != null) {
+        JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
+        return buildClass(node, type);
+      }
+    }
+    return null;
+  }
+
+  protected <T extends CedarNode> T executeReadGetOne(CypherQuery q, Class<T> type) {
+    Record record = null;
+    try (Session session = driver.session()) {
+
+      if (q instanceof CypherQueryWithParameters) {
+        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+        final String runnableQuery = qp.getRunnableQuery();
+        final Map<String, Object> parameterMap = qp.getParameterMap();
+        record = session.readTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery, parameterMap);
+          return result.hasNext() ? result.next() : null;
+        });
+      } else if (q instanceof CypherQueryLiteral) {
+        final String runnableQuery = q.getRunnableQuery();
+        record = session.readTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery);
+          return result.hasNext() ? result.next() : null;
+        });
+      }
+    } catch (ClientException ex) {
+      log.error("Error executing Cypher query:", ex);
+      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+    }
+
+    if (record != null) {
+      Node n = record.get(0).asNode();
+      if (n != null) {
+        JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
+        return buildClass(node, type);
+      }
+    }
+    return null;
+  }
+
+
+  protected <T extends CedarNode> List<T> executeReadGetList(CypherQuery q, Class<T> type) {
+    List<T> folderServerNodeList = new ArrayList<>();
+    List<Record> records = null;
+    try (Session session = driver.session()) {
+      if (q instanceof CypherQueryWithParameters) {
+        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+        final String runnableQuery = qp.getRunnableQuery();
+        final Map<String, Object> parameterMap = qp.getParameterMap();
+        records = session.readTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery, parameterMap);
+          List<Record> nodes = new ArrayList<>();
+          while (result.hasNext()) {
+            nodes.add(result.next());
+          }
+          return nodes;
+        });
+      } else if (q instanceof CypherQueryLiteral) {
+        final String runnableQuery = q.getRunnableQuery();
+        records = session.readTransaction(tx -> {
+          StatementResult result = tx.run(runnableQuery);
+          List<Record> nodes = new ArrayList<>();
+          while (result.hasNext()) {
+            nodes.add(result.next());
+          }
+          return nodes;
+        });
+      }
+    } catch (ClientException ex) {
+      log.error("Error executing Cypher query:", ex);
+      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+    }
+
+    if (records != null) {
+      for (Record r : records) {
+        Node n = r.get(0).asNode();
+        if (n != null) {
+          JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
+          T folderServerNode = buildClass(node, type);
+          folderServerNodeList.add(folderServerNode);
+        }
+      }
+
+      return folderServerNodeList;
+    }
+    return null;
+  }
+
+  private <T extends CedarNode> T buildClass(JsonNode node, Class<T> type) {
+    if (type == FolderServerUser.class) {
+      return (T) buildUser(node);
+    }
+    return null;
+  }
+
 
   protected JsonNode executeCypherQueryAndCommit(CypherQuery query) {
     return executeCypherQueriesAndCommit(Collections.singletonList(query));
