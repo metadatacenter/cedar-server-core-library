@@ -7,6 +7,7 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerInstance;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.search.IndexedDocumentType;
@@ -63,19 +64,20 @@ public class ContentIndexingService extends AbstractIndexingService {
     }
     log.debug("Indexing resource (id = " + node.getId() + ")");
     // Set resource details
-    String templateId = null;
+    String isBasedOn = null;
     if (CedarNodeType.INSTANCE.equals(node.getType())) {
       if (resourceContent != null) {
-        JsonNode isBasedOn = resourceContent.get(SCHEMA_IS_BASED_ON);
-        if (isBasedOn != null && !isBasedOn.isMissingNode()) {
-          templateId = isBasedOn.asText();
+        JsonNode isBasedOnNode = resourceContent.get(SCHEMA_IS_BASED_ON);
+        if (isBasedOnNode != null && !isBasedOnNode.isMissingNode()) {
+          isBasedOn = isBasedOnNode.asText();
         }
       }
-      if (templateId == null) {
+      if (isBasedOn == null) {
         log.error("Unable to determine templateId for instance:" + node.getId());
       }
+      ((FolderServerInstance)node).setIsBasedOn1(isBasedOn);
     }
-    IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent, templateId);
+    IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource, parent);
   }
