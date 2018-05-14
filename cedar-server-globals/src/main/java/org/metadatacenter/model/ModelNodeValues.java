@@ -12,8 +12,8 @@ public class ModelNodeValues {
   public static final String OSLC_IRI = "http://open-services.net/ns/core#";
   public static final String BIBO_IRI = "http://purl.org/ontology/bibo/";
 
-  public static final String TRUE = "true";
-  public static final String FALSE = "false";
+  public static final boolean TRUE = true;
+  public static final boolean FALSE = false;
 
   public static final String XSD_STRING = "xsd:string";
   public static final String XSD_DATETIME = "xsd:dateTime";
