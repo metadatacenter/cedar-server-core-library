@@ -26,11 +26,11 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerUser.class);
   }
 
-  FolderServerUser addUserToGroup(FolderServerUser user, FolderServerGroup group) {
+  boolean addUserToGroup(FolderServerUser user, FolderServerGroup group) {
     String cypher = CypherQueryBuilderUser.addUserToGroup();
     CypherParameters params = AbstractCypherParamBuilder.matchUserAndGroup(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerUser.class);
+    return executeWrite(q, "adding user to group");
   }
 
   public List<FolderServerUser> findUsers() {

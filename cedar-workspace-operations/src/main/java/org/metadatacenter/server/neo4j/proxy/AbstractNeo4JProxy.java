@@ -39,6 +39,32 @@ public abstract class AbstractNeo4JProxy {
         AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
 
+  protected boolean executeWrite(CypherQuery q, String eventDescription) {
+    boolean result = false;
+    try (Session session = driver.session()) {
+
+      if (q instanceof CypherQueryWithParameters) {
+        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+        final String runnableQuery = qp.getRunnableQuery();
+        final Map<String, Object> parameterMap = qp.getParameterMap();
+        result = session.writeTransaction(tx -> {
+          tx.run(runnableQuery, parameterMap);
+          return true;
+        });
+      } else if (q instanceof CypherQueryLiteral) {
+        final String runnableQuery = q.getRunnableQuery();
+        result = session.writeTransaction(tx -> {
+          tx.run(runnableQuery);
+          return true;
+        });
+      }
+    } catch (ClientException ex) {
+      log.error("Error while " + eventDescription, ex);
+      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+    }
+    return result;
+  }
+
   protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
     Record record = null;
     try (Session session = driver.session()) {
