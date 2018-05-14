@@ -19,7 +19,7 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.metadatacenter.constant.CedarConstants.SCHEMA_IS_BASED_ON;
+import static org.metadatacenter.model.ModelNodeNames.SCHEMA_IS_BASED_ON;
 
 public class ContentIndexingService extends AbstractIndexingService {
 
