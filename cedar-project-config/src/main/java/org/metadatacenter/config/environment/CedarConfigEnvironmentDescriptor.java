@@ -87,9 +87,21 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_TEST);
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_PRODUCTION);
 
-    Set<SystemComponent> cedarNcbiSraFtpPwd = variableToComponent.get(CedarEnvironmentVariable
+    Set<SystemComponent> cedarNcbiSraFtpPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NCBI_SRA_FTP_PASSWORD);
-    cedarNcbiSraFtpPwd.add(SystemComponent.SERVER_SUBMISSION);
+    cedarNcbiSraFtpPassword.add(SystemComponent.SERVER_SUBMISSION);
+
+    Set<SystemComponent> cedarNcbiSraFtpUser = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_USER);
+    cedarNcbiSraFtpUser.addAll(cedarNcbiSraFtpPassword);
+
+    Set<SystemComponent> cedarNcbiSraFtpHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_HOST);
+    cedarNcbiSraFtpHost.addAll(cedarNcbiSraFtpPassword);
+
+    Set<SystemComponent> cedarNcbiSraFtpDirectory = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_DIRECTORY);
+    cedarNcbiSraFtpDirectory.addAll(cedarNcbiSraFtpPassword);
 
     Set<SystemComponent> cedarImmPortSubmissionUser = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_IMMPORT_SUBMISSION_USER);
