@@ -4,8 +4,6 @@ import org.metadatacenter.config.CedarConfig;
 
 public class Neo4jConfig {
 
-  private final String transactionUrl;
-  private final String authString;
   private final String rootFolderPath;
   private final String rootFolderDescription;
   private final String usersFolderPath;
@@ -20,8 +18,6 @@ public class Neo4jConfig {
 
 
   private Neo4jConfig(CedarConfig cedarConfig) {
-    this.transactionUrl = cedarConfig.getNeo4jConfig().getRest().getTransactionUrl();
-    this.authString = cedarConfig.getNeo4jConfig().getRest().getAuthString();
     this.rootFolderPath = cedarConfig.getFolderStructureConfig().getRootFolder().getPath();
     this.rootFolderDescription = cedarConfig.getFolderStructureConfig().getRootFolder().getDescription();
     this.usersFolderPath = cedarConfig.getFolderStructureConfig().getUsersFolder().getPath();
@@ -32,14 +28,6 @@ public class Neo4jConfig {
     this.uri = cedarConfig.getNeo4jConfig().getBolt().getUri();
     this.userName = cedarConfig.getNeo4jConfig().getBolt().getUserName();
     this.userPassword = cedarConfig.getNeo4jConfig().getBolt().getUserPassword();
-  }
-
-  public String getTransactionUrl() {
-    return transactionUrl;
-  }
-
-  public String getAuthString() {
-    return authString;
   }
 
   public String getRootFolderPath() {

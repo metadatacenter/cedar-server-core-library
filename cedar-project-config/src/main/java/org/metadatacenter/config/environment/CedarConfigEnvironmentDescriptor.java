@@ -125,9 +125,6 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarNeo4jHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_HOST);
     cedarNeo4jHost.addAll(cedarNeo4jUserPassword);
 
-    Set<SystemComponent> cedarNeo4jRestPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_REST_PORT);
-    cedarNeo4jRestPort.addAll(cedarNeo4jUserPassword);
-
     Set<SystemComponent> cedarNeo4jBoltPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_BOLT_PORT);
     cedarNeo4jBoltPort.addAll(cedarNeo4jUserPassword);
 
