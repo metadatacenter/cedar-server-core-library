@@ -1,11 +1,10 @@
 package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.AbstractCedarSuperNode;
 import org.metadatacenter.model.RelationLabel;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerArc extends AbstractCedarSuperNode {
+public class FolderServerArc {
 
   private String sourceId;
   private RelationLabel label;

@@ -48,9 +48,10 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
 
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME.getName(), "neo4j");
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD.getName(), "userPassword");
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_HOST.getName(), "127.0.0.1");
-    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_REST_PORT.getName(), "7474");
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_BOLT_PORT.getName(), "7687");
 
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME.getName(), "cedarUser");
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD.getName(), "cedarPassword");

@@ -157,7 +157,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " OR " +
         " (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(node)" +
         " OR " +
-        " (group)-[:<REL.CANWRITE]->()-[:<REL.CONTAINS>*0..]->(node)" +
+        " (group)-[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->(node)" +
         " )" +
         " RETURN node";
   }
