@@ -87,9 +87,21 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_TEST);
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_PRODUCTION);
 
-    Set<SystemComponent> cedarNcbiSraFtpPwd = variableToComponent.get(CedarEnvironmentVariable
+    Set<SystemComponent> cedarNcbiSraFtpPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NCBI_SRA_FTP_PASSWORD);
-    cedarNcbiSraFtpPwd.add(SystemComponent.SERVER_SUBMISSION);
+    cedarNcbiSraFtpPassword.add(SystemComponent.SERVER_SUBMISSION);
+
+    Set<SystemComponent> cedarNcbiSraFtpUser = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_USER);
+    cedarNcbiSraFtpUser.addAll(cedarNcbiSraFtpPassword);
+
+    Set<SystemComponent> cedarNcbiSraFtpHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_HOST);
+    cedarNcbiSraFtpHost.addAll(cedarNcbiSraFtpPassword);
+
+    Set<SystemComponent> cedarNcbiSraFtpDirectory = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_NCBI_SRA_FTP_DIRECTORY);
+    cedarNcbiSraFtpDirectory.addAll(cedarNcbiSraFtpPassword);
 
     Set<SystemComponent> cedarImmPortSubmissionUser = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_IMMPORT_SUBMISSION_USER);
@@ -107,11 +119,14 @@ public class CedarConfigEnvironmentDescriptor {
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_RESOURCE); // permission tests
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKER); // permission changes
 
+    Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
+    cedarNeo4jUserName.addAll(cedarNeo4jUserPassword);
+
     Set<SystemComponent> cedarNeo4jHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_HOST);
     cedarNeo4jHost.addAll(cedarNeo4jUserPassword);
 
-    Set<SystemComponent> cedarNeo4jRestPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_REST_PORT);
-    cedarNeo4jRestPort.addAll(cedarNeo4jUserPassword);
+    Set<SystemComponent> cedarNeo4jBoltPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_BOLT_PORT);
+    cedarNeo4jBoltPort.addAll(cedarNeo4jUserPassword);
 
     Set<SystemComponent> cedarAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_ADMIN_USER_API_KEY);

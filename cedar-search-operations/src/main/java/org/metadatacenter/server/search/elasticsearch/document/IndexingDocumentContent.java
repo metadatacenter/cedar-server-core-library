@@ -11,18 +11,15 @@ public class IndexingDocumentContent {
   // Contains a summary of the resource content. There is no need to index the full JSON for each resource. Only the
   // information necessary to satisfy search and value recommendation use cases is kept.
   private JsonNode resourceSummarizedContent;
-  // Only for template instances
-  private String templateId;
 
   // Used by Jackson
   public IndexingDocumentContent() {
   }
 
-  public IndexingDocumentContent(FolderServerNode info, JsonNode resourceSummarizedContent, String templateId) {
+  public IndexingDocumentContent(FolderServerNode info, JsonNode resourceSummarizedContent) {
     this.cid = info.getId();
     this.info = info;
     this.resourceSummarizedContent = resourceSummarizedContent;
-    this.templateId = templateId;
   }
 
   public void setCid(String cid) {
@@ -49,12 +46,5 @@ public class IndexingDocumentContent {
     this.resourceSummarizedContent = resourceSummarizedContent;
   }
 
-  public String getTemplateId() {
-    return templateId;
-  }
-
-  public void setTemplateId(String templateId) {
-    this.templateId = templateId;
-  }
 }
 

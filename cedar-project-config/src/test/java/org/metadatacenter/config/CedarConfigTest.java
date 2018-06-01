@@ -34,17 +34,24 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_HOST.getName(), "metadatacenter.orgx");
 
     env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_API_KEY.getName(), "apiKey-abcd");
+
     env.put(CedarEnvironmentVariable.CEDAR_ANALYTICS_KEY.getName(), "false");
+
+    env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_HOST.getName(), "ftpHost");
+    env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_USER.getName(), "ftpUser");
     env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD.getName(), "ftpPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_DIRECTORY.getName(), "ftpDirectory");
+
     env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_USER.getName(), "submissionUser");
     env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD.getName(), "submissionPassword");
 
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
 
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME.getName(), "neo4j");
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD.getName(), "userPassword");
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_HOST.getName(), "127.0.0.1");
-    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_REST_PORT.getName(), "7474");
+    env.put(CedarEnvironmentVariable.CEDAR_NEO4J_BOLT_PORT.getName(), "7687");
 
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME.getName(), "cedarUser");
     env.put(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD.getName(), "cedarPassword");

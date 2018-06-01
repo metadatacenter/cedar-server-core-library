@@ -34,7 +34,7 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
         " RETURN user";
   }
 
-  public static String addGroupToUser() {
+  public static String addUserToGroup() {
     return "" +
         " MATCH (user:<LABEL.USER> {id:{userId}})" +
         " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
