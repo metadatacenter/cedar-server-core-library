@@ -93,15 +93,15 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationOneStepDirectly(RelationLabel.OWNS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
     if (relationLabel == RelationLabel.CANREAD) {
       sb.append(" OR ");
-      sb.append(getUserToResourceRelationOneStepThroughGroup(RelationLabel.CANREADTHIS, "node"));
+      sb.append(getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, "node"));
       sb.append(" OR ");
-      sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, "node"));
+      sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
     }
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, "node"));
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "node"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();
@@ -135,9 +135,11 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationOneStepThroughGroup(RelationLabel.CANREADTHIS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, "node"));
+    sb.append(getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, "node"));
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();
@@ -155,9 +157,9 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationOneStepDirectly(RelationLabel.OWNS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, "node"));
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "node"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();

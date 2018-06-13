@@ -190,15 +190,19 @@ public abstract class AbstractCypherQueryBuilder {
         " RETURN child";
   }
 
-  protected static String getUserToResourceRelationOneStepDirectly(RelationLabel relationLabel, String nodeAlias) {
+  protected static String getUserToResourceRelationDirectly(RelationLabel relationLabel, String nodeAlias) {
     return "(user)-[:" + relationLabel + "]->(" + nodeAlias + ")";
   }
 
-  protected static String getUserToResourceRelationOneStepThroughGroup(RelationLabel relationLabel, String nodeAlias) {
+  protected static String getUserToResourceRelationWithContains(RelationLabel relationLabel, String nodeAlias) {
+    return "(user)-[:" + relationLabel + "]->()-[:<REL.CONTAINS>*0..]->(" + nodeAlias + ")";
+  }
+
+  protected static String getUserToResourceRelationThroughGroup(RelationLabel relationLabel, String nodeAlias) {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->(" + nodeAlias + ")";
   }
 
-  protected static String getUserToResourceRelationTwoSteps(RelationLabel relationLabel, String nodeAlias) {
+  protected static String getUserToResourceRelationThroughGroupWithContains(RelationLabel relationLabel, String nodeAlias) {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->()-[:<REL.CONTAINS>*0..]->(" + nodeAlias + ")";
   }
 
@@ -206,13 +210,13 @@ public abstract class AbstractCypherQueryBuilder {
     return "" +
         " " + relationPrefix + " " +
         "(" +
-        getUserToResourceRelationOneStepDirectly(RelationLabel.OWNS, nodeAlias) +
+        getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, nodeAlias) +
         " OR " +
-        getUserToResourceRelationOneStepThroughGroup(RelationLabel.CANREADTHIS, nodeAlias) +
+        getUserToResourceRelationWithContains(RelationLabel.OWNS, nodeAlias) +
         " OR " +
-        getUserToResourceRelationTwoSteps(RelationLabel.CANREAD, nodeAlias) +
+        getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, nodeAlias) +
         " OR " +
-        getUserToResourceRelationTwoSteps(RelationLabel.CANWRITE, nodeAlias) +
+        getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, nodeAlias) +
         ")";
   }
 
