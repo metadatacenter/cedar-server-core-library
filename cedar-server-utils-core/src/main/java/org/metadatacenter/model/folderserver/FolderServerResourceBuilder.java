@@ -17,7 +17,7 @@ public class FolderServerResourceBuilder {
       case FIELD:
         return new FolderServerField();
       case INSTANCE:
-        return new FolderServerElement();
+        return new FolderServerInstance();
       default:
         return null;
     }

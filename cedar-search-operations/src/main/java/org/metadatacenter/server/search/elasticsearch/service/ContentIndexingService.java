@@ -63,20 +63,6 @@ public class ContentIndexingService extends AbstractIndexingService {
       }
     }
     log.debug("Indexing resource (id = " + node.getId() + ")");
-    // Set resource details
-    String isBasedOn = null;
-    if (CedarNodeType.INSTANCE.equals(node.getType())) {
-      if (resourceContent != null) {
-        JsonNode isBasedOnNode = resourceContent.get(SCHEMA_IS_BASED_ON);
-        if (isBasedOnNode != null && !isBasedOnNode.isMissingNode()) {
-          isBasedOn = isBasedOnNode.asText();
-        }
-      }
-      if (isBasedOn == null) {
-        log.error("Unable to determine templateId for instance:" + node.getId());
-      }
-      ((FolderServerInstance)node).setIsBasedOn1(isBasedOn);
-    }
     IndexingDocumentContent ir = new IndexingDocumentContent(node, summarizedContent);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource, parent);

@@ -1,10 +1,8 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.IsRoot;
-import org.metadatacenter.model.IsSystem;
-import org.metadatacenter.model.IsUserHome;
-import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.model.*;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerInstance;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
@@ -88,6 +86,12 @@ public abstract class AbstractCypherQueryBuilder {
       }
       if (newResource.isLatestVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_VERSION)).append(",");
+      }
+      if (newResource.getType() == CedarNodeType.INSTANCE) {
+        FolderServerInstance newInstance = (FolderServerInstance) newResource;
+        if (newInstance.getIsBasedOn() != null) {
+          sb.append(buildCreateAssignment(NodeProperty.IS_BASED_ON)).append(",");
+        }
       }
     } else if (newNode instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newNode;
