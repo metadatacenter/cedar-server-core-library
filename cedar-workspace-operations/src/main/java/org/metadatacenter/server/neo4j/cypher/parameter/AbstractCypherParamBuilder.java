@@ -2,7 +2,9 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerInstance;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
@@ -59,6 +61,12 @@ public abstract class AbstractCypherParamBuilder {
       }
       if (newResource.isLatestVersion() != null) {
         params.put(NodeProperty.IS_LATEST_VERSION, newResource.isLatestVersion());
+      }
+      if (newResource.getType() == CedarNodeType.INSTANCE) {
+        FolderServerInstance newInstance = (FolderServerInstance) newResource;
+        if (newInstance.getIsBasedOn() != null) {
+          params.put(NodeProperty.IS_BASED_ON, newInstance.getIsBasedOn());
+        }
       }
     } else if (newNode instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newNode;
