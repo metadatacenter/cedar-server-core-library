@@ -57,6 +57,13 @@ public class ModelNodeNames {
   public static final String SELECTED_BY_DEFAULT = "selectedByDefault";
   public static final String UI = "_ui";
   public static final String VALUE_CONSTRAINTS = "_valueConstraints";
+  public static final String MIN_STRING_LENGTH = "minLength";
+  public static final String MAX_STRING_LENGTH = "maxLength";
+  public static final String MIN_NUMBER_VALUE = "minValue";
+  public static final String MAX_NUMBER_VALUE = "maxValue";
+  public static final String DECIMAL_PLACE = "decimalPlace";
+  public static final String NUMBER_TYPE = "numberType";
+  public static final String UNIT_OF_MEASURE = "unitOfMeasure";
 
   public static final String XSD = "xsd";
   public static final String PAV = "pav";
