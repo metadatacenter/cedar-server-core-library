@@ -1,7 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.mongodb.TemplateElementDaoMongoDB;
@@ -16,8 +15,7 @@ public class TemplateElementServiceMongoDB extends GenericTemplateServiceMongoDB
 
   private final TemplateElementDaoMongoDB templateElementDao;
 
-  public TemplateElementServiceMongoDB(MongoClient mongoClient, String db, String
-      templateElementsCollection) {
+  public TemplateElementServiceMongoDB(MongoClient mongoClient, String db, String templateElementsCollection) {
     this.templateElementDao = new TemplateElementDaoMongoDB(mongoClient, db, templateElementsCollection);
   }
 
@@ -44,19 +42,19 @@ public class TemplateElementServiceMongoDB extends GenericTemplateServiceMongoDB
   }
 
   @Override
-  public JsonNode findTemplateElement(String templateElementId) throws IOException, ProcessingException {
+  public JsonNode findTemplateElement(String templateElementId) throws IOException {
     return templateElementDao.find(templateElementId);
   }
 
   @Override
-  public JsonNode updateTemplateElement(String templateElementId, JsonNode content)
-      throws TemplateServerResourceNotFoundException, IOException {
+  public JsonNode updateTemplateElement(String templateElementId, JsonNode content) throws
+      TemplateServerResourceNotFoundException, IOException {
     return templateElementDao.update(templateElementId, content);
   }
 
   @Override
-  public void deleteTemplateElement(String templateElementId) throws
-      TemplateServerResourceNotFoundException, IOException {
+  public void deleteTemplateElement(String templateElementId) throws TemplateServerResourceNotFoundException,
+      IOException {
     templateElementDao.delete(templateElementId);
   }
 

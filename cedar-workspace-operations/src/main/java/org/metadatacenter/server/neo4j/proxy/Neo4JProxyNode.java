@@ -1,11 +1,13 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -52,11 +54,11 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList) {
+  List<FolderServerNodeExtract> findAllNodes(int limit, int offset, List<String> sortList) {
     String cypher = CypherQueryBuilderNode.getAllNodesLookupQuery(sortList);
     CypherParameters params = CypherParamBuilderNode.getAllNodesLookupParameters(limit, offset);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 
   long findAllNodesCount() {
@@ -65,10 +67,10 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  List<FolderServerNode> findFolderContentsFiltered(String folderId, Collection<CedarNodeType> nodeTypes,
-                                                    ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                        publicationStatus, int limit, int offset, List<String>
-                                                        sortList, CedarUser cu) {
+  private <T extends CedarNode> List<T> findFolderContentsFilteredGeneric(String folderId, Collection<CedarNodeType>
+      nodeTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                              offset, List<String> sortList,
+                                                                          CedarUser cu, Class<T> klazz) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
@@ -78,7 +80,22 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId,
         nodeTypes, version, publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
+    return executeReadGetList(q, klazz);
+  }
+
+  List<FolderServerNode> findFolderContentsFiltered(String folderId, Collection<CedarNodeType> nodeTypes,
+                                                    ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                        publicationStatus, int limit, int offset, List<String>
+                                                        sortList, CedarUser cu) {
+    return findFolderContentsFilteredGeneric(folderId, nodeTypes, version, publicationStatus, limit, offset,
+        sortList, cu, FolderServerNode.class);
+  }
+
+  List<FolderServerNodeExtract> findFolderContentsExtractFiltered(String folderId, Collection<CedarNodeType>
+      nodeTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                      offset, List<String> sortList, CedarUser cu) {
+    return findFolderContentsFilteredGeneric(folderId, nodeTypes, version, publicationStatus, limit, offset,
+        sortList, cu, FolderServerNodeExtract.class);
   }
 
   FolderServerNode findNodeByParentIdAndName(String parentId, String name) {
@@ -112,14 +129,14 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerUser.class);
   }
 
-  public List<FolderServerNode> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter
+  public List<FolderServerNodeExtract> viewSharedWithMeFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, int limit, int offset, List<String> sortList,
-                                                         CedarUser cu) {
+                                                                CedarUser cu) {
     String cypher = CypherQueryBuilderNode.getSharedWithMeLookupQuery(version, publicationStatus, sortList);
     CypherParameters params = CypherParamBuilderNode.getSharedWithMeLookupParameters(nodeTypes, version,
         publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 
   public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
@@ -131,9 +148,9 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  public List<FolderServerNode> viewAllFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
-                                                ResourcePublicationStatusFilter publicationStatus, int limit, int
-                                                    offset, List<String> sortList, CedarUser cu) {
+  public List<FolderServerNodeExtract> viewAllFiltered(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                       ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                           offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
     if (cu.has(READ_NOT_READABLE_NODE)) {
       addPermissionConditions = false;
@@ -143,7 +160,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(nodeTypes, version, publicationStatus,
         limit, offset, cu.getId(), addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 
   public long viewAllFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,

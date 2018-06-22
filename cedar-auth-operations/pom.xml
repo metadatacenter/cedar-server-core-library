@@ -37,11 +37,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-validator</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-globals</artifactId>
     </dependency>

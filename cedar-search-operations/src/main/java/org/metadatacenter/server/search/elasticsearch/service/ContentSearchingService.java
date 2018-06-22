@@ -6,6 +6,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.model.response.FolderServerNodeListResponse;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -83,11 +84,11 @@ public class ContentSearchingService extends AbstractSearchingService {
     }
 
     // Maintain the order of the first search results
-    List<FolderServerNode> resources = new ArrayList<>();
+    List<FolderServerNodeExtract> resources = new ArrayList<>();
     for (String id : searchResult.getResultList().getCedarIds()) {
       IndexingDocumentContent indexingDocumentContent = cidToContentMap.get(id);
       if (indexingDocumentContent != null) {
-        resources.add(indexingDocumentContent.getInfo());
+        resources.add(indexingDocumentContent.getInfoExtract());
       }
     }
 

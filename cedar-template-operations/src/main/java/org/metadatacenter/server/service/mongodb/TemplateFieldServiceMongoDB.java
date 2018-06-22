@@ -1,12 +1,9 @@
 package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
-import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
 
@@ -18,8 +15,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
 
   private final TemplateFieldDaoMongoDB templateFieldDao;
 
-  public TemplateFieldServiceMongoDB(MongoClient mongoClient, String db, String
-      templateFieldsCollection) {
+  public TemplateFieldServiceMongoDB(MongoClient mongoClient, String db, String templateFieldsCollection) {
     this.templateFieldDao = new TemplateFieldDaoMongoDB(mongoClient, db, templateFieldsCollection);
   }
 
@@ -35,8 +31,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public JsonNode findTemplateField(String templateFieldId) throws IOException,
-      ProcessingException {
+  public JsonNode findTemplateField(String templateFieldId) throws IOException {
     return templateFieldDao.find(templateFieldId);
   }
 
@@ -47,8 +42,7 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
   }
 
   @Override
-  public void deleteTemplateField(String templateFieldId) throws TemplateServerResourceNotFoundException,
-      IOException {
+  public void deleteTemplateField(String templateFieldId) throws TemplateServerResourceNotFoundException, IOException {
     templateFieldDao.delete(templateFieldId);
   }
 

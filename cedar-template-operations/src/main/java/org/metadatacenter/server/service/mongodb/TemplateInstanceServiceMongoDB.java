@@ -15,8 +15,7 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
 
   private final TemplateInstanceDaoMongoDB templateInstanceDao;
 
-  public TemplateInstanceServiceMongoDB(MongoClient mongoClient, String db, String
-      templateInstancesCollection) {
+  public TemplateInstanceServiceMongoDB(MongoClient mongoClient, String db, String templateInstancesCollection) {
     this.templateInstanceDao = new TemplateInstanceDaoMongoDB(mongoClient, db, templateInstancesCollection);
   }
 
@@ -43,20 +42,19 @@ public class TemplateInstanceServiceMongoDB extends GenericTemplateServiceMongoD
   }
 
   @Override
-  public JsonNode findTemplateInstance(String templateInstanceId)
-      throws IOException {
+  public JsonNode findTemplateInstance(String templateInstanceId) throws IOException {
     return templateInstanceDao.find(templateInstanceId);
   }
 
   @Override
-  public JsonNode updateTemplateInstance(String templateInstanceId, JsonNode content)
-      throws TemplateServerResourceNotFoundException, IOException {
+  public JsonNode updateTemplateInstance(String templateInstanceId, JsonNode content) throws
+      TemplateServerResourceNotFoundException, IOException {
     return templateInstanceDao.update(templateInstanceId, content);
   }
 
   @Override
-  public void deleteTemplateInstance(String templateInstanceId) throws
-      TemplateServerResourceNotFoundException, IOException {
+  public void deleteTemplateInstance(String templateInstanceId) throws TemplateServerResourceNotFoundException,
+      IOException {
     templateInstanceDao.delete(templateInstanceId);
   }
 
