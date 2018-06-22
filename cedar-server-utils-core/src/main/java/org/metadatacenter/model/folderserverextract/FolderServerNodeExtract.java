@@ -8,7 +8,6 @@ import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
-import java.util.Map;
 
 import static org.metadatacenter.model.ModelNodeNames.SCHEMA_DESCRIPTION;
 import static org.metadatacenter.model.ModelNodeNames.SCHEMA_NAME;
@@ -125,57 +124,6 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonGetter(PAV_CREATED_BY)
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  @JsonSetter("createdBy")
-  public void setCreatedBy1(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  @JsonSetter(PAV_CREATED_BY)
-  public void setCreatedBy2(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  @JsonGetter(OSLC_MODIFIED_BY)
-  public String getLastUpdatedBy() {
-    return lastUpdatedBy;
-  }
-
-  @JsonSetter("lastUpdatedBy")
-  public void setLastUpdatedBy1(String lastUpdatedBy) {
-    this.lastUpdatedBy = lastUpdatedBy;
-  }
-
-  @JsonSetter(OSLC_MODIFIED_BY)
-  public void setLastUpdatedBy2(String lastUpdatedBy) {
-    this.lastUpdatedBy = lastUpdatedBy;
-  }
-
-  public long getLastUpdatedOnTS() {
-    return lastUpdatedOnTS;
-  }
-
-  public void setLastUpdatedOnTS(long lastUpdatedOnTS) {
-    this.lastUpdatedOnTS = lastUpdatedOnTS;
-  }
-
-  public long getCreatedOnTS() {
-    return createdOnTS;
-  }
-
-  public void setCreatedOnTS(long createdOnTS) {
-    this.createdOnTS = createdOnTS;
-  }
-
-  @JsonProperty("@context")
-  public Map<String, String> getContext() {
-    return CONTEXT;
-  }
-
   public static FolderServerNodeExtract forType(CedarNodeType t) {
     switch (t) {
       case FOLDER:
@@ -190,12 +138,6 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
         return new FolderServerInstanceExtract();
     }
     return null;
-  }
-
-  public void setCreatedByTotal(String createdBy) {
-    this.createdBy = createdBy;
-    this.ownedBy = createdBy;
-    this.lastUpdatedBy = createdBy;
   }
 
 }

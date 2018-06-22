@@ -2,14 +2,14 @@ package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.AbstractCedarSuperNode;
+import org.metadatacenter.model.AbstractCedarNodeWithDates;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerUser extends AbstractCedarSuperNode implements CedarUserRepresentation {
+public class FolderServerUser extends AbstractCedarNodeWithDates implements CedarUserRepresentation {
 
   private String firstName;
   private String lastName;

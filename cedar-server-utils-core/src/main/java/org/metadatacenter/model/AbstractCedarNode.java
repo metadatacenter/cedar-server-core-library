@@ -1,37 +1,12 @@
 package org.metadatacenter.model;
 
-public abstract class AbstractCedarNode extends AbstractCedarSuperNode {
+import org.metadatacenter.server.model.provenance.ProvenanceTime;
 
-  protected String name;
-  protected String description;
-  protected String createdBy;
-  protected String lastUpdatedBy;
-  protected String path;
-  protected String parentPath;
-  protected String ownedBy;
+public abstract class AbstractCedarNode implements CedarNode {
 
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  public String getParentPath() {
-    return parentPath;
-  }
-
-  public void setParentPath(String parentPath) {
-    this.parentPath = parentPath;
-  }
-
-  public String getOwnedBy() {
-    return ownedBy;
-  }
-
-  public void setOwnedBy(String ownedBy) {
-    this.ownedBy = ownedBy;
-  }
+  protected String id;
+  protected CedarNodeType nodeType;
+  protected ProvenanceTime createdOn;
+  protected ProvenanceTime lastUpdatedOn;
 
 }

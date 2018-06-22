@@ -1,10 +1,11 @@
 package org.metadatacenter.model.folderserver;
 
 import com.fasterxml.jackson.annotation.*;
-import org.metadatacenter.model.AbstractCedarNode;
+import org.metadatacenter.model.AbstractCedarNodeFull;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import static org.metadatacenter.util.provenance.ProvenanceUtil.*;
     @JsonSubTypes.Type(value = FolderServerTemplate.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNode extends AbstractCedarNode {
+public abstract class FolderServerNode extends AbstractCedarNodeFull {
 
   private List<NodePermission> currentUserPermissions;
 
@@ -195,7 +196,7 @@ public abstract class FolderServerNode extends AbstractCedarNode {
 
   @JsonProperty("@context")
   public Map<String, String> getContext() {
-    return CONTEXT;
+    return FolderServerNodeContext.getContext();
   }
 
   public static FolderServerNode forType(CedarNodeType t) {
