@@ -42,16 +42,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-validator</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-core</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
     </dependency>
@@ -64,6 +54,11 @@
     <dependency>
       <groupId>net.jmob</groupId>
       <artifactId>guice.conf</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
 
     <dependency>

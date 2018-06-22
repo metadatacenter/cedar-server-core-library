@@ -1,7 +1,9 @@
 package org.metadatacenter.server.search.elasticsearch.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 
 public class IndexingDocumentContent {
 
@@ -32,6 +34,11 @@ public class IndexingDocumentContent {
 
   public FolderServerNode getInfo() {
     return info;
+  }
+
+  @JsonIgnore
+  public FolderServerNodeExtract getInfoExtract() {
+    return FolderServerNodeExtract.fromNode(info);
   }
 
   public void setInfo(FolderServerNode info) {

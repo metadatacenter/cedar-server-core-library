@@ -76,15 +76,9 @@
       <artifactId>fluent-hc</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-core</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

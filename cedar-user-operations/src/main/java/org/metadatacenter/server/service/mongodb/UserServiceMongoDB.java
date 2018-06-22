@@ -1,7 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.metadatacenter.server.dao.mongodb.UserDaoMongoDB;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -26,12 +25,12 @@ public class UserServiceMongoDB implements UserService {
   }
 
   @Override
-  public CedarUser findUser(String userId) throws IOException, ProcessingException {
+  public CedarUser findUser(String userId) throws IOException {
     return userDao.find(userId);
   }
 
   @Override
-  public CedarUser findUserByApiKey(String apiKey) throws IOException, ProcessingException {
+  public CedarUser findUserByApiKey(String apiKey) throws IOException {
     return userDao.findByApiKey(apiKey);
   }
 
@@ -46,7 +45,7 @@ public class UserServiceMongoDB implements UserService {
   }
 
   @Override
-  public List<CedarUser> findAll() throws IOException, ProcessingException {
+  public List<CedarUser> findAll() throws IOException {
     return userDao.findAll();
   }
 

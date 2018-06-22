@@ -1,6 +1,5 @@
 package org.metadatacenter.server.security;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.util.JsonSerialization;
@@ -62,7 +61,7 @@ public class KeycloakUtils {
     CedarUser user = null;
     try {
       user = userService.findUser(userId);
-    } catch (IOException | ProcessingException e) {
+    } catch (IOException e) {
       log.error("Error while getting user", e);
     }
     return user;

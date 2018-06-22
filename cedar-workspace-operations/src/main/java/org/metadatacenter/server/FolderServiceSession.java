@@ -4,6 +4,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -21,7 +23,7 @@ public interface FolderServiceSession {
 
   FolderServerFolder findFolderById(String folderURL);
 
-  List<FolderServerNode> findAllNodes(int limit, int offset, List<String> sortList);
+  List<FolderServerNodeExtract> findAllNodes(int limit, int offset, List<String> sortList);
 
   long findAllNodesCount();
 
@@ -46,10 +48,17 @@ public interface FolderServiceSession {
 
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
+  List<FolderServerFolderExtract> findFolderPathExtract(FolderServerFolder folder);
+
   List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
                                                     ResourceVersionFilter version, ResourcePublicationStatusFilter
                                                         publicationStatus, int limit, int offset, List<String>
                                                         sortList);
+
+  List<FolderServerNodeExtract> findFolderContentsExtractFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
+                                                                  ResourceVersionFilter version,
+                                                                  ResourcePublicationStatusFilter publicationStatus,
+                                                                  int limit, int offset, List<String> sortList);
 
   long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus);
@@ -66,16 +75,17 @@ public interface FolderServiceSession {
 
   FolderServerFolder ensureUserHomeExists();
 
-  List<FolderServerNode> viewSharedWithMe(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
-                                          ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
-                                          List<String> sortList);
+  List<FolderServerNodeExtract> viewSharedWithMe(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                                 ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                     offset,
+                                                 List<String> sortList);
 
   long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
                              ResourcePublicationStatusFilter publicationStatus);
 
-  List<FolderServerNode> viewAll(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
-                                 ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
-                                 List<String> sortList);
+  List<FolderServerNodeExtract> viewAll(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                        List<String> sortList);
 
   long viewAllCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter
       publicationStatus);

@@ -4,10 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
-import com.github.fge.jsonschema.main.JsonSchemaFactory;
-import com.github.fge.jsonschema.main.JsonValidator;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.util.mongo.FixMongoDirection;
@@ -18,15 +14,6 @@ import java.util.Map;
 import static org.metadatacenter.model.ModelNodeNames.SCHEMA_IS_BASED_ON;
 
 public class JsonUtils {
-
-  /* JSON Schema Validation */
-  public void validate(JsonNode schema, JsonNode instance) throws ProcessingException {
-    JsonValidator validator = JsonSchemaFactory.byDefault().getValidator();
-    ProcessingReport report = validator.validate(schema, instance);
-    if (!report.isSuccess()) {
-      throw new RuntimeException("JSON Schema validation failed");
-    }
-  }
 
   /* Fix for the keywords not allowed by MongoDB (e.g. $schema) */
   // Rename JSON field to be stored into MongoDB

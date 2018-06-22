@@ -7,7 +7,6 @@ import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 
-import javax.ws.rs.core.Response;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -215,8 +214,7 @@ public class PermissionRequestValidator {
             .errorKey(CedarErrorKey.UNIQUE_CONSTRAINT_COLLISION)
             .message("Each group should be listed only once in the request")
             .parameter("propertyName", "groupId")
-            .parameter("groupId", gid)
-            .getErrorPack().status(Response.Status.BAD_REQUEST);
+            .parameter("groupId", gid);
       } else {
         groupIds.add(gid);
       }

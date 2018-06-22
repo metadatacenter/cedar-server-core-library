@@ -1,6 +1,5 @@
 package org.metadatacenter.server.security;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.exception.security.*;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;
@@ -42,7 +41,7 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
     } else if (authRequest instanceof CedarApiKeyAuthRequest) {
       try {
         user = userService.findUserByApiKey(authRequest.getAuthString());
-      } catch (IOException | ProcessingException e) {
+      } catch (IOException e) {
         throw new CedarUserNotFoundException(new FailedToLoadUserByApiKeyException(e));
       }
       if (user == null) {

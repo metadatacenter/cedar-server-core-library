@@ -1,6 +1,5 @@
 package org.metadatacenter.server.service;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 
 import java.io.IOException;
@@ -14,13 +13,12 @@ public interface TemplateService<K, T> {
 
   List<T> findAllTemplates(List<String> fieldNames, FieldNameInEx includeExclude) throws IOException;
 
-  List<T> findAllTemplates(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx
-      includeExclude) throws IOException;
+  List<T> findAllTemplates(Integer limit, Integer offset, List<String> fieldNames, FieldNameInEx includeExclude)
+      throws IOException;
 
-  T findTemplate(K templateId) throws IOException, ProcessingException;
+  T findTemplate(K templateId) throws IOException;
 
-  T updateTemplate(K templateId, T content) throws TemplateServerResourceNotFoundException,
-      IOException;
+  T updateTemplate(K templateId, T content) throws TemplateServerResourceNotFoundException, IOException;
 
   void deleteTemplate(K templateId) throws TemplateServerResourceNotFoundException, IOException;
 

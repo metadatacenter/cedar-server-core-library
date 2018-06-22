@@ -40,13 +40,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-validator</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.github.fge</groupId>
-      <artifactId>json-schema-core</artifactId>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
 
     <dependency>

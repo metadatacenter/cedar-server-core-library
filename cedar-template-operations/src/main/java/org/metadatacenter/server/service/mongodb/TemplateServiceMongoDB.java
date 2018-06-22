@@ -1,7 +1,6 @@
 package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.mongodb.MongoClient;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 import org.metadatacenter.server.dao.mongodb.TemplateDaoMongoDB;
@@ -17,8 +16,7 @@ public class TemplateServiceMongoDB extends GenericTemplateServiceMongoDB<String
   private final TemplateDaoMongoDB templateDao;
 
 
-  public TemplateServiceMongoDB(MongoClient mongoClient, String db, String
-      templatesCollection) {
+  public TemplateServiceMongoDB(MongoClient mongoClient, String db, String templatesCollection) {
     this.templateDao = new TemplateDaoMongoDB(mongoClient, db, templatesCollection);
   }
 
@@ -44,14 +42,13 @@ public class TemplateServiceMongoDB extends GenericTemplateServiceMongoDB<String
   }
 
   @Override
-  public JsonNode findTemplate(String templateId)
-      throws IOException, ProcessingException {
+  public JsonNode findTemplate(String templateId) throws IOException {
     return templateDao.find(templateId);
   }
 
   @Override
-  public JsonNode updateTemplate(String templateId, JsonNode content)
-      throws TemplateServerResourceNotFoundException, IOException {
+  public JsonNode updateTemplate(String templateId, JsonNode content) throws TemplateServerResourceNotFoundException,
+      IOException {
     return templateDao.update(templateId, content);
   }
 
