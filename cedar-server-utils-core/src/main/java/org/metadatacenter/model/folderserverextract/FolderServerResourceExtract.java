@@ -13,9 +13,7 @@ import static org.metadatacenter.model.ModelNodeNames.*;
 public abstract class FolderServerResourceExtract extends FolderServerNodeExtract {
 
   protected ResourceVersion version;
-  protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
-  protected ResourceUri derivedFrom;
   protected Boolean latestVersion;
 
   public FolderServerResourceExtract(CedarNodeType nodeType) {
@@ -37,21 +35,6 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
     this.version = ResourceVersion.forValue(v);
   }
 
-  @JsonGetter(PAV_PREVIOUS_VERSION)
-  public ResourceUri getPreviousVersion() {
-    return previousVersion;
-  }
-
-  @JsonSetter("previousVersion")
-  public void setPreviousVersion1(String pv) {
-    this.previousVersion = ResourceUri.forValue(pv);
-  }
-
-  @JsonSetter(PAV_PREVIOUS_VERSION)
-  public void setPreviousVersion2(String pv) {
-    this.previousVersion = ResourceUri.forValue(pv);
-  }
-
   @JsonGetter(BIBO_STATUS)
   public BiboStatus getPublicationStatus() {
     return publicationStatus;
@@ -65,21 +48,6 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
   @JsonSetter(BIBO_STATUS)
   public void setPublicationStatus2(String s) {
     this.publicationStatus = BiboStatus.forValue(s);
-  }
-
-  @JsonGetter(PAV_DERIVED_FROM)
-  public ResourceUri getDerivedFrom() {
-    return derivedFrom;
-  }
-
-  @JsonSetter("derivedFrom")
-  public void setDerivedFrom1(String df) {
-    this.derivedFrom = ResourceUri.forValue(df);
-  }
-
-  @JsonSetter(PAV_DERIVED_FROM)
-  public void setDerivedFrom2(String df) {
-    this.derivedFrom = ResourceUri.forValue(df);
   }
 
   @JsonProperty("isLatestVersion")

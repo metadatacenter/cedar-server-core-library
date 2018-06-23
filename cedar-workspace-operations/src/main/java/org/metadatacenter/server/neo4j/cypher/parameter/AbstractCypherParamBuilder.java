@@ -48,10 +48,10 @@ public abstract class AbstractCypherParamBuilder {
     if (newNode instanceof FolderServerResource) {
       FolderServerResource newResource = (FolderServerResource) newNode;
       if (newResource.getVersion() != null) {
-        params.put(NodeProperty.VERSION, newResource.getVersion().getValue());
+        params.put(NodeProperty.VERSION, newResource.getVersion());
       }
       if (newResource.getPublicationStatus() != null) {
-        params.put(NodeProperty.PUBLICATION_STATUS, newResource.getPublicationStatus().getValue());
+        params.put(NodeProperty.PUBLICATION_STATUS, newResource.getPublicationStatus());
       }
       if (newResource.getDerivedFrom() != null) {
         params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());

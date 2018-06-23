@@ -17,20 +17,17 @@ public class CypherQueryWithParameters extends AbstractCypherQuery {
   }
 
   public Map<String, Object> getParameterMap() {
-    Map<String, Object> map = new HashMap<>();
-    for (CypherQueryParameter p : parameters.keySet()) {
-      map.put(p.getValue(), parameters.get(p));
-    }
-    return map;
+    return parameters.asMap();
   }
 
   public String getInterpolatedParamsQuery() {
     String q = this.runnableQuery;
     if (q != null) {
-      for (CypherQueryParameter parameter : parameters.keySet()) {
-        Object o = parameters.get(parameter);
+      Map<String, Object> pMap = parameters.asMap();
+      for (String parameter : pMap.keySet()) {
+        Object o = pMap.get(parameter);
         String v = getVariableRepresentation(o);
-        q = q.replace("{" + parameter.getValue() + "}", v);
+        q = q.replace("{" + parameter + "}", v);
       }
     }
     return q.replace("\n", "").replace("\r", "");
