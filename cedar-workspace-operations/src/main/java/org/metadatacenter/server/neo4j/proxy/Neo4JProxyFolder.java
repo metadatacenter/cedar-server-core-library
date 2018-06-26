@@ -4,6 +4,7 @@ import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -90,10 +91,6 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
 
   List<FolderServerFolder> findFolderPathById(String id) {
     return findFolderPathGenericById(id, FolderServerFolder.class);
-  }
-
-  List<FolderServerFolderExtract> findFolderPathExtractById(String id) {
-    return findFolderPathGenericById(id, FolderServerFolderExtract.class);
   }
 
   FolderServerFolder findFolderByPath(String path) {

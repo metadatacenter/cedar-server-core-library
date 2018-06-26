@@ -15,6 +15,7 @@ import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolder;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -189,4 +190,17 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerNode.class);
   }
+
+  private <T extends CedarNode> List<T> findNodePathGenericById(String id, Class<T> klazz) {
+    String cypher = CypherQueryBuilderNode.getNodeLookupQueryById();
+    CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, klazz);
+  }
+
+  List<FolderServerNodeExtract> findNodePathExtractById(String id) {
+    return findNodePathGenericById(id, FolderServerNodeExtract.class);
+  }
+
+
 }

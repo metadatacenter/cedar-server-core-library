@@ -3,6 +3,8 @@ package org.metadatacenter.model.folderserver;
 import com.fasterxml.jackson.annotation.*;
 import org.metadatacenter.model.AbstractCedarNodeFull;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.util.FolderServerNodeContext;
@@ -29,6 +31,7 @@ import static org.metadatacenter.util.provenance.ProvenanceUtil.*;
 public abstract class FolderServerNode extends AbstractCedarNodeFull {
 
   private List<NodePermission> currentUserPermissions;
+  private List<FolderServerNodeExtract> pathInfo;
 
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
@@ -37,6 +40,7 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
     this.currentUserPermissions = new ArrayList<>();
+    this.pathInfo = new ArrayList<>();
   }
 
   @JsonGetter("@id")
@@ -239,4 +243,11 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
     this.lastUpdatedBy = createdBy;
   }
 
+  public List<FolderServerNodeExtract> getPathInfo() {
+    return pathInfo;
+  }
+
+  public void setPathInfo(List<FolderServerNodeExtract> pathInfo) {
+    this.pathInfo = pathInfo;
+  }
 }

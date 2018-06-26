@@ -215,13 +215,13 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerFolderExtract> findFolderPathExtract(FolderServerFolder folder) {
-    if (folder.isRoot()) {
-      List<FolderServerFolderExtract> pathInfo = new ArrayList<>();
-      pathInfo.add(FolderServerFolderExtract.fromFolder(folder));
+  public List<FolderServerNodeExtract> findNodePathExtract(FolderServerNode node) {
+    if (node instanceof FolderServerFolder && ((FolderServerFolder)node).isRoot()) {
+      List<FolderServerNodeExtract> pathInfo = new ArrayList<>();
+      pathInfo.add(FolderServerFolderExtract.fromFolder((FolderServerFolder)node));
       return pathInfo;
     } else {
-      return proxies.folder().findFolderPathExtractById(folder.getId());
+      return proxies.node().findNodePathExtractById(node.getId());
     }
   }
 

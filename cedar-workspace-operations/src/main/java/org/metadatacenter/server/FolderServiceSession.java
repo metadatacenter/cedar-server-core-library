@@ -4,7 +4,6 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
@@ -48,7 +47,7 @@ public interface FolderServiceSession {
 
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
-  List<FolderServerFolderExtract> findFolderPathExtract(FolderServerFolder folder);
+  List<FolderServerNodeExtract> findNodePathExtract(FolderServerNode node);
 
   List<FolderServerNode> findFolderContentsFiltered(String folderURL, List<CedarNodeType> nodeTypeList,
                                                     ResourceVersionFilter version, ResourcePublicationStatusFilter

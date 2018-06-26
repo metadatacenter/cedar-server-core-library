@@ -162,4 +162,12 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " RETURN node";
   }
 
+  public static String getNodeLookupQueryById() {
+    return "" +
+        " MATCH (root:<LABEL.FOLDER> {name:{name}})," +
+        " (current:<LABEL.FSNODE> {id:{id} })," +
+        " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
+        " RETURN path";
+  }
+
 }
