@@ -19,7 +19,9 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   protected Optional<String> resourceTypesInput;
   protected List<CedarNodeType> nodeTypeList;
+  protected Optional<String> versionInput;
   protected ResourceVersionFilter version;
+  protected Optional<String> publicationStatusInput;
   protected ResourcePublicationStatusFilter publicationStatus;
 
   public PagedSortedTypedQuery(PaginationConfig config) {
@@ -33,21 +35,13 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
     return this;
   }
 
-  public PagedSortedTypedQuery version(Optional<String> v) {
-    if (v.isPresent()) {
-      this.version = ResourceVersionFilter.forValue(v.get());
-    } else {
-      this.version = null;
-    }
+  public PagedSortedTypedQuery version(Optional<String> versionInput) {
+    this.versionInput = versionInput;
     return this;
   }
 
-  public PagedSortedTypedQuery publicationStatus(Optional<String> v) {
-    if (v.isPresent()) {
-      this.publicationStatus = ResourcePublicationStatusFilter.forValue(v.get());
-    } else {
-      this.publicationStatus = null;
-    }
+  public PagedSortedTypedQuery publicationStatus(Optional<String> publicationStatusInput) {
+    this.publicationStatusInput = publicationStatusInput;
     return this;
   }
 
@@ -75,6 +69,8 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
     validateOffset();
     validateSorting();
     validateResourceTypes();
+    validateVersion();
+    validatePublicationStatus();
   }
 
   public List<CedarNodeType> getNodeTypeList() {
@@ -131,6 +127,48 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
             .parameter("allowedResourceTypes", CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls());
       } else {
         nodeTypeList.add(crt);
+      }
+    }
+  }
+
+  private void validateVersion() throws CedarException {
+    if (!versionInput.isPresent()) {
+      version = ResourceVersionFilter.ALL;
+    } else {
+      String versionString = versionInput.get();
+      if (versionString == null || versionString.isEmpty()) {
+        throw new CedarAssertionException("If present, 'version' must be one of the following:" +
+            ResourceVersionFilter.getValidValues())
+            .badRequest()
+            .parameter("version", versionString);
+      }
+      version = ResourceVersionFilter.forValue(versionString);
+      if (version == null) {
+        throw new CedarAssertionException("Invalid value for 'version'! Must be one of the following:" +
+            ResourceVersionFilter.getValidValues())
+            .badRequest()
+            .parameter("version", versionString);
+      }
+    }
+  }
+
+  private void validatePublicationStatus() throws CedarException {
+    if (!publicationStatusInput.isPresent()) {
+      publicationStatus = ResourcePublicationStatusFilter.ALL;
+    } else {
+      String publicationStatusString = publicationStatusInput.get();
+      if (publicationStatusString == null || publicationStatusString.isEmpty()) {
+        throw new CedarAssertionException("If present, 'publicationStatus' must be one of the following:" +
+            ResourcePublicationStatusFilter.getValidValues())
+            .badRequest()
+            .parameter("publicationStatus", publicationStatusString);
+      }
+      publicationStatus = ResourcePublicationStatusFilter.forValue(publicationStatusString);
+      if (publicationStatus == null) {
+        throw new CedarAssertionException("Invalid value for 'publicationStatus'! Must be one of the following:" +
+            ResourcePublicationStatusFilter.getValidValues())
+            .badRequest()
+            .parameter("publicationStatus", publicationStatusString);
       }
     }
   }
