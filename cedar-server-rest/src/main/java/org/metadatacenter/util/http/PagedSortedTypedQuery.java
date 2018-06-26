@@ -102,18 +102,21 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   protected void validateResourceTypes() throws CedarException {
     String nodeTypesString = null;
-    if (resourceTypesInput.isPresent()) {
+    List<String> nodeTypeStringList;
+    if (!resourceTypesInput.isPresent()) {
+      nodeTypeStringList = CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls();
+    } else {
       nodeTypesString = resourceTypesInput.get();
+      if (nodeTypesString != null) {
+        nodeTypesString = nodeTypesString.trim();
+      }
+      if (nodeTypesString == null || nodeTypesString.isEmpty()) {
+        throw new CedarAssertionException("If present, 'resource_types' must be a comma separated list!")
+            .badRequest()
+            .parameter("resource_types", nodeTypesString);
+      }
+      nodeTypeStringList = Arrays.asList(StringUtils.split(nodeTypesString, ","));
     }
-    if (nodeTypesString != null) {
-      nodeTypesString = nodeTypesString.trim();
-    }
-    if (nodeTypesString == null || nodeTypesString.isEmpty()) {
-      throw new CedarAssertionException("You must pass in 'resource_types' as a comma separated list!")
-          .parameter("resource_types", nodeTypesString);
-    }
-
-    List<String> nodeTypeStringList = Arrays.asList(StringUtils.split(nodeTypesString, ","));
     nodeTypeList = new ArrayList<>();
     for (String rt : nodeTypeStringList) {
       CedarNodeType crt = CedarNodeType.forValue(rt);
@@ -122,6 +125,7 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
             "are:" +
             CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls())
             .errorKey(CedarErrorKey.INVALID_NODE_TYPE)
+            .badRequest()
             .parameter("resource_types", nodeTypesString)
             .parameter("invalidResourceTypes", rt)
             .parameter("allowedResourceTypes", CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls());
