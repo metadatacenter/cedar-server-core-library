@@ -109,4 +109,18 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
+  public static String getIsBasedOnCount() {
+    return "" +
+        " MATCH (instance:<LABEL.INSTANCE> {isBasedOn:{resourceId}}) " +
+        " RETURN COUNT(instance)";
+  }
+
+  public static String getVersionHistory() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})");
+    sb.append(" MATCH p=(resnew:<LABEL.RESOURCE>)-[:<REL.PREVIOUSVERSION>*0..]->");
+    sb.append("(resource)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.RESOURCE>)");
+    sb.append(" RETURN p ORDER BY length(p) DESC LIMIT 1");
+    return sb.toString();
+  }
 }

@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 
-import static org.metadatacenter.model.ModelNodeNames.*;
+import static org.metadatacenter.model.ModelNodeNames.BIBO_STATUS;
+import static org.metadatacenter.model.ModelNodeNames.PAV_VERSION;
 
 public abstract class FolderServerResourceExtract extends FolderServerNodeExtract {
 

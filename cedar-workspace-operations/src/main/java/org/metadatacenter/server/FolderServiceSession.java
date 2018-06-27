@@ -1,10 +1,12 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -102,4 +104,10 @@ public interface FolderServiceSession {
   boolean unsetLatestVersion(String id);
 
   boolean setLatestVersion(String id);
+
+  long getNumberOfInstances(String templateId);
+
+  FolderServerResourceExtract findResourceExtractById(ResourceUri id);
+
+  List<FolderServerNodeExtract> getVersionHistory(String id);
 }

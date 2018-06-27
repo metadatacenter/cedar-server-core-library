@@ -2,12 +2,14 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerGroup;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
@@ -216,9 +218,9 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public List<FolderServerNodeExtract> findNodePathExtract(FolderServerNode node) {
-    if (node instanceof FolderServerFolder && ((FolderServerFolder)node).isRoot()) {
+    if (node instanceof FolderServerFolder && ((FolderServerFolder) node).isRoot()) {
       List<FolderServerNodeExtract> pathInfo = new ArrayList<>();
-      pathInfo.add(FolderServerFolderExtract.fromFolder((FolderServerFolder)node));
+      pathInfo.add(FolderServerFolderExtract.fromFolder((FolderServerFolder) node));
       return pathInfo;
     } else {
       return proxies.node().findNodePathExtractById(node.getId());
@@ -316,6 +318,21 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public boolean setLatestVersion(String id) {
     return proxies.resource().setLatestVersion(id);
+  }
+
+  @Override
+  public long getNumberOfInstances(String templateId) {
+    return proxies.resource().getIsBasedOnCount(templateId);
+  }
+
+  @Override
+  public FolderServerResourceExtract findResourceExtractById(ResourceUri id) {
+    return proxies.resource().findResourceExtractById(id);
+  }
+
+  @Override
+  public List<FolderServerNodeExtract> getVersionHistory(String id) {
+    return proxies.resource().getVersionHistory(id);
   }
 
 }
