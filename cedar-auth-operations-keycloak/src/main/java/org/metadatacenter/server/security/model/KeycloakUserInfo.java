@@ -2,7 +2,6 @@ package org.metadatacenter.server.security.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.server.security.model.IUserInfo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KeycloakUserInfo implements IUserInfo {

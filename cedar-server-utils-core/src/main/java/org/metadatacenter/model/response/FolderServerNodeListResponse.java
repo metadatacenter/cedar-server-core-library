@@ -1,32 +1,34 @@
 package org.metadatacenter.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.folderserver.FolderServerFolder;
-import org.metadatacenter.model.folderserver.FolderServerNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.model.request.NodeListQueryType;
+import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerNodeListResponse extends AbstractNodeListResponse {
 
-  private List<FolderServerNode> resources;
-  private List<FolderServerFolder> pathInfo;
+  private List<FolderServerNodeExtract> resources;
+  private List<FolderServerNodeExtract> pathInfo;
   private NodeListQueryType nodeListQueryType;
 
-  public List<FolderServerNode> getResources() {
+  public List<FolderServerNodeExtract> getResources() {
     return resources;
   }
 
-  public void setResources(List<FolderServerNode> resources) {
+  public void setResources(List<FolderServerNodeExtract> resources) {
     this.resources = resources;
   }
 
-  public List<FolderServerFolder> getPathInfo() {
+  public List<FolderServerNodeExtract> getPathInfo() {
     return pathInfo;
   }
 
-  public void setPathInfo(List<FolderServerFolder> pathInfo) {
+  public void setPathInfo(List<FolderServerNodeExtract> pathInfo) {
     this.pathInfo = pathInfo;
   }
 
@@ -36,5 +38,10 @@ public class FolderServerNodeListResponse extends AbstractNodeListResponse {
 
   public void setNodeListQueryType(NodeListQueryType nodeListQueryType) {
     this.nodeListQueryType = nodeListQueryType;
+  }
+
+  @JsonProperty("@context")
+  public Map<String, String> getContext() {
+    return FolderServerNodeContext.getContext();
   }
 }

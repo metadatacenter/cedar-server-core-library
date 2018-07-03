@@ -44,7 +44,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
@@ -59,7 +59,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     params.put(ParameterPlaceholder.USER_ID, ownerId);
     return params;
@@ -73,7 +73,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
@@ -91,7 +91,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     if (addPermissionConditions) {
       params.put(ParameterPlaceholder.USER_ID, ownerId);

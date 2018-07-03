@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.metadatacenter.config.PaginationConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.rest.exception.CedarAssertionException;
-import org.metadatacenter.server.workspace.QuerySortOptions;
+import org.metadatacenter.server.neo4j.cypher.sort.QuerySortOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;

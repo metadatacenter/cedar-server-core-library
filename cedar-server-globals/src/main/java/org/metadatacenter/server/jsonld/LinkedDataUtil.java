@@ -12,7 +12,7 @@ import java.util.*;
 public class LinkedDataUtil {
 
   protected static final String SEPARATOR = "/";
-  
+
   private final LinkedDataConfig ldConfig;
   private List<String> knownPrefixes;
 

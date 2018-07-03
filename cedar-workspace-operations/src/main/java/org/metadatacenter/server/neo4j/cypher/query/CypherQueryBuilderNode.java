@@ -24,17 +24,17 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getNodeByParentIdAndName() {
     return "" +
-        " MATCH (parent:<LABEL.FSNODE> {id:{id}})" +
+        " MATCH (parent:<LABEL.FSNODE> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (child)" +
         " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
-        " WHERE child.<PROP.NAME> = {name}" +
+        " WHERE child.<PROP.NAME> = {<PROP.NAME>}" +
         " RETURN child";
   }
 
   public static String getNodeOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (node:<LABEL.FSNODE> {id:{nodeId} })" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId} })" +
         " MATCH (user)-[:<REL.OWNS>]->(node)" +
         " RETURN user";
   }
@@ -43,7 +43,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       publicationStatus, List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     sb.append(
-        " MATCH (user:<LABEL.USER> {id:{userId}})-" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})-" +
             "[:<REL.MEMBEROF>*0..1]->" +
             "()-" +
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
@@ -71,7 +71,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       publicationStatus) {
     StringBuilder sb = new StringBuilder();
     sb.append(
-        " MATCH (user:<LABEL.USER> {id:{userId}})-" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})-" +
             "[:<REL.MEMBEROF>*0..1]->" +
             "()-" +
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
@@ -96,7 +96,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       publicationStatus, List<String> sortList, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
     sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
@@ -121,7 +121,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       publicationStatus, boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
     sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
@@ -141,7 +141,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getAllDescendantNodes() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{id} })" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>} })" +
         " MATCH (child)" +
         " MATCH (parent)-[:<REL.CONTAINS>*0..]->(child)" +
         " RETURN child";
@@ -149,7 +149,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
 
   public static String getAllVisibleByGroupQuery() {
     return "" +
-        " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
         " MATCH (node)" +
         " WHERE" +
         " (" +
@@ -160,6 +160,14 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " (group)-[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->(node)" +
         " )" +
         " RETURN node";
+  }
+
+  public static String getNodeLookupQueryById() {
+    return "" +
+        " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +
+        " (current:<LABEL.FSNODE> {<PROP.ID>:{<PROP.ID>} })," +
+        " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
+        " RETURN path";
   }
 
 }

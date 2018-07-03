@@ -13,7 +13,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String updateResourceById(Map<NodeProperty, String> updateFields) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (resource:<LABEL.RESOURCE> {id:{id}})");
+    sb.append(" MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})");
     sb.append(buildSetter("resource", NodeProperty.LAST_UPDATED_BY));
     sb.append(buildSetter("resource", NodeProperty.LAST_UPDATED_ON));
     sb.append(buildSetter("resource", NodeProperty.LAST_UPDATED_ON_TS));
@@ -26,14 +26,14 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String deleteResourceById() {
     return "" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{id}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
         " DETACH DELETE resource";
   }
 
   public static String unlinkResourceFromParent() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER>)" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " MATCH (parent)-[relation:<REL.CONTAINS>]->(resource)" +
         " DELETE relation" +
         " RETURN resource";
@@ -41,16 +41,16 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String linkResourceUnderFolder() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{parentFolderId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(resource)" +
         " RETURN resource";
   }
 
   public static String setResourceOwner() {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " CREATE (user)-[:<REL.OWNS>]->(resource)" +
         " SET resource.<PROP.OWNED_BY> = {userId}" +
         " RETURN resource";
@@ -59,7 +59,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
   public static String removeResourceOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " MATCH (user)-[relation:<REL.OWNS>]->(resource)" +
         " DELETE relation" +
         " SET resource.<PROP.OWNED_BY> = null" +
@@ -68,14 +68,14 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String getResourceById() {
     return "" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{id}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
         " RETURN resource";
   }
 
   public static String getResourceLookupQueryById() {
     return "" +
-        " MATCH (root:<LABEL.FOLDER> {name:{name}})," +
-        " (current:<LABEL.RESOURCE> {id:{id}})," +
+        " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +
+        " (current:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})," +
         " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
         " RETURN path";
   }
@@ -88,8 +88,8 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String setDerivedFrom() {
     return "" +
-        " MATCH (nr:<LABEL.RESOURCE> {id:{sourceId}})" +
-        " MATCH (or:<LABEL.RESOURCE> {id:{targetId}})" +
+        " MATCH (nr:<LABEL.RESOURCE> {<PROP.ID>:{sourceId}})" +
+        " MATCH (or:<LABEL.RESOURCE> {<PROP.ID>:{targetId}})" +
         " CREATE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
         " SET nr.<PROP.DERIVED_FROM> = {targetId}" +
         " RETURN nr";
@@ -97,16 +97,30 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
   public static String unsetLatestVersion() {
     return "" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " SET resource.<PROP.IS_LATEST_VERSION> = false" +
         " RETURN resource";
   }
 
   public static String setLatestVersion() {
     return "" +
-        " MATCH (resource:<LABEL.RESOURCE> {id:{resourceId}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
         " SET resource.<PROP.IS_LATEST_VERSION> = true" +
         " RETURN resource";
   }
 
+  public static String getIsBasedOnCount() {
+    return "" +
+        " MATCH (instance:<LABEL.INSTANCE> {<PROP.IS_BASED_ON>:{resourceId}}) " +
+        " RETURN COUNT(instance)";
+  }
+
+  public static String getVersionHistory() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})");
+    sb.append(" MATCH p=(resnew:<LABEL.RESOURCE>)-[:<REL.PREVIOUSVERSION>*0..]->");
+    sb.append("(resource)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.RESOURCE>)");
+    sb.append(" RETURN p ORDER BY length(p) DESC LIMIT 1");
+    return sb.toString();
+  }
 }

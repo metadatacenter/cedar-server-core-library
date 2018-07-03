@@ -10,6 +10,7 @@ public class BackendCallError {
   BackendCallError(CedarErrorType errorType) {
     errorPack = new CedarErrorPack();
     errorPack.errorType(errorType);
+    errorPack.status(errorType.getStatus());
   }
 
   public BackendCallError message(String message) {

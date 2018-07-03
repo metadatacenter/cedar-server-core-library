@@ -63,7 +63,7 @@ public class CedarUserUtil {
 
     // set resource type filter defaults
     CedarUserUIResourceTypeFilters resourceTypeFilters = user.getUiPreferences().getResourceTypeFilters();
-    resourceTypeFilters.setField(false);
+    resourceTypeFilters.setField(true);
     resourceTypeFilters.setElement(true);
     resourceTypeFilters.setTemplate(true);
     resourceTypeFilters.setInstance(true);

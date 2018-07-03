@@ -1,6 +1,5 @@
 package org.metadatacenter.util.test;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.security.CedarApiKeyAuthRequest;
@@ -17,8 +16,6 @@ public class TestUserUtil {
     try {
       user = CedarDataServices.getUserService().findUser(id);
     } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ProcessingException e) {
       e.printStackTrace();
     }
 

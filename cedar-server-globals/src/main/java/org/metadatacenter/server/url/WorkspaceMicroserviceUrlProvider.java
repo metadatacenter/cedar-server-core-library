@@ -19,20 +19,28 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return base + PREFIX_RESOURCES;
   }
 
-  public String getFolderWithId(String id) {
-    return base + CedarNodeType.Prefix.FOLDERS + "/" + UrlUtil.urlEncode(id);
+  public String getResourceWithId(String id) {
+    return getResources() + "/" + UrlUtil.urlEncode(id);
   }
 
-  public String getResourceWithId(String id) {
-    return base + PREFIX_RESOURCES + "/" + UrlUtil.urlEncode(id);
+  public String getResourceWithIdPermissions(String id) {
+    return getResourceWithId(id) + "/permissions";
+  }
+
+  public String getResourceWithIdReport(String id) {
+    return getResourceWithId(id) + "/report";
   }
 
   public String getFolders() {
     return base + CedarNodeType.Prefix.FOLDERS;
   }
 
-  public String getResourceWithIdPermissions(String id) {
-    return base + PREFIX_RESOURCES + "/" + UrlUtil.urlEncode(id) + "/permissions";
+  public String getFolderWithId(String id) {
+    return getFolders() + "/" + UrlUtil.urlEncode(id);
+  }
+
+  public String getFolderWithIdPermissions(String id) {
+    return getFolderWithId(id) + "/permissions";
   }
 
   public String getBase() {
@@ -43,9 +51,6 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return base + "command/" + command;
   }
 
-  public String getFolderWithIdPermissions(String id) {
-    return base + CedarNodeType.Prefix.FOLDERS + "/" + UrlUtil.urlEncode(id) + "/permissions";
-  }
 
   public String getNodes() {
     return base + PREFIX_NODES;
@@ -55,7 +60,4 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return users;
   }
 
-  public String getResourceWithIdReport(String id) {
-    return base + PREFIX_RESOURCES + "/" + UrlUtil.urlEncode(id) + "/report";
-  }
 }

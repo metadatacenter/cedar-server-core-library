@@ -69,4 +69,17 @@ public enum CedarPermission {
   public String getPermissionName() {
     return permissionName;
   }
+
+  public static CedarPermission getUpdateForVersionedNodeType(CedarNodeType nodeType) {
+    if (nodeType.isVersioned()) {
+      if (nodeType == CedarNodeType.FIELD) {
+        return TEMPLATE_FIELD_UPDATE;
+      } else if (nodeType == CedarNodeType.ELEMENT) {
+        return TEMPLATE_ELEMENT_UPDATE;
+      } else if (nodeType == CedarNodeType.TEMPLATE) {
+        return TEMPLATE_UPDATE;
+      }
+    }
+    return null;
+  }
 }

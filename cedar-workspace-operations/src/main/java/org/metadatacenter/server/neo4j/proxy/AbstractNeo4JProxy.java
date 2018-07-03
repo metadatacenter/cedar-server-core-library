@@ -4,10 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.model.folderserver.FolderServerArc;
+import org.metadatacenter.model.folderserver.FolderServerFolder;
+import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.exceptions.ClientException;
@@ -34,10 +38,19 @@ public abstract class AbstractNeo4JProxy {
         AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
 
+  private void reportQueryError(ClientException ex, CypherQuery q) {
+    log.error("Error executing Cypher query:", ex);
+    log.error(q.getOriginalQuery());
+    if (q instanceof CypherQueryWithParameters) {
+      log.error(((CypherQueryWithParameters) q).getParameterMap().toString());
+    }
+    log.error(q.getRunnableQuery());
+    throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+  }
+
   protected boolean executeWrite(CypherQuery q, String eventDescription) {
     boolean result = false;
     try (Session session = driver.session()) {
-
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
@@ -55,7 +68,7 @@ public abstract class AbstractNeo4JProxy {
       }
     } catch (ClientException ex) {
       log.error("Error while " + eventDescription, ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
     return result;
   }
@@ -63,7 +76,6 @@ public abstract class AbstractNeo4JProxy {
   protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
     Record record = null;
     try (Session session = driver.session()) {
-
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
@@ -80,8 +92,7 @@ public abstract class AbstractNeo4JProxy {
         });
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     if (record != null) {
@@ -94,25 +105,29 @@ public abstract class AbstractNeo4JProxy {
     return null;
   }
 
-  protected long executeReadGetCount(CypherQuery q) {
+  private Record executeQueryGetRecord(Session session, CypherQuery q) {
     Record record = null;
-    try (Session session = driver.session()) {
+    if (q instanceof CypherQueryWithParameters) {
+      CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+      final String runnableQuery = qp.getRunnableQuery();
+      final Map<String, Object> parameterMap = qp.getParameterMap();
+      record = session.readTransaction(tx -> {
+        StatementResult result = tx.run(runnableQuery, parameterMap);
+        return result.hasNext() ? result.next() : null;
+      });
+    } else if (q instanceof CypherQueryLiteral) {
+      final String runnableQuery = q.getRunnableQuery();
+      record = session.readTransaction(tx -> {
+        StatementResult result = tx.run(runnableQuery);
+        return result.hasNext() ? result.next() : null;
+      });
+    }
+    return record;
+  }
 
-      if (q instanceof CypherQueryWithParameters) {
-        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        final String runnableQuery = qp.getRunnableQuery();
-        final Map<String, Object> parameterMap = qp.getParameterMap();
-        record = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery, parameterMap);
-          return result.hasNext() ? result.next() : null;
-        });
-      } else if (q instanceof CypherQueryLiteral) {
-        final String runnableQuery = q.getRunnableQuery();
-        record = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery);
-          return result.hasNext() ? result.next() : null;
-        });
-      }
+  protected long executeReadGetCount(CypherQuery q) {
+    try (Session session = driver.session()) {
+      Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Value value = record.get(0);
         if (value.type().equals(session.typeSystem().INTEGER())) {
@@ -120,32 +135,15 @@ public abstract class AbstractNeo4JProxy {
         }
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return -1;
   }
 
   protected <T extends CedarNode> T executeReadGetOne(CypherQuery q, Class<T> type) {
-    Record record = null;
     try (Session session = driver.session()) {
-
-      if (q instanceof CypherQueryWithParameters) {
-        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        final String runnableQuery = qp.getRunnableQuery();
-        final Map<String, Object> parameterMap = qp.getParameterMap();
-        record = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery, parameterMap);
-          return result.hasNext() ? result.next() : null;
-        });
-      } else if (q instanceof CypherQueryLiteral) {
-        final String runnableQuery = q.getRunnableQuery();
-        record = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery);
-          return result.hasNext() ? result.next() : null;
-        });
-      }
+      Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Node n = record.get(0).asNode();
         if (n != null) {
@@ -154,41 +152,44 @@ public abstract class AbstractNeo4JProxy {
         }
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
     return null;
+  }
+
+  private List<Record> executeQueryGetRecordList(Session session, CypherQuery q) {
+    List<Record> records = null;
+    if (q instanceof CypherQueryWithParameters) {
+      CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
+      final String runnableQuery = qp.getRunnableQuery();
+      final Map<String, Object> parameterMap = qp.getParameterMap();
+      records = session.readTransaction(tx -> {
+        StatementResult result = tx.run(runnableQuery, parameterMap);
+        List<Record> nodes = new ArrayList<>();
+        while (result.hasNext()) {
+          nodes.add(result.next());
+        }
+        return nodes;
+      });
+    } else if (q instanceof CypherQueryLiteral) {
+      final String runnableQuery = q.getRunnableQuery();
+      records = session.readTransaction(tx -> {
+        StatementResult result = tx.run(runnableQuery);
+        List<Record> nodes = new ArrayList<>();
+        while (result.hasNext()) {
+          nodes.add(result.next());
+        }
+        return nodes;
+      });
+    }
+    return records;
   }
 
 
   protected <T extends CedarNode> List<T> executeReadGetList(CypherQuery q, Class<T> type) {
     List<T> folderServerNodeList = new ArrayList<>();
-    List<Record> records = null;
     try (Session session = driver.session()) {
-      if (q instanceof CypherQueryWithParameters) {
-        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        final String runnableQuery = qp.getRunnableQuery();
-        final Map<String, Object> parameterMap = qp.getParameterMap();
-        records = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery, parameterMap);
-          List<Record> nodes = new ArrayList<>();
-          while (result.hasNext()) {
-            nodes.add(result.next());
-          }
-          return nodes;
-        });
-      } else if (q instanceof CypherQueryLiteral) {
-        final String runnableQuery = q.getRunnableQuery();
-        records = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery);
-          List<Record> nodes = new ArrayList<>();
-          while (result.hasNext()) {
-            nodes.add(result.next());
-          }
-          return nodes;
-        });
-      }
-
+      List<Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
         for (Record r : records) {
           if (r.size() == 1) {
@@ -224,8 +225,7 @@ public abstract class AbstractNeo4JProxy {
         return folderServerNodeList;
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return folderServerNodeList;
@@ -233,32 +233,8 @@ public abstract class AbstractNeo4JProxy {
 
   protected List<FolderServerArc> executeReadGetArcList(CypherQuery q) {
     List<FolderServerArc> folderServerArcList = new ArrayList<>();
-    List<Record> records = null;
     try (Session session = driver.session()) {
-      if (q instanceof CypherQueryWithParameters) {
-        CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
-        final String runnableQuery = qp.getRunnableQuery();
-        final Map<String, Object> parameterMap = qp.getParameterMap();
-        records = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery, parameterMap);
-          List<Record> nodes = new ArrayList<>();
-          while (result.hasNext()) {
-            nodes.add(result.next());
-          }
-          return nodes;
-        });
-      } else if (q instanceof CypherQueryLiteral) {
-        final String runnableQuery = q.getRunnableQuery();
-        records = session.readTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery);
-          List<Record> nodes = new ArrayList<>();
-          while (result.hasNext()) {
-            nodes.add(result.next());
-          }
-          return nodes;
-        });
-      }
-
+      List<Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
         for (Record r : records) {
           Map<String, Object> recordMap = r.asMap();
@@ -271,8 +247,7 @@ public abstract class AbstractNeo4JProxy {
         return folderServerArcList;
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return folderServerArcList;
@@ -280,84 +255,35 @@ public abstract class AbstractNeo4JProxy {
 
 
   private <T extends CedarNode> T buildClass(JsonNode node, Class<T> type) {
-    if (type == FolderServerUser.class) {
-      return (T) buildUser(node);
-    } else if (type == FolderServerGroup.class) {
-      return (T) buildGroup(node);
-    } else if (type == FolderServerFolder.class) {
-      return (T) buildFolder(node);
-    } else if (type == FolderServerResource.class) {
-      return (T) buildResource(node);
-    } else if (type == FolderServerNode.class) {
-      return (T) buildNode(node);
-    }
-    return null;
-  }
-
-  protected FolderServerGroup buildGroup(JsonNode g) {
-    FolderServerGroup cg = null;
-    if (g != null && !g.isMissingNode()) {
+    T cn = null;
+    if (node != null && !node.isMissingNode()) {
       try {
-        cg = JsonMapper.MAPPER.treeToValue(g, FolderServerGroup.class);
+        JsonNode unescaped = Neo4JUtil.unescapeTopLevelPropertyNames(node);
+        cn = JsonMapper.MAPPER.treeToValue(unescaped, type);
       } catch (JsonProcessingException e) {
-        log.error("Error deserializing group", e);
+        log.error("Error deserializing node into " + type.getSimpleName(), e);
       }
     }
-    return cg;
-  }
-
-  protected FolderServerUser buildUser(JsonNode u) {
-    FolderServerUser cu = null;
-    if (u != null && !u.isMissingNode()) {
-      try {
-        cu = JsonMapper.MAPPER.treeToValue(u, FolderServerUser.class);
-      } catch (JsonProcessingException e) {
-        log.error("Error deserializing user", e);
-      }
-    }
-    return cu;
+    return cn;
   }
 
   protected FolderServerFolder buildFolder(JsonNode f) {
-    FolderServerFolder cf = null;
-    if (f != null && !f.isMissingNode()) {
-      try {
-        cf = JsonMapper.MAPPER.treeToValue(f, FolderServerFolder.class);
-      } catch (JsonProcessingException e) {
-        log.error("Error deserializing folder", e);
-      }
-    }
-    return cf;
+    return buildClass(f, FolderServerFolder.class);
   }
 
   public FolderServerResource buildResource(JsonNode r) {
-    FolderServerResource cr = null;
-    if (r != null && !r.isMissingNode()) {
-      try {
-        cr = JsonMapper.MAPPER.treeToValue(r, FolderServerResource.class);
-      } catch (JsonProcessingException e) {
-        log.error("Error deserializing resource", e);
-      }
-    }
-    return cr;
+    return buildClass(r, FolderServerResource.class);
   }
 
-  protected FolderServerNode buildNode(JsonNode f) {
-    FolderServerNode cf = null;
-    if (f != null && !f.isMissingNode()) {
-      try {
-        cf = JsonMapper.MAPPER.treeToValue(f, FolderServerNode.class);
-      } catch (JsonProcessingException e) {
-        log.error("Error deserializing node", e);
-      }
-    }
-    return cf;
+  protected FolderServerNode buildNode(JsonNode n) {
+    return buildClass(n, FolderServerNode.class);
   }
 
   protected FolderServerArc buildArc(JsonNode a) {
     FolderServerArc arc = null;
     if (a != null && !a.isMissingNode()) {
-      arc = new FolderServerArc(a.at("/sid").textValue(), RelationLabel.forValue(a.at("/type").textValue()), a.at("/tid")
+      arc = new FolderServerArc(a.at("/sid").textValue(), RelationLabel.forValue(a.at("/type").textValue()), a.at
+          ("/tid")
           .textValue());
     }
     return arc;

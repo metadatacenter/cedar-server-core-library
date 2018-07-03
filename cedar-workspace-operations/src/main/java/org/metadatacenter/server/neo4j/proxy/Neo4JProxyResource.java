@@ -1,9 +1,13 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.model.CedarNode;
+import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -89,11 +93,19 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeWrite(q, "removing owner");
   }
 
-  FolderServerResource findResourceById(String resourceURL) {
+  private <T extends CedarNode> T findResourceGenericById(String id, Class<T> klazz) {
     String cypher = CypherQueryBuilderResource.getResourceById();
-    CypherParameters params = CypherParamBuilderResource.getResourceById(resourceURL);
+    CypherParameters params = CypherParamBuilderResource.getResourceById(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetOne(q, FolderServerResource.class);
+    return executeReadGetOne(q, klazz);
+  }
+
+  public FolderServerResourceExtract findResourceExtractById(ResourceUri id) {
+    return findResourceGenericById(id.getValue(), FolderServerResourceExtract.class);
+  }
+
+  public FolderServerResource findResourceById(String resourceURL) {
+    return findResourceGenericById(resourceURL, FolderServerResource.class);
   }
 
   List<FolderServerNode> findResourcePathById(String id) {
@@ -122,5 +134,19 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting isLatestVersion");
+  }
+
+  public long getIsBasedOnCount(String templateId) {
+    String cypher = CypherQueryBuilderResource.getIsBasedOnCount();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(templateId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  public List<FolderServerNodeExtract> getVersionHistory(String resourceId) {
+    String cypher = CypherQueryBuilderResource.getVersionHistory();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 }

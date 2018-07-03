@@ -9,7 +9,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
 
   public static String getFolderContentsUnfilteredCountQuery() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{id}})" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (child)" +
         " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN count(child)";
@@ -20,9 +20,9 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
                                                            boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{folderId}})");
+    sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
     sb.append(" WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}");
@@ -45,9 +45,9 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
                                                             boolean addPermissionConditions) {
     StringBuilder sb = new StringBuilder();
     if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{folderId}})");
+    sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
     sb.append(" WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}");

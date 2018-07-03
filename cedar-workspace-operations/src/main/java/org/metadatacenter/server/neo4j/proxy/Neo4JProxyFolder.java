@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
@@ -79,11 +80,15 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerFolder.class);
   }
 
-  List<FolderServerFolder> findFolderPathById(String id) {
+  private <T extends CedarNode> List<T> findFolderPathGenericById(String id, Class<T> klazz) {
     String cypher = CypherQueryBuilderFolder.getFolderLookupQueryById();
     CypherParameters params = CypherParamBuilderFolder.getFolderLookupByIDParameters(proxies.pathUtil, id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerFolder.class);
+    return executeReadGetList(q, klazz);
+  }
+
+  List<FolderServerFolder> findFolderPathById(String id) {
+    return findFolderPathGenericById(id, FolderServerFolder.class);
   }
 
   FolderServerFolder findFolderByPath(String path) {
@@ -132,8 +137,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
 
   FolderServerFolder createRootFolder(String creatorId) {
     FolderServerFolder newRoot = new FolderServerFolder();
-    newRoot.setName1(proxies.config.getRootFolderPath());
-    newRoot.setDescription1(proxies.config.getRootFolderDescription());
+    newRoot.setName(proxies.config.getRootFolderPath());
+    newRoot.setDescription(proxies.config.getRootFolderDescription());
     newRoot.setCreatedByTotal(creatorId);
     newRoot.setRoot(true);
     newRoot.setSystem(true);

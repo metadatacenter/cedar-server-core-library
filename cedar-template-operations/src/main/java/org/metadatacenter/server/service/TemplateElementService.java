@@ -1,6 +1,5 @@
 package org.metadatacenter.server.service;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ public interface TemplateElementService<K, T> {
   List<T> findAllTemplateElements(Integer limit, Integer offset, List<String> fieldName, FieldNameInEx
       includeExclude) throws IOException;
 
-  T findTemplateElement(K templateElementId) throws IOException, ProcessingException;
+  T findTemplateElement(K templateElementId) throws IOException;
 
   T updateTemplateElement(K templateElementId, T content) throws TemplateServerResourceNotFoundException, IOException;
 
