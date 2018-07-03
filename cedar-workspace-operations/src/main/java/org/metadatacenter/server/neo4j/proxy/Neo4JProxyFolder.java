@@ -3,8 +3,6 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerUser;
-import org.metadatacenter.model.folderserverextract.FolderServerFolderExtract;
-import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -139,8 +137,8 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
 
   FolderServerFolder createRootFolder(String creatorId) {
     FolderServerFolder newRoot = new FolderServerFolder();
-    newRoot.setName1(proxies.config.getRootFolderPath());
-    newRoot.setDescription1(proxies.config.getRootFolderDescription());
+    newRoot.setName(proxies.config.getRootFolderPath());
+    newRoot.setDescription(proxies.config.getRootFolderDescription());
     newRoot.setCreatedByTotal(creatorId);
     newRoot.setRoot(true);
     newRoot.setSystem(true);

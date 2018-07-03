@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
@@ -20,7 +21,7 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     params.put(ParameterPlaceholder.USER_ID, ownerId);
     return params;
@@ -35,7 +36,7 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
     params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
     if (publicationStatus != null) {
-      params.put(ParameterPlaceholder.PUBLICATION_STATUS, publicationStatus.getValue());
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);

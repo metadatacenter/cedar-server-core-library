@@ -87,7 +87,7 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_BY, updatedBy);
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
-    params.put(ParameterPlaceholder.ID, nodeId);
+    params.put(NodeProperty.ID, nodeId);
     for (CypherQueryParameter parameter : updateFields.keySet()) {
       params.put(parameter, updateFields.get(parameter));
     }

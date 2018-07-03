@@ -9,7 +9,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String createRootFolder(FolderServerFolder newRoot) {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
         createFSFolder("root", newRoot) +
         " CREATE (user)-[:<REL.OWNS>]->(root)" +
         " RETURN root";
@@ -23,7 +23,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String updateFolderById(Map<NodeProperty, String> updateFields) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (folder:<LABEL.FOLDER> {id:{id}})");
+    sb.append(" MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})");
     sb.append(buildSetter("folder", NodeProperty.LAST_UPDATED_BY));
     sb.append(buildSetter("folder", NodeProperty.LAST_UPDATED_ON));
     sb.append(buildSetter("folder", NodeProperty.LAST_UPDATED_ON_TS));
@@ -41,7 +41,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   public static String unlinkFolderFromParent() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER>)" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
         " MATCH (parent)-[relation:<REL.CONTAINS>]->(folder)" +
         " DELETE relation" +
         " RETURN folder";
@@ -49,7 +49,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String deleteFolderContentsRecursivelyById() {
     return "" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{id}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (folder)-[relation:<REL.CONTAINS>*0..]->(child)" +
         " DETACH DELETE child" +
         " DETACH DELETE folder";
@@ -57,32 +57,32 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String getFolderLookupQueryById() {
     return "" +
-        " MATCH (root:<LABEL.FOLDER> {name:{name}})," +
-        " (current:<LABEL.FOLDER> {id:{id} })," +
+        " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +
+        " (current:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>} })," +
         " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
         " RETURN path";
   }
 
   public static String folderIsAncestorOf() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{parentFolderId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{folderId} })" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId} })" +
         " MATCH (parent)-[:<REL.CONTAINS>*0..]->(folder)" +
         " RETURN parent";
   }
 
   public static String linkFolderUnderFolder() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{parentFolderId} })" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{folderId} })" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId} })" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId} })" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(folder)" +
         " RETURN folder";
   }
 
   public static String setFolderOwner() {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
         " CREATE (user)-[:<REL.OWNS>]->(folder)" +
         " SET folder.<PROP.OWNED_BY> = {userId}" +
         " RETURN folder";
@@ -91,7 +91,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   public static String removeFolderOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{folderId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
         " MATCH (user)-[relation:<REL.OWNS>]->(folder)" +
         " DELETE (relation)" +
         " SET folder.<PROP.OWNED_BY> = null" +
@@ -100,21 +100,21 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String getFolderById() {
     return "" +
-        " MATCH (folder:<LABEL.FOLDER> {id:{id}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
         " RETURN folder";
   }
 
   public static String getFolderLookupQueryByDepth(int cnt) {
     StringBuilder sb = new StringBuilder();
     if (cnt >= 1) {
-      sb.append(" MATCH (f0:<LABEL.FOLDER> {name:{f0} })");
+      sb.append(" MATCH (f0:<LABEL.FOLDER> {<PROP.NAME>:{f0} })");
     }
     for (int i = 2; i <= cnt; i++) {
       String parentAlias = "f" + (i - 2);
       String childAlias = "f" + (i - 1);
       sb.append(" MATCH (");
       sb.append(childAlias);
-      sb.append(":<LABEL.FOLDER> {name:{");
+      sb.append(":<LABEL.FOLDER> {<PROP.NAME>:{");
       sb.append(childAlias);
       sb.append("} })");
 

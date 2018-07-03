@@ -1,6 +1,7 @@
 package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NodePermissionGroup {
@@ -14,10 +15,12 @@ public class NodePermissionGroup {
     this.id = id;
   }
 
+  @JsonProperty("@id")
   public String getId() {
     return id;
   }
 
+  @JsonProperty("@id")
   public void setId(String id) {
     this.id = id;
   }

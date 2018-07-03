@@ -1,13 +1,13 @@
 package org.metadatacenter.model.folderserverreport;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
@@ -26,12 +26,12 @@ import java.util.List;
 })
 public abstract class FolderServerResourceReport extends FolderServerResource {
 
-  private FolderServerResourceExtract derivedFrom_;
-  private List<FolderServerNodeExtract> versionHistory;
+  private FolderServerResourceExtract derivedFromExtract;
+  private List<FolderServerNodeExtract> versions;
 
   public FolderServerResourceReport(CedarNodeType nodeType) {
     super(nodeType);
-    this.versionHistory = new ArrayList<>();
+    this.versions = new ArrayList<>();
   }
 
   public static FolderServerResourceReport fromResource(FolderServerResource resource) {
@@ -44,23 +44,23 @@ public abstract class FolderServerResourceReport extends FolderServerResource {
     return null;
   }
 
-  @JsonGetter("derivedFrom_")
-  public FolderServerResourceExtract getDerivedFrom_() {
-    return derivedFrom_;
+  @JsonProperty(NodeProperty.OnTheFly.DERIVED_FROM)
+  public FolderServerResourceExtract getDerivedFromExtract() {
+    return derivedFromExtract;
   }
 
-  @JsonSetter("derivedFrom_")
-  public void setDerivedFrom_(FolderServerResourceExtract derivedFrom_) {
-    this.derivedFrom_ = derivedFrom_;
+  @JsonProperty(NodeProperty.OnTheFly.DERIVED_FROM)
+  public void setDerivedFromExtract(FolderServerResourceExtract derivedFromExtract) {
+    this.derivedFromExtract = derivedFromExtract;
   }
 
-  @JsonGetter("versionHistory")
-  public List<FolderServerNodeExtract> getVersionHistory() {
-    return versionHistory;
+  @JsonProperty(NodeProperty.OnTheFly.VERSIONS)
+  public List<FolderServerNodeExtract> getVersions() {
+    return versions;
   }
 
-  @JsonSetter("versionHistory")
-  public void setVersionHistory(List<FolderServerNodeExtract> versionHistory) {
-    this.versionHistory = versionHistory;
+  @JsonProperty(NodeProperty.OnTheFly.VERSIONS)
+  public void setVersions(List<FolderServerNodeExtract> versions) {
+    this.versions = versions;
   }
 }

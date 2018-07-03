@@ -288,8 +288,8 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     String name = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
     String description = CedarUserNameUtil.getHomeFolderDescription(cedarConfig, cu);
     FolderServerFolder newUserHome = new FolderServerFolder();
-    newUserHome.setName1(name);
-    newUserHome.setDescription1(description);
+    newUserHome.setName(name);
+    newUserHome.setDescription(description);
     newUserHome.setRoot(false);
     newUserHome.setSystem(false);
     newUserHome.setUserHome(true);

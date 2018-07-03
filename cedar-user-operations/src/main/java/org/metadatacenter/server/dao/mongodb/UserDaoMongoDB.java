@@ -32,7 +32,7 @@ public class UserDaoMongoDB implements GenericUserDao {
   MongoCollection<Document> entityCollection;
   protected final
   JsonUtils jsonUtils;
-  protected final static String USER_PK_FIELD = "id";
+  protected final static String USER_PK_FIELD = "@id";
 
   public UserDaoMongoDB(MongoClient mongoClient, String dbName, String collectionName) {
     entityCollection = mongoClient.getDatabase(dbName).getCollection(collectionName);

@@ -57,7 +57,7 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
   public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, FolderServerFolder newFolder, String
       parentId) {
     String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
-    newFolder.setId1(nodeId);
+    newFolder.setId(nodeId);
     return createNode(newFolder, parentId);
   }
 

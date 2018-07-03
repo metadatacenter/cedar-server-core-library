@@ -7,7 +7,8 @@ import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.workspace.QuerySortOptions;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
+import org.metadatacenter.server.neo4j.cypher.sort.QuerySortOptions;
 
 import java.util.List;
 
@@ -18,11 +19,13 @@ public abstract class AbstractCypherQueryBuilder {
   protected static final String ALIAS_FOO = "foo";
 
   protected static String buildCreateAssignment(NodeProperty property) {
-    return property.getValue() + ": {" + property.getValue() + "}";
+    String escaped = Neo4JUtil.escapePropertyName(property.getValue());
+    return escaped + ": {" + escaped + "}";
   }
 
   protected static String buildUpdateAssignment(NodeProperty property) {
-    return property.getValue() + "= {" + property.getValue() + "}";
+    String escaped = Neo4JUtil.escapePropertyName(property.getValue());
+    return escaped + "= {" + escaped + "}";
   }
 
   protected static String buildSetter(String nodeAlias, NodeProperty property) {
@@ -152,16 +155,16 @@ public abstract class AbstractCypherQueryBuilder {
 
   public static String addRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
     return "" +
-        " MATCH (fromNode:" + fromLabel + " {id:{fromId} })" +
-        " MATCH (toNode:" + toLabel + " {id:{toId} })" +
+        " MATCH (fromNode:" + fromLabel + " {<PROP.ID>:{fromId} })" +
+        " MATCH (toNode:" + toLabel + " {<PROP.ID>:{toId} })" +
         " CREATE (fromNode)-[:" + relation + "]->(toNode)" +
         " RETURN fromNode";
   }
 
   public static String removeRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
     return "" +
-        " MATCH (fromNode:" + fromLabel + " {id:{fromId} })" +
-        " MATCH (toNode:" + toLabel + " {id:{toId} })" +
+        " MATCH (fromNode:" + fromLabel + " {<PROP.ID>:{fromId} })" +
+        " MATCH (toNode:" + toLabel + " {<PROP.ID>:{toId} })" +
         " MATCH (fromNode)-[relation:" + relation + "]->(toNode)" +
         " DELETE relation" +
         " RETURN fromNode";
@@ -169,10 +172,10 @@ public abstract class AbstractCypherQueryBuilder {
 
   protected static String createFSResourceAsChildOfId(FolderServerResource newResource) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
-    sb.append(" MATCH (parent:<LABEL.FOLDER> {id:{parentId}})");
+    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentId}})");
     if (newResource.getPreviousVersion() != null) {
-      sb.append(" MATCH (pvNode:<LABEL.RESOURCE> {id:{previousVersion}})");
+      sb.append(" MATCH (pvNode:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.PREVIOUS_VERSION>}})");
     }
     sb.append(createFSResource("child", newResource));
     sb.append(" CREATE (user)-[:<REL.OWNS>]->(child)");
@@ -186,8 +189,8 @@ public abstract class AbstractCypherQueryBuilder {
 
   protected static String createFSFolderAsChildOfId(FolderServerFolder newFolder) {
     return "" +
-        " MATCH (user:<LABEL.USER> {id:{userId}})" +
-        " MATCH (parent:<LABEL.FOLDER> {id:{parentId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentId}})" +
         createFSFolder("child", newFolder) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
@@ -238,7 +241,7 @@ public abstract class AbstractCypherQueryBuilder {
     return "" +
         " " + relationPrefix + " " +
         "(" +
-        nodeAlias + ".<PROP.PUBLICATION_STATUS> = {publicationStatus}" +
+        nodeAlias + ".<PROP.PUBLICATION_STATUS> = {<PROP.PUBLICATION_STATUS>}" +
         " OR " +
         nodeAlias + ".<PROP.PUBLICATION_STATUS> IS NULL" +
         ")";

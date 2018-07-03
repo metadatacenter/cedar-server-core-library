@@ -1,14 +1,10 @@
 package org.metadatacenter.model.folderserverextract;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceVersion;
-
-import static org.metadatacenter.model.ModelNodeNames.BIBO_STATUS;
-import static org.metadatacenter.model.ModelNodeNames.PAV_VERSION;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public abstract class FolderServerResourceExtract extends FolderServerNodeExtract {
 
@@ -20,42 +16,32 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
     super(nodeType);
   }
 
-  @JsonGetter(PAV_VERSION)
+  @JsonProperty(NodeProperty.Label.VERSION)
   public ResourceVersion getVersion() {
     return version;
   }
 
-  @JsonSetter("version")
-  public void setVersion1(String v) {
+  @JsonProperty(NodeProperty.Label.VERSION)
+  public void setVersion(String v) {
     this.version = ResourceVersion.forValue(v);
   }
 
-  @JsonSetter(PAV_VERSION)
-  public void setVersion2(String v) {
-    this.version = ResourceVersion.forValue(v);
-  }
-
-  @JsonGetter(BIBO_STATUS)
+  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public BiboStatus getPublicationStatus() {
     return publicationStatus;
   }
 
-  @JsonSetter("publicationStatus")
-  public void setPublicationStatus1(String s) {
+  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
+  public void setPublicationStatus(String s) {
     this.publicationStatus = BiboStatus.forValue(s);
   }
 
-  @JsonSetter(BIBO_STATUS)
-  public void setPublicationStatus2(String s) {
-    this.publicationStatus = BiboStatus.forValue(s);
-  }
-
-  @JsonProperty("isLatestVersion")
+  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
   public Boolean isLatestVersion() {
     return latestVersion;
   }
 
-  @JsonProperty("isLatestVersion")
+  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
   public void setLatestVersion(Boolean latestVersion) {
     this.latestVersion = latestVersion;
   }

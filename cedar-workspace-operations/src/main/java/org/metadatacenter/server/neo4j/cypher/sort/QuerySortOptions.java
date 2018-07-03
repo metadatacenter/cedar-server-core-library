@@ -1,8 +1,9 @@
-package org.metadatacenter.server.workspace;
+package org.metadatacenter.server.neo4j.cypher.sort;
 
 import org.metadatacenter.server.folder.QuerySortField;
 import org.metadatacenter.server.folder.QuerySortFieldType;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class QuerySortOptions {
   }
 
   public static String getFieldName(String name) {
-    return knownSortKeys.get(name) != null ? knownSortKeys.get(name).getFieldName() : name;
+    return knownSortKeys.get(name) != null ? Neo4JUtil.escapePropertyName(knownSortKeys.get(name).getFieldName()) :
+        name;
   }
 }
