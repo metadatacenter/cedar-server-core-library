@@ -1,5 +1,7 @@
 package org.metadatacenter.server.security.model.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CedarUserExtract implements CedarUserRepresentation {
 
   private String id;
@@ -18,10 +20,12 @@ public class CedarUserExtract implements CedarUserRepresentation {
   }
 
   @Override
+  @JsonProperty("@id")
   public String getId() {
     return id;
   }
 
+  @JsonProperty("@id")
   public void setId(String id) {
     this.id = id;
   }

@@ -88,7 +88,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
   @Override
   protected Level bootstrapLogLevel() {
-    return Level.DEBUG;
+    return Level.WARN;
   }
 
   @Override

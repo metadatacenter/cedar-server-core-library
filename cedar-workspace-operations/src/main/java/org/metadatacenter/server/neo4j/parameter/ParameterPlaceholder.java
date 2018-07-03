@@ -4,7 +4,6 @@ import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 
 public enum ParameterPlaceholder implements CypherQueryParameter {
 
-  ID("id"),
   FOLDER_ID("folderId"),
   PARENT_FOLDER_ID("parentFolderId"),
   RESOURCE_ID("resourceId"),
@@ -15,8 +14,6 @@ public enum ParameterPlaceholder implements CypherQueryParameter {
   FROM_ID("fromId"),
   TO_ID("toId"),
   NODE_TYPE_LIST("nodeTypeList"),
-  VERSION("version"),
-  PUBLICATION_STATUS("publicationStatus"),
   LIMIT("limit"),
   OFFSET("offset"),
   SOURCE_ID("sourceId"),

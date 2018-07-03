@@ -5,6 +5,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ public class CypherParameters {
   public Map<String, Object> asMap() {
     Map<String, Object> r = new HashMap();
     for (CypherQueryParameter k : map.keySet()) {
-      r.put(k.getValue(), map.get(k));
+      r.put(Neo4JUtil.escapePropertyName(k.getValue()), map.get(k));
     }
     return r;
   }

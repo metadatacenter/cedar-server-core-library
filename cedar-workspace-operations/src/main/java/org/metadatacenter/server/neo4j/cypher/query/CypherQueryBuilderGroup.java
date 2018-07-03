@@ -47,7 +47,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
 
     sb.append(" WITH group");
 
-    sb.append(" MATCH (user:<LABEL.USER> {id:{userId}})");
+    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
 
     sb.append(" MERGE (user)-[:<REL.ADMINISTERS>]->(group)");
     sb.append(" MERGE (user)-[:<REL.MEMBEROF>]->(group)");
@@ -65,7 +65,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
 
   public static String updateGroupById(Map<NodeProperty, String> updateFields) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (group:<LABEL.GROUP> {id:{id}})");
+    sb.append(" MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PROP.ID>}})");
     sb.append(buildSetter("group", NodeProperty.LAST_UPDATED_BY));
     sb.append(buildSetter("group", NodeProperty.LAST_UPDATED_ON));
     sb.append(buildSetter("group", NodeProperty.LAST_UPDATED_ON_TS));
@@ -78,33 +78,33 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
 
   public static String deleteGroupById() {
     return "" +
-        " MATCH (group:<LABEL.GROUP> {id:{id}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PROP.ID>}})" +
         " DETACH DELETE group";
   }
 
   public static String getGroupUsersWithRelation(RelationLabel relationLabel) {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (group:<LABEL.GROUP> {id:{groupId}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
         " MATCH (user)-[:" + relationLabel + "]->(group)" +
         " RETURN user";
   }
 
   public static String getGroupBySpecialValue() {
     return "" +
-        " MATCH (group:<LABEL.GROUP> {specialGroup:{specialGroup}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.SPECIAL_GROUP>:{<PROP.SPECIAL_GROUP>}})" +
         " RETURN group";
   }
 
   public static String getGroupById() {
     return "" +
-        " MATCH (group:<LABEL.GROUP> {id:{id}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PROP.ID>}})" +
         " RETURN group";
   }
 
   public static String getGroupByName() {
     return "" +
-        " MATCH (group:<LABEL.GROUP> {name:{name}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.NAME>:{<PROP.NAME>}})" +
         " RETURN group";
   }
 

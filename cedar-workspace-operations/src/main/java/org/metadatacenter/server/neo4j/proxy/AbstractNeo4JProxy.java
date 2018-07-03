@@ -11,6 +11,7 @@ import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.exceptions.ClientException;
@@ -37,6 +38,16 @@ public abstract class AbstractNeo4JProxy {
         AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
 
+  private void reportQueryError(ClientException ex, CypherQuery q) {
+    log.error("Error executing Cypher query:", ex);
+    log.error(q.getOriginalQuery());
+    if (q instanceof CypherQueryWithParameters) {
+      log.error(((CypherQueryWithParameters) q).getParameterMap().toString());
+    }
+    log.error(q.getRunnableQuery());
+    throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+  }
+
   protected boolean executeWrite(CypherQuery q, String eventDescription) {
     boolean result = false;
     try (Session session = driver.session()) {
@@ -57,7 +68,7 @@ public abstract class AbstractNeo4JProxy {
       }
     } catch (ClientException ex) {
       log.error("Error while " + eventDescription, ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
     return result;
   }
@@ -81,8 +92,7 @@ public abstract class AbstractNeo4JProxy {
         });
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     if (record != null) {
@@ -125,8 +135,7 @@ public abstract class AbstractNeo4JProxy {
         }
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return -1;
@@ -143,8 +152,7 @@ public abstract class AbstractNeo4JProxy {
         }
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
     return null;
   }
@@ -217,8 +225,7 @@ public abstract class AbstractNeo4JProxy {
         return folderServerNodeList;
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return folderServerNodeList;
@@ -240,8 +247,7 @@ public abstract class AbstractNeo4JProxy {
         return folderServerArcList;
       }
     } catch (ClientException ex) {
-      log.error("Error executing Cypher query:", ex);
-      throw new RuntimeException("Error executing Cypher query:" + ex.getMessage());
+      reportQueryError(ex, q);
     }
 
     return folderServerArcList;
@@ -252,7 +258,8 @@ public abstract class AbstractNeo4JProxy {
     T cn = null;
     if (node != null && !node.isMissingNode()) {
       try {
-        cn = JsonMapper.MAPPER.treeToValue(node, type);
+        JsonNode unescaped = Neo4JUtil.unescapeTopLevelPropertyNames(node);
+        cn = JsonMapper.MAPPER.treeToValue(unescaped, type);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing node into " + type.getSimpleName(), e);
       }

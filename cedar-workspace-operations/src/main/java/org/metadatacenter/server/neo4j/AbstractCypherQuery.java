@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ public class AbstractCypherQuery implements CypherQuery {
     }
 
     for (NodeProperty property : properties) {
-      replacementTable.put("<PROP." + property.name() + ">", property.getValue());
+      replacementTable.put("<PROP." + property.name() + ">", Neo4JUtil.escapePropertyName(property.getValue()));
     }
 
   }

@@ -71,8 +71,8 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       String name = pathUtil.extractName(config.getUsersFolderPath());
 
       FolderServerFolder newUsersFolder = new FolderServerFolder();
-      newUsersFolder.setName1(name);
-      newUsersFolder.setDescription1(config.getUsersFolderDescription());
+      newUsersFolder.setName(name);
+      newUsersFolder.setDescription(config.getUsersFolderDescription());
       newUsersFolder.setCreatedByTotal(cedarAdmin.getId());
       newUsersFolder.setRoot(false);
       newUsersFolder.setSystem(true);

@@ -1,5 +1,7 @@
 package org.metadatacenter.server.security.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -16,6 +18,7 @@ public class CedarNodeMaterializedPermissions {
     groupPermissions = new HashMap<>();
   }
 
+  @JsonProperty("@id")
   public String getId() {
     return id;
   }

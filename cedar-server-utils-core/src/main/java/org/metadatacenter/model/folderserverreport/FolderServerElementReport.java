@@ -6,7 +6,6 @@ import org.metadatacenter.model.CedarNodeType;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerElementReport extends FolderServerResourceReport {
 
-
   public FolderServerElementReport() {
     super(CedarNodeType.ELEMENT);
   }
