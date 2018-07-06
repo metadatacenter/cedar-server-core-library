@@ -62,7 +62,7 @@
         },
         "users": {
           "properties": {
-            "id": {
+            "@id": {
               "type": "string",
               "index": "not_analyzed"
             },
@@ -85,7 +85,7 @@
         },
         "groups": {
           "properties": {
-            "id": {
+            "@id": {
               "type": "string",
               "index": "not_analyzed"
             },

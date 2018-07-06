@@ -32,6 +32,35 @@ public class RegenerateSearchIndexTask {
     this.cedarConfig = cedarConfig;
   }
 
+  public void ensureSearchIndexExists() throws CedarProcessingException {
+    IndexUtils indexUtils = new IndexUtils(cedarConfig);
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
+
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexName();
+    int cedarIndexCount = 0;
+
+    log.info("Looking for existing CEDAR indices...");
+    List<String> indexNames = esManagementService.getAllIndices();
+    log.info("Found total of " + indexNames.size() + " indices");
+    for (String iName : indexNames) {
+      log.info("Looking at index:" + iName);
+      if (iName.startsWith(indexName)) {
+        log.info("Found CEDAR index:" + iName);
+        cedarIndexCount++;
+      }
+    }
+    log.info("Found total of " + cedarIndexCount + " CEDAR indices");
+    if (cedarIndexCount > 0) {
+      log.info("Nothing to do!");
+    } else {
+      String newIndexName = indexUtils.getNewIndexName(indexName);
+      log.info("Creating brand new CEDAR index:" + newIndexName);
+      esManagementService.createIndex(newIndexName);
+      esManagementService.addAlias(newIndexName, indexName);
+    }
+  }
+
   public void regenerateSearchIndex(boolean force, CedarRequestContext requestContext) throws CedarProcessingException {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
@@ -92,7 +121,8 @@ public class RegenerateSearchIndexTask {
         for (FolderServerNode resource : resources) {
           try {
             CedarNodeMaterializedPermissions perm = null;
-            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId(), resource.getName(), resource.getType());
+            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId(), resource.getName(),
+                resource.getType());
             if (resource.getType() == CedarNodeType.FOLDER) {
               contentIndexingService.indexFolder(resource, requestContext, indexedNodeId);
               perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);
