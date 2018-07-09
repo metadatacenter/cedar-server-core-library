@@ -128,6 +128,18 @@
               "type": "string",
               "index": "not_analyzed"
             },
+            "bibo:status": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "pav:version": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
+            "pav:previousVersion": {
+              "type": "string",
+              "index": "not_analyzed"
+            },
             "ownedBy": {
               "type": "string",
               "index": "not_analyzed"

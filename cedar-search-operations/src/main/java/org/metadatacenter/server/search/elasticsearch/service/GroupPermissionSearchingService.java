@@ -4,7 +4,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
@@ -20,8 +19,6 @@ public class GroupPermissionSearchingService extends AbstractSearchingService {
   private final ElasticsearchSearchingWorker searchWorker;
 
   GroupPermissionSearchingService(CedarConfig cedarConfig, Client client) {
-    Client client1 = client;
-    ElasticsearchConfig config = cedarConfig.getElasticsearchConfig();
     searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client, IndexedDocumentType
         .GROUPS);
   }
