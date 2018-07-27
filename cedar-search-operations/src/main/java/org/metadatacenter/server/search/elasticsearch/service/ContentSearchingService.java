@@ -35,7 +35,7 @@ public class ContentSearchingService extends AbstractSearchingService {
     searchWorker = new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig, client);
   }
 
-  public FolderServerNodeListResponse search(CedarRequestContext rctx, String id, String query, List<String>
+  public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String
                                                  isBasedOn, List<String> sortList, int limit, int offset, String
       absoluteUrl) throws
@@ -51,7 +51,7 @@ public class ContentSearchingService extends AbstractSearchingService {
   }
 
 
-  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String id, String query, List<String>
+  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String
                                                      isBasedOn, List<String> sortList, int limit, int offset, String
                                                      absoluteUrl) throws
