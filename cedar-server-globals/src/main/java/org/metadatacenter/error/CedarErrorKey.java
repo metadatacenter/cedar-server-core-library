@@ -117,8 +117,6 @@ public enum CedarErrorKey {
   CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
   PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
 
-  TEMPLATE_WITH_INSTANCES_CAN_NOT_BE_MODIFIED("templateWithInstancesCanNotBeModified"),
-
   DRAFT_NOT_CREATED("draftNotCreated");
 
   private final String value;

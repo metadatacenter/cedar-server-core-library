@@ -9,6 +9,7 @@ public enum NodeListQueryType {
   VIEW_ALL("view-all"),
   SEARCH_TERM("search-term"),
   SEARCH_IS_BASED_ON("search-is-based-on"),
+  SEARCH_ID("search-id"),
   FOLDER_CONTENT("folder-content"),
   ALL_NODES("all-nodes"),
   UNKNOWN("unknown");
