@@ -19,6 +19,7 @@ public final class CedarQueryParameters {
   public static final String QP_TEMPLATE_ID = "template_id";
   public static final String QP_IS_BASED_ON = "is_based_on";
   public static final String QP_Q = "q";
+  public static final String QP_ID = "id";
   public static final String QP_SHARING = "sharing";
   public static final String QP_FORMAT = "format";
   public static final String QP_NOTIFICATION_STATUS = "notification_status";

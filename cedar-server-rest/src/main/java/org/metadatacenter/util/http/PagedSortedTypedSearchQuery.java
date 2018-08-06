@@ -14,8 +14,10 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   private Optional<String> qInput;
   private Optional<String> isBasedOnInput;
+  private Optional<String> idInput;
   private String q;
   private String isBasedOn;
+  private String id;
 
   public PagedSortedTypedSearchQuery(PaginationConfig config) {
     super(config);
@@ -28,6 +30,11 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   public PagedSortedTypedSearchQuery q(Optional<String> qInput) {
     this.qInput = qInput;
+    return this;
+  }
+
+  public PagedSortedTypedSearchQuery id(Optional<String> idInput) {
+    this.idInput = idInput;
     return this;
   }
 
@@ -73,6 +80,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     validateOffset();
     validateSorting();
     validateQ();
+    validateId();
     validateResourceTypesWithTemplateId();
   }
 
@@ -82,6 +90,10 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   public String getQ() {
     return q;
+  }
+
+  public String getId() {
+    return id;
   }
 
   private static boolean isValidURL(String urlStr) {
@@ -101,6 +113,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
         isBasedOn = isBasedOnInput.get();
       } else {
         throw new CedarAssertionException("You must pass in 'is_based_on' as a valid template identifier!")
+            .badRequest()
             .parameter("template_id", isBasedOnInput.get());
       }
     }
@@ -112,6 +125,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
       if (resourceTypesInput.isPresent()) {
         throw new CedarAssertionException(
             "You must pass not specify 'resource_types' if the 'is_based_on' is specified!")
+            .badRequest()
             .parameter("is_based_on", isBasedOn)
             .parameter("resource_types", resourceTypesInput.get())
             .badRequest();
@@ -128,6 +142,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     if (qInput.isPresent()) {
       if (qInput.get() == null || qInput.get().trim().isEmpty()) {
         throw new CedarAssertionException("You must pass in a valid search query as 'q'!")
+            .badRequest()
             .parameter("q", qInput.get());
       } else {
         q = qInput.get();
@@ -136,5 +151,20 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
       q = null;
     }
   }
+
+  public void validateId() throws CedarException {
+    if (idInput.isPresent()) {
+      if (idInput.get() == null || idInput.get().trim().isEmpty()) {
+        throw new CedarAssertionException("You must pass in a valid 'id'!")
+            .badRequest()
+            .parameter("id", idInput.get());
+      } else {
+        id = idInput.get();
+      }
+    } else {
+      id = null;
+    }
+  }
+
 
 }

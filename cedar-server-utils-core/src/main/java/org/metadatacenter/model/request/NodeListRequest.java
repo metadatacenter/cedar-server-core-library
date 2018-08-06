@@ -17,6 +17,7 @@ public class NodeListRequest {
   private long offset;
   private List<String> sort;
   private String q;
+  private String id;
   @JsonProperty("is_based_on")
   private String isBasedOn;
 
@@ -74,6 +75,14 @@ public class NodeListRequest {
 
   public void setQ(String q) {
     this.q = q;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getIsBasedOn() {
