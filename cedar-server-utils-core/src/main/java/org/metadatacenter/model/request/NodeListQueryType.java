@@ -12,6 +12,7 @@ public enum NodeListQueryType {
   SEARCH_ID("search-id"),
   FOLDER_CONTENT("folder-content"),
   ALL_NODES("all-nodes"),
+  ALL_VERSIONS("all-versions"),
   UNKNOWN("unknown");
 
   private final String value;
