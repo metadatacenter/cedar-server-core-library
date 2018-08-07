@@ -212,6 +212,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           mainQuery.must(contentChildScoreQuery);
         } else if (ES_RESOURCE_SORT_CREATEDONTS_FIELD.equals(s)) {
           searchRequestBuilder.addSort("_score", sortOrder);
+          QueryBuilder scoreQuery = QueryBuilders.functionScoreQuery(ScoreFunctionBuilders.scriptFunction(new Script
+              ("doc['info.createdOnTS'].value")));
+          contentChildScoreQuery = JoinQueryBuilders.hasChildQuery(IndexedDocumentType.CONTENT.getValue(),
+              scoreQuery, ScoreMode.Max
+          );
+          mainQuery.must(contentChildScoreQuery);
         }
       }
     }
