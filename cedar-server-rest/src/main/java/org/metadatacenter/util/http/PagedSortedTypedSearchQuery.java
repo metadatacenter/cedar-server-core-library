@@ -76,9 +76,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   @Override
   public void validate() throws CedarException {
-    validateLimit();
-    validateOffset();
-    validateSorting();
+    super.validate();
     validateQ();
     validateId();
     validateResourceTypesWithTemplateId();
