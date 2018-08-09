@@ -1,7 +1,6 @@
 package org.metadatacenter.rest.assertion.noun;
 
 import org.metadatacenter.exception.CedarBadRequestException;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.CedarAssertionNoun;
 
 import java.util.Optional;

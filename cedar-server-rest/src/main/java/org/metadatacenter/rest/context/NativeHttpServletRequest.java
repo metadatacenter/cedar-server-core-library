@@ -3,7 +3,6 @@ package org.metadatacenter.rest.context;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.exception.CedarBadRequestException;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.assertion.noun.CedarRequestBody;
 import org.metadatacenter.rest.assertion.noun.CedarRequestNoun;
 import org.metadatacenter.util.json.JsonMapper;
