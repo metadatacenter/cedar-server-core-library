@@ -64,6 +64,9 @@ public class UserSummaryCache {
   }
 
   public CedarUserSummary getUser(String id) {
+    if (id == null) {
+      return null;
+    }
     try {
       return userSummaryCache.get(id);
     } catch (ExecutionException e) {
