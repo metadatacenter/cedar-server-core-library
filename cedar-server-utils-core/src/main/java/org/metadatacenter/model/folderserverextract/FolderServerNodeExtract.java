@@ -182,6 +182,12 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
     return null;
   }
 
+  public static FolderServerTemplateExtract anonymous(FolderServerTemplateExtract resource) {
+    FolderServerTemplateExtract anon = new FolderServerTemplateExtract();
+    anon.setId(resource.getId());
+    return anon;
+  }
+
   public static FolderServerResourceExtract anonymous(FolderServerResourceExtract resource) {
     FolderServerResourceExtract anon =
         (FolderServerResourceExtract) FolderServerNodeExtract.forType(resource.getType());

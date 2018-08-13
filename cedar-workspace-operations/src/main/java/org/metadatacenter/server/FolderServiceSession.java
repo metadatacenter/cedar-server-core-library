@@ -109,5 +109,7 @@ public interface FolderServiceSession {
 
   FolderServerResourceExtract findResourceExtractById(ResourceUri id);
 
-  List<FolderServerNodeExtract> getVersionHistory(String id);
+  List<FolderServerResourceExtract> getVersionHistory(String id);
+
+  List<FolderServerResourceExtract> getVersionHistoryWithPermission(String id);
 }

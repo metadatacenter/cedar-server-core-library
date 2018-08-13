@@ -143,10 +143,18 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  public List<FolderServerNodeExtract> getVersionHistory(String resourceId) {
+  public List<FolderServerResourceExtract> getVersionHistory(String resourceId) {
     String cypher = CypherQueryBuilderResource.getVersionHistory();
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNodeExtract.class);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
+  }
+
+  public List<FolderServerResourceExtract> getVersionHistoryWithPermission(String resourceId, String userURL) {
+    FolderServerUser user = proxies.user().findUserById(userURL);
+    String cypher = CypherQueryBuilderResource.getVersionHistoryWithPermission();
+    CypherParameters params = CypherParamBuilderResource.matchResourceIdAndUserId(resourceId, user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
   }
 }
