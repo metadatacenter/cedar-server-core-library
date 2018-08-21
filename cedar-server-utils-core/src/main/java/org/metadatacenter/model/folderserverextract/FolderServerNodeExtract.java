@@ -32,6 +32,7 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
   protected String createdByUserName;
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
+  protected boolean activeUserCanRead = true;
 
 
   protected FolderServerNodeExtract(CedarNodeType nodeType) {
@@ -165,6 +166,15 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
     return lastUpdatedByUserName;
   }
 
+  @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)
+  public boolean isActiveUserCanRead() {
+    return activeUserCanRead;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)
+  public void setActiveUserCanRead(boolean activeUserCanRead) {
+    this.activeUserCanRead = activeUserCanRead;
+  }
 
   public static FolderServerNodeExtract forType(CedarNodeType t) {
     switch (t) {
@@ -185,6 +195,7 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
   public static FolderServerTemplateExtract anonymous(FolderServerTemplateExtract resource) {
     FolderServerTemplateExtract anon = new FolderServerTemplateExtract();
     anon.setId(resource.getId());
+    anon.setActiveUserCanRead(false);
     return anon;
   }
 
