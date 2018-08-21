@@ -28,6 +28,13 @@ public class CypherParamBuilderResource extends AbstractCypherParamBuilder {
     return params;
   }
 
+  public static CypherParameters matchResourceIdAndUserId(String resourceURL, String userId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.RESOURCE_ID, resourceURL);
+    params.put(ParameterPlaceholder.USER_ID, userId);
+    return params;
+  }
+
   public static CypherParameters getResourceById(String resourceURL) {
     return getNodeByIdentity(resourceURL);
   }

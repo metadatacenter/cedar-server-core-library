@@ -76,6 +76,7 @@ public class CedarUserUtil {
 
     CedarUserUIInfoPanel infoPanel = user.getUiPreferences().getInfoPanel();
     infoPanel.setOpened(false);
+    infoPanel.setActiveTab(CedarUserInfoPanelTab.INFO);
 
     CedarUserUITemplateEditor templateEditor = user.getUiPreferences().getTemplateEditor();
     templateEditor.setTemplateJsonViewer(false);

@@ -331,8 +331,13 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public List<FolderServerNodeExtract> getVersionHistory(String id) {
+  public List<FolderServerResourceExtract> getVersionHistory(String id) {
     return proxies.resource().getVersionHistory(id);
+  }
+
+  @Override
+  public List<FolderServerResourceExtract> getVersionHistoryWithPermission(String id) {
+    return proxies.resource().getVersionHistoryWithPermission(id, cu.getId());
   }
 
 }

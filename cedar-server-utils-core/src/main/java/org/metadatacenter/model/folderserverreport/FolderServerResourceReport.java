@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;
@@ -27,7 +26,7 @@ import java.util.List;
 public abstract class FolderServerResourceReport extends FolderServerResource {
 
   private FolderServerResourceExtract derivedFromExtract;
-  private List<FolderServerNodeExtract> versions;
+  private List<FolderServerResourceExtract> versions;
 
   public FolderServerResourceReport(CedarNodeType nodeType) {
     super(nodeType);
@@ -55,12 +54,12 @@ public abstract class FolderServerResourceReport extends FolderServerResource {
   }
 
   @JsonProperty(NodeProperty.OnTheFly.VERSIONS)
-  public List<FolderServerNodeExtract> getVersions() {
+  public List<FolderServerResourceExtract> getVersions() {
     return versions;
   }
 
   @JsonProperty(NodeProperty.OnTheFly.VERSIONS)
-  public void setVersions(List<FolderServerNodeExtract> versions) {
+  public void setVersions(List<FolderServerResourceExtract> versions) {
     this.versions = versions;
   }
 }

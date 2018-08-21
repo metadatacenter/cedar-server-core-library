@@ -26,6 +26,14 @@ import java.io.IOException;
 })
 public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
 
+  protected String createdBy;
+  protected String lastUpdatedBy;
+  protected String ownedBy;
+  protected String createdByUserName;
+  protected String lastUpdatedByUserName;
+  protected String ownedByUserName;
+
+
   protected FolderServerNodeExtract(CedarNodeType nodeType) {
     this.nodeType = nodeType;
   }
@@ -99,6 +107,65 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
+  public String getOwnedBy() {
+    return ownedBy;
+  }
+
+  public void setOwnedBy(String ownedBy) {
+    this.ownedBy = ownedBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  public String getLastUpdatedBy() {
+    return lastUpdatedBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
+  public void setOwnedByUserName(String ownedByUserName) {
+    this.ownedByUserName = ownedByUserName;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
+  public String getOwnedByUserName() {
+    return ownedByUserName;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
+  public void setCreatedByUserName(String createdByUserName) {
+    this.createdByUserName = createdByUserName;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
+  public String getCreatedByUserName() {
+    return createdByUserName;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
+  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
+    this.lastUpdatedByUserName = lastUpdatedByUserName;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
+  public String getLastUpdatedByUserName() {
+    return lastUpdatedByUserName;
+  }
+
+
   public static FolderServerNodeExtract forType(CedarNodeType t) {
     switch (t) {
       case FOLDER:
@@ -113,6 +180,19 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
         return new FolderServerInstanceExtract();
     }
     return null;
+  }
+
+  public static FolderServerTemplateExtract anonymous(FolderServerTemplateExtract resource) {
+    FolderServerTemplateExtract anon = new FolderServerTemplateExtract();
+    anon.setId(resource.getId());
+    return anon;
+  }
+
+  public static FolderServerResourceExtract anonymous(FolderServerResourceExtract resource) {
+    FolderServerResourceExtract anon =
+        (FolderServerResourceExtract) FolderServerNodeExtract.forType(resource.getType());
+    anon.setId(resource.getId());
+    return anon;
   }
 
 }

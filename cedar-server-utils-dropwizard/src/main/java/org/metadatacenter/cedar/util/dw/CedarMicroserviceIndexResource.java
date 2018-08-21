@@ -17,7 +17,7 @@ public class CedarMicroserviceIndexResource extends CedarMicroserviceResource {
   private final static Map<String, Object> apiDocs;
 
   static {
-    apiDocs = new HashMap();
+    apiDocs = new HashMap<>();
     info = new HashMap<>();
     info.put("apiDocs", apiDocs);
   }

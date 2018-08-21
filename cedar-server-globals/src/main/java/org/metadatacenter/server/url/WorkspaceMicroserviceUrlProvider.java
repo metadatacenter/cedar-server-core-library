@@ -31,6 +31,10 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return getResourceWithId(id) + "/report";
   }
 
+  public String getResourceWithIdVersions(String id) {
+    return getResourceWithId(id) + "/versions";
+  }
+
   public String getFolders() {
     return base + CedarNodeType.Prefix.FOLDERS;
   }
@@ -50,7 +54,6 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
   public String getCommand(String command) {
     return base + "command/" + command;
   }
-
 
   public String getNodes() {
     return base + PREFIX_NODES;

@@ -12,19 +12,19 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerNodeListResponse extends AbstractNodeListResponse {
 
-  private List<FolderServerNodeExtract> resources;
-  private List<FolderServerNodeExtract> pathInfo;
+  private List<? extends FolderServerNodeExtract> resources;
+  private List<? extends FolderServerNodeExtract> pathInfo;
   private NodeListQueryType nodeListQueryType;
 
-  public List<FolderServerNodeExtract> getResources() {
+  public List<? extends FolderServerNodeExtract> getResources() {
     return resources;
   }
 
-  public void setResources(List<FolderServerNodeExtract> resources) {
+  public void setResources(List<? extends FolderServerNodeExtract> resources) {
     this.resources = resources;
   }
 
-  public List<FolderServerNodeExtract> getPathInfo() {
+  public List<? extends FolderServerNodeExtract> getPathInfo() {
     return pathInfo;
   }
 

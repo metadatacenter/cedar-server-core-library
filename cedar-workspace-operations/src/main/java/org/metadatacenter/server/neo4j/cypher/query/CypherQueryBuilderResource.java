@@ -123,4 +123,18 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
     sb.append(" RETURN p ORDER BY length(p) DESC LIMIT 1");
     return sb.toString();
   }
+
+  public static String getVersionHistoryWithPermission() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    sb.append(" MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})");
+    sb.append(" MATCH p=(resnew:<LABEL.RESOURCE>)-[:<REL.PREVIOUSVERSION>*0..]->");
+    sb.append("(resource)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.RESOURCE>)");
+    sb.append(" WITH nodes(p) as ns, user");
+    sb.append(" ORDER BY length(p) DESC LIMIT 1");
+    sb.append(" RETURN FILTER(node in ns");
+    sb.append(getResourcePermissionConditions(" WHERE ", "node"));
+    sb.append(" )");
+    return sb.toString();
+  }
 }

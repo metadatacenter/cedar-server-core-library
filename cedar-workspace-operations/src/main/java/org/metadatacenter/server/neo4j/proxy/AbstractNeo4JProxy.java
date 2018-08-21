@@ -208,6 +208,16 @@ public abstract class AbstractNeo4JProxy {
                 T folderServerNode = buildClass(node, type);
                 folderServerNodeList.add(folderServerNode);
               }
+            } else if (value.type().equals(session.typeSystem().LIST())) {
+              List<Object> list = value.asList();
+              for (Object o : list) {
+                if (o instanceof Node) {
+                  Node n = (Node)o;
+                  JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
+                  T folderServerNode = buildClass(node, type);
+                  folderServerNodeList.add(folderServerNode);
+                }
+              }
             }
           } else {
             for (Value value : r.values()) {
