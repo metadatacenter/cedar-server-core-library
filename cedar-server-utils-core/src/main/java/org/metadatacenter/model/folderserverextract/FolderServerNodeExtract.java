@@ -203,6 +203,7 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
     FolderServerResourceExtract anon =
         (FolderServerResourceExtract) FolderServerNodeExtract.forType(resource.getType());
     anon.setId(resource.getId());
+    anon.setActiveUserCanRead(false);
     return anon;
   }
 
