@@ -26,248 +26,109 @@
       },
       "mapping": {
         "nested_fields": {
-          "limit": "50000"
+          "limit": "100"
         },
         "total_fields": {
-          "limit": "50000"
+          "limit": "1000"
         }
       }
     }
   },
   "mappings": {
-    "node": {
+    "_doc": {
       "properties": {
         "cid": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "keyword"
         },
-        "name": {
-          "type": "string",
-          "index": "not_analyzed"
-        },
-        "nodeType": {
-          "type": "string",
-          "index": "not_analyzed"
-        }
-      }
-    },
-    "users": {
-      "_parent": {
-        "type": "node"
-      },
-      "properties": {
-        "cid": {
-          "type": "string",
-          "index": "not_analyzed"
+        "summaryText": {
+          "type": "text",
+          "analyzer": "ngram_analyzer",
+          "search_analyzer": "standard"
         },
         "users": {
           "properties": {
             "id": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "permission": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
-        }
-      }
-    },
-    "groups": {
-      "_parent": {
-        "type": "node"
-      },
-      "properties": {
-        "cid": {
-          "type": "string",
-          "index": "not_analyzed"
         },
         "groups": {
           "properties": {
             "id": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "permission": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             }
           }
-        }
-      }
-    },
-    "content": {
-      "_parent": {
-        "type": "node"
-      },
-      "properties": {
-        "cid": {
-          "type": "string",
-          "index": "not_analyzed"
         },
         "info": {
           "properties": {
             "@id": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
+            },
+            "nodeType": {
+              "type": "keyword"
             },
             "pav:createdBy": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "oslc:modifiedBy": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "schema:isBasedOn": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "pav:derivedFrom": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "bibo:status": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "pav:version": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
             },
             "pav:previousVersion": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
+            },
+            "pav:createdOn": {
+              "type": "date"
+            },
+            "pav:lastUpdatedOn": {
+              "type": "date"
             },
             "ownedBy": {
-              "type": "string",
-              "index": "not_analyzed"
+              "type": "keyword"
+            },
+            "isLatestVersion": {
+              "type": "boolean"
             },
             "schema:name": {
-              "type": "string",
+              "type": "text",
               "analyzer": "ngram_analyzer",
               "search_analyzer": "standard",
               "fields": {
                 "raw": {
-                  "type": "string",
-                  "analyzer": "analyzer_keyword"
+                  "type": "keyword"
+                }
+              }
+            },
+            "schema:description": {
+              "type": "text",
+              "analyzer": "ngram_analyzer",
+              "search_analyzer": "standard",
+              "fields": {
+                "raw": {
+                  "type": "keyword"
                 }
               }
             }
           }
         }
-      },
-      "dynamic_templates": [
-        {
-          "template_nested_array": {
-            "match_mapping_type": "array",
-            "unmatch": "*_field",
-            "mapping": {
-              "type": "nested"
-            }
-          }
-        },
-        {
-          "template_nested_object": {
-            "match_mapping_type": "object",
-            "unmatch": "*_field",
-            "mapping": {
-              "type": "nested"
-            }
-          }
-        },
-        {
-          "template_common_fields": {
-            "match_pattern": "regex",
-            "match": "fieldName|fieldSemanticType|fieldValueSemanticType|fieldValueAndSemanticType|fieldValueType",
-            "mapping": {
-              "type": "string",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_common_fields": {
-            "match": "useForValueRecommendation",
-            "mapping": {
-              "type": "boolean"
-            }
-          }
-        },
-        {
-          "template_value_string": {
-            "match": "fieldValue_string",
-            "mapping": {
-              "type": "string",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_long": {
-            "match": "fieldValue_long",
-            "mapping": {
-              "type": "long",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_integer": {
-            "match": "fieldValue_integer",
-            "mapping": {
-              "type": "integer",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_short": {
-            "match": "fieldValue_short",
-            "mapping": {
-              "type": "short",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_double": {
-            "match": "fieldValue_double",
-            "mapping": {
-              "type": "double",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_float": {
-            "match": "fieldValue_float",
-            "mapping": {
-              "type": "float",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_date": {
-            "match": "fieldValue_date",
-            "mapping": {
-              "type": "date",
-              "index": "not_analyzed"
-            }
-          }
-        },
-        {
-          "template_value_boolean": {
-            "match": "fieldValue_boolean",
-            "mapping": {
-              "type": "boolean",
-              "index": "not_analyzed"
-            }
-          }
-        }
-      ]
+      }
     }
   }
 }

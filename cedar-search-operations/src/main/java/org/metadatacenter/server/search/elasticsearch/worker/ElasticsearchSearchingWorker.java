@@ -27,12 +27,11 @@ public class ElasticsearchSearchingWorker {
   private final ElasticsearchConfig config;
   private final TimeValue keepAlive;
 
-  public ElasticsearchSearchingWorker(ElasticsearchConfig config, Client client, IndexedDocumentType
-      indexedDocumentType) {
+  public ElasticsearchSearchingWorker(ElasticsearchConfig config, Client client) {
     this.config = config;
     this.client = client;
     this.indexName = config.getIndexName();
-    this.documentType = config.getType(indexedDocumentType);
+    this.documentType = IndexedDocumentType.DOC.getValue();
     this.keepAlive = new TimeValue(config.getScrollKeepAlive());
   }
 
@@ -51,7 +50,7 @@ public class ElasticsearchSearchingWorker {
     // Scroll until no hits are returned
     while (true) {
       for (SearchHit hit : response.getHits().getHits()) {
-        Map<String, Object> f = hit.getSource();
+        Map<String, Object> f = hit.getSourceAsMap();
         String[] pathFragments = fieldName.split("\\.");
         for (int i = 0; i < pathFragments.length - 1; i++) {
           f = (Map<String, Object>) f.get(pathFragments[0]);

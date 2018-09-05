@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;
@@ -42,6 +43,15 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract {
   public static FolderServerNodeExtract fromNode(FolderServerNode node) {
     try {
       return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeExtract.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static FolderServerNodeExtract fromNodeInfo(FolderServerNodeInfo info) {
+    try {
+      return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(info), FolderServerNodeExtract.class);
     } catch (IOException e) {
       e.printStackTrace();
     }

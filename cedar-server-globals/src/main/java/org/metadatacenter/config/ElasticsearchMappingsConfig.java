@@ -1,30 +1,21 @@
 package org.metadatacenter.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 
 public class ElasticsearchMappingsConfig {
 
-  private HashMap<String, Object> node;
+  private HashMap<String, Object> doc;
 
-  private HashMap<String, Object> users;
-
-  private HashMap<String, Object> groups;
-
-  private HashMap<String, Object> content;
-
-  public HashMap<String, Object> getNode() {
-    return node;
+  @JsonProperty("_doc")
+  public HashMap<String, Object> getDoc() {
+    return doc;
   }
 
-  public HashMap<String, Object> getUsers() {
-    return users;
+  @JsonProperty("_doc")
+  public void setDoc(HashMap<String, Object> doc) {
+    this.doc = doc;
   }
 
-  public HashMap<String, Object> getGroups() {
-    return groups;
-  }
-
-  public HashMap<String, Object> getContent() {
-    return content;
-  }
 }

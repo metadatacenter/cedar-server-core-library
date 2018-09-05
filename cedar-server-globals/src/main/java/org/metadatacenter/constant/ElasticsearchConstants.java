@@ -15,6 +15,7 @@ public final class ElasticsearchConstants {
   public static final String ES_RESOURCE_IS_LATEST_VERSION_FIELD = "isLatestVersion";
   public static final String ES_RESOURCE_PUBLICATION_STATUS_FIELD = "bibo:status";
   public static final String ES_RESOURCE_IS_BASED_ON_FIELD = "schema:isBasedOn";
+  public static final String ES_SUMMARY_TEXT_FIELD = "summaryText";
 
   // Sortable fields
   public static final String ES_RESOURCE_SORT_NAME_FIELD = "name";

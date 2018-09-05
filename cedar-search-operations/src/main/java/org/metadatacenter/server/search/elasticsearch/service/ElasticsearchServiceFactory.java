@@ -35,42 +35,10 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) {
-    return new NodeIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
-  }
-
-  public UserPermissionIndexingService userPermissionsIndexingService() {
-    return userPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
-  }
-
-  public UserPermissionIndexingService userPermissionsIndexingService(String indexName) {
-    return new UserPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
-  }
-
-  public GroupPermissionIndexingService groupPermissionsIndexingService() {
-    return groupPermissionsIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
-  }
-
-  public GroupPermissionIndexingService groupPermissionsIndexingService(String indexName) {
-    return new GroupPermissionIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
-  }
-
-  public ContentIndexingService contentIndexingService() {
-    return contentIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
-  }
-
-  public ContentIndexingService contentIndexingService(String indexName) {
-    return new ContentIndexingService(indexName, instance.cedarConfig, instance.managementService.getClient());
-  }
-
-  public ContentSearchingService contentSearchingService() {
-    return new ContentSearchingService(instance.cedarConfig, instance.managementService.getClient());
+    return new NodeIndexingService(indexName, instance.managementService.getClient());
   }
 
   public NodeSearchingService nodeSearchingService() {
     return new NodeSearchingService(instance.cedarConfig, instance.managementService.getClient());
-  }
-
-  public GroupPermissionSearchingService groupPermissionSearchingService() {
-    return new GroupPermissionSearchingService(instance.cedarConfig, instance.managementService.getClient());
   }
 }

@@ -10,7 +10,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.config.ElasticsearchMappingsConfig;
@@ -46,8 +46,9 @@ public class ElasticsearchManagementService {
   Client getClient() {
     try {
       if (elasticClient == null) {
-        elasticClient = new PreBuiltTransportClient(settings).addTransportAddress(new InetSocketTransportAddress
-            (InetAddress.getByName(config.getHost()), config.getTransportPort()));
+        elasticClient = new PreBuiltTransportClient(settings)
+            .addTransportAddress(new TransportAddress(InetAddress.getByName(config.getHost()),
+                config.getTransportPort()));
       }
       return elasticClient;
     } catch (Exception e) {
@@ -68,17 +69,8 @@ public class ElasticsearchManagementService {
       createIndexRequestBuilder.setSettings(indexSettings);
     }
     // Put mappings
-    if (indexMappings.getNode() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.NODE), indexMappings.getNode());
-    }
-    if (indexMappings.getUsers() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.USERS), indexMappings.getUsers());
-    }
-    if (indexMappings.getGroups() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.GROUPS), indexMappings.getGroups());
-    }
-    if (indexMappings.getContent() != null) {
-      createIndexRequestBuilder.addMapping(config.getType(IndexedDocumentType.CONTENT), indexMappings.getContent());
+    if (indexMappings.getDoc() != null) {
+      createIndexRequestBuilder.addMapping(IndexedDocumentType.DOC.getValue(), indexMappings.getDoc());
     }
     // Create index
     CreateIndexResponse response = createIndexRequestBuilder.execute().actionGet();

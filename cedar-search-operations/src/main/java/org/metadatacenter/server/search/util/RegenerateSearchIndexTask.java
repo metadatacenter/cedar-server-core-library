@@ -1,6 +1,5 @@
 package org.metadatacenter.server.search.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
@@ -10,7 +9,10 @@ import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.server.search.elasticsearch.service.*;
+import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
+import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
+import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
+import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,48 +112,23 @@ public class RegenerateSearchIndexTask {
         esManagementService.createIndex(newIndexName);
 
         NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
-        ContentIndexingService contentIndexingService = esServiceFactory.contentIndexingService(newIndexName);
-        UserPermissionIndexingService userPermissionIndexingService = esServiceFactory.userPermissionsIndexingService
-            (newIndexName);
-        GroupPermissionIndexingService groupPermissionIndexingService = esServiceFactory
-            .groupPermissionsIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;
-        for (FolderServerNode resource : resources) {
+        for (FolderServerNode node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = null;
-            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource.getId(), resource.getName(),
-                resource.getType());
-            if (resource.getType() == CedarNodeType.FOLDER) {
-              contentIndexingService.indexFolder(resource, requestContext, indexedNodeId);
-              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);
+            if (node.getType() == CedarNodeType.FOLDER) {
+              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
             } else {
-              JsonNode resourceContent = indexUtils.findResourceContent(resource.getId(), resource.getType(),
-                  requestContext);
-              if (resourceContent != null) {
-                IndexedDocumentId indexedContentId = contentIndexingService.indexResource(resource, resourceContent,
-                    requestContext, indexedNodeId);
-                // if the content was indexed, index the permissions as well
-                if (indexedContentId != null) {
-                  perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
-                } else {
-                  // othwerwise do not index the permissions
-                  // and delete the node as well
-                  nodeIndexingService.removeDocumentFromIndex(indexedNodeId);
-                }
-              }
+              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
             }
-            if (perm != null) {
-              userPermissionIndexingService.indexDocument(perm, indexedNodeId);
-              groupPermissionIndexingService.indexDocument(perm, indexedNodeId);
-            } else {
-              log.error("Permissions not indexed for " + resource.getType() + ":" + resource.getId());
-            }
+            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
+
             float progress = (100 * count++) / resources.size();
             log.info(String.format("Progress: %.0f%%", progress));
           } catch (Exception e) {
-            log.error("Error while indexing document: " + resource.getId(), e);
+            log.error("Error while indexing document: " + node.getId(), e);
           }
         }
         // Point alias to new index
