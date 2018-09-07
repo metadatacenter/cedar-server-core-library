@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.metadatacenter.constant.ElasticsearchConstants.ES_DOCUMENT_CEDAR_ID;
+import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
 public class RegenerateSearchIndexTask {
 
@@ -84,7 +84,7 @@ public class RegenerateSearchIndexTask {
           // Use the resource ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
           log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
-          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(ES_DOCUMENT_CEDAR_ID);
+          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
           log.info("No. of content document in the index: " + indexResourceIds.size());
           if (dbResourceIds.size() == indexResourceIds.size()) {
             // Compare the two lists

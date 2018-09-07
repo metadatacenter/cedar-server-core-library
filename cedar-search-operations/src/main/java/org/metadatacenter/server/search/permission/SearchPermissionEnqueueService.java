@@ -3,7 +3,6 @@ package org.metadatacenter.server.search.permission;
 import org.metadatacenter.server.cache.util.CacheService;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.SearchPermissionQueueEventType;
-import org.metadatacenter.server.search.IndexedDocumentId;
 
 import static org.metadatacenter.server.search.SearchPermissionQueueEventType.*;
 
@@ -15,17 +14,9 @@ public class SearchPermissionEnqueueService {
     this.cacheService = cacheService;
   }
 
-  private void enqueue(String id, SearchPermissionQueueEventType eventType, IndexedDocumentId parentId) {
-    SearchPermissionQueueEvent event = new SearchPermissionQueueEvent(id, eventType, parentId);
-    cacheService.enqueueEvent(event);
-  }
-
   private void enqueue(String id, SearchPermissionQueueEventType eventType) {
-    enqueue(id, eventType, null);
-  }
-
-  public void resourceCreated(String id, IndexedDocumentId parentId) {
-    enqueue(id, RESOURCE_CREATED, parentId);
+    SearchPermissionQueueEvent event = new SearchPermissionQueueEvent(id, eventType);
+    cacheService.enqueueEvent(event);
   }
 
   public void resourceMoved(String id) {
@@ -35,10 +26,6 @@ public class SearchPermissionEnqueueService {
   public void resourcePermissionsChanged(String id) {
     // TODO: Check if this was a real change. Check this at the calling side
     enqueue(id, RESOURCE_PERMISSION_CHANGED);
-  }
-
-  public void folderCreated(String id, IndexedDocumentId parentId) {
-    enqueue(id, FOLDER_CREATED, parentId);
   }
 
   public void folderMoved(String id) {

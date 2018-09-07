@@ -44,7 +44,7 @@ public class UserDaoMongoDB implements GenericUserDao {
     JsonNode userNode = JsonMapper.MAPPER.valueToTree(user);
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(userNode, FixMongoDirection.WRITE_TO_MONGO);
-    Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
+    Map<String, Object> elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
     Document elementDoc = new Document(elementMap);
     entityCollection.insertOne(elementDoc);
     // Returns the document created (all keys adapted for MongoDB are restored)
@@ -81,8 +81,8 @@ public class UserDaoMongoDB implements GenericUserDao {
     return JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class);
   }
 
-  public boolean exists(String id) throws IOException {
-    return (find(id) != null);
+  public boolean doesNotExist(String id) throws IOException {
+    return (find(id) == null);
   }
 
   @Override
@@ -95,7 +95,7 @@ public class UserDaoMongoDB implements GenericUserDao {
       return result;
     }
     try {
-      if (!exists(id)) {
+      if (doesNotExist(id)) {
         result.addError(CedarErrorType.NOT_FOUND)
             .message("The user can not be found by id")
             .parameter("id", id);
@@ -104,7 +104,7 @@ public class UserDaoMongoDB implements GenericUserDao {
       CedarUser cedarUser = find(id);
       // Adapts all keys not accepted by MongoDB
       modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
-      Map modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
+      Map<String, Object> modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
       boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
       if (modificationsOk) {
         UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id),
@@ -146,7 +146,7 @@ public class UserDaoMongoDB implements GenericUserDao {
       return result;
     }
     try {
-      if (!exists(id)) {
+      if (doesNotExist(id)) {
         result.addError(CedarErrorType.NOT_FOUND)
             .message("The user can not be found by id")
             .parameter("id", id);
@@ -205,13 +205,11 @@ public class UserDaoMongoDB implements GenericUserDao {
         return false;
       }
     } catch (Exception e) {
-      // The
-      //DO nothing, it means the modifications render the user invalid.
+      // DO NOTHING, it means the modifications render the user invalid.
     }
     return modifiedUser != null;
   }
 
-  // TODO: write a method which check the NonNull fields with reflection
   private boolean userUIPreferencesAreNotNull(CedarUser user) {
     CedarUserUIPreferences uiPreferences = user.getUiPreferences();
     if (uiPreferences == null) {
@@ -242,26 +240,20 @@ public class UserDaoMongoDB implements GenericUserDao {
       return false;
     } else {
       CedarUserUIFolderView folderView = uiPreferences.getFolderView();
-      if (folderView.getSortBy() == null || folderView.getSortDirection() == null || folderView.getViewMode() == null) {
-        return false;
-      }
+      return folderView.getSortBy() != null && folderView.getSortDirection() != null && folderView.getViewMode() != null;
     }
-    return true;
   }
 
   @Override
   public List<CedarUser> findAll() throws IOException {
     FindIterable<Document> findIterable = entityCollection.find();
-    MongoCursor<Document> cursor = findIterable.iterator();
     List<CedarUser> users = new ArrayList<>();
-    try {
+    try (MongoCursor<Document> cursor = findIterable.iterator()) {
       while (cursor.hasNext()) {
         JsonNode readUser = JsonMapper.MAPPER.readTree(cursor.next().toJson());
         JsonNode fixedUser = jsonUtils.fixMongoDB(readUser, FixMongoDirection.READ_FROM_MONGO);
         users.add(JsonMapper.MAPPER.treeToValue(fixedUser, CedarUser.class));
       }
-    } finally {
-      cursor.close();
     }
     return users;
   }

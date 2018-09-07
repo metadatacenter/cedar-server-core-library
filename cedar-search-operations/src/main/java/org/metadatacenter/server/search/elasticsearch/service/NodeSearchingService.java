@@ -17,7 +17,6 @@ import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentDocument;
-import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentDocument;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.SearchResponseResult;
@@ -61,12 +60,12 @@ public class NodeSearchingService extends AbstractSearchingService {
       // Get resources by resource id
       SearchResponse responseSearch =
           client.prepareSearch(config.getIndexName()).setTypes(IndexedDocumentType.DOC.getValue())
-              .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
+              .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
               .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {
           Map<String, Object> map = hit.getSourceAsMap();
-          return new IndexedDocumentDocument((String) map.get(ES_DOCUMENT_CEDAR_ID));
+          return new IndexedDocumentDocument((String) map.get(DOCUMENT_CEDAR_ID));
         }
       }
     } catch (Exception e) {

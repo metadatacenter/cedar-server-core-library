@@ -116,7 +116,7 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
     nodeTypeList = new ArrayList<>();
     for (String rt : nodeTypeStringList) {
       CedarNodeType crt = CedarNodeType.forValue(rt);
-      if (!CedarNodeTypeUtil.isValidForRestCall(crt)) {
+      if (CedarNodeTypeUtil.isNotValidForRestCall(crt)) {
         throw new CedarAssertionException("You passed an illegal 'resource_types':'" + rt + "'. The allowed values " +
             "are:" +
             CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls())

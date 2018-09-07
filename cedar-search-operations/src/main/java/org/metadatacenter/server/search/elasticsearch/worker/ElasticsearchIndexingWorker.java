@@ -19,7 +19,7 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.metadatacenter.constant.ElasticsearchConstants.ES_DOCUMENT_CEDAR_ID;
+import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
 public class ElasticsearchIndexingWorker {
 
@@ -73,7 +73,7 @@ public class ElasticsearchIndexingWorker {
     try {
       // Get resources by resource id
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
-          .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
+          .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
 
       long removedCount = 0;

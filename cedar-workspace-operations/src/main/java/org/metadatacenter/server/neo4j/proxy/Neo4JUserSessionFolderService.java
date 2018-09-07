@@ -88,8 +88,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   private String getParentPathString(List<? extends FolderServerNode> path) {
-    List<FolderServerNode> p = new ArrayList<>();
-    p.addAll(path);
+    List<FolderServerNode> p = new ArrayList<>(path);
     if (path.size() > 0) {
       p.remove(p.size() - 1);
     } else {

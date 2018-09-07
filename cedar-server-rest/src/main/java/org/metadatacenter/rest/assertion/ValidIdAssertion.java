@@ -18,7 +18,7 @@ public class ValidIdAssertion implements CedarAssertion {
 
   @Override
   public CedarAssertionResult check(CedarRequestContext requestContext, Object target) {
-    if (target == null || !(target instanceof String)) {
+    if (!(target instanceof String)) {
       return new CedarAssertionResult("The id should be a non-null String");
     } else {
       LinkedDataUtil linkedDataUtil = requestContext.getLinkedDataUtil();

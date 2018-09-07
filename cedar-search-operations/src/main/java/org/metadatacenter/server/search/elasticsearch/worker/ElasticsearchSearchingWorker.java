@@ -48,7 +48,7 @@ public class ElasticsearchSearchingWorker {
         .setScroll(keepAlive).setQuery(queryBuilder).setSize(config.getSize());
     SearchResponse response = searchRequest.execute().actionGet();
     // Scroll until no hits are returned
-    while (true) {
+    do {
       for (SearchHit hit : response.getHits().getHits()) {
         Map<String, Object> f = hit.getSourceAsMap();
         String[] pathFragments = fieldName.split("\\.");
@@ -61,10 +61,7 @@ public class ElasticsearchSearchingWorker {
       response = client.prepareSearchScroll(response.getScrollId()).setScroll(keepAlive)
           .execute().actionGet();
       // Break condition: No hits are returned
-      if (response.getHits().getHits().length == 0) {
-        break;
-      }
-    }
+    } while (response.getHits().getHits().length != 0);
     return fieldValues;
   }
 }

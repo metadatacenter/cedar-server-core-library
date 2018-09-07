@@ -2,6 +2,7 @@ package org.metadatacenter.util.http;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public final class UrlUtil {
 
@@ -20,7 +21,7 @@ public final class UrlUtil {
 
   public static String urlEncode(String value) {
     try {
-      return URLEncoder.encode(value, "UTF-8");
+      return URLEncoder.encode(value, StandardCharsets.UTF_8);
     } catch (Exception e) {
       // Do nothing
     }
@@ -29,7 +30,7 @@ public final class UrlUtil {
 
   public static String urlDecode(String value) {
     try {
-      return URLDecoder.decode(value, "UTF-8");
+      return URLDecoder.decode(value, StandardCharsets.UTF_8);
     } catch (Exception e) {
       // Do nothing
     }

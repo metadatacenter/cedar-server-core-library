@@ -101,9 +101,7 @@ public class LinkedDataUtil {
       }
     }
     if (uuid != null) {
-      if (uuid.trim().length() > 0) {
-        return true;
-      }
+      return uuid.trim().length() > 0;
     }
     return false;
   }

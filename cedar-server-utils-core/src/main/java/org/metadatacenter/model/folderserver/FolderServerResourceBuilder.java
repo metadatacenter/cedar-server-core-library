@@ -1,6 +1,8 @@
 package org.metadatacenter.model.folderserver;
 
+import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ResourceVersion;
 
 public class FolderServerResourceBuilder {
 
@@ -21,5 +23,18 @@ public class FolderServerResourceBuilder {
       default:
         return null;
     }
+  }
+
+  public static FolderServerResource forNodeType(CedarNodeType nodeType, String newId, String name,
+                                                 String description, ResourceVersion version,
+                                                 BiboStatus publicationStatus) {
+    FolderServerResource r = forNodeType(nodeType);
+    r.setId(newId);
+    r.setType(nodeType);
+    r.setName(name);
+    r.setDescription(description);
+    r.setVersion(version.getValue());
+    r.setPublicationStatus(publicationStatus.getValue());
+    return r;
   }
 }

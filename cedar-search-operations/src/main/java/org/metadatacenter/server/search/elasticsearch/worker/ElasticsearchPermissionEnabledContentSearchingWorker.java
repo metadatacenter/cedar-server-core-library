@@ -117,14 +117,13 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter by content
     if (query != null && query.length() > 0) {
-      QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(ES_SUMMARY_TEXT_FIELD);
+      QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
       mainQuery.must(summaryTextQuery);
     }
 
     // Filter by resource type
     if (resourceTypes != null && resourceTypes.size() > 0) {
-      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX + ES_RESOURCE_RESOURCETYPE_FIELD,
-          resourceTypes);
+      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(NODE_TYPE, resourceTypes);
       mainQuery.must(resourceTypesQuery);
     }
 
@@ -132,12 +131,10 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     if (version != null && version != ResourceVersionFilter.ALL) {
       BoolQueryBuilder versionQuery = QueryBuilders.boolQuery();
       BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
-      QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
-          ES_RESOURCE_IS_LATEST_VERSION_FIELD, true);
+      QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(INFO_IS_LATEST_VERSION, true);
       inner1Query.must(versionEqualsQuery);
       BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
-      QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
-          ES_RESOURCE_IS_LATEST_VERSION_FIELD);
+      QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(INFO_IS_LATEST_VERSION);
       inner2Query.mustNot(versionExistsQuery);
       versionQuery.should(inner1Query);
       versionQuery.should(inner2Query);
@@ -148,12 +145,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       BoolQueryBuilder publicationStatusQuery = QueryBuilders.boolQuery();
       BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
-      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(ES_RESOURCE_PREFIX +
-          ES_RESOURCE_PUBLICATION_STATUS_FIELD, publicationStatus.getValue());
+      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(INFO_BIBO_STATUS,
+          publicationStatus.getValue());
       inner1Query.must(publicationStatusEqualsQuery);
       BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
-      QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(ES_RESOURCE_PREFIX +
-          ES_RESOURCE_PUBLICATION_STATUS_FIELD);
+      QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(INFO_BIBO_STATUS);
       inner2Query.mustNot(publicationStatusExistsQuery);
       publicationStatusQuery.should(inner1Query);
       publicationStatusQuery.should(inner2Query);
@@ -162,8 +158,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter by template id
     if (isBasedOn != null) {
-      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(ES_RESOURCE_PREFIX + ES_RESOURCE_IS_BASED_ON_FIELD,
-          isBasedOn);
+      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(INFO_SCHEMA_IS_BASED_ON, isBasedOn);
       mainQuery.must(templateIdQuery);
     }
 
@@ -179,12 +174,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           sortOrder = SortOrder.DESC;
           s = s.substring(1);
         }
-        if (ES_RESOURCE_SORT_NAME_FIELD.equals(s)) {
-          searchRequestBuilder.addSort("info.schema:name.raw", sortOrder);
-        } else if (ES_RESOURCE_SORT_LASTUPDATEDONTS_FIELD.equals(s)) {
-          searchRequestBuilder.addSort("info.pav:lastUpdatedOn", sortOrder);
-        } else if (ES_RESOURCE_SORT_CREATEDONTS_FIELD.equals(s)) {
-          searchRequestBuilder.addSort("info.pav:createdOn", sortOrder);
+        if (SORT_BY_NAME.equals(s)) {
+          searchRequestBuilder.addSort(INFO_SCHEMA_NAME_RAW, sortOrder);
+        } else if (SORT_LAST_UPDATED_ON_FIELD.equals(s)) {
+          searchRequestBuilder.addSort(INFO_PAV_LAST_UPDATED_ON, sortOrder);
+        } else if (SORT_CREATED_ON_FIELD.equals(s)) {
+          searchRequestBuilder.addSort(INFO_PAV_CREATED_ON, sortOrder);
         }
       }
     }

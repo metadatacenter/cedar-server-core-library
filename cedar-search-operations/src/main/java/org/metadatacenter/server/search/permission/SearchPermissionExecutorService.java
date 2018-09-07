@@ -6,7 +6,6 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.Upsert;
-import org.metadatacenter.model.folderserver.FolderServerFolder;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -53,17 +52,11 @@ public class SearchPermissionExecutorService {
   // Main entry point
   public void handleEvent(SearchPermissionQueueEvent event) {
     switch (event.getEventType()) {
-      case RESOURCE_CREATED:
-        createOneResource(event.getId());
-        break;
       case RESOURCE_MOVED:
         updateOneResource(event.getId());
         break;
       case RESOURCE_PERMISSION_CHANGED:
         updateOneResource(event.getId());
-        break;
-      case FOLDER_CREATED:
-        createOneFolder(event.getId());
         break;
       case FOLDER_MOVED:
         updateFolderRecursively(event.getId());
@@ -80,17 +73,6 @@ public class SearchPermissionExecutorService {
     }
   }
 
-  //Routers for individual cases
-  private void createOneResource(String id) {
-    FolderServerResource resource = folderSession.findResourceById(id);
-    if (resource != null) {
-      log.debug("Create one resource:" + resource.getName());
-      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.RESOURCE);
-    } else {
-      log.error("Resource was not found:" + id);
-    }
-  }
-
   private void updateOneResource(String id) {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
@@ -98,16 +80,6 @@ public class SearchPermissionExecutorService {
       upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE);
     } else {
       log.error("Resource was not found:" + id);
-    }
-  }
-
-  private void createOneFolder(String id) {
-    FolderServerFolder folder = folderSession.findFolderById(id);
-    if (folder != null) {
-      log.debug("Create one folder:" + folder.getName());
-      upsertOnePermissions(Upsert.INSERT, id, FolderOrResource.FOLDER);
-    } else {
-      log.error("Folder was not found:" + id);
     }
   }
 
@@ -144,7 +116,6 @@ public class SearchPermissionExecutorService {
     for (String cid : allCedarIdsForGroup) {
       log.info("Need to update permissions for:" + cid);
       try {
-        // TODO: this would probably just udpate the whole node
         IndexedDocumentDocument originalNode = nodeSearchingService.getDocumentByCedarId(cid);
         upsertOnePermissions(Upsert.UPDATE, cid, originalNode.getInfo().getType());
       } catch (CedarProcessingException e) {
@@ -155,8 +126,7 @@ public class SearchPermissionExecutorService {
 
   // Executors
   private void upsertOnePermissions(Upsert upsert, String id, CedarNodeType nodeType) {
-    upsertOnePermissions(upsert, id, nodeType == CedarNodeType.FOLDER ? FolderOrResource.FOLDER : FolderOrResource
-        .RESOURCE);
+    upsertOnePermissions(upsert, id, nodeType.asFolderOrResource());
   }
 
   private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource) {

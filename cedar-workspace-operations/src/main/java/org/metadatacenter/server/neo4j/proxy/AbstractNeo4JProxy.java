@@ -95,6 +95,10 @@ public abstract class AbstractNeo4JProxy {
       reportQueryError(ex, q);
     }
 
+    return extractClassFromRecord(record, type);
+  }
+
+  private <T extends CedarNode> T extractClassFromRecord(Record record, Class<T> type) {
     if (record != null) {
       Node n = record.get(0).asNode();
       if (n != null) {
@@ -144,13 +148,7 @@ public abstract class AbstractNeo4JProxy {
   protected <T extends CedarNode> T executeReadGetOne(CypherQuery q, Class<T> type) {
     try (Session session = driver.session()) {
       Record record = executeQueryGetRecord(session, q);
-      if (record != null) {
-        Node n = record.get(0).asNode();
-        if (n != null) {
-          JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
-          return buildClass(node, type);
-        }
-      }
+      return extractClassFromRecord(record, type);
     } catch (ClientException ex) {
       reportQueryError(ex, q);
     }
@@ -212,7 +210,7 @@ public abstract class AbstractNeo4JProxy {
               List<Object> list = value.asList();
               for (Object o : list) {
                 if (o instanceof Node) {
-                  Node n = (Node)o;
+                  Node n = (Node) o;
                   JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
                   T folderServerNode = buildClass(node, type);
                   folderServerNodeList.add(folderServerNode);
