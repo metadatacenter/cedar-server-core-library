@@ -62,12 +62,7 @@ public class PagedSortedQuery extends PagedQuery {
   }
 
   protected void validateSorting() throws CedarException {
-    String sortString;
-    if (sortInput.isPresent()) {
-      sortString = sortInput.get();
-    } else {
-      sortString = QuerySortOptions.getDefaultSortField().getName();
-    }
+    String sortString = sortInput.orElseGet(() -> QuerySortOptions.getDefaultSortField().getName());
 
     if (sortString != null) {
       sortString = sortString.trim();

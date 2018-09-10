@@ -7,7 +7,7 @@ import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.server.search.IndexedDocumentId;
 
-import static org.metadatacenter.constant.ElasticsearchConstants.ES_DOCUMENT_CEDAR_ID;
+import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
 public class AbstractSearchingService {
 
@@ -16,7 +16,7 @@ public class AbstractSearchingService {
     try {
       // Get resources by resource id
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
-          .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
+          .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {

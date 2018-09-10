@@ -82,16 +82,14 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
         newUserPermissions.add(up.getAsUserIdPermissionPair());
       }
 
-      Set<NodePermissionUserPermissionPair> toRemoveUserPermissions = new HashSet<>();
-      toRemoveUserPermissions.addAll(oldUserPermissions);
+      Set<NodePermissionUserPermissionPair> toRemoveUserPermissions = new HashSet<>(oldUserPermissions);
       toRemoveUserPermissions.removeAll(newUserPermissions);
       if (!toRemoveUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeUserPermissions(proxies.permission(), nodeURL, toRemoveUserPermissions,
             folderOrResource);
       }
 
-      Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>();
-      toAddUserPermissions.addAll(newUserPermissions);
+      Set<NodePermissionUserPermissionPair> toAddUserPermissions = new HashSet<>(newUserPermissions);
       toAddUserPermissions.removeAll(oldUserPermissions);
       if (!toAddUserPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addUserPermissions(proxies.permission(), nodeURL, toAddUserPermissions,
@@ -107,16 +105,14 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
         newGroupPermissions.add(gp.getAsGroupIdPermissionPair());
       }
 
-      Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions = new HashSet<>();
-      toRemoveGroupPermissions.addAll(oldGroupPermissions);
+      Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions = new HashSet<>(oldGroupPermissions);
       toRemoveGroupPermissions.removeAll(newGroupPermissions);
       if (!toRemoveGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.removeGroupPermissions(proxies.permission(), nodeURL, toRemoveGroupPermissions,
             folderOrResource);
       }
 
-      Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>();
-      toAddGroupPermissions.addAll(newGroupPermissions);
+      Set<NodePermissionGroupPermissionPair> toAddGroupPermissions = new HashSet<>(newGroupPermissions);
       toAddGroupPermissions.removeAll(oldGroupPermissions);
       if (!toAddGroupPermissions.isEmpty()) {
         Neo4JUserSessionGroupOperations.addGroupPermissions(proxies.permission(), nodeURL, toAddGroupPermissions,

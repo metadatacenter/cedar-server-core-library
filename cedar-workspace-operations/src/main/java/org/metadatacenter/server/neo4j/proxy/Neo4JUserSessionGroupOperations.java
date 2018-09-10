@@ -35,8 +35,7 @@ public final class Neo4JUserSessionGroupOperations {
       }
     }
 
-    Set<CedarUserId> toRemoveUsers = new HashSet<>();
-    toRemoveUsers.addAll(oldUsers);
+    Set<CedarUserId> toRemoveUsers = new HashSet<>(oldUsers);
     toRemoveUsers.removeAll(newUsers);
     if (!toRemoveUsers.isEmpty()) {
       removeGroupUsers(neo4JProxy, groupURL, toRemoveUsers, relation);

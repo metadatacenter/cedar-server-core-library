@@ -30,7 +30,7 @@ public class CedarIndexFieldValue {
   private String fieldValueAndSemanticType;
 
   // Used by Jackson
-  public CedarIndexFieldValue() {};
+  public CedarIndexFieldValue() {}
 
   // Generate fieldValueAndSemanticType
   public String generateFieldValueAndSemanticType() {

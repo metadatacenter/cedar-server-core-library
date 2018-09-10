@@ -96,9 +96,7 @@ public class CedarUserUtil {
     if (defaultRoles != null) {
       List<CedarUserRole> roleList = defaultRoles.get(superRole);
       if (roleList != null) {
-        for (CedarUserRole cedarUserRole : roleList) {
-          roles.add(cedarUserRole);
-        }
+        roles.addAll(roleList);
       }
     }
     if (roles.isEmpty()) {

@@ -52,7 +52,7 @@ public class CypherParameters {
   }
 
   public Map<String, Object> asMap() {
-    Map<String, Object> r = new HashMap();
+    Map<String, Object> r = new HashMap<>();
     for (CypherQueryParameter k : map.keySet()) {
       r.put(Neo4JUtil.escapePropertyName(k.getValue()), map.get(k));
     }

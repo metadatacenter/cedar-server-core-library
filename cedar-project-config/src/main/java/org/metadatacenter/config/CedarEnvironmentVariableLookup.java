@@ -15,7 +15,7 @@ import java.util.Map;
 public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
 
   private enum VariableStatus {
-    PRESENT_WITH_VALUE, PRESENT_WITHOUT_VALUE, NEEDED_NOT_INCLUDED;
+    PRESENT_WITH_VALUE, PRESENT_WITHOUT_VALUE, NEEDED_NOT_INCLUDED
   }
 
   private static final Logger log = LoggerFactory.getLogger(CedarEnvironmentVariableLookup.class);

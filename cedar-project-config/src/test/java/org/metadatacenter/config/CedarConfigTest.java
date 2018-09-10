@@ -186,17 +186,9 @@ public class CedarConfigTest {
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig);
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getSettings());
     Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getNode());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getContent());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getUsers());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getGroups());
+    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getDoc());
 
     ElasticsearchConfig elasticsearchConfig = instance.getElasticsearchConfig();
-    Assert.assertNotNull(elasticsearchConfig.getTypes());
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.NODE));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.CONTENT));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.USERS));
-    Assert.assertNotNull(elasticsearchConfig.getTypes().get(IndexedDocumentType.GROUPS));
 
     Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");

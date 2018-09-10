@@ -17,7 +17,7 @@ public class CedarIndexFieldSchema {
   private String fieldValueType;
 
   // Used by Jackson
-  public CedarIndexFieldSchema() {};
+  public CedarIndexFieldSchema() {}
 
   public CedarIndexFieldSchema(String fieldName, String fieldSemanticType, String fieldValueType) {
     this.fieldName = fieldName;

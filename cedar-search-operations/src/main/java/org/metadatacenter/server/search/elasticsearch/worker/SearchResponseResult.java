@@ -1,22 +1,32 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
-import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchResponseResult {
 
-  private final SearchResponse response;
-  private final NodeIdResultList resultList;
+  private final List<SearchHit> hits;
+  private long totalCount;
 
-  public SearchResponseResult(SearchResponse response, NodeIdResultList resultList) {
-    this.response = response;
-    this.resultList = resultList;
+  public SearchResponseResult() {
+    this.hits = new ArrayList<>();
   }
 
-  public SearchResponse getResponse() {
-    return response;
+  public List<SearchHit> getHits() {
+    return hits;
   }
 
-  public NodeIdResultList getResultList() {
-    return resultList;
+  public void add(SearchHit hit) {
+    hits.add(hit);
+  }
+
+  public void setTotalCount(long totalCount) {
+    this.totalCount = totalCount;
+  }
+
+  public long getTotalCount() {
+    return totalCount;
   }
 }
