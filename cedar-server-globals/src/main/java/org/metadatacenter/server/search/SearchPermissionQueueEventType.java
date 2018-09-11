@@ -1,14 +1,12 @@
 package org.metadatacenter.server.search;
 
 public enum SearchPermissionQueueEventType {
-  RESOURCE_CREATED,
   RESOURCE_MOVED,
   RESOURCE_PERMISSION_CHANGED,
 
-  FOLDER_CREATED,
   FOLDER_MOVED,
   FOLDER_PERMISSION_CHANGED,
 
   GROUP_MEMBERS_UPDATED,
-  GROUP_DELETED;
+  GROUP_DELETED
 }

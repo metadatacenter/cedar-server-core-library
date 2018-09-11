@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum IndexedDocumentType {
 
-  NODE("node"),
-  USERS("users"),
-  GROUPS("groups"),
-  CONTENT("content"),
+  DOC("_doc"),
   UNKNOWN("");
 
   private final String value;

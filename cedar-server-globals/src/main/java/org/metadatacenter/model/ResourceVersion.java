@@ -94,7 +94,7 @@ public class ResourceVersion implements Comparable<ResourceVersion> {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj != null && obj instanceof ResourceVersion && this.value != null) {
+    if (obj instanceof ResourceVersion && this.value != null) {
       ResourceVersion other = (ResourceVersion) obj;
       return this.valid == other.valid && this.value.equals(other.value) && this.major == other.major &&
           this.minor == other.minor && this.patch == other.patch;

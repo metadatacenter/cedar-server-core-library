@@ -15,7 +15,6 @@ import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolder;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;

@@ -43,7 +43,7 @@ public class CedarNodeTypeUtil {
     return validRestTypesList;
   }
 
-  public static boolean isValidForRestCall(CedarNodeType nodeType) {
-    return validRestTypesSet.contains(nodeType);
+  public static boolean isNotValidForRestCall(CedarNodeType nodeType) {
+    return !validRestTypesSet.contains(nodeType);
   }
 }

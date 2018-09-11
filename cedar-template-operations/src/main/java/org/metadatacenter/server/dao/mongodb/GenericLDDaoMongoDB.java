@@ -51,7 +51,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
   public JsonNode create(JsonNode element) throws IOException {
     // Adapts all keys not accepted by MongoDB
     JsonNode fixedElement = jsonUtils.fixMongoDB(element, FixMongoDirection.WRITE_TO_MONGO);
-    Map elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
+    Map<String, Object> elementMap = JsonMapper.MAPPER.convertValue(fixedElement, Map.class);
     Document elementDoc = new Document(elementMap);
     entityCollection.insertOne(elementDoc);
     // Returns the document created (all keys adapted for MongoDB are restored)
@@ -98,16 +98,13 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
         findIterable.projection(fields);
       }
     }
-    MongoCursor<Document> cursor = findIterable.iterator();
     List<JsonNode> docs = new ArrayList<>();
-    try {
+    try (MongoCursor<Document> cursor = findIterable.iterator()) {
       while (cursor.hasNext()) {
         JsonNode node = jsonUtils.fixMongoDB(JsonMapper.MAPPER.readTree(cursor.next().toJson()), FixMongoDirection
             .READ_FROM_MONGO);
         docs.add(node);
       }
-    } finally {
-      cursor.close();
     }
     return docs;
   }
@@ -153,7 +150,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     }
     // Adapts all keys not accepted by MongoDB
     content = jsonUtils.fixMongoDB(content, FixMongoDirection.WRITE_TO_MONGO);
-    Map contentMap = JsonMapper.MAPPER.convertValue(content, Map.class);
+    Map<String, Object> contentMap = JsonMapper.MAPPER.convertValue(content, Map.class);
     Document contentDocument = new Document(contentMap);
     UpdateResult updateResult = entityCollection.replaceOne(eq("@id", id), contentDocument);
     if (updateResult.getMatchedCount() == 1) {

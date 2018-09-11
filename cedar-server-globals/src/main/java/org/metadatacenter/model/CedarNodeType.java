@@ -98,4 +98,8 @@ public enum CedarNodeType {
     return this == ELEMENT || this == TEMPLATE || this == FIELD;
   }
 
+  public FolderOrResource asFolderOrResource() {
+    return this == FOLDER ? FolderOrResource.FOLDER : FolderOrResource.RESOURCE;
+  }
+
 }

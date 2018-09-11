@@ -12,7 +12,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
-import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
@@ -20,7 +19,7 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.metadatacenter.constant.ElasticsearchConstants.ES_DOCUMENT_CEDAR_ID;
+import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
 public class ElasticsearchIndexingWorker {
 
@@ -30,11 +29,10 @@ public class ElasticsearchIndexingWorker {
   private final String indexName;
   private final String documentType;
 
-  public ElasticsearchIndexingWorker(String indexName, ElasticsearchConfig config, Client client, IndexedDocumentType
-      indexedDocumentType) {
+  public ElasticsearchIndexingWorker(String indexName, Client client) {
     this.client = client;
     this.indexName = indexName;
-    this.documentType = config.getType(indexedDocumentType);
+    this.documentType = IndexedDocumentType.DOC.getValue();
   }
 
   public IndexedDocumentId addToIndex(JsonNode json, IndexedDocumentId parent) throws CedarProcessingException {
@@ -75,7 +73,7 @@ public class ElasticsearchIndexingWorker {
     try {
       // Get resources by resource id
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
-          .setQuery(QueryBuilders.matchQuery(ES_DOCUMENT_CEDAR_ID, resourceId))
+          .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
 
       long removedCount = 0;
