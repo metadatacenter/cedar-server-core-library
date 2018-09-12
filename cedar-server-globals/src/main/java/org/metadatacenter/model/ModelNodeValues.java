@@ -11,6 +11,7 @@ public class ModelNodeValues {
   public static final String SCHEMA_IRI = "http://schema.org/";
   public static final String OSLC_IRI = "http://open-services.net/ns/core#";
   public static final String BIBO_IRI = "http://purl.org/ontology/bibo/";
+  public static final String SKOS_IRI = "http://www.w3.org/2004/02/skos/core#";
 
   public static final boolean TRUE = true;
   public static final boolean FALSE = false;
