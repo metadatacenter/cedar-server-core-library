@@ -73,6 +73,7 @@ public class ModelNodeNames {
   public static final String SKOS = "skos";
 
   public static final String RDFS_LABEL = "rdfs:label";
+  public static final String SCHEMA_IDENTIFIER = "schema:identifier";
   public static final String SCHEMA_DESCRIPTION = "schema:description";
   public static final String SCHEMA_NAME = "schema:name";
   public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
