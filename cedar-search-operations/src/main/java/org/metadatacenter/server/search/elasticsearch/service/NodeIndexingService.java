@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.elasticsearch.client.Client;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
+import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
@@ -54,8 +56,17 @@ public class NodeIndexingService extends AbstractIndexingService {
   }
 
   private String getSummaryText(FolderServerNode node) {
-    //TODO: implement summary text creation here
-    return node.getName() + " " + node.getDescription();
+    StringBuilder sb = new StringBuilder();
+    sb.append(node.getName());
+    sb.append(" ").append(node.getDescription());
+    if (node instanceof FolderServerResource) {
+      FolderServerResource resource = (FolderServerResource) node;
+      ResourceVersion version = resource.getVersion();
+      if (version != null) {
+        sb.append(" ").append(version.getValue());
+      }
+    }
+    return sb.toString();
   }
 
   public long removeDocumentFromIndex(String nodeId) throws CedarProcessingException {

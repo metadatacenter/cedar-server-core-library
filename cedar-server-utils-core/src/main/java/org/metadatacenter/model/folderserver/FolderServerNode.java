@@ -82,6 +82,16 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
     this.description = description;
   }
 
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
   @JsonProperty(NodeProperty.Label.CREATED_ON)
   public ProvenanceTime getCreatedOn() {
     return createdOn;

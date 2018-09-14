@@ -22,6 +22,7 @@ public class FolderServerNodeInfo {
 
   protected String name;
   protected String description;
+  protected String identifier;
   protected String createdBy;
   protected String lastUpdatedBy;
   protected String path;
@@ -92,6 +93,16 @@ public class FolderServerNodeInfo {
   @JsonProperty(NodeProperty.Label.DESCRIPTION)
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
 
   @JsonProperty(NodeProperty.Label.CREATED_ON)

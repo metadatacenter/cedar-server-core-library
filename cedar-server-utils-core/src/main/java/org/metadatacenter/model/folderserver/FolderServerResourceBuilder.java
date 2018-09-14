@@ -26,15 +26,18 @@ public class FolderServerResourceBuilder {
   }
 
   public static FolderServerResource forNodeType(CedarNodeType nodeType, String newId, String name,
-                                                 String description, ResourceVersion version,
+                                                 String description, String identifier, ResourceVersion version,
                                                  BiboStatus publicationStatus) {
     FolderServerResource r = forNodeType(nodeType);
     r.setId(newId);
     r.setType(nodeType);
     r.setName(name);
     r.setDescription(description);
-    r.setVersion(version.getValue());
-    r.setPublicationStatus(publicationStatus.getValue());
+    r.setIdentifier(identifier);
+    if (nodeType.isVersioned()) {
+      r.setVersion(version.getValue());
+      r.setPublicationStatus(publicationStatus.getValue());
+    }
     return r;
   }
 }

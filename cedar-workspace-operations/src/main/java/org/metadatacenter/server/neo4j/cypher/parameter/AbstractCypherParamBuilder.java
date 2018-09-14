@@ -62,6 +62,9 @@ public abstract class AbstractCypherParamBuilder {
       if (newResource.isLatestVersion() != null) {
         params.put(NodeProperty.IS_LATEST_VERSION, newResource.isLatestVersion());
       }
+      if (newResource.getIdentifier() != null) {
+        params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
+      }
       if (newResource.getType() == CedarNodeType.INSTANCE) {
         FolderServerInstance newInstance = (FolderServerInstance) newResource;
         if (newInstance.getIsBasedOn() != null) {
