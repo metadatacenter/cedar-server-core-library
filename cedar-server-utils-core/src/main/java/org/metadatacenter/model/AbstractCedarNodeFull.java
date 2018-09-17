@@ -4,6 +4,7 @@ public abstract class AbstractCedarNodeFull extends AbstractCedarNodeWithDates {
 
   protected String name;
   protected String description;
+  protected String identifier;
   protected String createdBy;
   protected String lastUpdatedBy;
   protected String path;

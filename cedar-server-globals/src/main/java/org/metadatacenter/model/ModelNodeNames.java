@@ -70,8 +70,10 @@ public class ModelNodeNames {
   public static final String SCHEMA = "schema";
   public static final String OSLC = "oslc";
   public static final String BIBO = "bibo";
+  public static final String SKOS = "skos";
 
   public static final String RDFS_LABEL = "rdfs:label";
+  public static final String SCHEMA_IDENTIFIER = "schema:identifier";
   public static final String SCHEMA_DESCRIPTION = "schema:description";
   public static final String SCHEMA_NAME = "schema:name";
   public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
@@ -84,6 +86,9 @@ public class ModelNodeNames {
   public static final String PAV_DERIVED_FROM = "pav:derivedFrom";
   public static final String OSLC_MODIFIED_BY = "oslc:modifiedBy";
   public static final String BIBO_STATUS = "bibo:status";
+  public static final String SKOS_NOTATION = "skos:notation";
+  public static final String SKOS_PREFLABEL = "skos:prefLabel";
+  public static final String SKOS_ALTLABEL = "skos:altLabel";
 
   /*
    * JSON-LD Keywords

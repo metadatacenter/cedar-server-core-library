@@ -41,12 +41,20 @@ public class ModelUtil {
     return r;
   }
 
+  public static JsonPointerValuePair extractAtIdFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, AT_ID);
+  }
+
   public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, SCHEMA_NAME);
   }
 
   public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, SCHEMA_DESCRIPTION);
+  }
+
+  public static JsonPointerValuePair extractIdentifierFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+    return extractStringFromPointer(jsonNode, SCHEMA_IDENTIFIER);
   }
 
   public static JsonPointerValuePair extractVersionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {

@@ -11,6 +11,7 @@ public enum NodeProperty implements CypherQueryParameter {
   CREATED_BY(Label.CREATED_BY),
   OWNED_BY(Label.OWNED_BY),
   NAME(Label.NAME),
+  IDENTIFIER(Label.IDENTIFIER),
   DESCRIPTION(Label.DESCRIPTION),
   FIRST_NAME(Label.FIRST_NAME),
   LAST_NAME(Label.LAST_NAME),
@@ -38,6 +39,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String CREATED_ON = "pav:createdOn";
     public static final String CREATED_BY = "pav:createdBy";
     public static final String DESCRIPTION = "schema:description";
+    public static final String IDENTIFIER = "schema:identifier";
     public static final String OWNED_BY = "ownedBy";
     public static final String NAME = "schema:name";
     public static final String FIRST_NAME = "firstName";

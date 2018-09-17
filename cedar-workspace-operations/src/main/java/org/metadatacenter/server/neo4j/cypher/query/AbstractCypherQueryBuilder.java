@@ -90,6 +90,9 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.isLatestVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_VERSION)).append(",");
       }
+      if (newResource.getIdentifier() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
+      }
       if (newResource.getType() == CedarNodeType.INSTANCE) {
         FolderServerInstance newInstance = (FolderServerInstance) newResource;
         if (newInstance.getIsBasedOn() != null) {
