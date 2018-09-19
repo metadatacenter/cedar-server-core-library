@@ -65,6 +65,10 @@ public class NodeIndexingService extends AbstractIndexingService {
       if (version != null) {
         sb.append(" ").append(version.getValue());
       }
+      String identifier = resource.getIdentifier();
+      if (identifier != null) {
+        sb.append(" ").append(identifier);
+      }
     }
     return sb.toString();
   }
