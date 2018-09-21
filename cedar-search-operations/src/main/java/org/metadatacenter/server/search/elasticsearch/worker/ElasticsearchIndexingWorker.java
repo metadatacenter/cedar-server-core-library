@@ -35,7 +35,7 @@ public class ElasticsearchIndexingWorker {
     this.documentType = IndexedDocumentType.DOC.getValue();
   }
 
-  public IndexedDocumentId addToIndex(JsonNode json, IndexedDocumentId parent) throws CedarProcessingException {
+  public IndexedDocumentId addToIndex(JsonNode json) throws CedarProcessingException {
     IndexedDocumentId newId = null;
     try {
       boolean again = true;
@@ -45,9 +45,6 @@ public class ElasticsearchIndexingWorker {
         try {
           IndexRequestBuilder indexRequestBuilder = client.prepareIndex(indexName, documentType)
               .setSource(JsonMapper.MAPPER.writeValueAsString(json), XContentType.JSON);
-          if (parent != null && parent.getId() != null) {
-            indexRequestBuilder.setParent(parent.getId());
-          }
           IndexResponse response = indexRequestBuilder.get();
           if (response.status() == RestStatus.CREATED) {
             log.debug("The " + documentType + " has been indexed");
@@ -68,7 +65,7 @@ public class ElasticsearchIndexingWorker {
     return newId;
   }
 
-  public long removeAllFromIndex(String resourceId, IndexedDocumentId parent) throws CedarProcessingException {
+  public long removeAllFromIndex(String resourceId) throws CedarProcessingException {
     log.debug("Removing " + documentType + " cid:" + resourceId + " from the index.");
     try {
       // Get resources by resource id
@@ -82,9 +79,6 @@ public class ElasticsearchIndexingWorker {
         String hitId = hit.getId();
         log.debug(("Try to delete " + documentType + " _id:" + hitId));
         DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(indexName, documentType, hit.getId());
-        if (parent != null) {
-          deleteRequestBuilder.setParent(parent.getId());
-        }
         DeleteResponse responseDelete = deleteRequestBuilder.execute().actionGet();
         if (responseDelete.status() != RestStatus.OK) {
           throw new CedarProcessingException("Failed to remove " + documentType

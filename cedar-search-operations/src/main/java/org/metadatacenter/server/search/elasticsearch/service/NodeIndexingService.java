@@ -37,7 +37,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     ir.setSummaryText(getSummaryText(node));
 
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-    return indexWorker.addToIndex(jsonResource, null);
+    return indexWorker.addToIndex(jsonResource);
   }
 
   public IndexedDocumentId indexDocument(FolderServerNode node, CedarRequestContext c) throws CedarProcessingException {
@@ -52,7 +52,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     ir.setSummaryText(getSummaryText(node));
 
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-    return indexWorker.addToIndex(jsonResource, null);
+    return indexWorker.addToIndex(jsonResource);
   }
 
   private String getSummaryText(FolderServerNode node) {
@@ -76,7 +76,7 @@ public class NodeIndexingService extends AbstractIndexingService {
   public long removeDocumentFromIndex(String nodeId) throws CedarProcessingException {
     if (nodeId != null) {
       log.debug("Removing node from index (id = " + nodeId);
-      return indexWorker.removeAllFromIndex(nodeId, null);
+      return indexWorker.removeAllFromIndex(nodeId);
     } else {
       return -1;
     }
