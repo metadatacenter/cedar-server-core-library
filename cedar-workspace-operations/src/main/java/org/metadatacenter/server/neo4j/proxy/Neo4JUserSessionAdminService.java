@@ -82,7 +82,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     String rootFolderURL = null;
     if (rootFolder == null) {
       rootFolder = proxies.folder().createRootFolder(userId);
-      proxies.permission().addPermission(rootFolder, everybody, NodePermission.READTHIS);
+      proxies.permission().addPermission(rootFolder, everybody, NodePermission.READ_THIS);
     }
     if (rootFolder != null) {
       rootFolderURL = rootFolder.getId();
@@ -101,7 +101,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       newUsersFolder.setUserHome(false);
 
       usersFolder = proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
-      proxies.permission().addPermission(usersFolder, everybody, NodePermission.READTHIS);
+      proxies.permission().addPermission(usersFolder, everybody, NodePermission.READ_THIS);
     }
   }
 

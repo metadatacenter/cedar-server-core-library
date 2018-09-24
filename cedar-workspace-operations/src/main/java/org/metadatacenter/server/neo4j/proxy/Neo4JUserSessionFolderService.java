@@ -298,7 +298,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     if (currentUserHomeFolder != null) {
       FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       if (everybody != null) {
-        proxies.permission().addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
+        proxies.permission().addPermission(currentUserHomeFolder, everybody, NodePermission.READ_THIS);
       }
     }
     return currentUserHomeFolder;

@@ -8,7 +8,7 @@ public enum RelationLabel {
   CONTAINS(PlainLabels.CONTAINS, null),
   MEMBEROF(PlainLabels.MEMBEROF, null),
   CANREAD(PlainLabels.CANREAD, NodePermission.READ),
-  CANREADTHIS(PlainLabels.CANREADTHIS, NodePermission.READTHIS),
+  CANREADTHIS(PlainLabels.CANREADTHIS, NodePermission.READ_THIS),
   CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE),
   ADMINISTERS(PlainLabels.ADMINISTERS, null),
   PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null),

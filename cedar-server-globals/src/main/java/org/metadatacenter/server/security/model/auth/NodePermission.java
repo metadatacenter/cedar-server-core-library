@@ -5,21 +5,25 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum NodePermission {
 
   READ(Type.READ),
-  READTHIS(Type.READTHIS),
+  READ_THIS(Type.READ_THIS),
   WRITE(Type.WRITE),
-  CHANGEOWNER(Type.CHANGEOWNER),
-  CHANGEPERMISSIONS(Type.CHANGEPERMISSIONS),
+  DELETE(Type.DELETE),
+  CHANGE_OWNER(Type.CHANGE_OWNER),
+  CHANGE_PERMISSIONS(Type.CHANGE_PERMISSIONS),
   PUBLISH(Type.PUBLISH),
-  CREATE_DRAFT(Type.CREATE_DRAFT);
+  CREATE_DRAFT(Type.CREATE_DRAFT),
+  SUBMIT(Type.SUBMIT);
 
   public static class Type {
     public static final String READ = "read";
-    public static final String READTHIS = "readthis";
+    public static final String READ_THIS = "read-this";
     public static final String WRITE = "write";
-    public static final String CHANGEOWNER = "changeowner";
-    public static final String CHANGEPERMISSIONS = "changepermissions";
+    public static final String DELETE = "delete";
+    public static final String CHANGE_OWNER = "change-owner";
+    public static final String CHANGE_PERMISSIONS = "change-permissions";
     public static final String PUBLISH = "publish";
-    public static final String CREATE_DRAFT = "createdraft";
+    public static final String CREATE_DRAFT = "create-draft";
+    public static final String SUBMIT = "submit";
   }
 
   private final String value;
