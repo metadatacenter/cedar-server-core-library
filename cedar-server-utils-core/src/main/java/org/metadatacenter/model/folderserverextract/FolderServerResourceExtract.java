@@ -5,8 +5,10 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
-public abstract class FolderServerResourceExtract extends FolderServerNodeExtract {
+public abstract class FolderServerResourceExtract extends FolderServerNodeExtract
+    implements ResourceWithCurrentUserPermissions {
 
   protected ResourceVersion version;
   protected BiboStatus publicationStatus;

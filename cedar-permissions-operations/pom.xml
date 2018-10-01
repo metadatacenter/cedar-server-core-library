@@ -9,31 +9,16 @@
   </parent>
 
   <groupId>org.metadatacenter</groupId>
-  <artifactId>cedar-workspace-operations</artifactId>
+  <artifactId>cedar-permissions-operations</artifactId>
   <packaging>jar</packaging>
 
-  <name>CEDAR Workspace Server Operations</name>
+  <name>CEDAR Permissions Operations</name>
 
   <dependencies>
 
     <dependency>
       <groupId>org.metadatacenter</groupId>
       <artifactId>cedar-server-utils-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.metadatacenter</groupId>
-      <artifactId>cedar-permissions-operations</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.neo4j.driver</groupId>
-      <artifactId>neo4j-java-driver</artifactId>
     </dependency>
 
   </dependencies>

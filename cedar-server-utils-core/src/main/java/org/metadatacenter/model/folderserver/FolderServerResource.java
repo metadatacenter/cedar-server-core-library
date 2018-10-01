@@ -6,8 +6,9 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
-public abstract class FolderServerResource extends FolderServerNode {
+public abstract class FolderServerResource extends FolderServerNode implements ResourceWithCurrentUserPermissions {
 
   protected ResourceVersion version;
   protected ResourceUri previousVersion;

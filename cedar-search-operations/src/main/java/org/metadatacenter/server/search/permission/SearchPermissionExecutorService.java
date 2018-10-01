@@ -13,7 +13,7 @@ import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
-import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentDocument;
+import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.search.util.IndexUtils;

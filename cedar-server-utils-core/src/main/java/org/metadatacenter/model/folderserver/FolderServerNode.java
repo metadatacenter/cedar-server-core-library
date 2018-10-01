@@ -9,7 +9,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.NodeWithCurrentUserPermissions;
 import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.ArrayList;
@@ -27,9 +28,9 @@ import java.util.Map;
     @JsonSubTypes.Type(value = FolderServerTemplate.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNode extends AbstractCedarNodeFull {
+public abstract class FolderServerNode extends AbstractCedarNodeFull implements NodeWithCurrentUserPermissions {
 
-  private List<NodePermission> currentUserPermissions;
+  private CurrentUserPermissions currentUserPermissions = new CurrentUserPermissions();
   private List<FolderServerNodeExtract> pathInfo;
 
   protected String createdByUserName;
@@ -38,7 +39,6 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
 
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
-    this.currentUserPermissions = new ArrayList<>();
     this.pathInfo = new ArrayList<>();
   }
 
@@ -188,13 +188,8 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
   }
 
   @JsonProperty(NodeProperty.OnTheFly.CURRENT_USER_PERMISSIONS)
-  public List<NodePermission> getCurrentUserPermissions() {
+  public CurrentUserPermissions getCurrentUserPermissions() {
     return currentUserPermissions;
-  }
-
-  @JsonProperty(NodeProperty.OnTheFly.CURRENT_USER_PERMISSIONS)
-  public void setCurrentUserPermissions(List<NodePermission> currentUserPermissions) {
-    this.currentUserPermissions = currentUserPermissions;
   }
 
   @JsonProperty(NodeProperty.OnTheFly.PATH_INFO)
@@ -221,16 +216,6 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull {
         return new FolderServerInstance();
     }
     return null;
-  }
-
-  public void addCurrentUserPermission(NodePermission permission) {
-    if (!currentUserPermissions.contains(permission)) {
-      currentUserPermissions.add(permission);
-    }
-  }
-
-  public boolean currentUserCan(NodePermission permission) {
-    return currentUserPermissions.contains(permission);
   }
 
   public void setCreatedByTotal(String createdBy) {

@@ -1,11 +1,14 @@
-package org.metadatacenter.server.search.permission;
+package org.metadatacenter.search;
 
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 public class IdNodePermissionPair {
 
-  private final String id;
-  private final NodePermission permission;
+  private String id;
+  private NodePermission permission;
+
+  public IdNodePermissionPair() {
+  }
 
   public IdNodePermissionPair(String id, NodePermission permission) {
     this.id = id;

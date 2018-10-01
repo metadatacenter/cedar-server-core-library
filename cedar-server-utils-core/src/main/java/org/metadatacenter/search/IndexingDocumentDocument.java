@@ -1,6 +1,5 @@
-package org.metadatacenter.server.search.elasticsearch.document;
+package org.metadatacenter.search;
 
-import org.metadatacenter.server.search.permission.IdNodePermissionPair;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ public class IndexingDocumentDocument extends IndexedDocumentDocument {
   private List<IdNodePermissionPair> users;
 
   private List<IdNodePermissionPair> groups;
-
 
   public IndexingDocumentDocument() {
   }

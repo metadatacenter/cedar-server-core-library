@@ -34,6 +34,7 @@
     <module>cedar-server-rest</module>
     <module>cedar-search-operations</module>
     <module>cedar-cache-operations</module>
+    <module>cedar-permissions-operations</module>
   </modules>
 
 </project>

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.metadatacenter.config.environment.CedarEnvironmentVariable;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableProvider;
 import org.metadatacenter.model.SystemComponent;
-import org.metadatacenter.model.search.IndexedDocumentType;
 import org.metadatacenter.util.test.TestUtil;
 
 import java.util.HashMap;
