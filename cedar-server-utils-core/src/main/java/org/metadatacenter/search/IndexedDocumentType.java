@@ -1,4 +1,4 @@
-package org.metadatacenter.model.search;
+package org.metadatacenter.search;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

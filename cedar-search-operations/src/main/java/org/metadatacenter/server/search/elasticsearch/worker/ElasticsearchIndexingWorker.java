@@ -13,7 +13,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.search.IndexedDocumentType;
+import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;

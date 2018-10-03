@@ -339,4 +339,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     return proxies.resource().getVersionHistoryWithPermission(id, cu.getId());
   }
 
+  @Override
+  public List<FolderServerNodeExtract> searchIsBasedOn(List<CedarNodeType> nodeTypes, String isBasedOn, int limit,
+                                                       int offset, List<String> sortList) {
+    return proxies.node().searchIsBasedOn(nodeTypes, isBasedOn, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long searchIsBasedOnCount(List<CedarNodeType> nodeTypes, String isBasedOn) {
+    return proxies.node().searchIsBasedOnCount(nodeTypes, isBasedOn, cu);
+  }
+
 }

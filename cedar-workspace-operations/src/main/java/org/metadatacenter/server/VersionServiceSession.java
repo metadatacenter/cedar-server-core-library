@@ -1,12 +1,12 @@
 package org.metadatacenter.server;
 
-import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
 public interface VersionServiceSession {
 
-  boolean userCanPerformVersioning(FolderServerResource resource);
+  boolean userCanPerformVersioning(ResourceWithCurrentUserPermissions resource);
 
-  boolean resourceCanBePublished(FolderServerResource resource);
+  boolean resourceCanBePublished(ResourceWithCurrentUserPermissions resource);
 
-  boolean resourceCanBeDrafted(FolderServerResource resource);
+  boolean resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource);
 }

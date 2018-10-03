@@ -5,6 +5,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession implements VersionServiceSession {
@@ -18,12 +19,12 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
   }
 
   @Override
-  public boolean userCanPerformVersioning(FolderServerResource resource) {
+  public boolean userCanPerformVersioning(ResourceWithCurrentUserPermissions resource) {
     return userIsOwnerOfNode(resource.getId()) && resource.getType().isVersioned();
   }
 
   @Override
-  public boolean resourceCanBePublished(FolderServerResource resource) {
+  public boolean resourceCanBePublished(ResourceWithCurrentUserPermissions resource) {
     if (resource.getPublicationStatus() == BiboStatus.DRAFT) {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       return nextVersion == null;
@@ -32,7 +33,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
   }
 
   @Override
-  public boolean resourceCanBeDrafted(FolderServerResource resource) {
+  public boolean resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource) {
     if (resource.getPublicationStatus() == BiboStatus.PUBLISHED) {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       return nextVersion == null;

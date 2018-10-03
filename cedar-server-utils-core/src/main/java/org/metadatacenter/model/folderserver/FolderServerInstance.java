@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.NodeWithIsBasedOn;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerInstance extends FolderServerResource {
+public class FolderServerInstance extends FolderServerResource implements NodeWithIsBasedOn {
 
   private ResourceUri isBasedOn;
 

@@ -1,9 +1,11 @@
-package org.metadatacenter.server.search.elasticsearch.document;
+package org.metadatacenter.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedDocumentDocument {
@@ -13,6 +15,8 @@ public class IndexedDocumentDocument {
   protected String summaryText;
 
   protected FolderServerNodeInfo info;
+
+  protected List<IdNodePermissionPair> users;
 
   public IndexedDocumentDocument() {
   }
@@ -46,4 +50,7 @@ public class IndexedDocumentDocument {
     this.info = info;
   }
 
+  public List<IdNodePermissionPair> getUsers() {
+    return users;
+  }
 }

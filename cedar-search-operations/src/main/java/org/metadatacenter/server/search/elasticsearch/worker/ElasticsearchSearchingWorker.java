@@ -9,7 +9,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.search.IndexedDocumentType;
+import org.metadatacenter.search.IndexedDocumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

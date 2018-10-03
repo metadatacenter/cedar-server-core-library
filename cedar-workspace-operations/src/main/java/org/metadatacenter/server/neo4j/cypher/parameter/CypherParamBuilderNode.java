@@ -40,9 +40,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
   public static CypherParameters getSharedWithMeLookupParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, int limit, int offset, String ownerId) {
     CypherParameters params = new CypherParameters();
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -55,9 +53,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
   public static CypherParameters getSharedWithMeCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -69,9 +65,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
                                                         ResourcePublicationStatusFilter publicationStatus, int limit,
                                                         int offset, String ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -87,9 +81,7 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
                                                        ResourcePublicationStatusFilter publicationStatus, String
                                                            ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -103,4 +95,28 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return getNodeByIdentity(nodeURL);
   }
 
+  public static CypherParameters getSearchIsBasedOnLookupParameters(List<CedarNodeType> nodeTypes, String isBasedOn,
+                                                                    int limit, int offset, String ownerId,
+                                                                    boolean addPermissionConditions) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    params.put(ParameterPlaceholder.IS_BASED_ON, isBasedOn);
+    params.put(ParameterPlaceholder.LIMIT, limit);
+    params.put(ParameterPlaceholder.OFFSET, offset);
+    if (addPermissionConditions) {
+      params.put(ParameterPlaceholder.USER_ID, ownerId);
+    }
+    return params;
+  }
+
+  public static CypherParameters getSearchIsBasedOnCountParameters(List<CedarNodeType> nodeTypes, String isBasedOn,
+                                                                   String ownerId, boolean addPermissionConditions) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    params.put(ParameterPlaceholder.IS_BASED_ON, isBasedOn);
+    if (addPermissionConditions) {
+      params.put(ParameterPlaceholder.USER_ID, ownerId);
+    }
+    return params;
+  }
 }

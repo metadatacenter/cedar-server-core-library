@@ -11,7 +11,7 @@ import org.metadatacenter.model.folderserver.FolderServerResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.server.search.elasticsearch.document.IndexingDocumentDocument;
+import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.util.json.JsonMapper;

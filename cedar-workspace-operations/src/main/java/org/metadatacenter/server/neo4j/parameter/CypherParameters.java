@@ -2,14 +2,13 @@ package org.metadatacenter.server.neo4j.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.BiboStatus;
+import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CypherParameters {
 
@@ -59,4 +58,9 @@ public class CypherParameters {
     return r;
   }
 
+  public void addNodeTypes(Collection<CedarNodeType> nodeTypes) {
+    List<String> ntl = new ArrayList<>();
+    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
+    map.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+  }
 }

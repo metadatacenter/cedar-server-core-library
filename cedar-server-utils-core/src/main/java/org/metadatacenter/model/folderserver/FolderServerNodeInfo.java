@@ -36,6 +36,10 @@ public class FolderServerNodeInfo {
 
   private ResourceUri isBasedOn;
 
+  protected boolean isRoot;
+  protected boolean isSystem;
+  protected boolean isUserHome;
+
   private FolderServerNodeInfo() {
   }
 
@@ -213,4 +217,33 @@ public class FolderServerNodeInfo {
     this.ownedBy = ownedBy;
   }
 
+  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  public boolean getIsRoot() {
+    return isRoot;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  public void setIsRoot(boolean isRoot) {
+    this.isRoot = isRoot;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  public boolean getIsSystem() {
+    return isSystem;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  public void setIsSystem(boolean isSystem) {
+    this.isSystem = isSystem;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  public boolean getIsUserHome() {
+    return isUserHome;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  public void setIsUserHome(boolean isUserHome) {
+    this.isUserHome = isUserHome;
+  }
 }

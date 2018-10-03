@@ -10,7 +10,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
-import org.metadatacenter.model.search.IndexedDocumentType;
+import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
@@ -154,12 +154,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       publicationStatusQuery.should(inner1Query);
       publicationStatusQuery.should(inner2Query);
       mainQuery.must(publicationStatusQuery);
-    }
-
-    // Filter by template id
-    if (isBasedOn != null) {
-      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(INFO_SCHEMA_IS_BASED_ON, isBasedOn);
-      mainQuery.must(templateIdQuery);
     }
 
     // Set main query

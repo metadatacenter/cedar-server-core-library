@@ -13,13 +13,17 @@ import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
 import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.model.response.FolderServerNodeListResponse;
-import org.metadatacenter.model.search.IndexedDocumentType;
+import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.search.IndexedDocumentDocument;
+import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.server.search.elasticsearch.document.IndexedDocumentDocument;
+import org.metadatacenter.server.search.elasticsearch.permission.CurrentUserPermissionUpdaterForSearchFolder;
+import org.metadatacenter.server.search.elasticsearch.permission.CurrentUserPermissionUpdaterForSearchResource;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.SearchResponseResult;
+import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.http.LinkHeaderUtil;
@@ -32,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.metadatacenter.constant.ElasticsearchConstants.*;
+import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
 public class NodeSearchingService extends AbstractSearchingService {
 
@@ -86,14 +90,12 @@ public class NodeSearchingService extends AbstractSearchingService {
   public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String
                                                  isBasedOn, List<String> sortList, int limit, int offset, String
-                                                 absoluteUrl) throws
-      CedarProcessingException {
+                                                 absoluteUrl, CedarConfig cedarConfig) throws CedarProcessingException {
     try {
       SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version,
-          publicationStatus,
-          sortList, isBasedOn, limit, offset);
+          publicationStatus, sortList, isBasedOn, limit, offset);
       return assembleResponse(searchResult, query, id, resourceTypes, version, publicationStatus, isBasedOn, sortList,
-          limit, offset, absoluteUrl);
+          limit, offset, absoluteUrl, rctx.getCedarUser(), cedarConfig);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
@@ -103,13 +105,13 @@ public class NodeSearchingService extends AbstractSearchingService {
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String>
       resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String
                                                      isBasedOn, List<String> sortList, int limit, int offset, String
-                                                     absoluteUrl) throws
-      CedarProcessingException {
+                                                     absoluteUrl, CedarConfig cedarConfig)
+      throws CedarProcessingException {
     try {
       SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version,
           publicationStatus, sortList, isBasedOn, limit, offset);
       return assembleResponse(searchResult, query, id, resourceTypes, version, publicationStatus, isBasedOn, sortList,
-          limit, offset, absoluteUrl);
+          limit, offset, absoluteUrl, rctx.getCedarUser(), cedarConfig);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
@@ -119,8 +121,8 @@ public class NodeSearchingService extends AbstractSearchingService {
                                                         List<String> resourceTypes, ResourceVersionFilter version,
                                                         ResourcePublicationStatusFilter publicationStatus, String
                                                             templateId, List<String> sortList, int limit, int offset,
-                                                        String absoluteUrl) {
-
+                                                        String absoluteUrl, CedarUser cedarUser,
+                                                        CedarConfig cedarConfig) {
     List<FolderServerNodeExtract> resources = new ArrayList<>();
 
     // Get the object from the result
@@ -130,7 +132,16 @@ public class NodeSearchingService extends AbstractSearchingService {
         IndexedDocumentDocument indexedDocument = JsonMapper.MAPPER.readValue(hitJson, IndexedDocumentDocument.class);
 
         FolderServerNodeInfo info = indexedDocument.getInfo();
-        resources.add(FolderServerNodeExtract.fromNodeInfo(info));
+        FolderServerNodeExtract folderServerNodeExtract = FolderServerNodeExtract.fromNodeInfo(info);
+        CurrentUserPermissionUpdater cupu;
+        if (folderServerNodeExtract.getType() == CedarNodeType.FOLDER) {
+          cupu = CurrentUserPermissionUpdaterForSearchFolder.get(indexedDocument, cedarUser, cedarConfig);
+        } else {
+          cupu = CurrentUserPermissionUpdaterForSearchResource.get(indexedDocument, cedarUser, cedarConfig);
+        }
+        cupu.update(folderServerNodeExtract.getCurrentUserPermissions());
+
+        resources.add(folderServerNodeExtract);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
       }
@@ -165,7 +176,6 @@ public class NodeSearchingService extends AbstractSearchingService {
     response.setRequest(req);
 
     return response;
-
   }
 
 }
