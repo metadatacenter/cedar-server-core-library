@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserver;
+package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,19 +6,19 @@ import org.metadatacenter.model.AbstractCedarNodeWithDates;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.server.security.model.user.CedarUserRepresentation;
+import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerUser extends AbstractCedarNodeWithDates implements CedarUserRepresentation {
+public class FolderServerGroup extends AbstractCedarNodeWithDates {
 
-  private String firstName;
-  private String lastName;
-  private String email;
   private String name;
+  private String description;
+  private String specialGroup;
+  private String createdBy;
+  private String lastUpdatedBy;
 
-  public FolderServerUser() {
-    this.nodeType = CedarNodeType.USER;
+  public FolderServerGroup() {
+    this.nodeType = CedarNodeType.GROUP;
   }
 
   @JsonProperty(NodeProperty.Label.ID)
@@ -81,37 +81,6 @@ public class FolderServerUser extends AbstractCedarNodeWithDates implements Ceda
     this.createdOnTS = createdOnTS;
   }
 
-  @JsonProperty(NodeProperty.Label.FIRST_NAME)
-  public String getFirstName() {
-    return firstName;
-  }
-
-  @JsonProperty(NodeProperty.Label.FIRST_NAME)
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_NAME)
-  public String getLastName() {
-    return lastName;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_NAME)
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  @Override
-  @JsonProperty(NodeProperty.Label.EMAIL)
-  public String getEmail() {
-    return email;
-  }
-
-  @JsonProperty(NodeProperty.Label.EMAIL)
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
   @JsonProperty(NodeProperty.Label.NAME)
   public String getName() {
     return name;
@@ -122,7 +91,47 @@ public class FolderServerUser extends AbstractCedarNodeWithDates implements Ceda
     this.name = name;
   }
 
-  public CedarUserExtract buildExtract() {
-    return new CedarUserExtract(getId(), getFirstName(), getLastName(), getEmail());
+  @JsonProperty(NodeProperty.Label.DESCRIPTION)
+  public String getDescription() {
+    return description;
+  }
+
+  @JsonProperty(NodeProperty.Label.DESCRIPTION)
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @JsonProperty(NodeProperty.Label.SPECIAL_GROUP)
+  public String getSpecialGroup() {
+    return specialGroup;
+  }
+
+  @JsonProperty(NodeProperty.Label.SPECIAL_GROUP)
+  public void setSpecialGroup(String specialGroup) {
+    this.specialGroup = specialGroup;
+  }
+
+  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  public String getCreatedBy() {
+    return createdBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  public void setCreatedBy(String createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  public String getLastUpdatedBy() {
+    return lastUpdatedBy;
+  }
+
+  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    this.lastUpdatedBy = lastUpdatedBy;
+  }
+
+  public CedarGroupExtract buildExtract() {
+    return new CedarGroupExtract(getId(), getName());
   }
 }

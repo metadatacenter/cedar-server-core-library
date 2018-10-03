@@ -1,11 +1,12 @@
-package org.metadatacenter.model.folderserverreport;
+package org.metadatacenter.model.folderserver.report;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserverextract.FolderServerResourceExtract;
+import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;
 
@@ -18,12 +19,13 @@ import java.util.List;
     include = JsonTypeInfo.As.PROPERTY,
     property = "nodeType")
 @JsonSubTypes({
+    @JsonSubTypes.Type(value = FolderServerFolderReport.class, name = CedarNodeType.Types.FOLDER),
     @JsonSubTypes.Type(value = FolderServerFieldReport.class, name = CedarNodeType.Types.FIELD),
     @JsonSubTypes.Type(value = FolderServerElementReport.class, name = CedarNodeType.Types.ELEMENT),
     @JsonSubTypes.Type(value = FolderServerTemplateReport.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstanceReport.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerResourceReport extends FolderServerResource {
+public abstract class FolderServerResourceReport extends FolderServerResourceCurrentUserReport {
 
   private FolderServerResourceExtract derivedFromExtract;
   private List<FolderServerResourceExtract> versions;

@@ -1,10 +1,10 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.model.*;
-import org.metadatacenter.model.folderserver.FolderServerFolder;
-import org.metadatacenter.model.folderserver.FolderServerInstance;
-import org.metadatacenter.model.folderserver.FolderServerNode;
-import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.basic.FolderServerInstance;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;

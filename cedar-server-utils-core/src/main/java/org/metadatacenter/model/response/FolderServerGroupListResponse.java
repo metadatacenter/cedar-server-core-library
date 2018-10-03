@@ -1,7 +1,7 @@
 package org.metadatacenter.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 
 import java.util.ArrayList;
 import java.util.List;

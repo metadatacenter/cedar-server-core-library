@@ -6,6 +6,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;

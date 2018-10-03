@@ -3,6 +3,7 @@ package org.metadatacenter.model.folderserver;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceVersion;
+import org.metadatacenter.model.folderserver.basic.*;
 
 public class FolderServerResourceBuilder {
 

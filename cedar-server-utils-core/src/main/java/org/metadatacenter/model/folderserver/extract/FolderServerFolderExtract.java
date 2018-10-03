@@ -1,24 +1,37 @@
-package org.metadatacenter.model.folderserver;
+package org.metadatacenter.model.folderserver.extract;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.util.json.JsonMapper;
+
+import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolder extends FolderServerNode implements FolderWithCurrentUserPermissions {
+public class FolderServerFolderExtract extends FolderServerNodeExtract implements NodeWithIdAndType {
 
   private boolean userHome;
   private boolean system;
   private boolean root;
-  private String homeOf;
 
-  public FolderServerFolder() {
+  public FolderServerFolderExtract() {
     super(CedarNodeType.FOLDER);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  public static FolderServerFolderExtract fromFolder(FolderServerFolder folder) {
+    try {
+      return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(folder), FolderServerFolderExtract.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  @JsonIgnore
   public boolean isUserHome() {
     return userHome;
   }
@@ -28,7 +41,7 @@ public class FolderServerFolder extends FolderServerNode implements FolderWithCu
     this.userHome = userHome;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  @JsonIgnore
   public boolean isSystem() {
     return system;
   }
@@ -38,7 +51,7 @@ public class FolderServerFolder extends FolderServerNode implements FolderWithCu
     this.system = system;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  @JsonIgnore
   public boolean isRoot() {
     return root;
   }
@@ -48,13 +61,4 @@ public class FolderServerFolder extends FolderServerNode implements FolderWithCu
     this.root = root;
   }
 
-  @JsonProperty(NodeProperty.Label.HOME_OF)
-  public String getHomeOf() {
-    return homeOf;
-  }
-
-  @JsonProperty(NodeProperty.Label.HOME_OF)
-  public void setHomeOf(String homeOf) {
-    this.homeOf = homeOf;
-  }
 }

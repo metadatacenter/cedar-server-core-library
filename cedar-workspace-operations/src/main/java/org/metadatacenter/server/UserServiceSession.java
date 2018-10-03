@@ -1,6 +1,6 @@
 package org.metadatacenter.server;
 
-import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 
 import java.util.List;
 

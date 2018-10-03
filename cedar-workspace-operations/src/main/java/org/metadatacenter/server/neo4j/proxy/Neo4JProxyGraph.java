@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.*;
+import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
