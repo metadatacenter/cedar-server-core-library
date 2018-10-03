@@ -202,4 +202,28 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
   }
 
 
+  public List<FolderServerNodeExtract> searchIsBasedOn(List<CedarNodeType> nodeTypes, String isBasedOn, int limit,
+                                                       int offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getSearchIsBasedOnLookupQuery(sortList, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getSearchIsBasedOnLookupParameters(nodeTypes, isBasedOn, limit,
+        offset, cu.getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
+  }
+
+  public long searchIsBasedOnCount(List<CedarNodeType> nodeTypes, String isBasedOn, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getSearchIsBasedOnCountQuery(addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getSearchIsBasedOnCountParameters(nodeTypes, isBasedOn,
+        cu.getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
 }

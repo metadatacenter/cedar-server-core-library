@@ -156,12 +156,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       mainQuery.must(publicationStatusQuery);
     }
 
-    // Filter by template id
-    if (isBasedOn != null) {
-      QueryBuilder templateIdQuery = QueryBuilders.matchQuery(INFO_SCHEMA_IS_BASED_ON, isBasedOn);
-      mainQuery.must(templateIdQuery);
-    }
-
     // Set main query
     searchRequestBuilder.setQuery(mainQuery);
 

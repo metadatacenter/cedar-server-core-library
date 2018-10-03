@@ -7,9 +7,7 @@ import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder {
 
@@ -17,9 +15,7 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
       nodeTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -32,9 +28,7 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
                                                                                offset, String ownerId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
-    List<String> ntl = new ArrayList<>();
-    nodeTypes.forEach(cnt -> ntl.add(cnt.getValue()));
-    params.put(ParameterPlaceholder.NODE_TYPE_LIST, ntl);
+    params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }

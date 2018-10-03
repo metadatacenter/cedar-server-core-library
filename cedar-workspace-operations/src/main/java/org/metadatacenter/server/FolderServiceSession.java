@@ -112,4 +112,9 @@ public interface FolderServiceSession {
   List<FolderServerResourceExtract> getVersionHistory(String id);
 
   List<FolderServerResourceExtract> getVersionHistoryWithPermission(String id);
+
+  List<FolderServerNodeExtract> searchIsBasedOn(List<CedarNodeType> nodeTypeList, String isBasedOn, int limit,
+                                                int offset, List<String> sortList);
+
+  long searchIsBasedOnCount(List<CedarNodeType> nodeTypeList, String isBasedOn);
 }
