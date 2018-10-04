@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;

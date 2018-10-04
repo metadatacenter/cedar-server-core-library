@@ -1,7 +1,7 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;

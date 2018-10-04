@@ -1,16 +1,17 @@
-package org.metadatacenter.model.folderserverreport;
+package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.report.FolderServerResourceReport;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerTemplateReport extends FolderServerResourceReport {
+public class FolderServerTemplateCurrentUserReport extends FolderServerResourceCurrentUserReport {
 
   private long numberOfInstances;
 
-  public FolderServerTemplateReport() {
+  public FolderServerTemplateCurrentUserReport() {
     super(CedarNodeType.TEMPLATE);
   }
 

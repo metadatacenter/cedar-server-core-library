@@ -1,20 +1,23 @@
-package org.metadatacenter.model.folderserverextract;
+package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
-public abstract class FolderServerResourceExtract extends FolderServerNodeExtract
+public abstract class FolderServerResourceCurrentUserReport extends FolderServerNodeCurrentUserReport
     implements ResourceWithCurrentUserPermissions {
 
   protected ResourceVersion version;
+  protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
+  protected ResourceUri derivedFrom;
   protected Boolean latestVersion;
 
-  public FolderServerResourceExtract(CedarNodeType nodeType) {
+  public FolderServerResourceCurrentUserReport(CedarNodeType nodeType) {
     super(nodeType);
   }
 
@@ -28,6 +31,16 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
     this.version = ResourceVersion.forValue(v);
   }
 
+  @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
+  public ResourceUri getPreviousVersion() {
+    return previousVersion;
+  }
+
+  @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
+  public void setPreviousVersion(String pv) {
+    this.previousVersion = ResourceUri.forValue(pv);
+  }
+
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public BiboStatus getPublicationStatus() {
     return publicationStatus;
@@ -36,6 +49,16 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public void setPublicationStatus(String s) {
     this.publicationStatus = BiboStatus.forValue(s);
+  }
+
+  @JsonProperty(NodeProperty.Label.DERIVED_FROM)
+  public ResourceUri getDerivedFrom() {
+    return derivedFrom;
+  }
+
+  @JsonProperty(NodeProperty.Label.DERIVED_FROM)
+  public void setDerivedFrom(String df) {
+    this.derivedFrom = ResourceUri.forValue(df);
   }
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
@@ -47,4 +70,6 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
   public void setLatestVersion(Boolean latestVersion) {
     this.latestVersion = latestVersion;
   }
+
+
 }

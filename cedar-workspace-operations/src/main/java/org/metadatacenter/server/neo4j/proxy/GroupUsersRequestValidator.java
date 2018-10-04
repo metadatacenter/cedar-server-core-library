@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;

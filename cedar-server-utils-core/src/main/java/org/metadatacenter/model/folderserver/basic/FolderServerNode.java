@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserver;
+package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,11 +6,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeFull;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.NodeWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.NodeWithIdAndType;
 import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.ArrayList;
@@ -28,9 +27,8 @@ import java.util.Map;
     @JsonSubTypes.Type(value = FolderServerTemplate.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNode extends AbstractCedarNodeFull implements NodeWithCurrentUserPermissions {
+public abstract class FolderServerNode extends AbstractCedarNodeFull implements NodeWithIdAndType {
 
-  private CurrentUserPermissions currentUserPermissions = new CurrentUserPermissions();
   private List<FolderServerNodeExtract> pathInfo;
 
   protected String createdByUserName;
@@ -185,11 +183,6 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull implements 
   @JsonProperty(NodeProperty.OnTheFly.CONTEXT)
   public Map<String, String> getContext() {
     return FolderServerNodeContext.getContext();
-  }
-
-  @JsonProperty(NodeProperty.OnTheFly.CURRENT_USER_PERMISSIONS)
-  public CurrentUserPermissions getCurrentUserPermissions() {
-    return currentUserPermissions;
   }
 
   @JsonProperty(NodeProperty.OnTheFly.PATH_INFO)

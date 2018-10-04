@@ -2,7 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.folderserver.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;

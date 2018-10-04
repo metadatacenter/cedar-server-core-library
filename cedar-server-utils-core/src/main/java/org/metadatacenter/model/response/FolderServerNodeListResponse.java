@@ -2,7 +2,7 @@ package org.metadatacenter.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.model.request.NodeListQueryType;
 import org.metadatacenter.util.FolderServerNodeContext;
 

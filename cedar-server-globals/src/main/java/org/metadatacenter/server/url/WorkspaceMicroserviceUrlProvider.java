@@ -47,6 +47,10 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return getFolderWithId(id) + "/permissions";
   }
 
+  public String getFolderWithIdReport(String id) {
+    return getFolderWithId(id) + "/report";
+  }
+
   public String getBase() {
     return base;
   }

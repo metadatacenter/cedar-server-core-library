@@ -1,8 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
-import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.UserServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;

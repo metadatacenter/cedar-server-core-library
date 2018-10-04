@@ -5,7 +5,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
@@ -125,8 +125,10 @@ public class RegenerateSearchIndexTask {
             }
             IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
 
-            float progress = (100 * count++) / resources.size();
-            log.info(String.format("Progress: %.0f%%", progress));
+            if (count % 100 == 0) {
+              float progress = (100 * count++) / resources.size();
+              log.info(String.format("Progress: %.0f%%", progress));
+            }
           } catch (Exception e) {
             log.error("Error while indexing document: " + node.getId(), e);
           }

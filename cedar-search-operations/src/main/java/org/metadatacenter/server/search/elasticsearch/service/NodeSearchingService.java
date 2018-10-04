@@ -10,16 +10,13 @@ import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
-import org.metadatacenter.model.folderserverextract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.model.response.FolderServerNodeListResponse;
-import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.server.search.elasticsearch.permission.CurrentUserPermissionUpdaterForSearchFolder;
-import org.metadatacenter.server.search.elasticsearch.permission.CurrentUserPermissionUpdaterForSearchResource;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.SearchResponseResult;
@@ -133,14 +130,6 @@ public class NodeSearchingService extends AbstractSearchingService {
 
         FolderServerNodeInfo info = indexedDocument.getInfo();
         FolderServerNodeExtract folderServerNodeExtract = FolderServerNodeExtract.fromNodeInfo(info);
-        CurrentUserPermissionUpdater cupu;
-        if (folderServerNodeExtract.getType() == CedarNodeType.FOLDER) {
-          cupu = CurrentUserPermissionUpdaterForSearchFolder.get(indexedDocument, cedarUser, cedarConfig);
-        } else {
-          cupu = CurrentUserPermissionUpdaterForSearchResource.get(indexedDocument, cedarUser, cedarConfig);
-        }
-        cupu.update(folderServerNodeExtract.getCurrentUserPermissions());
-
         resources.add(folderServerNodeExtract);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);

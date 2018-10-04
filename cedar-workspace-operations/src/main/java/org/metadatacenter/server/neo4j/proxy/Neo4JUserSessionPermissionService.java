@@ -2,9 +2,9 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
-import org.metadatacenter.model.folderserver.FolderServerNode;
-import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.result.BackendCallResult;

@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserverextract;
+package org.metadatacenter.model.folderserver.extract;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,12 +6,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.NodeWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.NodeWithIdAndType;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
@@ -27,8 +26,7 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerTemplateExtract.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstanceExtract.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
-    implements NodeWithCurrentUserPermissions {
+public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract implements NodeWithIdAndType {
 
   protected String createdBy;
   protected String lastUpdatedBy;
@@ -37,7 +35,6 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
   protected String lastUpdatedByUserName;
   protected String ownedByUserName;
   protected boolean activeUserCanRead = true;
-  private CurrentUserPermissions currentUserPermissions = new CurrentUserPermissions();
 
   protected FolderServerNodeExtract(CedarNodeType nodeType) {
     this.nodeType = nodeType;
@@ -230,8 +227,4 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
     return anon;
   }
 
-  @Override
-  public CurrentUserPermissions getCurrentUserPermissions() {
-    return currentUserPermissions;
-  }
 }

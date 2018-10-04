@@ -2,10 +2,10 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.model.folderserver.FolderServerFolder;
-import org.metadatacenter.model.folderserver.FolderServerGroup;
-import org.metadatacenter.model.folderserver.FolderServerResource;
-import org.metadatacenter.model.folderserver.FolderServerUser;
+import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;

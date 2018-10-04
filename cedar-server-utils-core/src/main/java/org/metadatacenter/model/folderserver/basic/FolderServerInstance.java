@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserverextract;
+package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,11 +8,11 @@ import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIsBasedOn;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerInstanceExtract extends FolderServerResourceExtract implements NodeWithIsBasedOn {
+public class FolderServerInstance extends FolderServerResource implements NodeWithIsBasedOn {
 
   private ResourceUri isBasedOn;
 
-  public FolderServerInstanceExtract() {
+  public FolderServerInstance() {
     super(CedarNodeType.INSTANCE);
   }
 
