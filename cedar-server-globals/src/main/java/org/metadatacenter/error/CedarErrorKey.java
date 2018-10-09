@@ -117,7 +117,9 @@ public enum CedarErrorKey {
   CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
   PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
 
-  DRAFT_NOT_CREATED("draftNotCreated");
+  DRAFT_NOT_CREATED("draftNotCreated"),
+
+  CONTENT_NOT_VALID("contentNotValid");
 
   private final String value;
 

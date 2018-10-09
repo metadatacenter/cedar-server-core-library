@@ -52,6 +52,11 @@ public class CedarAssertionResult {
     return this;
   }
 
+  public CedarAssertionResult entity(String name, Object value) {
+    this.errorPack.entity(name, value);
+    return this;
+  }
+
   public CedarAssertionResult message(String message) {
     this.errorPack.message(message);
     return this;
@@ -59,6 +64,21 @@ public class CedarAssertionResult {
 
   public CedarAssertionResult status(Response.Status status) {
     this.errorPack.status(status);
+    return this;
+  }
+
+  public CedarAssertionResult errorType(CedarErrorType errorType) {
+    this.errorPack.errorType(errorType);
+    return this;
+  }
+
+  public CedarAssertionResult errorKey(CedarErrorKey errorKey) {
+    this.errorPack.errorKey(errorKey);
+    return this;
+  }
+
+  public CedarAssertionResult errorReasonKey(CedarErrorReasonKey errorReasonKey) {
+    this.errorPack.errorReasonKey(errorReasonKey);
     return this;
   }
 
