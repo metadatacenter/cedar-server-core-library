@@ -12,6 +12,7 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.config.ElasticsearchMappingsConfig;
 import org.metadatacenter.config.ElasticsearchSettingsMappingsConfig;
@@ -31,15 +32,22 @@ public class ElasticsearchManagementService {
 
   private final ElasticsearchConfig config;
   private final Settings settings;
-  private final HashMap<String, Object> indexSettings;
-  private final ElasticsearchMappingsConfig indexMappings;
+  private final HashMap<String, Object> searchIndexSettings;
+  private final HashMap<String, Object> rulesIndexSettings;
+  private final ElasticsearchMappingsConfig searchIndexMappings;
+  private final ElasticsearchMappingsConfig rulesIndexMappings;
   private Client elasticClient = null;
 
-  public ElasticsearchManagementService(ElasticsearchConfig config, ElasticsearchSettingsMappingsConfig
-      settingsMappings) {
+  public enum IndexType {
+    SEARCH, RULES
+  }
+
+  public ElasticsearchManagementService(ElasticsearchConfig config, CedarConfig cedarConfig) {
     this.config = config;
-    this.indexSettings = settingsMappings.getSettings();
-    this.indexMappings = settingsMappings.getMappings();
+    this.searchIndexSettings = cedarConfig.getSearchSettingsMappingsConfig().getSettings();
+    this.rulesIndexSettings = cedarConfig.getRulesSettingsMappingsConfig().getSettings();
+    this.searchIndexMappings = cedarConfig.getSearchSettingsMappingsConfig().getMappings();
+    this.rulesIndexMappings = cedarConfig.getRulesSettingsMappingsConfig().getMappings();
     this.settings = Settings.builder().put("cluster.name", config.getClusterName()).build();
   }
 
@@ -61,7 +69,22 @@ public class ElasticsearchManagementService {
     elasticClient.close();
   }
 
-  public void createIndex(String indexName) throws CedarProcessingException {
+  public void createIndex(IndexType indexType, String indexName) throws CedarProcessingException {
+    HashMap<String, Object> indexSettings;
+    ElasticsearchMappingsConfig indexMappings;
+
+    if (indexType.equals(IndexType.SEARCH)) {
+      indexSettings = searchIndexSettings;
+      indexMappings = searchIndexMappings;
+    }
+    else if (indexType.equals(IndexType.RULES)) {
+      indexSettings = rulesIndexSettings;
+      indexMappings = rulesIndexMappings;
+    }
+    else {
+      throw new CedarProcessingException("Failed to create index. Unknown index type: " + indexType.toString());
+    }
+
     Client client = getClient();
     CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);
     // Set settings

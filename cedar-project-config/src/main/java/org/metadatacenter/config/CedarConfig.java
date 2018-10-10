@@ -56,7 +56,8 @@ public class CedarConfig extends Configuration {
   private ElasticsearchConfig elasticsearchConfig;
 
   // This is read from a different config file
-  private ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig;
+  private ElasticsearchSettingsMappingsConfig searchSettingsMappingsConfig;
+  private ElasticsearchSettingsMappingsConfig rulesSettingsMappingsConfig;
 
   @JsonProperty("servers")
   private ServersConfig servers;
@@ -115,26 +116,34 @@ public class CedarConfig extends Configuration {
     }
 
     // Read search config
-    final String elasticSearchSettingsMappingsConfigFileName = "cedar-search.json";
+    final String searchSettingsMappingsConfigFileName = "cedar-search.json";
+    final String rulesSettingsMappingsConfigFileName = "cedar-rules.json";
 
-    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappings = null;
+    config.searchSettingsMappingsConfig = getSettingsMappingsConfigFromFile(searchSettingsMappingsConfigFileName, validator,
+        substitutingSourceProvider);
+    config.rulesSettingsMappingsConfig = getSettingsMappingsConfigFromFile(rulesSettingsMappingsConfigFileName, validator,
+        substitutingSourceProvider);
 
-    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> searchConfigurationFactory = new
+    return config;
+  }
+
+  private static ElasticsearchSettingsMappingsConfig getSettingsMappingsConfigFromFile(String configFileName,
+                                                                               Validator validator,
+                                                                               SubstitutingSourceProvider substitutingSourceProvider) {
+    ElasticsearchSettingsMappingsConfig settingsMappingsConfig = null;
+
+    final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> configurationFactory = new
         YamlConfigurationFactory<>(
         ElasticsearchSettingsMappingsConfig.class, validator, Jackson.newObjectMapper(), "cedar");
 
     try {
-      elasticsearchSettingsMappings = searchConfigurationFactory.build(substitutingSourceProvider,
-          elasticSearchSettingsMappingsConfigFileName);
+      settingsMappingsConfig = configurationFactory.build(substitutingSourceProvider, configFileName);
     } catch (IOException | ConfigurationException e) {
-      log.error("Error while reading search config file", e);
+      log.error("Error while reading config file", e);
       e.printStackTrace();
       System.exit(-2);
     }
-
-    config.elasticsearchSettingsMappingsConfig = elasticsearchSettingsMappings;
-
-    return config;
+    return settingsMappingsConfig;
   }
 
   public static CedarConfig getInstance(Map<String, String> environment) {
@@ -194,8 +203,12 @@ public class CedarConfig extends Configuration {
     return elasticsearchConfig;
   }
 
-  public ElasticsearchSettingsMappingsConfig getElasticsearchSettingsMappingsConfig() {
-    return elasticsearchSettingsMappingsConfig;
+  public ElasticsearchSettingsMappingsConfig getSearchSettingsMappingsConfig() {
+    return searchSettingsMappingsConfig;
+  }
+
+  public ElasticsearchSettingsMappingsConfig getRulesSettingsMappingsConfig() {
+    return rulesSettingsMappingsConfig;
   }
 
   public ServersConfig getServers() {

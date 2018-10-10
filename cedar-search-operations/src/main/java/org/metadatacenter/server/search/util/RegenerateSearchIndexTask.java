@@ -58,7 +58,7 @@ public class RegenerateSearchIndexTask {
     } else {
       String newIndexName = indexUtils.getNewIndexName(indexName);
       log.info("Creating brand new CEDAR index:" + newIndexName);
-      esManagementService.createIndex(newIndexName);
+      esManagementService.createIndex(ElasticsearchManagementService.IndexType.SEARCH, newIndexName);
       esManagementService.addAlias(newIndexName, indexName);
     }
   }
@@ -109,7 +109,7 @@ public class RegenerateSearchIndexTask {
         log.info("Regenerating index");
         // Create new index and set it up
         String newIndexName = indexUtils.getNewIndexName(indexName);
-        esManagementService.createIndex(newIndexName);
+        esManagementService.createIndex(ElasticsearchManagementService.IndexType.SEARCH, newIndexName);
 
         NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
 
