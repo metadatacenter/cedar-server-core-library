@@ -190,6 +190,12 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_MESSAGING_MYSQL_PASSWORD);
     cedarMessagingMysqlPassword.add(SystemComponent.SERVER_MESSAGING);
 
+    Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_SUBMISSION_TEMPLATE_ID_1);
+    submissionTemplateId1.add(SystemComponent.SERVER_WORKSPACE);
+    submissionTemplateId1.add(SystemComponent.SERVER_WORKER);
+    submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
+
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener

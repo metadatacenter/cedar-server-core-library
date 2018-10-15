@@ -48,9 +48,6 @@ public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUse
     if (permissionSession.userCanChangeOwnerOfResource(id)) {
       currentUserPermissions.setCanChangeOwner(true);
     }
-    if (permissionSession.userCanChangeOwnerOfResource(id)) {
-      currentUserPermissions.setCanChangeOwner(true);
-    }
     if (versionSession.userCanPerformVersioning(resource)) {
       if (versionSession.resourceCanBePublished(resource)) {
         currentUserPermissions.setCanPublish(true);
