@@ -26,15 +26,4 @@ public class LocalRequest extends CedarRequestNoun {
   public String getContentType() {
     return CONTENT_TYPE_APPLICATION_JSON;
   }
-
-  @Override
-  public String getAuthorizationHeader() {
-    return cedarUser.getFirstApiKeyAuthHeader();
-  }
-
-  @Override
-  public String getDebugHeader() {
-    return "true";
-  }
-
 }

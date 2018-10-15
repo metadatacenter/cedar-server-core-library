@@ -53,6 +53,16 @@ messagingServer:
     serverTimezone: "America/Los_Angeles"
     useSSL: "false"
 
+dbLogging:
+  url: "jdbc:mysql://${CEDAR_LOG_MYSQL_HOST}:${CEDAR_LOG_MYSQL_PORT}/${CEDAR_LOG_MYSQL_DB}"
+  user: "${CEDAR_LOG_MYSQL_USER}"
+  password: "${CEDAR_LOG_MYSQL_PASSWORD}"
+  driverClass: "com.mysql.jdbc.Driver"
+  properties:
+    createDatabaseIfNotExist: "true"
+    serverTimezone: "America/Los_Angeles"
+    useSSL: "false"
+
 #Neo4J settings
 neo4j:
   bolt:
@@ -235,6 +245,7 @@ cache:
     queueNames:
       searchPermission: "CEDAR-QUEUE-search-permission"
       ncbiSubmission: "CEDAR-QUEUE-ncbi-submission"
+      appLog: "CEDAR-QUEUE-app-log"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"

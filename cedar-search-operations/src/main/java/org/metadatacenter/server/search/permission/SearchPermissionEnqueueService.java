@@ -1,6 +1,7 @@
 package org.metadatacenter.server.search.permission;
 
-import org.metadatacenter.server.cache.util.CacheService;
+import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.server.queue.util.PermissionQueueService;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.SearchPermissionQueueEventType;
 
@@ -8,15 +9,15 @@ import static org.metadatacenter.server.search.SearchPermissionQueueEventType.*;
 
 public class SearchPermissionEnqueueService {
 
-  private final CacheService cacheService;
+  private final PermissionQueueService queueService;
 
-  public SearchPermissionEnqueueService(CacheService cacheService) {
-    this.cacheService = cacheService;
+  public SearchPermissionEnqueueService(CedarConfig cedarConfig) {
+    this.queueService = new PermissionQueueService(cedarConfig.getCacheConfig().getPersistent());
   }
 
   private void enqueue(String id, SearchPermissionQueueEventType eventType) {
     SearchPermissionQueueEvent event = new SearchPermissionQueueEvent(id, eventType);
-    cacheService.enqueueEvent(event);
+    queueService.enqueueEvent(event);
   }
 
   public void resourceMoved(String id) {

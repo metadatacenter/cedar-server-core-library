@@ -40,6 +40,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("messagingServer")
   private HibernateConfig messagingServerConfig;
 
+  @JsonProperty("dbLogging")
+  private HibernateConfig dbLoggingConfig;
+
   @JsonProperty("neo4j")
   private Neo4JConfig neo4jConfig;
 
@@ -172,6 +175,10 @@ public class CedarConfig extends Configuration {
 
   public HibernateConfig getMessagingServerConfig() {
     return messagingServerConfig;
+  }
+
+  public HibernateConfig getDBLoggingConfig() {
+    return dbLoggingConfig;
   }
 
   public Neo4JConfig getNeo4jConfig() {

@@ -6,8 +6,8 @@ import java.util.*;
 
 public class CedarConfigEnvironmentDescriptor {
 
-  private final static Map<CedarEnvironmentVariable, Set<SystemComponent>> variableToComponent;
-  private final static Map<SystemComponent, Set<CedarEnvironmentVariable>> componentToVariable;
+  private static final Map<CedarEnvironmentVariable, Set<SystemComponent>> variableToComponent;
+  private static final Map<SystemComponent, Set<CedarEnvironmentVariable>> componentToVariable;
 
   static {
     List<SystemComponent> allMicroservices = new ArrayList<>();
@@ -190,16 +190,38 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_MESSAGING_MYSQL_PASSWORD);
     cedarMessagingMysqlPassword.add(SystemComponent.SERVER_MESSAGING);
 
+    Set<SystemComponent> cedarLoggingMysqlHost = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_LOG_MYSQL_HOST);
+    cedarLoggingMysqlHost.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> cedarLoggingMysqlPort = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_LOG_MYSQL_PORT);
+    cedarLoggingMysqlPort.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> cedarLoggingMysqlDb = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_LOG_MYSQL_DB);
+    cedarLoggingMysqlDb.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> cedarLoggingMysqlUser = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_LOG_MYSQL_USER);
+    cedarLoggingMysqlUser.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> cedarLoggingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_LOG_MYSQL_PASSWORD);
+    cedarLoggingMysqlPassword.add(SystemComponent.SERVER_WORKER);
+
+    Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_SUBMISSION_TEMPLATE_ID_1);
+    submissionTemplateId1.add(SystemComponent.SERVER_WORKSPACE);
+    submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
+
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener
 
     Set<SystemComponent> redisPersistentHost = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_HOST);
-    redisPersistentHost.add(SystemComponent.SERVER_RESOURCE);
-    redisPersistentHost.add(SystemComponent.SERVER_GROUP);
-    redisPersistentHost.add(SystemComponent.SERVER_WORKER);
-    redisPersistentHost.add(SystemComponent.SERVER_SUBMISSION);
+    redisPersistentHost.addAll(allMicroservices);
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_PORT);

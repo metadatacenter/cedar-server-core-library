@@ -19,12 +19,14 @@ import java.util.Set;
 
 public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession implements PermissionServiceSession {
 
-  public Neo4JUserSessionPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  public Neo4JUserSessionPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
+                                           String requestId) {
+    super(cedarConfig, proxies, cu, requestId);
   }
 
-  public static PermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionPermissionService(cedarConfig, proxies, cedarUser);
+  public static PermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                             String requestId) {
+    return new Neo4JUserSessionPermissionService(cedarConfig, proxies, cedarUser, requestId);
   }
 
   @Override

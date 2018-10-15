@@ -2,15 +2,22 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.server.logging.AppLogger;
+import org.metadatacenter.server.logging.model.AppLogMessage;
+import org.metadatacenter.server.logging.model.AppLogParam;
+import org.metadatacenter.server.logging.model.AppLogSubType;
+import org.metadatacenter.server.logging.model.AppLogType;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.log.CypherQueryLog;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.neo4j.driver.v1.*;
@@ -20,6 +27,8 @@ import org.neo4j.driver.v1.types.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,22 +64,80 @@ public abstract class AbstractNeo4JProxy {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
         final Map<String, Object> parameterMap = qp.getParameterMap();
+        CypherQueryLog queryLog = prepareQueryLog("write", qp);
         result = session.writeTransaction(tx -> {
           tx.run(runnableQuery, parameterMap);
           return true;
         });
+        commitQueryLog(queryLog);
       } else if (q instanceof CypherQueryLiteral) {
         final String runnableQuery = q.getRunnableQuery();
+        CypherQueryLog queryLog = prepareQueryLog("write", q);
         result = session.writeTransaction(tx -> {
           tx.run(runnableQuery);
           return true;
         });
+        commitQueryLog(queryLog);
       }
     } catch (ClientException ex) {
       log.error("Error while " + eventDescription, ex);
       reportQueryError(ex, q);
     }
     return result;
+  }
+
+  private CypherQueryLog prepareQueryLog(String operation, CypherQueryWithParameters qp) {
+    CypherQueryLog log = new CypherQueryLog(operation,
+        qp.getOriginalQuery(),
+        qp.getRunnableQuery(),
+        qp.getParameterMap(),
+        qp.getInterpolatedParamsQuery());
+    log.setStart(Instant.now());
+    return log;
+  }
+
+  private CypherQueryLog prepareQueryLog(String operation, CypherQuery q) {
+    CypherQueryLog log = new CypherQueryLog(operation,
+        q.getOriginalQuery(),
+        q.getRunnableQuery(),
+        null,
+        q.getRunnableQuery());
+    log.setStart(Instant.now());
+    return log;
+  }
+
+  private void commitQueryLog(CypherQueryLog log) {
+    log.setEnd(Instant.now());
+
+    String paramMapString = null;
+    try {
+      paramMapString = JsonMapper.PRETTY_MAPPER.writeValueAsString(log.getParameterMap());
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL)
+        .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
+        .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
+        .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())
+        .param(AppLogParam.QUERY_PARAMETERS, log.getParameterMap())
+        .param(AppLogParam.RUNNABLE_QUERY_HASH, DigestUtils.md5Hex(log.getRunnableQuery()))
+        .param(AppLogParam.QUERY_PARAMETERS_HASH, DigestUtils.md5Hex(paramMapString))
+        .param(AppLogParam.START_TIME, log.getStart())
+        .param(AppLogParam.OPERATION, log.getOperation());
+    appLog.setDuration(Duration.between(log.getStart(), log.getEnd()));
+
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    int count = 0;
+    for (int i = stackTrace.length - 1; i >= 0; i--) {
+      StackTraceElement ste = stackTrace[i];
+      if (count == 0 && (ste.getClassName().contains("Neo4JUser") || ste.getClassName().contains("Neo4JProxy"))) {
+        appLog.param(AppLogParam.CLASS_NAME, ste.getClassName());
+        appLog.param(AppLogParam.METHOD_NAME, ste.getMethodName());
+        count++;
+      }
+    }
+    appLog.enqueue();
   }
 
   protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
@@ -80,16 +147,20 @@ public abstract class AbstractNeo4JProxy {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
         final Map<String, Object> parameterMap = qp.getParameterMap();
+        CypherQueryLog queryLog = prepareQueryLog("writeGetOne", qp);
         record = session.writeTransaction(tx -> {
           StatementResult result = tx.run(runnableQuery, parameterMap);
           return result.hasNext() ? result.next() : null;
         });
+        commitQueryLog(queryLog);
       } else if (q instanceof CypherQueryLiteral) {
         final String runnableQuery = q.getRunnableQuery();
+        CypherQueryLog queryLog = prepareQueryLog("writeGetOne", q);
         record = session.writeTransaction(tx -> {
           StatementResult result = tx.run(runnableQuery);
           return result.hasNext() ? result.next() : null;
         });
+        commitQueryLog(queryLog);
       }
     } catch (ClientException ex) {
       reportQueryError(ex, q);
@@ -115,16 +186,20 @@ public abstract class AbstractNeo4JProxy {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
       final String runnableQuery = qp.getRunnableQuery();
       final Map<String, Object> parameterMap = qp.getParameterMap();
+      CypherQueryLog queryLog = prepareQueryLog("getRecord", qp);
       record = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery, parameterMap);
         return result.hasNext() ? result.next() : null;
       });
+      commitQueryLog(queryLog);
     } else if (q instanceof CypherQueryLiteral) {
       final String runnableQuery = q.getRunnableQuery();
+      CypherQueryLog queryLog = prepareQueryLog("getRecord", q);
       record = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery);
         return result.hasNext() ? result.next() : null;
       });
+      commitQueryLog(queryLog);
     }
     return record;
   }
@@ -161,6 +236,7 @@ public abstract class AbstractNeo4JProxy {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
       final String runnableQuery = qp.getRunnableQuery();
       final Map<String, Object> parameterMap = qp.getParameterMap();
+      CypherQueryLog queryLog = prepareQueryLog("getRecordList", qp);
       records = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery, parameterMap);
         List<Record> nodes = new ArrayList<>();
@@ -169,8 +245,10 @@ public abstract class AbstractNeo4JProxy {
         }
         return nodes;
       });
+      commitQueryLog(queryLog);
     } else if (q instanceof CypherQueryLiteral) {
       final String runnableQuery = q.getRunnableQuery();
+      CypherQueryLog queryLog = prepareQueryLog("getRecordList", q);
       records = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery);
         List<Record> nodes = new ArrayList<>();
@@ -179,6 +257,7 @@ public abstract class AbstractNeo4JProxy {
         }
         return nodes;
       });
+      commitQueryLog(queryLog);
     }
     return records;
   }

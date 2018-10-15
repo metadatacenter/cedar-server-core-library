@@ -15,12 +15,12 @@ import java.util.List;
 
 public class Neo4JUserSessionGraphService extends AbstractNeo4JUserSession implements GraphServiceSession {
 
-  public Neo4JUserSessionGraphService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  public Neo4JUserSessionGraphService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String requestId) {
+    super(cedarConfig, proxies, cu, requestId);
   }
 
-  public static GraphServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionGraphService(cedarConfig, proxies, cedarUser);
+  public static GraphServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String requestId) {
+    return new Neo4JUserSessionGraphService(cedarConfig, proxies, cedarUser, requestId);
   }
 
   @Override

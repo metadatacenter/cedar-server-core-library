@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Neo4JUtil {
 
-  private final static String ESCAPED_ID = "_id";
+  private static final String ESCAPED_ID = "_id";
 
   private Neo4JUtil() {
   }

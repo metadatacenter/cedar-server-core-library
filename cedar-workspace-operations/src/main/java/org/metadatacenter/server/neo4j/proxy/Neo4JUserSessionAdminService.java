@@ -18,12 +18,13 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
   protected static final Logger log = LoggerFactory.getLogger(Neo4JUserSessionAdminService.class);
 
-  public Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  public Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String requestId) {
+    super(cedarConfig, proxies, cu, requestId);
   }
 
-  public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser);
+  public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                        String requestId) {
+    return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser, requestId);
   }
 
   @Override

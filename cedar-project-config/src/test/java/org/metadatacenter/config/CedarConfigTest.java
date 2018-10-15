@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class CedarConfigTest {
 
-  public final static String CEDAR_ADMIN_USER_PASSWORD = "Password123";
-  public final static String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
+  public static final String CEDAR_ADMIN_USER_PASSWORD = "Password123";
+  public static final String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
 
   @Before
   public void setEnvironment() {

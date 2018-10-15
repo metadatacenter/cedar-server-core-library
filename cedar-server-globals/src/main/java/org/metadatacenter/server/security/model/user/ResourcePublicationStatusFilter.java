@@ -13,7 +13,7 @@ public enum ResourcePublicationStatusFilter {
   ALL("all");
 
   private final String value;
-  private final static List<String> VALID_VALUES;
+  private static final List<String> VALID_VALUES;
 
   static {
     VALID_VALUES = new ArrayList<>();

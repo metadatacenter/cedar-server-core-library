@@ -1,7 +1,14 @@
 package org.metadatacenter.cedar.util.dw;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.security.CedarAccessException;
+import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.rest.context.HttpServletRequestContext;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
+import org.metadatacenter.server.logging.model.AppLogParam;
+import org.metadatacenter.server.logging.model.AppLogSubType;
+import org.metadatacenter.server.logging.model.AppLogType;
+import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 import org.slf4j.Logger;
@@ -11,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
@@ -29,6 +37,10 @@ public abstract class CedarMicroserviceResource {
   @Context
   HttpServletResponse response;
 
+  protected
+  @Context
+  HttpHeaders httpHeaders;
+
   private static final Logger log = LoggerFactory.getLogger(CedarMicroserviceResource.class);
 
   protected final CedarConfig cedarConfig;
@@ -42,5 +54,20 @@ public abstract class CedarMicroserviceResource {
     microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
     provenanceUtil = new ProvenanceUtil();
   }
+
+  protected CedarRequestContext buildRequestContext() throws CedarAccessException {
+    HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    StackTraceElement caller = stackTrace[2];
+    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START)
+        .param(AppLogParam.REQUEST_ID, sc.getRequestIdHeader())
+        .param(AppLogParam.CLASS_NAME, caller.getClassName())
+        .param(AppLogParam.METHOD_NAME, caller.getMethodName()).enqueue();
+    if (sc.getUserCreationException() != null) {
+      throw sc.getUserCreationException();
+    }
+    return sc;
+  }
+
 
 }

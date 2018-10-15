@@ -27,12 +27,13 @@ import java.util.Map;
 
 public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession implements FolderServiceSession {
 
-  public Neo4JUserSessionFolderService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  public Neo4JUserSessionFolderService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String requestId) {
+    super(cedarConfig, proxies, cu, requestId);
   }
 
-  public static FolderServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionFolderService(cedarConfig, proxies, cedarUser);
+  public static FolderServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                         String requestId) {
+    return new Neo4JUserSessionFolderService(cedarConfig, proxies, cedarUser, requestId);
   }
 
   @Override

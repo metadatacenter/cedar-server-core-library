@@ -56,7 +56,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionGroupService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionGroupService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 
@@ -66,7 +67,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionGraphService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionGraphService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 
@@ -76,7 +78,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionPermissionService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionPermissionService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 
@@ -86,7 +89,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionVersionService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionVersionService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 
@@ -96,7 +100,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionAdminService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionAdminService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 
@@ -106,7 +111,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionFolderService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionFolderService.get(instance.cedarConfig, instance.proxies, context.getCedarUser(),
+          context.getRequestIdHeader());
     }
   }
 
@@ -116,7 +122,8 @@ public final class CedarDataServices {
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionUserService.get(instance.cedarConfig, instance.proxies, context.getCedarUser());
+      return Neo4JUserSessionUserService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getRequestIdHeader());
     }
   }
 

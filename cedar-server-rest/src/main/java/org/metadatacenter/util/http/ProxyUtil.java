@@ -2,7 +2,6 @@ package org.metadatacenter.util.http;
 
 import com.google.common.collect.Lists;
 import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
@@ -14,6 +13,7 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class ProxyUtil {
 
   public static final String ZERO_LENGTH = "0";
 
-  private static final List<String> CEDAR_HEADERS = Lists.newArrayList(
+  private static final List<String> CEDAR_RESPONSE_HEADERS = Lists.newArrayList(
       HttpHeaders.CONTENT_TYPE,
       CustomHttpConstants.HEADER_CEDAR_VALIDATION_STATUS,
       CustomHttpConstants.HEADER_CEDAR_VALIDATION_REPORT);
@@ -29,9 +29,8 @@ public class ProxyUtil {
   public static HttpResponse proxyGet(String url, CedarRequestContext context) throws CedarProcessingException {
     Request proxyRequest = Request.Get(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
-        .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
-        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader());
+        .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT);
+    copyHeaders(proxyRequest, context);
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -43,10 +42,9 @@ public class ProxyUtil {
     Request proxyRequest = Request.Delete(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
-        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .addHeader(HttpHeaders.CONTENT_LENGTH, ZERO_LENGTH)
         .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString());
+    copyHeaders(proxyRequest, context);
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -64,9 +62,8 @@ public class ProxyUtil {
     Request proxyRequest = Request.Post(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
-        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
+    copyHeaders(proxyRequest, context);
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -84,9 +81,8 @@ public class ProxyUtil {
     Request proxyRequest = Request.Put(url)
         .connectTimeout(HttpConnectionConstants.CONNECTION_TIMEOUT)
         .socketTimeout(HttpConnectionConstants.SOCKET_TIMEOUT)
-        .addHeader(HttpHeaders.AUTHORIZATION, context.request().getAuthorizationHeader())
-        .addHeader(CedarHeaderParameters.HP_DEBUG, context.request().getDebugHeader())
         .bodyString(content, ContentType.APPLICATION_JSON);
+    copyHeaders(proxyRequest, context);
     try {
       return proxyRequest.execute().returnResponse();
     } catch (IOException e) {
@@ -96,10 +92,21 @@ public class ProxyUtil {
 
   public static void proxyResponseHeaders(HttpResponse proxyResponse, HttpServletResponse response) {
     for (Header header : proxyResponse.getAllHeaders()) {
-      if (CEDAR_HEADERS.contains(header.getName())) {
+      if (CEDAR_RESPONSE_HEADERS.contains(header.getName())) {
         response.setHeader(header.getName(), header.getValue());
       }
     }
   }
 
+  private static void copyHeaders(Request proxyRequest, CedarRequestContext context) {
+    copyHeader(proxyRequest, HttpHeaders.AUTHORIZATION, context.getAuthorizationHeader());
+    copyHeader(proxyRequest, CedarHeaderParameters.DEBUG, context.getDebugHeader());
+    copyHeader(proxyRequest, CedarHeaderParameters.REQUEST_ID_KEY, context.getRequestIdHeader());
+  }
+
+  private static void copyHeader(Request proxyRequest, String headerKey, String value) {
+    if (value != null) {
+      proxyRequest.setHeader(headerKey, value);
+    }
+  }
 }
