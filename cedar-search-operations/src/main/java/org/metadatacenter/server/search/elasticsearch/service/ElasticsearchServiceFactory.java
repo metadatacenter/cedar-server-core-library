@@ -30,7 +30,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService() {
-    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) {

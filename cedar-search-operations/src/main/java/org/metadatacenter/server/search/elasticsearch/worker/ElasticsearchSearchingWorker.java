@@ -30,7 +30,7 @@ public class ElasticsearchSearchingWorker {
   public ElasticsearchSearchingWorker(ElasticsearchConfig config, Client client) {
     this.config = config;
     this.client = client;
-    this.indexName = config.getIndexName();
+    this.indexName = config.getIndexes().getSearchIndex().getName();
     this.documentType = IndexedDocumentType.DOC.getValue();
     this.keepAlive = new TimeValue(config.getScrollKeepAlive());
   }

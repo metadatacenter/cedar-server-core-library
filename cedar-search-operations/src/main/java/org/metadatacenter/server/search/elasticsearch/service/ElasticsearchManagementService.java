@@ -38,10 +38,6 @@ public class ElasticsearchManagementService {
   private final ElasticsearchMappingsConfig rulesIndexMappings;
   private Client elasticClient = null;
 
-  public enum IndexType {
-    SEARCH, RULES
-  }
-
   public ElasticsearchManagementService(ElasticsearchConfig config, CedarConfig cedarConfig) {
     this.config = config;
     this.searchIndexSettings = cedarConfig.getSearchSettingsMappingsConfig().getSettings();
@@ -69,21 +65,15 @@ public class ElasticsearchManagementService {
     elasticClient.close();
   }
 
-  public void createIndex(IndexType indexType, String indexName) throws CedarProcessingException {
-    HashMap<String, Object> indexSettings;
-    ElasticsearchMappingsConfig indexMappings;
+  public void createSearchIndex(String indexName) throws CedarProcessingException {
+    createIndex(indexName, searchIndexSettings, searchIndexMappings);
+  }
 
-    if (indexType.equals(IndexType.SEARCH)) {
-      indexSettings = searchIndexSettings;
-      indexMappings = searchIndexMappings;
-    }
-    else if (indexType.equals(IndexType.RULES)) {
-      indexSettings = rulesIndexSettings;
-      indexMappings = rulesIndexMappings;
-    }
-    else {
-      throw new CedarProcessingException("Failed to create index. Unknown index type: " + indexType.toString());
-    }
+  public void createRulesIndex(String indexName) throws CedarProcessingException {
+    createIndex(indexName, rulesIndexSettings, rulesIndexMappings);
+  }
+
+  private void createIndex(String indexName, HashMap<String, Object> indexSettings, ElasticsearchMappingsConfig indexMappings) throws CedarProcessingException {
 
     Client client = getClient();
     CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);

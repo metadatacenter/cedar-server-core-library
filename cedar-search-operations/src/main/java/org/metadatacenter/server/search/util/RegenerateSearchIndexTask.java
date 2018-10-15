@@ -39,7 +39,7 @@ public class RegenerateSearchIndexTask {
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexName();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
     int cedarIndexCount = 0;
 
     log.info("Looking for existing CEDAR indices...");
@@ -58,7 +58,7 @@ public class RegenerateSearchIndexTask {
     } else {
       String newIndexName = indexUtils.getNewIndexName(indexName);
       log.info("Creating brand new CEDAR index:" + newIndexName);
-      esManagementService.createIndex(ElasticsearchManagementService.IndexType.SEARCH, newIndexName);
+      esManagementService.createSearchIndex(newIndexName);
       esManagementService.addAlias(newIndexName, indexName);
     }
   }
@@ -69,7 +69,7 @@ public class RegenerateSearchIndexTask {
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
     NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexName();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
     boolean regenerate = true;
     try {
@@ -109,7 +109,7 @@ public class RegenerateSearchIndexTask {
         log.info("Regenerating index");
         // Create new index and set it up
         String newIndexName = indexUtils.getNewIndexName(indexName);
-        esManagementService.createIndex(ElasticsearchManagementService.IndexType.SEARCH, newIndexName);
+        esManagementService.createSearchIndex(newIndexName);
 
         NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
 

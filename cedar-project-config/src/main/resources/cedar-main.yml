@@ -68,10 +68,10 @@ searchSettings:
 elasticsearch:
   clusterName: "elasticsearch_cedar"
   indexes:
-      searchIndex:
-        name: "cedar-search"
-      rulesIndex:
-        name: "cedar-rules"
+    searchIndex:
+      name: "cedar-search"
+    rulesIndex:
+      name: "cedar-rules"
   host: "${CEDAR_ELASTICSEARCH_HOST}"
   transportPort: "${CEDAR_ELASTICSEARCH_TRANSPORT_PORT}"
   size: 1000
