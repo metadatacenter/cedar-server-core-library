@@ -27,5 +27,6 @@ public final class ElasticsearchConstants {
 
   // Other
   public static final String ES_SORT_DESC_PREFIX = "-";
+  public static final String TEMPLATEID_FIELD = "templateId";
 
 }
