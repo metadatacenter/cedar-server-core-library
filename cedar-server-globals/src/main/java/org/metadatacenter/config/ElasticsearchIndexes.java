@@ -4,14 +4,14 @@ public class ElasticsearchIndexes {
 
   private ElasticsearchIndex searchIndex;
 
-  private ElasticsearchIndex valueRecommenderIndex;
+  private ElasticsearchIndex rulesIndex;
 
   public ElasticsearchIndex getSearchIndex() {
     return searchIndex;
   }
 
-  public ElasticsearchIndex getValueRecommenderIndex() {
-    return valueRecommenderIndex;
+  public ElasticsearchIndex getRulesIndex() {
+    return rulesIndex;
   }
 
 }
