@@ -10,7 +10,8 @@ public enum CedarErrorType {
   NOT_FOUND("notFound", Response.Status.NOT_FOUND),
   INVALID_ARGUMENT("invalidArgument", Response.Status.BAD_REQUEST),
   AUTHORIZATION("authorization", Response.Status.UNAUTHORIZED),
-  SERVER_ERROR("server", Response.Status.INTERNAL_SERVER_ERROR);
+  SERVER_ERROR("server", Response.Status.INTERNAL_SERVER_ERROR),
+  VALIDATION_ERROR("validationError", Response.Status.BAD_REQUEST);
 
   private final String value;
   private final Response.Status status;
