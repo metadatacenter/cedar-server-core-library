@@ -6,17 +6,18 @@ public enum AppLogParam {
 
   CLASS_NAME("className"),
   METHOD_NAME("methodName"),
-  REQUEST_ID("requestId"),
+  LINE_NUMBER("lineNumber"),
   REQUEST_ID_SOURCE("requestIdSource"),
   QUERY_PARAMETERS("queryParameters"),
   HTTP_METHOD("httpMethod"),
   PATH("path"),
+  START_TIME("startTime"),
+  END_TIME("endTime"),
   ORIGINAL_QUERY("originalQuery"),
   RUNNABLE_QUERY("runnableQuery"),
   INTERPOLATED_QUERY("interpolatedQuery"),
   RUNNABLE_QUERY_HASH("runnableQueryHash"),
   QUERY_PARAMETERS_HASH("queryParametersHash"),
-  START_TIME("startTime"),
   OPERATION("operation");
 
   private final String value;

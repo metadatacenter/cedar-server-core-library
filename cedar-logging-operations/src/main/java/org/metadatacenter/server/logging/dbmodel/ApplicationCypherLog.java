@@ -1,5 +1,8 @@
 package org.metadatacenter.server.logging.dbmodel;
 
+import org.metadatacenter.server.logging.model.AppLogMessage;
+import org.metadatacenter.server.logging.model.AppLogParam;
+
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -22,6 +25,10 @@ public class ApplicationCypherLog {
 
   private Duration duration;
 
+  private Instant startTime;
+
+  private Instant endTime;
+
   @Lob
   private String original;
 
@@ -40,55 +47,40 @@ public class ApplicationCypherLog {
   @Column(length = 1024)
   private String className;
 
+  private int lineNumber;
+
   @Column(length = 30)
   private String operation;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+  @Column(length = 2048)
+  private String queryParameters;
 
-  public void setRequestId(String requestId) {
-    this.requestId = requestId;
-  }
+  @Column(length = 32)
+  private String runnableHash;
 
-  public void setServerName(String serverName) {
-    this.serverName = serverName;
-  }
+  @Column(length = 32)
+  private String parametersHash;
 
-  public void setTime(Instant time) {
-    this.time = time;
-  }
 
-  public void setDuration(Duration duration) {
-    this.duration = duration;
-  }
-
-  public void setOriginal(String original) {
-    this.original = original;
-  }
-
-  public void setRunnable(String runnable) {
-    this.runnable = runnable;
-  }
-
-  public void setInterpolated(String interpolated) {
-    this.interpolated = interpolated;
-  }
-
-  public void setParameters(String parameters) {
-    this.parameters = parameters;
-  }
-
-  public void setMethodName(String methodName) {
-    this.methodName = methodName;
-  }
-
-  public void setClassName(String className) {
-    this.className = className;
-  }
-
-  public void setOperation(String operation) {
-    this.operation = operation;
+  public static ApplicationCypherLog fromAppCypherLog(AppLogMessage appLog) {
+    ApplicationCypherLog l = new ApplicationCypherLog();
+    l.requestId = appLog.getRequestId();
+    l.serverName = appLog.getServerName().getName();
+    l.original = appLog.getParamAsString(AppLogParam.ORIGINAL_QUERY);
+    l.runnable = appLog.getParamAsString(AppLogParam.RUNNABLE_QUERY);
+    l.interpolated = appLog.getParamAsString(AppLogParam.INTERPOLATED_QUERY);
+    l.runnableHash = appLog.getParamAsString(AppLogParam.RUNNABLE_QUERY_HASH);
+    l.parametersHash = appLog.getParamAsString(AppLogParam.QUERY_PARAMETERS_HASH);
+    l.time = appLog.getTime();
+    l.duration = appLog.getDuration();
+    l.startTime = appLog.getParamAsInstant(AppLogParam.START_TIME);
+    l.endTime = appLog.getParamAsInstant(AppLogParam.END_TIME);
+    l.className = appLog.getParamAsString(AppLogParam.CLASS_NAME);
+    l.methodName = appLog.getParamAsString(AppLogParam.METHOD_NAME);
+    l.lineNumber = appLog.getParamAsInt(AppLogParam.LINE_NUMBER);
+    l.operation = appLog.getParamAsString(AppLogParam.OPERATION);
+    l.queryParameters = appLog.getParamAsString(AppLogParam.QUERY_PARAMETERS);
+    return l;
   }
 
   public Long getId() {

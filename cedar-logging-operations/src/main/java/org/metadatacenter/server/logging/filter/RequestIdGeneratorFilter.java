@@ -36,8 +36,7 @@ public class RequestIdGeneratorFilter implements ContainerRequestFilter {
       className = o.getClass().getName();
     }
 
-    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.START)
-        .param(AppLogParam.REQUEST_ID, requestId)
+    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.START, requestId)
         .param(AppLogParam.REQUEST_ID_SOURCE, requestIdSource)
         .param(AppLogParam.CLASS_NAME, className)
         .param(AppLogParam.HTTP_METHOD, requestContext.getMethod())

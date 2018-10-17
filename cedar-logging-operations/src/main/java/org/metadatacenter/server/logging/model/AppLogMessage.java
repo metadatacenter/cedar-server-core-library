@@ -12,6 +12,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppLogMessage {
 
+  private String requestId;
   private ServerName serverName;
   private AppLogType type;
   private AppLogSubType subType;
@@ -22,9 +23,10 @@ public class AppLogMessage {
   public AppLogMessage() {
   }
 
-  public AppLogMessage(ServerName serverName, AppLogType type, AppLogSubType subType) {
+  public AppLogMessage(ServerName serverName, String requestId, AppLogType type, AppLogSubType subType) {
     this.time = Instant.now();
     this.serverName = serverName;
+    this.requestId = requestId;
     this.type = type;
     this.subType = subType;
   }
@@ -42,6 +44,10 @@ public class AppLogMessage {
     AppLogger.enqueue(this);
   }
 
+  public String getRequestId() {
+    return requestId;
+  }
+
   public ServerName getServerName() {
     return serverName;
   }
@@ -54,12 +60,25 @@ public class AppLogMessage {
     return subType;
   }
 
-  public Instant getTime() {
-    return time;
+  public String getParamAsString(AppLogParam paramName) {
+    return (String)parameters.get(paramName.getValue());
   }
 
-  public Map<String, Object> getParameters() {
-    return parameters;
+  public Instant getParamAsInstant(AppLogParam paramName) {
+    return (Instant)parameters.get(paramName.getValue());
+  }
+
+  public int getParamAsInt(AppLogParam paramName) {
+    Object o = parameters.get(paramName.getValue());
+    if (o == null) {
+      return 0;
+    } else {
+      return (Integer)o;
+    }
+  }
+
+  public Instant getTime() {
+    return time;
   }
 
   public Duration getDuration() {

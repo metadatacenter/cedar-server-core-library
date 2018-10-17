@@ -1,5 +1,8 @@
 package org.metadatacenter.server.logging.dbmodel;
 
+import org.metadatacenter.server.logging.model.AppLogMessage;
+import org.metadatacenter.server.logging.model.AppLogParam;
+
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -24,6 +27,9 @@ public class ApplicationRequestLog {
   @Column(length = 50)
   private String subType;
 
+  @Column(length = 20)
+  private String requestIdSource;
+
   private Instant time;
 
   private Duration duration;
@@ -34,47 +40,30 @@ public class ApplicationRequestLog {
   @Column(length = 1024)
   private String className;
 
-  @Lob
-  private String parameters;
+  private int lineNumber;
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+  @Column(length = 20)
+  private String httpMethod;
 
-  public void setServerName(String serverName) {
-    this.serverName = serverName;
-  }
+  @Column(length = 2048)
+  private String path;
 
-  public void setType(String type) {
-    this.type = type;
-  }
+  @Column(length = 2048)
+  private String queryParameters;
 
-  public void setSubType(String subType) {
-    this.subType = subType;
-  }
-
-  public void setTime(Instant time) {
-    this.time = time;
-  }
-
-  public void setDuration(Duration duration) {
-    this.duration = duration;
-  }
-
-  public void setMethodName(String methodName) {
-    this.methodName = methodName;
-  }
-
-  public void setRequestId(String requestId) {
-    this.requestId = requestId;
-  }
-
-  public void setClassName(String className) {
-    this.className = className;
-  }
-
-  public void setParameters(String parameters) {
-    this.parameters = parameters;
+  public static ApplicationRequestLog fromAppRequestFilter(AppLogMessage appLog) {
+    ApplicationRequestLog l = new ApplicationRequestLog();
+    l.requestId = appLog.getRequestId();
+    l.serverName = appLog.getServerName().getName();
+    l.type = appLog.getType().getValue();
+    l.subType = appLog.getSubType().getValue();
+    l.requestIdSource = appLog.getParamAsString(AppLogParam.REQUEST_ID_SOURCE);
+    l.className = appLog.getParamAsString(AppLogParam.CLASS_NAME);
+    l.methodName = appLog.getParamAsString(AppLogParam.METHOD_NAME);
+    l.httpMethod = appLog.getParamAsString(AppLogParam.HTTP_METHOD);
+    l.path = appLog.getParamAsString(AppLogParam.PATH);
+    l.queryParameters = appLog.getParamAsString(AppLogParam.QUERY_PARAMETERS);
+    return l;
   }
 
   public Long getId() {

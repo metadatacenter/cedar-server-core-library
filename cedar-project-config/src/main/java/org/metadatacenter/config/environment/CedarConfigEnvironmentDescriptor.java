@@ -213,6 +213,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_SUBMISSION_TEMPLATE_ID_1);
     submissionTemplateId1.add(SystemComponent.SERVER_WORKSPACE);
+    submissionTemplateId1.add(SystemComponent.SERVER_WORKER);
     submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
 
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);

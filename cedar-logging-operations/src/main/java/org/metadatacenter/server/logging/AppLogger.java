@@ -15,8 +15,8 @@ public class AppLogger {
     AppLogger.serverName = serverName;
   }
 
-  public static AppLogMessage message(AppLogType type, AppLogSubType subType) {
-    AppLogMessage m = new AppLogMessage(serverName, type, subType);
+  public static AppLogMessage message(AppLogType type, AppLogSubType subType, String requestId) {
+    AppLogMessage m = new AppLogMessage(serverName, requestId, type, subType);
     return m;
   }
 

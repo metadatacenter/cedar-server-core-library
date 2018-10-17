@@ -25,12 +25,10 @@ public class AppLoggerExecutorService {
   @UnitOfWork
   public void handleLog(AppLogMessage appLog) {
     if (appLog.getType() == AppLogType.REQUEST_FILTER) {
-      ApplicationRequestLog l = new ApplicationRequestLog();
-      l.setServerName(appLog.getServerName().getName());
+      ApplicationRequestLog l = ApplicationRequestLog.fromAppRequestFilter(appLog);
       requestLogDAO.create(l);
     } else if (appLog.getType() == AppLogType.CYPHER_QUERY) {
-      ApplicationCypherLog l = new ApplicationCypherLog();
-      l.setServerName(appLog.getServerName().getName());
+      ApplicationCypherLog l = ApplicationCypherLog.fromAppCypherLog(appLog);
       cypherLogDAO.create(l);
     }
   }

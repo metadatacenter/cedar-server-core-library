@@ -1,7 +1,6 @@
 package org.metadatacenter.server.logging.filter;
 
 import org.metadatacenter.server.logging.AppLogger;
-import org.metadatacenter.server.logging.model.AppLogParam;
 import org.metadatacenter.server.logging.model.AppLogSubType;
 import org.metadatacenter.server.logging.model.AppLogType;
 
@@ -20,8 +19,6 @@ public class RESTLoggerFilter implements ContainerResponseFilter {
   public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
       throws IOException {
     String requestId = requestContext.getHeaderString(REQUEST_ID_KEY);
-    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.END)
-        .param(AppLogParam.REQUEST_ID, requestId)
-        .enqueue();
+    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.END, requestId).enqueue();
   }
 }

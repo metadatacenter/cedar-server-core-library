@@ -59,10 +59,11 @@ public abstract class CedarMicroserviceResource {
     HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     StackTraceElement caller = stackTrace[2];
-    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START)
-        .param(AppLogParam.REQUEST_ID, sc.getRequestIdHeader())
+    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START, sc.getRequestIdHeader())
         .param(AppLogParam.CLASS_NAME, caller.getClassName())
-        .param(AppLogParam.METHOD_NAME, caller.getMethodName()).enqueue();
+        .param(AppLogParam.METHOD_NAME, caller.getMethodName())
+        .param(AppLogParam.LINE_NUMBER, caller.getLineNumber())
+        .enqueue();
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();
     }

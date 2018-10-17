@@ -116,7 +116,7 @@ public abstract class AbstractNeo4JProxy {
       e.printStackTrace();
     }
 
-    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL)
+    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, null)
         .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
         .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
         .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())
@@ -124,6 +124,7 @@ public abstract class AbstractNeo4JProxy {
         .param(AppLogParam.RUNNABLE_QUERY_HASH, DigestUtils.md5Hex(log.getRunnableQuery()))
         .param(AppLogParam.QUERY_PARAMETERS_HASH, DigestUtils.md5Hex(paramMapString))
         .param(AppLogParam.START_TIME, log.getStart())
+        .param(AppLogParam.END_TIME, log.getEnd())
         .param(AppLogParam.OPERATION, log.getOperation());
     appLog.setDuration(Duration.between(log.getStart(), log.getEnd()));
 
@@ -134,6 +135,7 @@ public abstract class AbstractNeo4JProxy {
       if (count == 0 && (ste.getClassName().contains("Neo4JUser") || ste.getClassName().contains("Neo4JProxy"))) {
         appLog.param(AppLogParam.CLASS_NAME, ste.getClassName());
         appLog.param(AppLogParam.METHOD_NAME, ste.getMethodName());
+        appLog.param(AppLogParam.LINE_NUMBER, ste.getLineNumber());
         count++;
       }
     }
