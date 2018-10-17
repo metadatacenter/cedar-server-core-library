@@ -4,7 +4,7 @@ public class ElasticsearchConfig {
 
   private String clusterName;
 
-  private String indexName;
+  private ElasticsearchIndexes indexes;
 
   private String host;
 
@@ -18,8 +18,8 @@ public class ElasticsearchConfig {
     return clusterName;
   }
 
-  public String getIndexName() {
-    return indexName;
+  public ElasticsearchIndexes getIndexes() {
+    return indexes;
   }
 
   public String getHost() {

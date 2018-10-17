@@ -23,23 +23,23 @@ import java.util.List;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
-public class RegenerateSearchIndexTask {
+public class RegenerateRulesIndexTask {
 
-  private static final Logger log = LoggerFactory.getLogger(RegenerateSearchIndexTask.class);
+  private static final Logger log = LoggerFactory.getLogger(RegenerateRulesIndexTask.class);
 
   private final CedarConfig cedarConfig;
 
 
-  public RegenerateSearchIndexTask(CedarConfig cedarConfig) {
+  public RegenerateRulesIndexTask(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
   }
 
-  public void ensureSearchIndexExists() throws CedarProcessingException {
+  public void ensureRulesIndexExists() throws CedarProcessingException {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getRulesIndex().getName();
     int cedarIndexCount = 0;
 
     log.info("Looking for existing CEDAR indices...");
@@ -58,18 +58,18 @@ public class RegenerateSearchIndexTask {
     } else {
       String newIndexName = indexUtils.getNewIndexName(indexName);
       log.info("Creating brand new CEDAR index:" + newIndexName);
-      esManagementService.createSearchIndex(newIndexName);
+      esManagementService.createRulesIndex(newIndexName);
       esManagementService.addAlias(newIndexName, indexName);
     }
   }
 
-  public void regenerateSearchIndex(boolean force, CedarRequestContext requestContext) throws CedarProcessingException {
+  public void regenerateRulesIndex(boolean force, CedarRequestContext requestContext) throws CedarProcessingException {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
-    NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
+    //NodeSearchingService nodeSearchingService = esServiceFactory..nodeSearchingService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getRulesIndex().getName();
 
     boolean regenerate = true;
     try {
@@ -78,61 +78,61 @@ public class RegenerateSearchIndexTask {
       List<FolderServerNode> resources = indexUtils.findAllResources(requestContext);
       // Checks if is necessary to regenerate the index or not
       if (!force) {
-        log.info("Checking if it is necessary to regenerate the search index from DB");
+        log.info("Checking if it is necessary to regenerate the rules index from DB");
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
         if (esManagementService.indexExists(indexName)) {
-          // Use the resource ids to check if the resources in the DBs and in the index are different
-          List<String> dbResourceIds = getResourceIds(resources);
-          log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
-          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
-          log.info("No. of content document in the index: " + indexResourceIds.size());
-          if (dbResourceIds.size() == indexResourceIds.size()) {
-            // Compare the two lists
-            List<String> tmp1 = new ArrayList(dbResourceIds);
-            List<String> tmp2 = new ArrayList(indexResourceIds);
-            Collections.sort(tmp1);
-            Collections.sort(tmp2);
-            if (tmp1.equals(tmp2)) {
-              regenerate = false;
-              log.info("DB and search index match. It is not necessary to regenerate the index");
-            } else {
-              log.warn("DB and search index do not match! (different ids)");
-            }
-          } else {
-            log.warn("DB and search index do not match! (different size)");
-          }
+//          // Use the resource ids to check if the resources in the DBs and in the index are different
+//          List<String> dbResourceIds = getResourceIds(resources);
+//          log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
+//          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
+//          log.info("No. of content document in the index: " + indexResourceIds.size());
+//          if (dbResourceIds.size() == indexResourceIds.size()) {
+//            // Compare the two lists
+//            List<String> tmp1 = new ArrayList(dbResourceIds);
+//            List<String> tmp2 = new ArrayList(indexResourceIds);
+//            Collections.sort(tmp1);
+//            Collections.sort(tmp2);
+//            if (tmp1.equals(tmp2)) {
+//              regenerate = false;
+//              log.info("DB and search index match. It is not necessary to regenerate the index");
+//            } else {
+//              log.warn("DB and search index do not match! (different ids)");
+//            }
+//          } else {
+//            log.warn("DB and search index do not match! (different size)");
+//          }
         } else {
           log.warn("The search index '" + indexName + "' does not exist!");
         }
       }
       if (regenerate) {
-        log.info("Regenerating search index");
+        log.info("Regenerating rules index");
         // Create new index and set it up
         String newIndexName = indexUtils.getNewIndexName(indexName);
-        esManagementService.createSearchIndex(newIndexName);
+        esManagementService.createRulesIndex(newIndexName);
 
-        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
+        //NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
 
         // Get resources content and index it
-        int count = 1;
-        for (FolderServerNode node : resources) {
-          try {
-            CedarNodeMaterializedPermissions perm = null;
-            if (node.getType() == CedarNodeType.FOLDER) {
-              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
-            } else {
-              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
-            }
-            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
-
-            if (count % 100 == 0) {
-              float progress = (100 * count++) / resources.size();
-              log.info(String.format("Progress: %.0f%%", progress));
-            }
-          } catch (Exception e) {
-            log.error("Error while indexing document: " + node.getId(), e);
-          }
-        }
+//        int count = 1;
+//        for (FolderServerNode node : resources) {
+//          try {
+//            CedarNodeMaterializedPermissions perm = null;
+//            if (node.getType() == CedarNodeType.FOLDER) {
+//              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
+//            } else {
+//              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
+//            }
+//            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
+//
+//            if (count % 100 == 0) {
+//              float progress = (100 * count++) / resources.size();
+//              log.info(String.format("Progress: %.0f%%", progress));
+//            }
+//          } catch (Exception e) {
+//            log.error("Error while indexing document: " + node.getId(), e);
+//          }
+//        }
         // Point alias to new index
         esManagementService.addAlias(newIndexName, indexName);
         // Delete any other index previously associated to the alias
@@ -157,14 +157,6 @@ public class RegenerateSearchIndexTask {
       log.error("Error while regenerating index", e);
       throw new CedarProcessingException(e);
     }
-  }
-
-  private List<String> getResourceIds(List<FolderServerNode> resources) {
-    List<String> ids = new ArrayList<>();
-    for (FolderServerNode resource : resources) {
-      ids.add(resource.getId());
-    }
-    return ids;
   }
 
 }
