@@ -22,8 +22,7 @@ public class ElasticsearchServiceFactory {
 
   private void init(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
-    this.managementService = new ElasticsearchManagementService(cedarConfig.getElasticsearchConfig(), cedarConfig
-        .getElasticsearchSettingsMappingsConfig());
+    this.managementService = new ElasticsearchManagementService(cedarConfig.getElasticsearchConfig(), cedarConfig);
   }
 
   public ElasticsearchManagementService getManagementService() {
@@ -31,7 +30,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService() {
-    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexName());
+    return nodeIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName());
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) {

@@ -67,7 +67,11 @@ searchSettings:
 
 elasticsearch:
   clusterName: "elasticsearch_cedar"
-  indexName: "cedar-search"
+  indexes:
+    searchIndex:
+      name: "cedar-search"
+    rulesIndex:
+      name: "cedar-rules"
   host: "${CEDAR_ELASTICSEARCH_HOST}"
   transportPort: "${CEDAR_ELASTICSEARCH_TRANSPORT_PORT}"
   size: 1000
@@ -120,7 +124,8 @@ servers:
     stopPort: "${CEDAR_RESOURCE_STOP_PORT}"
     apiDoc: true
     base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/"
-    regenerateIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-search-index"
+    regenerateSearchIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-search-index"
+    regenerateRulesIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-rules-index"
   schema:
     httpPort: "${CEDAR_SCHEMA_HTTP_PORT}"
     adminPort: "${CEDAR_SCHEMA_ADMIN_PORT}"

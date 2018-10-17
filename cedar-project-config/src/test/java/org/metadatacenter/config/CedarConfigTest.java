@@ -178,24 +178,33 @@ public class CedarConfigTest {
   }
 
   @Test
-  public void testElasticSearchConfig() throws Exception {
+  public void testElasticSearchSearchConfig() throws Exception {
     CedarConfig instance = getCedarConfig();
-    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig = instance
-        .getElasticsearchSettingsMappingsConfig();
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig);
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getSettings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getDoc());
+    ElasticsearchSettingsMappingsConfig searchSettingsMappingsConfig = instance
+        .getSearchSettingsMappingsConfig();
+    Assert.assertNotNull(searchSettingsMappingsConfig);
+    Assert.assertNotNull(searchSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(searchSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(searchSettingsMappingsConfig.getMappings().getDoc());
 
-    ElasticsearchConfig elasticsearchConfig = instance.getElasticsearchConfig();
-
-    Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
+    Map<String, Object> settings = searchSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");
     Map<String, Object> analysis = (Map<String, Object>) index.get("analysis");
     Map<String, Object> tokenizer = (Map<String, Object>) analysis.get("tokenizer");
     Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("ngram_tokenizer");
 
     Assert.assertEquals("ngram", ngram_tokenizer.get("type"));
+  }
+
+  @Test
+  public void testElasticSearchRulesConfig() throws Exception {
+    CedarConfig instance = getCedarConfig();
+    ElasticsearchSettingsMappingsConfig rulesSettingsMappingsConfig = instance
+        .getSearchSettingsMappingsConfig();
+    Assert.assertNotNull(rulesSettingsMappingsConfig);
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getMappings().getDoc());
   }
 
 }
