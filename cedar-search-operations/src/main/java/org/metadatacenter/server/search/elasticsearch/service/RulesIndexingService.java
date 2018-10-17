@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
-public class RuleIndexingService extends AbstractIndexingService {
+public class RulesIndexingService extends AbstractIndexingService {
 
-  private static final Logger log = LoggerFactory.getLogger(RuleIndexingService.class);
+  private static final Logger log = LoggerFactory.getLogger(RulesIndexingService.class);
 
   private final ElasticsearchIndexingWorker indexWorker;
   //private final IndexUtils indexUtils;
 
-  RuleIndexingService(String indexName, Client client) throws CedarProcessingException {
+  RulesIndexingService(String indexName, Client client) throws CedarProcessingException {
     indexWorker = new ElasticsearchIndexingWorker(indexName, client);
 
     // If the cedar-value-recommender index does not exist, create it
