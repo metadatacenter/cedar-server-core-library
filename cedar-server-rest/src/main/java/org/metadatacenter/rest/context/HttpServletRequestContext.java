@@ -31,10 +31,6 @@ public class HttpServletRequestContext extends AbstractRequestContext {
     this.linkedDataUtil = linkedDataUtil;
   }
 
-  /*public HttpServletRequestContext(LinkedDataUtil linkedDataUtil, HttpServletRequest request) {
-    this(linkedDataUtil, request, null);
-  }*/
-
   @Override
   public String getAuthorizationHeader() {
     return httpHeaders.getHeaderString(HttpHeaders.AUTHORIZATION);
@@ -46,7 +42,17 @@ public class HttpServletRequestContext extends AbstractRequestContext {
   }
 
   @Override
-  public String getRequestIdHeader() {
-    return httpHeaders.getHeaderString(CedarHeaderParameters.REQUEST_ID_KEY);
+  public String getGlobalRequestIdHeader() {
+    return httpHeaders.getHeaderString(CedarHeaderParameters.GLOBAL_REQUEST_ID_KEY);
+  }
+
+  @Override
+  public String getLocalRequestIdHeader() {
+    return httpHeaders.getHeaderString(CedarHeaderParameters.LOCAL_REQUEST_ID_KEY);
+  }
+
+  @Override
+  public String getClientSessionIdHeader() {
+    return httpHeaders.getHeaderString(CedarHeaderParameters.CLIENT_SESSION_ID);
   }
 }

@@ -24,7 +24,6 @@ import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.AppLoggerQueueService;
 import org.metadatacenter.server.logging.filter.RESTLoggerFilter;
 import org.metadatacenter.server.logging.filter.RequestIdGeneratorFilter;
-import org.metadatacenter.server.queue.util.PermissionQueueService;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
 import org.metadatacenter.server.security.IAuthorizationResolver;
@@ -62,6 +61,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     HTTP_HEADERS.add("User-Agent");
     HTTP_HEADERS.add("Authorization");
     HTTP_HEADERS.add(CedarHeaderParameters.DEBUG);
+    HTTP_HEADERS.add(CedarHeaderParameters.CLIENT_SESSION_ID);
 
     HTTP_METHODS = new ArrayList<>();
     HTTP_METHODS.add("OPTIONS");

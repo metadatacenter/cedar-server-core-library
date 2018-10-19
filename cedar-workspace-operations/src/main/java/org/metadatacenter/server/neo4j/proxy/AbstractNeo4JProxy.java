@@ -116,16 +116,16 @@ public abstract class AbstractNeo4JProxy {
       e.printStackTrace();
     }
 
-    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, null)
+    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, null, null)
         .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
         .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
         .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())
         .param(AppLogParam.QUERY_PARAMETERS, log.getParameterMap())
         .param(AppLogParam.RUNNABLE_QUERY_HASH, DigestUtils.md5Hex(log.getRunnableQuery()))
         .param(AppLogParam.QUERY_PARAMETERS_HASH, DigestUtils.md5Hex(paramMapString))
-        .param(AppLogParam.START_TIME, log.getStart())
-        .param(AppLogParam.END_TIME, log.getEnd())
         .param(AppLogParam.OPERATION, log.getOperation());
+    appLog.setStartTime(log.getStart());
+    appLog.setEndTime(log.getEnd());
     appLog.setDuration(Duration.between(log.getStart(), log.getEnd()));
 
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();

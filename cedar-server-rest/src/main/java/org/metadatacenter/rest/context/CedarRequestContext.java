@@ -11,8 +11,6 @@ import org.metadatacenter.rest.assertion.noun.CedarRequest;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import javax.ws.rs.core.HttpHeaders;
-
 public interface CedarRequestContext {
 
   CedarRequest request();
@@ -37,5 +35,9 @@ public interface CedarRequestContext {
 
   String getDebugHeader();
 
-  String getRequestIdHeader();
+  String getGlobalRequestIdHeader();
+
+  String getLocalRequestIdHeader();
+
+  String getClientSessionIdHeader();
 }

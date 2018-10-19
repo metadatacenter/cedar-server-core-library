@@ -18,13 +18,14 @@ import java.util.*;
 
 public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession implements GroupServiceSession {
 
-  public Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String requestId) {
-    super(cedarConfig, proxies, cu, requestId);
+  private Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
+                                       String globalRequestId, String localRequestId) {
+    super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
   public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
-                                        String requestId) {
-    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, requestId);
+                                        String globalRequestId, String localRequestId) {
+    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
   @Override

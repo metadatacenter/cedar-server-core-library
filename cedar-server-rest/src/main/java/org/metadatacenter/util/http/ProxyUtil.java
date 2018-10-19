@@ -101,7 +101,9 @@ public class ProxyUtil {
   private static void copyHeaders(Request proxyRequest, CedarRequestContext context) {
     copyHeader(proxyRequest, HttpHeaders.AUTHORIZATION, context.getAuthorizationHeader());
     copyHeader(proxyRequest, CedarHeaderParameters.DEBUG, context.getDebugHeader());
-    copyHeader(proxyRequest, CedarHeaderParameters.REQUEST_ID_KEY, context.getRequestIdHeader());
+    copyHeader(proxyRequest, CedarHeaderParameters.CLIENT_SESSION_ID, context.getClientSessionIdHeader());
+    copyHeader(proxyRequest, CedarHeaderParameters.GLOBAL_REQUEST_ID_KEY, context.getGlobalRequestIdHeader());
+    copyHeader(proxyRequest, CedarHeaderParameters.LOCAL_REQUEST_ID_KEY, context.getLocalRequestIdHeader());
   }
 
   private static void copyHeader(Request proxyRequest, String headerKey, String value) {

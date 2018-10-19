@@ -5,10 +5,10 @@ import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.HttpServletRequestContext;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
+import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.model.AppLogParam;
 import org.metadatacenter.server.logging.model.AppLogSubType;
 import org.metadatacenter.server.logging.model.AppLogType;
-import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 import org.slf4j.Logger;
@@ -59,10 +59,14 @@ public abstract class CedarMicroserviceResource {
     HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     StackTraceElement caller = stackTrace[2];
-    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START, sc.getRequestIdHeader())
+    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START, sc.getGlobalRequestIdHeader(),
+        sc.getLocalRequestIdHeader())
         .param(AppLogParam.CLASS_NAME, caller.getClassName())
         .param(AppLogParam.METHOD_NAME, caller.getMethodName())
         .param(AppLogParam.LINE_NUMBER, caller.getLineNumber())
+        .param(AppLogParam.USER_ID, sc.getCedarUser() != null ? sc.getCedarUser().getId() : null)
+        .param(AppLogParam.CLIENT_SESSION_ID, sc.getClientSessionIdHeader())
+        .param(AppLogParam.AUTH_SOURCE, sc.getCedarUser() != null ? sc.getCedarUser().getAuthSource() : null)
         .enqueue();
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();

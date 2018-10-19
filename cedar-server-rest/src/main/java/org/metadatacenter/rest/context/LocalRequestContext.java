@@ -24,7 +24,17 @@ public class LocalRequestContext extends AbstractRequestContext {
   }
 
   @Override
-  public String getRequestIdHeader() {
+  public String getGlobalRequestIdHeader() {
+    return null;
+  }
+
+  @Override
+  public String getLocalRequestIdHeader() {
+    return null;
+  }
+
+  @Override
+  public String getClientSessionIdHeader() {
     return null;
   }
 

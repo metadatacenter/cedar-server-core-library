@@ -1,5 +1,6 @@
 package org.metadatacenter.server.logging.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.ServerName;
 import org.metadatacenter.server.logging.AppLogger;
@@ -12,21 +13,26 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppLogMessage {
 
-  private String requestId;
+  private String globalRequestId;
+  private String localRequestId;
   private ServerName serverName;
   private AppLogType type;
   private AppLogSubType subType;
-  private Instant time;
+  private Instant logTime;
+  private Instant startTime;
+  private Instant endTime;
   private Duration duration;
   private Map<String, Object> parameters = new HashMap<>();
 
   public AppLogMessage() {
   }
 
-  public AppLogMessage(ServerName serverName, String requestId, AppLogType type, AppLogSubType subType) {
-    this.time = Instant.now();
+  public AppLogMessage(ServerName serverName, AppLogType type, AppLogSubType subType, String globalRequestId,
+                       String localRequestId) {
+    this.logTime = Instant.now();
     this.serverName = serverName;
-    this.requestId = requestId;
+    this.globalRequestId = globalRequestId;
+    this.localRequestId = localRequestId;
     this.type = type;
     this.subType = subType;
   }
@@ -34,6 +40,14 @@ public class AppLogMessage {
   public AppLogMessage param(AppLogParam param, Object value) {
     this.parameters.put(param.getValue(), value);
     return this;
+  }
+
+  public void setStartTime(Instant startTime) {
+    this.startTime = startTime;
+  }
+
+  public void setEndTime(Instant endTime) {
+    this.endTime = endTime;
   }
 
   public void setDuration(Duration duration) {
@@ -44,8 +58,12 @@ public class AppLogMessage {
     AppLogger.enqueue(this);
   }
 
-  public String getRequestId() {
-    return requestId;
+  public String getGlobalRequestId() {
+    return globalRequestId;
+  }
+
+  public String getLocalRequestId() {
+    return localRequestId;
   }
 
   public ServerName getServerName() {
@@ -60,28 +78,49 @@ public class AppLogMessage {
     return subType;
   }
 
-  public String getParamAsString(AppLogParam paramName) {
-    return (String)parameters.get(paramName.getValue());
+  public Instant getLogTime() {
+    return logTime;
   }
 
-  public Instant getParamAsInstant(AppLogParam paramName) {
-    return (Instant)parameters.get(paramName.getValue());
+  public Instant getStartTime() {
+    return startTime;
   }
 
-  public int getParamAsInt(AppLogParam paramName) {
-    Object o = parameters.get(paramName.getValue());
-    if (o == null) {
-      return 0;
-    } else {
-      return (Integer)o;
-    }
-  }
-
-  public Instant getTime() {
-    return time;
+  public Instant getEndTime() {
+    return endTime;
   }
 
   public Duration getDuration() {
     return duration;
   }
+
+  public Map<String, Object> getParameters() {
+    return parameters;
+  }
+
+  @JsonIgnore
+  public String getParamAsString(AppLogParam paramName) {
+    return (String) parameters.get(paramName.getValue());
+  }
+
+  @JsonIgnore
+  public Instant getParamAsInstant(AppLogParam paramName) {
+    return (Instant) parameters.get(paramName.getValue());
+  }
+
+  @JsonIgnore
+  public Map<String, Object> getParamAsMap(AppLogParam paramName) {
+    return (Map<String, Object>) parameters.get(paramName.getValue());
+  }
+
+  @JsonIgnore
+  public int getParamAsInt(AppLogParam paramName) {
+    Object o = parameters.get(paramName.getValue());
+    if (o == null) {
+      return 0;
+    } else {
+      return (Integer) o;
+    }
+  }
+
 }

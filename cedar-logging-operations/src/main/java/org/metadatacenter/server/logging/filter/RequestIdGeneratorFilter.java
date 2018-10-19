@@ -9,10 +9,10 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
-import static org.metadatacenter.constant.CedarHeaderParameters.REQUEST_ID_KEY;
+import static org.metadatacenter.constant.CedarHeaderParameters.GLOBAL_REQUEST_ID_KEY;
+import static org.metadatacenter.constant.CedarHeaderParameters.LOCAL_REQUEST_ID_KEY;
 
 @Provider
 public class RequestIdGeneratorFilter implements ContainerRequestFilter {
@@ -20,25 +20,25 @@ public class RequestIdGeneratorFilter implements ContainerRequestFilter {
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
 
-    String requestId = requestContext.getHeaderString(REQUEST_ID_KEY);
+    if (requestContext.getMethod() == "OPTIONS") {
+      return;
+    }
+
+    String globalRequestId = requestContext.getHeaderString(GLOBAL_REQUEST_ID_KEY);
     String requestIdSource = "new";
-    String className = null;
-    if (requestId == null) {
-      requestId = UUID.randomUUID().toString();
-      requestContext.getHeaders().add(REQUEST_ID_KEY, requestId);
+    if (globalRequestId == null) {
+      globalRequestId = UUID.randomUUID().toString();
+      requestContext.getHeaders().remove(GLOBAL_REQUEST_ID_KEY);
+      requestContext.getHeaders().add(GLOBAL_REQUEST_ID_KEY, globalRequestId);
     } else {
       requestIdSource = "request";
     }
-    requestContext.getMethod();
-    List<Object> matchedResources = requestContext.getUriInfo().getMatchedResources();
-    if (!matchedResources.isEmpty()) {
-      Object o = matchedResources.get(0);
-      className = o.getClass().getName();
-    }
+    String localRequestId = UUID.randomUUID().toString();
+    requestContext.getHeaders().remove(LOCAL_REQUEST_ID_KEY);
+    requestContext.getHeaders().add(LOCAL_REQUEST_ID_KEY, localRequestId);
 
-    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.START, requestId)
-        .param(AppLogParam.REQUEST_ID_SOURCE, requestIdSource)
-        .param(AppLogParam.CLASS_NAME, className)
+    AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.START, globalRequestId, localRequestId)
+        .param(AppLogParam.GLOBAL_REQUEST_ID_SOURCE, requestIdSource)
         .param(AppLogParam.HTTP_METHOD, requestContext.getMethod())
         .param(AppLogParam.PATH, requestContext.getUriInfo().getPath())
         .param(AppLogParam.QUERY_PARAMETERS, requestContext.getUriInfo().getQueryParameters())

@@ -5,6 +5,7 @@ import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.CedarUserAuthSource;
 
 import java.io.IOException;
 
@@ -36,6 +37,7 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
       if (user == null) {
         throw new CedarUserNotFoundException(new FailedToLoadUserByTokenException(null));
       } else {
+        user.setAuthSource(CedarUserAuthSource.TOKEN);
         return user;
       }
     } else if (authRequest instanceof CedarApiKeyAuthRequest) {
@@ -47,6 +49,7 @@ public class AuthorizationKeycloakAndApiKeyResolver implements IAuthorizationRes
       if (user == null) {
         throw new CedarUserNotFoundException(new ApiKeyNotFoundException(authRequest.getAuthString()));
       } else {
+        user.setAuthSource(CedarUserAuthSource.API_KEY);
         return user;
       }
     } else if (authRequest instanceof CedarUnknownAuthRequest) {
