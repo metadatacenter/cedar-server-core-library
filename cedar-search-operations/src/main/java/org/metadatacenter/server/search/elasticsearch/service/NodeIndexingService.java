@@ -82,9 +82,4 @@ public class NodeIndexingService extends AbstractIndexingService {
     }
   }
 
-  public void removeDocumentFromIndex(IndexedDocumentId indexedDocumentId) {
-    log.debug("Removing node from index (_id = " + indexedDocumentId.getId());
-    indexWorker.removeFromIndex(indexedDocumentId);
-  }
-
 }

@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
+import static org.metadatacenter.constant.ElasticsearchConstants.TEMPLATE_ID;
+
 public class RulesIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(RulesIndexingService.class);
@@ -22,7 +24,7 @@ public class RulesIndexingService extends AbstractIndexingService {
   private final ElasticsearchIndexingWorker indexWorker;
   //private final IndexUtils indexUtils;
 
-  RulesIndexingService(String indexName, Client client) throws CedarProcessingException {
+  RulesIndexingService(String indexName, Client client) {
     indexWorker = new ElasticsearchIndexingWorker(indexName, client);
 
     // If the cedar-value-recommender index does not exist, create it
@@ -50,9 +52,9 @@ public class RulesIndexingService extends AbstractIndexingService {
 
   public long removeRulesFromIndex(String templateId) throws CedarProcessingException {
     if (templateId != null) {
-      return indexWorker.removeAllFromIndex(templateId);
+      return indexWorker.removeAllFromIndex(TEMPLATE_ID, templateId);
     } else {
-      throw new CedarProcessingException("TemplateId is null");
+      throw new CedarProcessingException("templateId is null");
     }
   }
 
