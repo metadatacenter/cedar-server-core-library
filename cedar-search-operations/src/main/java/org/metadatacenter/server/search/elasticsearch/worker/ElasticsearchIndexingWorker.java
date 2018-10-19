@@ -65,8 +65,14 @@ public class ElasticsearchIndexingWorker {
     return newId;
   }
 
+  /**
+   * Removes from the index all documents that match a given CEDAR resource id
+   * @param resourceId
+   * @return
+   * @throws CedarProcessingException
+   */
   public long removeAllFromIndex(String resourceId) throws CedarProcessingException {
-    log.debug("Removing " + documentType + " cid:" + resourceId + " from the index.");
+    log.debug("Removing " + documentType + " cid:" + resourceId + " from the " + indexName + " index");
     try {
       // Get resources by resource id
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
@@ -76,23 +82,14 @@ public class ElasticsearchIndexingWorker {
       long removedCount = 0;
       // Delete by Elasticsearch id
       for (SearchHit hit : responseSearch.getHits()) {
-        String hitId = hit.getId();
-        log.debug(("Try to delete " + documentType + " _id:" + hitId));
-        DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(indexName, documentType, hit.getId());
-        DeleteResponse responseDelete = deleteRequestBuilder.execute().actionGet();
-        if (responseDelete.status() != RestStatus.OK) {
-          throw new CedarProcessingException("Failed to remove " + documentType
-              + " _id:" + hitId + " cid:" + resourceId + " from the index");
-        } else {
-          log.debug("The " + documentType + " " + hitId + " has been removed from the index");
-          removedCount++;
-        }
+        removeFromIndex(hit.getId());
+        removedCount++;
       }
       if (removedCount == 0) {
-        log.error("The " + documentType + " cid:" + resourceId + " was not removed from the index.");
+        log.error("The " + documentType + " cid:" + resourceId + " was not removed from the " + indexName + " index");
       } else {
         log.debug("Removed " + removedCount + " documents of type " + documentType + " cid:" + resourceId
-            + " from the index.");
+            + " from the " + indexName + " index");
       }
       return removedCount;
     } catch (Exception e) {
@@ -100,8 +97,46 @@ public class ElasticsearchIndexingWorker {
     }
   }
 
-  public void removeFromIndex(IndexedDocumentId indexedDocumentId) {
-    log.debug("Removing " + documentType + " _id:" + indexedDocumentId.getId() + " from the index.");
-    client.prepareDelete(indexName, documentType, indexedDocumentId.getId()).get();
+  /**
+   * Removes from the index all documents with fieldName = fieldValue
+   * @param fieldName
+   * @param fieldValue
+   * @return
+   * @throws CedarProcessingException
+   */
+  public long removeAllFromIndex(String fieldName, String fieldValue) throws CedarProcessingException {
+    log.debug("Removing from the " + indexName + " index the documents with " + fieldName + "=" + fieldValue);
+    try {
+      // Get resources by resource id
+      SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
+          .setQuery(QueryBuilders.matchQuery(fieldName, fieldValue))
+          .execute().actionGet();
+      long removedCount = 0;
+
+      // Delete by Elasticsearch id
+      for (SearchHit hit : responseSearch.getHits()) {
+        removeFromIndex(hit.getId());
+        removedCount++;
+      }
+      if (removedCount == 0) {
+        log.error("No documents have been removed from the " + indexName + " index");
+      } else {
+        log.debug("Removed " + removedCount + " documents from the " + indexName + " index");
+      }
+      return removedCount;
+    } catch (Exception e) {
+      throw new CedarProcessingException(e);
+    }
+  }
+
+  public void removeFromIndex(String documentId) throws CedarProcessingException {
+    DeleteRequestBuilder deleteRequestBuilder = client.prepareDelete(indexName, documentType, documentId);
+    DeleteResponse responseDelete = deleteRequestBuilder.execute().actionGet();
+    if (responseDelete.status() != RestStatus.OK) {
+      throw new CedarProcessingException("Failed to remove " + documentType
+          + " _id:" + documentId + " from the " + indexName + " index");
+    } else {
+      log.debug("The " + documentType + " " + documentId + " has been removed from the " + indexName + " index");
+    }
   }
 }
