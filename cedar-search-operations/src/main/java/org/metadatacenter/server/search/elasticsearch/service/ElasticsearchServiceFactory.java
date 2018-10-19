@@ -40,4 +40,13 @@ public class ElasticsearchServiceFactory {
   public NodeSearchingService nodeSearchingService() {
     return new NodeSearchingService(instance.cedarConfig, instance.managementService.getClient());
   }
+
+  public RulesIndexingService rulesIndexingService() {
+    return rulesIndexingService(instance.cedarConfig.getElasticsearchConfig().getIndexes().getRulesIndex().getName());
+  }
+
+  public RulesIndexingService rulesIndexingService(String indexName) {
+    return new RulesIndexingService(indexName, instance.managementService.getClient());
+  }
+
 }
