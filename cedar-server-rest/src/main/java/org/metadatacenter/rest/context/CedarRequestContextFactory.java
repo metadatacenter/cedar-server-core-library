@@ -20,13 +20,13 @@ public class CedarRequestContextFactory {
     CedarRequestContextFactory.linkedDataUtil = linkedDataUtil;
   }
 
-  public static CedarRequestContext fromRequest(HttpServletRequest request) throws CedarAccessException {
+  /*public static CedarRequestContext fromRequest(HttpServletRequest request) throws CedarAccessException {
     HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request);
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();
     }
     return sc;
-  }
+  }*/
 
   public static CedarRequestContext fromUser(CedarUser user) throws CedarAccessException {
     LocalRequestContext lrc = new LocalRequestContext(linkedDataUtil, user);

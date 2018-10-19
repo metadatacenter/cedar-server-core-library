@@ -10,12 +10,14 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession implements VersionServiceSession {
 
-  public Neo4JUserSessionVersionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  private Neo4JUserSessionVersionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
+                                         String globalRequestId, String localRequestId) {
+    super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static VersionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionVersionService(cedarConfig, proxies, cedarUser);
+  public static VersionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                          String globalRequestId, String localRequestId) {
+    return new Neo4JUserSessionVersionService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
   @Override

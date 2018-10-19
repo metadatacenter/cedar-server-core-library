@@ -13,12 +13,17 @@ public abstract class AbstractNeo4JUserSession {
   protected final CedarUser cu;
   protected final CedarConfig cedarConfig;
   protected final LinkedDataUtil linkedDataUtil;
+  protected final String globalRequestId;
+  protected final String localRequestId;
 
-  public AbstractNeo4JUserSession(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
+  public AbstractNeo4JUserSession(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId
+      , String localRequestId) {
     this.cedarConfig = cedarConfig;
     this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
     this.proxies = proxies;
     this.cu = cu;
+    this.globalRequestId = globalRequestId;
+    this.localRequestId = localRequestId;
   }
 
   protected FolderServerUser getNodeOwner(String nodeURL) {

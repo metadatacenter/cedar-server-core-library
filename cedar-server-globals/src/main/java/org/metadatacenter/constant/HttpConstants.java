@@ -15,8 +15,8 @@ public final class HttpConstants {
   public static final String HTTP_HEADER_ACCEPT = "Accept";
 
   // HTTP header prefix
-  public final static String HTTP_AUTH_HEADER_BEARER_PREFIX = "Bearer ";
-  public final static String HTTP_AUTH_HEADER_APIKEY_PREFIX = "apiKey ";
+  public static final String HTTP_AUTH_HEADER_BEARER_PREFIX = "Bearer ";
+  public static final String HTTP_AUTH_HEADER_APIKEY_PREFIX = "apiKey ";
 
   // HTTP Link header types
   public static final String HEADER_LINK_TYPE_FIRST = "first";

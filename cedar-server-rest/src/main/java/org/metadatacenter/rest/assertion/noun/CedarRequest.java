@@ -11,10 +11,6 @@ public interface CedarRequest extends CedarAssertionNoun {
 
   String getContentType();
 
-  String getAuthorizationHeader();
-
-  String getDebugHeader();
-
   CedarParameter wrapQueryParam(String paramName, Optional<?> paramValue);
 
 }

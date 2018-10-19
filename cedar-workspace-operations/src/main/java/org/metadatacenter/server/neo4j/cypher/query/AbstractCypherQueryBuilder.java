@@ -14,8 +14,8 @@ import java.util.List;
 
 public abstract class AbstractCypherQueryBuilder {
 
-  protected final static int ORDER_FOLDER = 1;
-  protected final static int ORDER_NON_FOLDER = 2;
+  protected static final int ORDER_FOLDER = 1;
+  protected static final int ORDER_NON_FOLDER = 2;
   protected static final String ALIAS_FOO = "foo";
 
   protected static String buildCreateAssignment(NodeProperty property) {

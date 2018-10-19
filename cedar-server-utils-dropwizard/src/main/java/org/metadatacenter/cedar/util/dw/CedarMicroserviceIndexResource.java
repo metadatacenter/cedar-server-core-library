@@ -13,8 +13,8 @@ import java.util.Map;
 public class CedarMicroserviceIndexResource extends CedarMicroserviceResource {
 
   private static String serverName;
-  private final static Map<String, Object> info;
-  private final static Map<String, Object> apiDocs;
+  private static final Map<String, Object> info;
+  private static final Map<String, Object> apiDocs;
 
   static {
     apiDocs = new HashMap<>();

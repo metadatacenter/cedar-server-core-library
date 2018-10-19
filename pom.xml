@@ -32,9 +32,11 @@
     <module>cedar-template-operations</module>
     <module>cedar-user-operations</module>
     <module>cedar-server-rest</module>
-    <module>cedar-search-operations</module>
     <module>cedar-cache-operations</module>
+    <module>cedar-search-operations</module>
+    <module>cedar-queue-operations</module>
     <module>cedar-permissions-operations</module>
+    <module>cedar-logging-operations</module>
   </modules>
 
 </project>
