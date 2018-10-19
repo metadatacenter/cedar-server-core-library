@@ -10,6 +10,8 @@ import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.server.logging.AppLogger;
+import org.metadatacenter.server.logging.filter.LoggingContext;
+import org.metadatacenter.server.logging.filter.ThreadLocalRequestIdHolder;
 import org.metadatacenter.server.logging.model.AppLogMessage;
 import org.metadatacenter.server.logging.model.AppLogParam;
 import org.metadatacenter.server.logging.model.AppLogSubType;
@@ -116,7 +118,16 @@ public abstract class AbstractNeo4JProxy {
       e.printStackTrace();
     }
 
-    AppLogMessage appLog = AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, null, null)
+    LoggingContext loggingContext = ThreadLocalRequestIdHolder.getLoggingContext();
+    String globalRequestId = null;
+    String localRequestId = null;
+    if (loggingContext != null) {
+      globalRequestId = loggingContext.getGlobalRequestId();
+      localRequestId = loggingContext.getLocalRequestId();
+    }
+
+    AppLogMessage appLog =
+        AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, globalRequestId, localRequestId)
         .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
         .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
         .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())

@@ -37,6 +37,8 @@ public class RequestIdGeneratorFilter implements ContainerRequestFilter {
     requestContext.getHeaders().remove(LOCAL_REQUEST_ID_KEY);
     requestContext.getHeaders().add(LOCAL_REQUEST_ID_KEY, localRequestId);
 
+    ThreadLocalRequestIdHolder.setLoggingContext(new LoggingContext(globalRequestId, localRequestId));
+
     AppLogger.message(AppLogType.REQUEST_FILTER, AppLogSubType.START, globalRequestId, localRequestId)
         .param(AppLogParam.GLOBAL_REQUEST_ID_SOURCE, requestIdSource)
         .param(AppLogParam.HTTP_METHOD, requestContext.getMethod())
