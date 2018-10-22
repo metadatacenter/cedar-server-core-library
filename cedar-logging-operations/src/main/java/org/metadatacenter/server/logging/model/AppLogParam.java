@@ -12,6 +12,7 @@ public enum AppLogParam {
   HTTP_METHOD("httpMethod"),
   USER_ID("userId"),
   CLIENT_SESSION_ID("clientSessionId"),
+  JWT_TOKEN_HASH("jwtTokenHash"),
   AUTH_SOURCE("authSource"),
   PATH("path"),
   ORIGINAL_QUERY("originalQuery"),

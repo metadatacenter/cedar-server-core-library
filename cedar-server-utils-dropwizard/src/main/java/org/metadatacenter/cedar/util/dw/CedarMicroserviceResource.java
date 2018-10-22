@@ -1,5 +1,6 @@
 package org.metadatacenter.cedar.util.dw;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.rest.context.CedarRequestContext;
@@ -21,6 +22,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+
+import static org.metadatacenter.constant.HttpConstants.HTTP_AUTH_HEADER_BEARER_PREFIX;
 
 @Produces(MediaType.APPLICATION_JSON)
 public abstract class CedarMicroserviceResource {
@@ -59,6 +62,14 @@ public abstract class CedarMicroserviceResource {
     HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     StackTraceElement caller = stackTrace[2];
+
+    String authHeader = sc.getAuthorizationHeader();
+    String jwtTokenHash = null;
+    if (authHeader != null && authHeader.startsWith(HTTP_AUTH_HEADER_BEARER_PREFIX)) {
+      String headerValue = authHeader.substring(HTTP_AUTH_HEADER_BEARER_PREFIX.length());
+      jwtTokenHash = DigestUtils.md5Hex(headerValue);
+    }
+
     AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START, sc.getGlobalRequestIdHeader(),
         sc.getLocalRequestIdHeader())
         .param(AppLogParam.CLASS_NAME, caller.getClassName())
@@ -66,6 +77,7 @@ public abstract class CedarMicroserviceResource {
         .param(AppLogParam.LINE_NUMBER, caller.getLineNumber())
         .param(AppLogParam.USER_ID, sc.getCedarUser() != null ? sc.getCedarUser().getId() : null)
         .param(AppLogParam.CLIENT_SESSION_ID, sc.getClientSessionIdHeader())
+        .param(AppLogParam.JWT_TOKEN_HASH, jwtTokenHash)
         .param(AppLogParam.AUTH_SOURCE, sc.getCedarUser() != null ? sc.getCedarUser().getAuthSource() : null)
         .enqueue();
     if (sc.getUserCreationException() != null) {

@@ -31,7 +31,7 @@ public class AppLoggerExecutorService {
         requestLogDAO.createOrUpdate(l);
       } else if (appLog.getSubType() == AppLogSubType.END) {
         ApplicationRequestLog oldLog = requestLogDAO.findByLocalRequestIdAndServer(appLog.getLocalRequestId(),
-            appLog.getServerName());
+            appLog.getSystemComponent());
         if (oldLog != null) {
           oldLog.mergeEndLog(appLog);
           requestLogDAO.createOrUpdate(oldLog);
@@ -39,7 +39,7 @@ public class AppLoggerExecutorService {
       }
     } else if (appLog.getType() == AppLogType.REQUEST_HANDLER) {
       ApplicationRequestLog oldLog = requestLogDAO.findByLocalRequestIdAndServer(appLog.getLocalRequestId(),
-          appLog.getServerName());
+          appLog.getSystemComponent());
       if (oldLog != null) {
         oldLog.mergeStartLog(appLog);
         requestLogDAO.createOrUpdate(oldLog);

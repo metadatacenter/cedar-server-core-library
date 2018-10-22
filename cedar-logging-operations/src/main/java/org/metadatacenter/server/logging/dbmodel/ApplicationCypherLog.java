@@ -28,7 +28,7 @@ public class ApplicationCypherLog {
   private String localRequestId;
 
   @Column(length = 50)
-  private String serverName;
+  private String systemComponentName;
 
   private long duration;
 
@@ -71,7 +71,7 @@ public class ApplicationCypherLog {
     ApplicationCypherLog l = new ApplicationCypherLog();
     l.globalRequestId = appLog.getGlobalRequestId();
     l.localRequestId = appLog.getLocalRequestId();
-    l.serverName = appLog.getServerName().getName();
+    l.systemComponentName = appLog.getSystemComponent().getStringValue();
     l.original = appLog.getParamAsString(AppLogParam.ORIGINAL_QUERY);
     l.runnable = appLog.getParamAsString(AppLogParam.RUNNABLE_QUERY);
     l.interpolated = appLog.getParamAsString(AppLogParam.INTERPOLATED_QUERY);

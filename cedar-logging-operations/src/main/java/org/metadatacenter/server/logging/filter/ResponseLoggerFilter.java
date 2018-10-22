@@ -14,7 +14,7 @@ import static org.metadatacenter.constant.CedarHeaderParameters.GLOBAL_REQUEST_I
 import static org.metadatacenter.constant.CedarHeaderParameters.LOCAL_REQUEST_ID_KEY;
 
 @Provider
-public class RESTLoggerFilter implements ContainerResponseFilter {
+public class ResponseLoggerFilter implements ContainerResponseFilter {
 
   @Override
   public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)

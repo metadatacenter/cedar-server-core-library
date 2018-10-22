@@ -22,7 +22,7 @@ import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.AppLoggerQueueService;
-import org.metadatacenter.server.logging.filter.RESTLoggerFilter;
+import org.metadatacenter.server.logging.filter.ResponseLoggerFilter;
 import org.metadatacenter.server.logging.filter.RequestIdGeneratorFilter;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
@@ -117,7 +117,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     Authorization.setUserService(CedarDataServices.getUserService());
 
     appLoggerQueueService = new AppLoggerQueueService(cedarConfig.getCacheConfig().getPersistent());
-    AppLogger.initLoggerQueueService(appLoggerQueueService, getServerName());
+    AppLogger.initLoggerQueueService(appLoggerQueueService, SystemComponent.getFor(getServerName()));
 
     //Continue with the app
     initializeApp();
@@ -140,7 +140,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     runApp(configuration, environment);
 
     environment.jersey().register(RequestIdGeneratorFilter.class);
-    environment.jersey().register(RESTLoggerFilter.class);
+    environment.jersey().register(ResponseLoggerFilter.class);
   }
 
   private Integer getApplicationHttpPort(T configuration) {

@@ -31,7 +31,7 @@ public class ApplicationRequestLog {
   private String localRequestId;
 
   @Column(length = 50)
-  private String serverName;
+  private String systemComponentName;
 
   @Column(length = 50)
   private String type;
@@ -48,10 +48,13 @@ public class ApplicationRequestLog {
   @Column(length = 255)
   private String clientSessionId;
 
+  @Column(length = 32)
+  private String jwtTokenHash;
+
   @Column(length = 20)
   private String authSource;
 
-  private Instant queryTime;
+  private Instant requestTime;
 
   private Instant startTime;
 
@@ -82,8 +85,8 @@ public class ApplicationRequestLog {
     ApplicationRequestLog l = new ApplicationRequestLog();
     l.globalRequestId = appLog.getGlobalRequestId();
     l.localRequestId = appLog.getLocalRequestId();
-    l.serverName = appLog.getServerName().getName();
-    l.queryTime = appLog.getLogTime();
+    l.systemComponentName = appLog.getSystemComponent().getStringValue();
+    l.requestTime = appLog.getLogTime();
     l.type = appLog.getType().getValue();
     l.subType = appLog.getSubType().getValue();
     l.globalRequestIdSource = appLog.getParamAsString(AppLogParam.GLOBAL_REQUEST_ID_SOURCE);
@@ -108,6 +111,7 @@ public class ApplicationRequestLog {
     lineNumber = appLog.getParamAsInt(AppLogParam.LINE_NUMBER);
     userId = appLog.getParamAsString(AppLogParam.USER_ID);
     clientSessionId = appLog.getParamAsString(AppLogParam.CLIENT_SESSION_ID);
+    jwtTokenHash = appLog.getParamAsString(AppLogParam.JWT_TOKEN_HASH);
     authSource = appLog.getParamAsString(AppLogParam.AUTH_SOURCE);
     startTime = appLog.getLogTime();
   }
@@ -119,8 +123,8 @@ public class ApplicationRequestLog {
     if (startTime != null && endTime != null) {
       handlerDuration = Duration.between(startTime, endTime).toNanos();
     }
-    if (queryTime != null && startTime != null) {
-      preHandlerDuration = Duration.between(queryTime, startTime).toNanos();
+    if (requestTime != null && startTime != null) {
+      preHandlerDuration = Duration.between(requestTime, startTime).toNanos();
     }
   }
 

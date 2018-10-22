@@ -3,6 +3,7 @@ package org.metadatacenter.server.logging.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.ServerName;
+import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.server.logging.AppLogger;
 
 import java.time.Duration;
@@ -15,7 +16,7 @@ public class AppLogMessage {
 
   private String globalRequestId;
   private String localRequestId;
-  private ServerName serverName;
+  private SystemComponent systemComponent;
   private AppLogType type;
   private AppLogSubType subType;
   private Instant logTime;
@@ -27,10 +28,10 @@ public class AppLogMessage {
   public AppLogMessage() {
   }
 
-  public AppLogMessage(ServerName serverName, AppLogType type, AppLogSubType subType, String globalRequestId,
+  public AppLogMessage(SystemComponent systemComponent, AppLogType type, AppLogSubType subType, String globalRequestId,
                        String localRequestId) {
     this.logTime = Instant.now();
-    this.serverName = serverName;
+    this.systemComponent = systemComponent;
     this.globalRequestId = globalRequestId;
     this.localRequestId = localRequestId;
     this.type = type;
@@ -66,8 +67,8 @@ public class AppLogMessage {
     return localRequestId;
   }
 
-  public ServerName getServerName() {
-    return serverName;
+  public SystemComponent getSystemComponent() {
+    return systemComponent;
   }
 
   public AppLogType getType() {
