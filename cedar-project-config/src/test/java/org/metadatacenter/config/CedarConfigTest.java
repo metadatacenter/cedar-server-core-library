@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class CedarConfigTest {
 
-  public final static String CEDAR_ADMIN_USER_PASSWORD = "Password123";
-  public final static String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
+  public static final String CEDAR_ADMIN_USER_PASSWORD = "Password123";
+  public static final String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
 
   @Before
   public void setEnvironment() {
@@ -63,7 +63,15 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_USER.getName(), "cedar_messaging_user");
     env.put(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_PASSWORD.getName(), "cedar_messaging_password");
 
+    env.put(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_HOST.getName(), "127.0.0.1");
+    env.put(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_PORT.getName(), "3306");
+    env.put(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_DB.getName(), "cedar_log");
+    env.put(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_USER.getName(), "cedar_log_user");
+    env.put(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_PASSWORD.getName(), "cedar_log_password");
+
     env.put(CedarEnvironmentVariable.CEDAR_SALT_API_KEY.getName(), "salt");
+
+    env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_TEMPLATE_ID_1.getName(), "http://template-id-1");
 
     env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_REST_BASE.getName(), "http://data.bioontology.org/");
 
@@ -178,24 +186,33 @@ public class CedarConfigTest {
   }
 
   @Test
-  public void testElasticSearchConfig() throws Exception {
+  public void testElasticSearchSearchConfig() throws Exception {
     CedarConfig instance = getCedarConfig();
-    ElasticsearchSettingsMappingsConfig elasticsearchSettingsMappingsConfig = instance
-        .getElasticsearchSettingsMappingsConfig();
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig);
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getSettings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings());
-    Assert.assertNotNull(elasticsearchSettingsMappingsConfig.getMappings().getDoc());
+    ElasticsearchSettingsMappingsConfig searchSettingsMappingsConfig = instance
+        .getSearchSettingsMappingsConfig();
+    Assert.assertNotNull(searchSettingsMappingsConfig);
+    Assert.assertNotNull(searchSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(searchSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(searchSettingsMappingsConfig.getMappings().getDoc());
 
-    ElasticsearchConfig elasticsearchConfig = instance.getElasticsearchConfig();
-
-    Map<String, Object> settings = elasticsearchSettingsMappingsConfig.getSettings();
+    Map<String, Object> settings = searchSettingsMappingsConfig.getSettings();
     Map<String, Object> index = (Map<String, Object>) settings.get("index");
     Map<String, Object> analysis = (Map<String, Object>) index.get("analysis");
     Map<String, Object> tokenizer = (Map<String, Object>) analysis.get("tokenizer");
     Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("ngram_tokenizer");
 
     Assert.assertEquals("ngram", ngram_tokenizer.get("type"));
+  }
+
+  @Test
+  public void testElasticSearchRulesConfig() throws Exception {
+    CedarConfig instance = getCedarConfig();
+    ElasticsearchSettingsMappingsConfig rulesSettingsMappingsConfig = instance
+        .getSearchSettingsMappingsConfig();
+    Assert.assertNotNull(rulesSettingsMappingsConfig);
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getSettings());
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getMappings());
+    Assert.assertNotNull(rulesSettingsMappingsConfig.getMappings().getDoc());
   }
 
 }

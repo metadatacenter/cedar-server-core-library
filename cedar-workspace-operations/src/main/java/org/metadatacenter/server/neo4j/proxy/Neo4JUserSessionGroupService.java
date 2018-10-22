@@ -2,12 +2,12 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.GroupServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarGroupUser;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsers;
@@ -18,12 +18,14 @@ import java.util.*;
 
 public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession implements GroupServiceSession {
 
-  public Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  private Neo4JUserSessionGroupService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
+                                       String globalRequestId, String localRequestId) {
+    super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser);
+  public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                        String globalRequestId, String localRequestId) {
+    return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
   @Override

@@ -1,7 +1,7 @@
 package org.metadatacenter.config;
 
 import io.dropwizard.configuration.UndefinedEnvironmentVariableException;
-import org.apache.commons.lang3.text.StrLookup;
+import org.apache.commons.text.StrLookup;
 import org.metadatacenter.config.environment.CedarEnvironmentVariable;
 import org.metadatacenter.config.environment.CedarEnvironmentVariableSecure;
 import org.slf4j.Logger;
@@ -22,9 +22,9 @@ public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
 
   private final boolean strict;
   private final Map<String, String> environment;
-  private final static String SPACES = "                                        ";
-  private final static String STAR = "*";
-  private final static int SHOW_SECURE_CHARS = 2;
+  private static final String SPACES = "                                        ";
+  private static final String STAR = "*";
+  private static final int SHOW_SECURE_CHARS = 2;
 
   public CedarEnvironmentVariableLookup(Map<String, String> environment, boolean strict) {
     this.environment = environment;

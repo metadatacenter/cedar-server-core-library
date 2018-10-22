@@ -15,7 +15,7 @@ public abstract class AbstractExceptionMapper {
 
   protected boolean hideExceptionConditionally(CedarErrorPack errorPack) {
     if (!"true".equals(request.getParameter(CedarQueryParameters.QP_DEBUG)) &&
-        !"true".equals(request.getHeader(CedarHeaderParameters.HP_DEBUG))) {
+        !"true".equals(request.getHeader(CedarHeaderParameters.DEBUG))) {
       errorPack.resetSourceException();
       return true;
     } else {

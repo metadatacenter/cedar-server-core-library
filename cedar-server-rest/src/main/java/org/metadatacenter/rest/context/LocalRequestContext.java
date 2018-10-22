@@ -13,4 +13,29 @@ public class LocalRequestContext extends AbstractRequestContext {
     this.linkedDataUtil = linkedDataUtil;
   }
 
+  @Override
+  public String getAuthorizationHeader() {
+    return currentUser.getFirstApiKeyAuthHeader();
+  }
+
+  @Override
+  public String getDebugHeader() {
+    return "true";
+  }
+
+  @Override
+  public String getGlobalRequestIdHeader() {
+    return null;
+  }
+
+  @Override
+  public String getLocalRequestIdHeader() {
+    return null;
+  }
+
+  @Override
+  public String getClientSessionIdHeader() {
+    return null;
+  }
+
 }

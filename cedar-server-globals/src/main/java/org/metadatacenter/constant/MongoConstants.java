@@ -5,6 +5,6 @@ public final class MongoConstants {
   private MongoConstants() {
   }
 
-  public final static String ID = "_id";
+  public static final String ID = "_id";
 
 }

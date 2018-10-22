@@ -37,12 +37,16 @@ public enum SystemComponent {
     return serverName;
   }
 
-  public String getUseCase() {
-    return useCase;
+  public String getStringValue() {
+    if (serverName != null) {
+      return serverName.getName();
+    } else {
+      return useCase;
+    }
   }
 
   public static SystemComponent getFor(ServerName serverName) {
-    for(SystemComponent sc : values()) {
+    for (SystemComponent sc : values()) {
       if (sc.getServerName() == serverName) {
         return sc;
       }

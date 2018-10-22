@@ -10,7 +10,7 @@ import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
@@ -20,6 +20,10 @@ import org.metadatacenter.constant.CedarHeaderParameters;
 import org.metadatacenter.model.ServerName;
 import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
+import org.metadatacenter.server.logging.AppLogger;
+import org.metadatacenter.server.logging.AppLoggerQueueService;
+import org.metadatacenter.server.logging.filter.ResponseLoggerFilter;
+import org.metadatacenter.server.logging.filter.RequestIdGeneratorFilter;
 import org.metadatacenter.server.security.Authorization;
 import org.metadatacenter.server.security.AuthorizationKeycloakAndApiKeyResolver;
 import org.metadatacenter.server.security.IAuthorizationResolver;
@@ -45,6 +49,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
   protected static CedarConfig cedarConfig;
   protected static UserService userService;
+  protected static AppLoggerQueueService appLoggerQueueService;
 
   static {
     HTTP_HEADERS = new ArrayList<>();
@@ -55,7 +60,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     HTTP_HEADERS.add("Referer");
     HTTP_HEADERS.add("User-Agent");
     HTTP_HEADERS.add("Authorization");
-    HTTP_HEADERS.add(CedarHeaderParameters.HP_DEBUG);
+    HTTP_HEADERS.add(CedarHeaderParameters.DEBUG);
+    HTTP_HEADERS.add(CedarHeaderParameters.CLIENT_SESSION_ID);
 
     HTTP_METHODS = new ArrayList<>();
     HTTP_METHODS.add("OPTIONS");
@@ -110,6 +116,9 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     Authorization.setAuthorizationResolver(authResolver);
     Authorization.setUserService(CedarDataServices.getUserService());
 
+    appLoggerQueueService = new AppLoggerQueueService(cedarConfig.getCacheConfig().getPersistent());
+    AppLogger.initLoggerQueueService(appLoggerQueueService, SystemComponent.getFor(getServerName()));
+
     //Continue with the app
     initializeApp();
 
@@ -129,6 +138,9 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     log.info("********** Admin Port:" + adminPort);
     setupEnvironment(environment);
     runApp(configuration, environment);
+
+    environment.jersey().register(RequestIdGeneratorFilter.class);
+    environment.jersey().register(ResponseLoggerFilter.class);
   }
 
   private Integer getApplicationHttpPort(T configuration) {

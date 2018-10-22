@@ -30,4 +30,14 @@ public interface CedarRequestContext {
   CedarAccessException getUserCreationException();
 
   LinkedDataUtil getLinkedDataUtil();
+
+  String getAuthorizationHeader();
+
+  String getDebugHeader();
+
+  String getGlobalRequestIdHeader();
+
+  String getLocalRequestIdHeader();
+
+  String getClientSessionIdHeader();
 }

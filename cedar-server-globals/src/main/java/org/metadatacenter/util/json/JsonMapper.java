@@ -15,16 +15,24 @@ public final class JsonMapper {
   }
 
   public static final ObjectMapper MAPPER;
+  public static final ObjectMapper PRETTY_MAPPER;
 
   static {
-    MAPPER = new ObjectMapper();
-    MAPPER.registerModule(new JavaTimeModule());
     JavaTimeModule javaTimeModule = new JavaTimeModule();
     javaTimeModule.addSerializer(LocalDateTime.class,
         new LocalDateTimeSerializer(CedarConstants.xsdDateTimeFormatter));
     javaTimeModule.addDeserializer(LocalDateTime.class,
         new LocalDateTimeDeserializer(CedarConstants.xsdDateTimeFormatter));
+
+    MAPPER = new ObjectMapper();
+    MAPPER.registerModule(new JavaTimeModule());
     MAPPER.registerModule(javaTimeModule);
     MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    PRETTY_MAPPER = new ObjectMapper();
+    PRETTY_MAPPER.registerModule(new JavaTimeModule());
+    PRETTY_MAPPER.registerModule(javaTimeModule);
+    PRETTY_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    PRETTY_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
   }
 }

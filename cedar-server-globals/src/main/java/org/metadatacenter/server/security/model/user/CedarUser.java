@@ -31,6 +31,8 @@ public class CedarUser implements CedarUserRepresentation {
 
   private CedarUserUIPreferences uiPreferences;
 
+  private CedarUserAuthSource authSource;
+
   public CedarUser() {
     this.apiKeys = new ArrayList<>();
     this.roles = new ArrayList<>();
@@ -109,6 +111,15 @@ public class CedarUser implements CedarUserRepresentation {
 
   public void setUiPreferences(CedarUserUIPreferences uiPreferences) {
     this.uiPreferences = uiPreferences;
+  }
+
+  @JsonIgnore
+  public CedarUserAuthSource getAuthSource() {
+    return authSource;
+  }
+
+  public void setAuthSource(CedarUserAuthSource authSource) {
+    this.authSource = authSource;
   }
 
   @JsonIgnore

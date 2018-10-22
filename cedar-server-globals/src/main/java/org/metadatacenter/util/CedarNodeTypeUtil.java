@@ -6,10 +6,10 @@ import java.util.*;
 
 public class CedarNodeTypeUtil {
 
-  private final static List<CedarNodeType> validRestTypesList;
-  private final static List<String> validRestTypeValuesList;
-  private final static Set<CedarNodeType> validRestTypesSet;
-  private final static List<String> validVersioningTypeValuesList;
+  private static final List<CedarNodeType> validRestTypesList;
+  private static final List<String> validRestTypeValuesList;
+  private static final Set<CedarNodeType> validRestTypesSet;
+  private static final List<String> validVersioningTypeValuesList;
 
   static {
     validRestTypesSet = new LinkedHashSet<>();

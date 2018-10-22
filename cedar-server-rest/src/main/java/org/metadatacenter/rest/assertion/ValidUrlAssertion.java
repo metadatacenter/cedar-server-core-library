@@ -7,7 +7,7 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 
 public class ValidUrlAssertion implements CedarAssertion {
 
-  private final static UrlValidator urlValidator;
+  private static final UrlValidator urlValidator;
 
   static {
     String[] schemes = {"http", "https"};

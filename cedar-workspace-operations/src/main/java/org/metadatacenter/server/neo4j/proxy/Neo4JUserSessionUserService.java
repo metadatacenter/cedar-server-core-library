@@ -13,12 +13,14 @@ import java.util.List;
 
 public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implements UserServiceSession {
 
-  public Neo4JUserSessionUserService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu) {
-    super(cedarConfig, proxies, cu);
+  private Neo4JUserSessionUserService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
+                                      String globalRequestId, String localRequestId) {
+    super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static UserServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser) {
-    return new Neo4JUserSessionUserService(cedarConfig, proxies, cedarUser);
+  public static UserServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
+                                       String globalRequestId, String localRequestId) {
+    return new Neo4JUserSessionUserService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
   @Override

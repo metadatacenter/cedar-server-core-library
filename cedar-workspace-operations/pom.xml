@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.metadatacenter</groupId>
     <artifactId>cedar-server-core-library</artifactId>
-    <version>2.1.7</version>
+    <version>2.1.8</version>
   </parent>
 
   <groupId>org.metadatacenter</groupId>
@@ -27,13 +27,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
+      <groupId>org.metadatacenter</groupId>
+      <artifactId>cedar-logging-operations</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.neo4j.driver</groupId>
       <artifactId>neo4j-java-driver</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
 
   </dependencies>
