@@ -3,8 +3,6 @@ package org.metadatacenter.server.logging.dao;
 import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.metadatacenter.model.ServerName;
-import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.server.logging.dbmodel.ApplicationRequestLog;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,7 +19,7 @@ public class ApplicationRequestLogDAO extends AbstractDAO<ApplicationRequestLog>
     return persist(log).getId();
   }
 
-  public ApplicationRequestLog findByLocalRequestIdAndServer(String localRequestId, SystemComponent systemComponent) {
+  public ApplicationRequestLog findByLocalRequestId(String localRequestId) {
     CriteriaBuilder builder = currentSession().getCriteriaBuilder();
     CriteriaQuery<ApplicationRequestLog> query = builder.createQuery(ApplicationRequestLog.class);
     Root<ApplicationRequestLog> root = query.from(ApplicationRequestLog.class);
