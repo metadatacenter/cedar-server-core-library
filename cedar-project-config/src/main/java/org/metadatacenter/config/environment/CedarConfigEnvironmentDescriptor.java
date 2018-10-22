@@ -223,10 +223,12 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> redisPersistentHost = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_HOST);
     redisPersistentHost.addAll(allMicroservices);
+    redisPersistentHost.add(SystemComponent.ADMIN_TOOL);
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_PORT);
-    redisPersistentPort.addAll(redisPersistentHost);
+    redisPersistentPort.addAll(allMicroservices);
+    redisPersistentPort.add(SystemComponent.ADMIN_TOOL);
 
     Set<SystemComponent> cedarHttpPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_WORKSPACE_HTTP_PORT);

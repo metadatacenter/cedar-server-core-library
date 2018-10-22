@@ -26,9 +26,7 @@ public class ApplicationRequestLogDAO extends AbstractDAO<ApplicationRequestLog>
     CriteriaQuery<ApplicationRequestLog> query = builder.createQuery(ApplicationRequestLog.class);
     Root<ApplicationRequestLog> root = query.from(ApplicationRequestLog.class);
     query.select(root);
-    query.where(
-        builder.equal(root.get("localRequestId"), localRequestId),
-        builder.equal(root.get("serverName"), systemComponent.getServerName()));
+    query.where(builder.equal(root.get("localRequestId"), localRequestId));
     Query<ApplicationRequestLog> q = currentSession().createQuery(query);
     return q.uniqueResult();
   }
