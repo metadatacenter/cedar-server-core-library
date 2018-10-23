@@ -114,6 +114,8 @@ public enum CedarErrorKey {
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),
   VERSIONING_ONLY_ON_LATEST("versioningOnlyOnLatest"),
+  VERSIONING_ONLY_BY_OWNER("versioningOnlyByOwner"),
+  NON_VERSIONED_ARTIFACT_TYPE("nonVersionedArtifactType"),
   CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
   PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
 

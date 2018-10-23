@@ -3,6 +3,7 @@ package org.metadatacenter.server.search.elasticsearch.permission;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
@@ -41,15 +42,25 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
       currentUserPermissions.setCanPopulate(true);
     }
 
-
-    if (userCanPerformVersioning()) {
-      if (resourceCanBePublished()) {
+    OutcomeWithReason versioningOutcome = userCanPerformVersioning();
+    if (versioningOutcome.isNegative()) {
+      currentUserPermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
+      currentUserPermissions.setPublishErrorKey(versioningOutcome.getReason());
+    } else {
+      OutcomeWithReason publishOutcome = resourceCanBePublished();
+      if (publishOutcome.isPositive()) {
         currentUserPermissions.setCanPublish(true);
+      } else {
+        currentUserPermissions.setPublishErrorKey(publishOutcome.getReason());
       }
-      if (resourceCanBeDrafted()) {
+      OutcomeWithReason createDraftOutcome = resourceCanBeDrafted();
+      if (createDraftOutcome.isPositive()) {
         currentUserPermissions.setCanCreateDraft(true);
+      } else {
+        currentUserPermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
       }
     }
+
     if (indexedDocument.getInfo().getType() == CedarNodeType.INSTANCE) {
       if (isSubmittable()) {
         currentUserPermissions.setCanSubmit(true);

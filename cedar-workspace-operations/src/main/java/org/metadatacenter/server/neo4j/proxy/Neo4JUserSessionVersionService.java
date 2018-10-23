@@ -1,8 +1,10 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
@@ -21,26 +23,40 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
   }
 
   @Override
-  public boolean userCanPerformVersioning(ResourceWithCurrentUserPermissions resource) {
-    return userIsOwnerOfNode(resource.getId()) && resource.getType().isVersioned();
+  public OutcomeWithReason userCanPerformVersioning(ResourceWithCurrentUserPermissions resource) {
+    if (!userIsOwnerOfNode(resource.getId())) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_BY_OWNER);
+    }
+    if (!resource.getType().isVersioned()) {
+      return OutcomeWithReason.negative(CedarErrorKey.NON_VERSIONED_ARTIFACT_TYPE);
+    }
+    return OutcomeWithReason.positive();
   }
 
   @Override
-  public boolean resourceCanBePublished(ResourceWithCurrentUserPermissions resource) {
-    if (resource.getPublicationStatus() == BiboStatus.DRAFT) {
+  public OutcomeWithReason resourceCanBePublished(ResourceWithCurrentUserPermissions resource) {
+    if (resource.getPublicationStatus() != BiboStatus.DRAFT) {
+      return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
+    } else {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
-      return nextVersion == null;
+      if (nextVersion != null) {
+        return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+      }
     }
-    return false;
+    return OutcomeWithReason.positive();
   }
 
   @Override
-  public boolean resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource) {
-    if (resource.getPublicationStatus() == BiboStatus.PUBLISHED) {
+  public OutcomeWithReason resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource) {
+    if (resource.getPublicationStatus() != BiboStatus.PUBLISHED) {
+      return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
+    } else {
       FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
-      return nextVersion == null;
+      if (nextVersion != null) {
+        return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+      }
     }
-    return false;
+    return OutcomeWithReason.positive();
   }
 
 }
