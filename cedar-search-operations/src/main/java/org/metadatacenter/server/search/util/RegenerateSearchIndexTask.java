@@ -129,6 +129,7 @@ public class RegenerateSearchIndexTask {
               float progress = (100 * count++) / resources.size();
               log.info(String.format("Progress: %.0f%%", progress));
             }
+            count++;
           } catch (Exception e) {
             log.error("Error while indexing document: " + node.getId(), e);
           }
