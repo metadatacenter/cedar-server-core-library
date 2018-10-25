@@ -38,6 +38,15 @@ public class CedarParameterImpl extends CedarParameterNoun {
   }
 
   @Override
+  public boolean booleanValue() {
+    if (jsonNode != null && !jsonNode.isMissingNode() && !jsonNode.isNull()) {
+      return jsonNode.asBoolean();
+    } else {
+      return false;
+    }
+  }
+
+  @Override
   public boolean isNull() {
     return isMissing() || jsonNode.isNull();
   }
