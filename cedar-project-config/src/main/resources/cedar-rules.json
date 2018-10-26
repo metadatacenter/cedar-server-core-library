@@ -34,10 +34,13 @@
             "fieldPath": {
               "type": "keyword"
             },
-            "fieldInstanceType": {
+            "fieldType": {
               "type": "keyword"
             },
-            "fieldValue": {
+            "fieldNormalizedPath": {
+              "type": "keyword"
+            },
+            "fieldValueType": {
               "type": "keyword"
             },
             "fieldValueLabel": {
@@ -46,7 +49,7 @@
             "fieldNormalizedValue": {
               "type": "keyword"
             },
-            "fieldNormalizedPath": {
+            "fieldValueResult": {
               "type": "keyword"
             }
           }
@@ -57,10 +60,13 @@
             "fieldPath": {
               "type": "keyword"
             },
-            "fieldInstanceType": {
+            "fieldType": {
               "type": "keyword"
             },
-            "fieldValue": {
+            "fieldNormalizedPath": {
+              "type": "keyword"
+            },
+            "fieldValueType": {
               "type": "keyword"
             },
             "fieldValueLabel": {
@@ -69,7 +75,7 @@
             "fieldNormalizedValue": {
               "type": "keyword"
             },
-            "fieldNormalizedPath": {
+            "fieldValueResult": {
               "type": "keyword"
             }
           }
