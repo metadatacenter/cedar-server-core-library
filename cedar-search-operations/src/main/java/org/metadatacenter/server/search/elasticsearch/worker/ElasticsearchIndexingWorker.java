@@ -10,6 +10,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.exception.CedarProcessingException;
@@ -75,6 +77,8 @@ public class ElasticsearchIndexingWorker {
     log.debug("Removing " + documentType + " cid:" + resourceId + " from the " + indexName + " index");
     try {
       // Get resources by resource id
+      // TODO: note that this search query will retrieve only 10 results by default, so the maximum number
+      // of documents that will be removed will be 10. Consider using the "delete by query" API
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
           .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();
@@ -107,17 +111,11 @@ public class ElasticsearchIndexingWorker {
   public long removeAllFromIndex(String fieldName, String fieldValue) throws CedarProcessingException {
     log.debug("Removing from the " + indexName + " index the documents with " + fieldName + "=" + fieldValue);
     try {
-      // Get resources by resource id
-      SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
-          .setQuery(QueryBuilders.matchQuery(fieldName, fieldValue))
-          .execute().actionGet();
-      long removedCount = 0;
-
-      // Delete by Elasticsearch id
-      for (SearchHit hit : responseSearch.getHits()) {
-        removeFromIndex(hit.getId());
-        removedCount++;
-      }
+      // Use "delete by query" to delete all documents with fieldName = fieldValue
+      BulkByScrollResponse response = DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+          .filter(QueryBuilders.matchQuery(fieldName, fieldValue)).source(indexName)
+          .get();
+      long removedCount = response.getDeleted();
       if (removedCount == 0) {
         log.error("No documents have been removed from the " + indexName + " index");
       } else {
