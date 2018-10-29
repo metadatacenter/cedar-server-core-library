@@ -1,7 +1,9 @@
 package org.metadatacenter.server.search.elasticsearch.permission;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.BiboStatus;
+import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IdNodePermissionPair;
 import org.metadatacenter.search.IndexedDocumentDocument;
@@ -56,27 +58,37 @@ public abstract class AbstractCurrentUserPermissionUpdaterForSearch extends Curr
     }
   }
 
-  protected boolean userCanPerformVersioning() {
-    return indexedDocument.getInfo().getType().isVersioned() && documentIsOwned();
-  }
-
   private boolean documentIsOwned() {
     return indexedDocument.getInfo().getOwnedBy() != null &&
         indexedDocument.getInfo().getOwnedBy().equals(cedarUser.getId());
   }
 
-  public boolean resourceCanBePublished() {
-    if (indexedDocument.getInfo().isLatestVersion()) {
-      return indexedDocument.getInfo().getPublicationStatus() == BiboStatus.DRAFT;
+  protected OutcomeWithReason userCanPerformVersioning() {
+    if (!documentIsOwned()) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_BY_OWNER);
     }
-    return false;
+    if (!indexedDocument.getInfo().getType().isVersioned()) {
+      return OutcomeWithReason.negative(CedarErrorKey.NON_VERSIONED_ARTIFACT_TYPE);
+    }
+    return OutcomeWithReason.positive();
   }
 
-  public boolean resourceCanBeDrafted() {
-    if (indexedDocument.getInfo().isLatestVersion()) {
-      return indexedDocument.getInfo().getPublicationStatus() == BiboStatus.PUBLISHED;
+  public OutcomeWithReason resourceCanBePublished() {
+    if (indexedDocument.getInfo().getPublicationStatus() != BiboStatus.DRAFT) {
+      return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
+    } else if (!indexedDocument.getInfo().isLatestVersion()) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
     }
-    return false;
+    return OutcomeWithReason.positive();
+  }
+
+  public OutcomeWithReason resourceCanBeDrafted() {
+    if (indexedDocument.getInfo().getPublicationStatus() != BiboStatus.PUBLISHED) {
+      return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
+    } else if (!indexedDocument.getInfo().isLatestVersion()) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+    }
+    return OutcomeWithReason.positive();
   }
 
 }

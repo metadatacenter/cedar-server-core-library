@@ -44,7 +44,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
-    log.debug("Searching for parent documents: " + searchRequest);
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();

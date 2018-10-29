@@ -1,5 +1,6 @@
 package org.metadatacenter.error;
 
+import org.elasticsearch.ElasticsearchException;
 import org.metadatacenter.operation.CedarOperationDescriptor;
 
 import javax.ws.rs.core.Response;
@@ -36,7 +37,7 @@ public class CedarErrorPack {
       parameters.putAll(other.getParameters());
       entities.putAll(other.getEntities());
       suggestedAction = other.getSuggestedAction();
-      originalException = other.getOriginalException();
+      originalException = normalizeException(other.getOriginalException());
       sourceException = other.getSourceException();
       operation = other.getOperation();
     }
@@ -70,7 +71,7 @@ public class CedarErrorPack {
       suggestedAction = other.getSuggestedAction();
     }
     if (other.originalException != null) {
-      originalException = other.getOriginalException();
+      originalException = normalizeException(other.getOriginalException());
     }
     if (other.sourceException != null) {
       sourceException = other.getSourceException();
@@ -157,8 +158,8 @@ public class CedarErrorPack {
   }
 
   public CedarErrorPack sourceException(Exception sourceException) {
-    this.originalException = sourceException;
-    this.sourceException = new CedarErrorPackException(sourceException);
+    this.originalException = normalizeException(sourceException);
+    this.sourceException = new CedarErrorPackException(normalizeException(sourceException));
     return this;
   }
 
@@ -182,6 +183,18 @@ public class CedarErrorPack {
   public void resetSourceException() {
     this.originalException = null;
     this.sourceException = null;
+  }
+
+  private Exception normalizeException(Exception otherException) {
+    if (otherException == null) {
+      return null;
+    }
+    if (otherException instanceof ElasticsearchException) {
+      if (otherException == ((ElasticsearchException) otherException).getRootCause()) {
+        return new CedarFixedRecursiveException(otherException);
+      }
+    }
+    return otherException;
   }
 
 }

@@ -39,51 +39,36 @@ public class RegenerateSearchIndexTask {
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
-    int cedarIndexCount = 0;
+    String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
-    log.info("Looking for existing CEDAR indices...");
-    List<String> indexNames = esManagementService.getAllIndices();
-    log.info("Found total of " + indexNames.size() + " indices");
-    for (String iName : indexNames) {
-      log.info("Looking at index:" + iName);
-      if (iName.startsWith(indexName)) {
-        log.info("Found CEDAR index:" + iName);
-        cedarIndexCount++;
-      }
-    }
-    log.info("Found total of " + cedarIndexCount + " CEDAR indices");
-    if (cedarIndexCount > 0) {
-      log.info("Nothing to do!");
-    } else {
-      String newIndexName = indexUtils.getNewIndexName(indexName);
-      log.info("Creating brand new CEDAR index:" + newIndexName);
-      esManagementService.createSearchIndex(newIndexName);
-      esManagementService.addAlias(newIndexName, indexName);
-    }
+    indexUtils.ensureIndexAndAliasExist(esManagementService, aliasName);
   }
 
   public void regenerateSearchIndex(boolean force, CedarRequestContext requestContext) throws CedarProcessingException {
+    log.info("Regenerating search index. Force:" + force);
+
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
     NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
 
-    String indexName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
     boolean regenerate = true;
     try {
       PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
       // Get all resources
+      log.info("Reading all resources from the existing search index.");
       List<FolderServerNode> resources = indexUtils.findAllResources(requestContext);
       // Checks if is necessary to regenerate the index or not
       if (!force) {
-        log.info("Checking if it is necessary to regenerate the search index from DB");
+        log.info("Force is false. Checking if it is necessary to regenerate the search index from Neo4j.");
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
-        if (esManagementService.indexExists(indexName)) {
+        if (esManagementService.indexExists(aliasName)) {
+          log.warn("The search index/alias '" + aliasName + "' is present!");
           // Use the resource ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
-          log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
+          log.info("No. of nodes in Neo4j that are expected to be indexed: " + dbResourceIds.size());
           List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
           log.info("No. of content document in the index: " + indexResourceIds.size());
           if (dbResourceIds.size() == indexResourceIds.size()) {
@@ -94,22 +79,25 @@ public class RegenerateSearchIndexTask {
             Collections.sort(tmp2);
             if (tmp1.equals(tmp2)) {
               regenerate = false;
-              log.info("DB and search index match. It is not necessary to regenerate the index");
+              log.info("Neo4j and search index match. It is not necessary to regenerate the index");
             } else {
-              log.warn("DB and search index do not match! (different ids)");
+              log.warn("Neo4j and search index do not match! (different ids)");
             }
           } else {
-            log.warn("DB and search index do not match! (different size)");
+            log.warn("Neo4j and search index do not match! (different size)");
           }
         } else {
-          log.warn("The search index '" + indexName + "' does not exist!");
+          log.warn("The search index/alias '" + aliasName + "' does not exist!");
         }
+      } else {
+        log.info("Force is true. It is not needed to compare the search index and Neo4j");
       }
       if (regenerate) {
-        log.info("Regenerating search index");
+        log.info("After all the checks were performed, it seems that the index needs to be regenerated!");
         // Create new index and set it up
-        String newIndexName = indexUtils.getNewIndexName(indexName);
+        String newIndexName = indexUtils.getNewIndexName(aliasName);
         esManagementService.createSearchIndex(newIndexName);
+        log.info("Search index created:" + newIndexName);
 
         NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
 
@@ -129,29 +117,19 @@ public class RegenerateSearchIndexTask {
               float progress = (100 * count++) / resources.size();
               log.info(String.format("Progress: %.0f%%", progress));
             }
+            count++;
           } catch (Exception e) {
             log.error("Error while indexing document: " + node.getId(), e);
           }
         }
         // Point alias to new index
-        esManagementService.addAlias(newIndexName, indexName);
+        esManagementService.addAlias(newIndexName, aliasName);
+
         // Delete any other index previously associated to the alias
-        log.info("Looking for old indices...");
-        List<String> indexNames = esManagementService.getAllIndices();
-        log.info("Found " + indexNames.size());
-        for (String iName : indexNames) {
-          log.info("Found index:" + iName);
-          if (iName.startsWith(indexName)) {
-            if (!iName.equals(newIndexName)) {
-              log.info("Deleting old index:" + iName);
-              esManagementService.deleteIndex(iName);
-            } else {
-              log.info("Not deleting it, this was just generated");
-            }
-          } else {
-            log.info("Not touching it, this is not ours");
-          }
-        }
+        indexUtils.deleteOldIndices(esManagementService, aliasName, newIndexName);
+      } else {
+        log.info(
+            "After all the checks were performed, it seems that the index does not need to be regenerated this time.");
       }
     } catch (Exception e) {
       log.error("Error while regenerating index", e);

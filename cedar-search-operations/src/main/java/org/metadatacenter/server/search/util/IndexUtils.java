@@ -10,6 +10,7 @@ import org.metadatacenter.model.ModelPaths;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.http.CedarEntityUtil;
 import org.metadatacenter.util.http.ProxyUtil;
@@ -44,7 +45,7 @@ public class IndexUtils {
    * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
-    log.info("Retrieving all resources:");
+    log.info("Retrieving all resources.");
     List<FolderServerNode> resources = new ArrayList<>();
     boolean finished = false;
     String baseUrl = microserviceUrlUtil.getWorkspace().getNodes();
@@ -127,4 +128,49 @@ public class IndexUtils {
   }
 
 
+  public void deleteOldIndices(ElasticsearchManagementService esManagementService, String aliasName,
+                               String newIndexName) throws CedarProcessingException {
+    log.info("Listing existing indices.");
+    List<String> indexNames = esManagementService.getAllIndices();
+    log.info("Found " + indexNames.size());
+    for (String iName : indexNames) {
+      log.info("Found index:" + iName);
+      if (iName.startsWith(aliasName)) {
+        if (!iName.equals(newIndexName)) {
+          log.info("Deleting existing index:" + iName);
+          esManagementService.deleteIndex(iName);
+        } else {
+          log.info("Keeping existing index, since it was just generated:" + iName);
+        }
+      } else {
+        log.info("Not touching existing index, it is not in the scope of this task:" + iName);
+      }
+    }
+  }
+
+  public void ensureIndexAndAliasExist(ElasticsearchManagementService esManagementService, String aliasName)
+      throws CedarProcessingException {
+    int cedarIndexCount = 0;
+
+    log.info("Looking for existing CEDAR indices...");
+    List<String> indexNames = esManagementService.getAllIndices();
+    log.info("Found total of " + indexNames.size() + " indices");
+    for (String iName : indexNames) {
+      log.info("Looking at index:" + iName);
+      if (iName.startsWith(aliasName)) {
+        log.info("Found CEDAR index:" + iName);
+        cedarIndexCount++;
+      }
+    }
+    log.info("Found total of " + cedarIndexCount + " CEDAR indices");
+    if (cedarIndexCount > 0) {
+      log.info("Nothing to do!");
+    } else {
+      String newIndexName = getNewIndexName(aliasName);
+      log.info("Creating brand new CEDAR index:" + newIndexName);
+      esManagementService.createSearchIndex(newIndexName);
+      esManagementService.addAlias(newIndexName, aliasName);
+    }
+
+  }
 }

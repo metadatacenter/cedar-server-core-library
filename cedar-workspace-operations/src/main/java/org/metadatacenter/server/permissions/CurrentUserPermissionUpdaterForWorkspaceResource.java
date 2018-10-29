@@ -3,6 +3,7 @@ package org.metadatacenter.server.permissions;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
@@ -48,12 +49,22 @@ public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUse
     if (permissionSession.userCanChangeOwnerOfResource(id)) {
       currentUserPermissions.setCanChangeOwner(true);
     }
-    if (versionSession.userCanPerformVersioning(resource)) {
-      if (versionSession.resourceCanBePublished(resource)) {
+    OutcomeWithReason versioningOutcome = versionSession.userCanPerformVersioning(resource);
+    if (versioningOutcome.isNegative()) {
+      currentUserPermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
+      currentUserPermissions.setPublishErrorKey(versioningOutcome.getReason());
+    } else {
+      OutcomeWithReason publishOutcome = versionSession.resourceCanBePublished(resource);
+      if (publishOutcome.isPositive()) {
         currentUserPermissions.setCanPublish(true);
+      } else {
+        currentUserPermissions.setPublishErrorKey(publishOutcome.getReason());
       }
-      if (versionSession.resourceCanBeDrafted(resource)) {
+      OutcomeWithReason createDraftOutcome = versionSession.resourceCanBeDrafted(resource);
+      if (createDraftOutcome.isPositive()) {
         currentUserPermissions.setCanCreateDraft(true);
+      } else {
+        currentUserPermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
       }
     }
     if (resource.getType() == CedarNodeType.TEMPLATE) {

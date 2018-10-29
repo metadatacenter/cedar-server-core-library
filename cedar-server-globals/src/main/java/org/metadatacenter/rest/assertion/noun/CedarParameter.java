@@ -7,6 +7,8 @@ public interface CedarParameter extends CedarAssertionNoun {
 
   String stringValue();
 
+  boolean booleanValue();
+
   String getName();
 
   CedarParameterSource getSource();

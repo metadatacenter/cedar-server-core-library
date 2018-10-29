@@ -1,5 +1,7 @@
 package org.metadatacenter.server.security.model.auth;
 
+import org.metadatacenter.error.CedarErrorKey;
+
 public class CurrentUserPermissions {
   private boolean canRead;
   private boolean canWrite;
@@ -11,6 +13,9 @@ public class CurrentUserPermissions {
   private boolean canSubmit;
   private boolean canPopulate;
   private boolean canCopy;
+
+  private CedarErrorKey createDraftErrorKey;
+  private CedarErrorKey publishErrorKey;
 
   public boolean isCanRead() {
     return canRead;
@@ -90,5 +95,21 @@ public class CurrentUserPermissions {
 
   public void setCanCopy(boolean canCopy) {
     this.canCopy = canCopy;
+  }
+
+  public CedarErrorKey getCreateDraftErrorKey() {
+    return createDraftErrorKey;
+  }
+
+  public void setCreateDraftErrorKey(CedarErrorKey createDraftErrorKey) {
+    this.createDraftErrorKey = createDraftErrorKey;
+  }
+
+  public CedarErrorKey getPublishErrorKey() {
+    return publishErrorKey;
+  }
+
+  public void setPublishErrorKey(CedarErrorKey publishErrorKey) {
+    this.publishErrorKey = publishErrorKey;
   }
 }
