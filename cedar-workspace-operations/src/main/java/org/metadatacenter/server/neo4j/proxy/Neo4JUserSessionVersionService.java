@@ -3,7 +3,7 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -38,7 +38,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
     if (resource.getPublicationStatus() != BiboStatus.DRAFT) {
       return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
     } else {
-      FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
+      FolderServerNode nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       if (nextVersion != null) {
         return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
       }
@@ -51,7 +51,7 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
     if (resource.getPublicationStatus() != BiboStatus.PUBLISHED) {
       return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
     } else {
-      FolderServerResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
+      FolderServerNode nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
       if (nextVersion != null) {
         return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
       }

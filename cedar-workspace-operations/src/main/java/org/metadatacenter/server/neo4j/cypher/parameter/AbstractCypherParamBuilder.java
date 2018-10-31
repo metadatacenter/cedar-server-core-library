@@ -62,6 +62,12 @@ public abstract class AbstractCypherParamBuilder {
       if (newResource.isLatestVersion() != null) {
         params.put(NodeProperty.IS_LATEST_VERSION, newResource.isLatestVersion());
       }
+      if (newResource.isLatestDraftVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_DRAFT_VERSION, newResource.isLatestDraftVersion());
+      }
+      if (newResource.isLatestPublishedVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_PUBLISHED_VERSION, newResource.isLatestPublishedVersion());
+      }
       if (newResource.getIdentifier() != null) {
         params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
       }

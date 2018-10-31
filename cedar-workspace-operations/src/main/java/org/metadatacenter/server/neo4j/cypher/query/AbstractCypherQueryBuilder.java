@@ -90,6 +90,12 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.isLatestVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_VERSION)).append(",");
       }
+      if (newResource.isLatestDraftVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_DRAFT_VERSION)).append(",");
+      }
+      if (newResource.isLatestPublishedVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_PUBLISHED_VERSION)).append(",");
+      }
       if (newResource.getIdentifier() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
       }

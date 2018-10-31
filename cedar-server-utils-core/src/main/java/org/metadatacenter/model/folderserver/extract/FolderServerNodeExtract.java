@@ -6,8 +6,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
+import org.metadatacenter.model.workspace.ResourceWithUserNamesData;
+import org.metadatacenter.model.workspace.ResourceWithUsersData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
@@ -26,18 +30,17 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerTemplateExtract.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstanceExtract.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract implements NodeWithIdAndType {
+public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
+    implements NodeWithIdAndType, ResourceWithUsersData, ResourceWithUserNamesData {
 
-  protected String createdBy;
-  protected String lastUpdatedBy;
-  protected String ownedBy;
-  protected String createdByUserName;
-  protected String lastUpdatedByUserName;
-  protected String ownedByUserName;
+  protected UsersDataGroup usersData;
+  protected UserNamesDataGroup userNamesData;
   protected boolean activeUserCanRead = true;
 
   protected FolderServerNodeExtract(CedarNodeType nodeType) {
     this.nodeType = nodeType;
+    this.usersData = new UsersDataGroup();
+    this.userNamesData = new UserNamesDataGroup();
   }
 
   public static FolderServerNodeExtract fromNode(FolderServerNode node) {
@@ -128,62 +131,64 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract i
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
+  @Override
   public String getOwnedBy() {
-    return ownedBy;
+    return usersData.getOwnedBy();
   }
 
+  @Override
   public void setOwnedBy(String ownedBy) {
-    this.ownedBy = ownedBy;
+    usersData.setOwnedBy(ownedBy);
   }
 
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  @Override
   public String getCreatedBy() {
-    return createdBy;
+    return usersData.getCreatedBy();
   }
 
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
+  @Override
   public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
+    usersData.setCreatedBy(createdBy);
   }
 
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  @Override
   public String getLastUpdatedBy() {
-    return lastUpdatedBy;
+    return usersData.getLastUpdatedBy();
   }
 
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  @Override
   public void setLastUpdatedBy(String lastUpdatedBy) {
-    this.lastUpdatedBy = lastUpdatedBy;
+    usersData.setLastUpdatedBy(lastUpdatedBy);
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
+  @Override
   public void setOwnedByUserName(String ownedByUserName) {
-    this.ownedByUserName = ownedByUserName;
+    userNamesData.setOwnedByUserName(ownedByUserName);
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
+  @Override
   public String getOwnedByUserName() {
-    return ownedByUserName;
+    return userNamesData.getOwnedByUserName();
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
+  @Override
   public void setCreatedByUserName(String createdByUserName) {
-    this.createdByUserName = createdByUserName;
+    userNamesData.setCreatedByUserName(createdByUserName);
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
+  @Override
   public String getCreatedByUserName() {
-    return createdByUserName;
+    return userNamesData.getCreatedByUserName();
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
+  @Override
   public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
-    this.lastUpdatedByUserName = lastUpdatedByUserName;
+    userNamesData.setLastUpdatedByUserName(lastUpdatedByUserName);
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
+  @Override
   public String getLastUpdatedByUserName() {
-    return lastUpdatedByUserName;
+    return userNamesData.getLastUpdatedByUserName();
   }
 
   @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)

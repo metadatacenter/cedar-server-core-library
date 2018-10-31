@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.metadatacenter.model.AbstractCedarNodeFull;
+import org.metadatacenter.model.AbstractCedarNodeWithDates;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
 import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.workspace.ResourceWithUserNamesData;
+import org.metadatacenter.model.workspace.ResourceWithUsersData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
@@ -27,17 +31,25 @@ import java.util.Map;
     @JsonSubTypes.Type(value = FolderServerTemplate.class, name = CedarNodeType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
-public abstract class FolderServerNode extends AbstractCedarNodeFull implements NodeWithIdAndType {
+public abstract class FolderServerNode extends AbstractCedarNodeWithDates
+    implements NodeWithIdAndType, ResourceWithUsersData, ResourceWithUserNamesData {
+
+  protected String name;
+  protected String description;
+  protected String identifier;
+  protected String path;
+  protected String parentPath;
 
   private List<FolderServerNodeExtract> pathInfo;
 
-  protected String createdByUserName;
-  protected String lastUpdatedByUserName;
-  protected String ownedByUserName;
+  protected UsersDataGroup usersData;
+  protected UserNamesDataGroup userNamesData;
 
   protected FolderServerNode(CedarNodeType nodeType) {
     this.nodeType = nodeType;
     this.pathInfo = new ArrayList<>();
+    this.usersData = new UsersDataGroup();
+    this.userNamesData = new UserNamesDataGroup();
   }
 
   @JsonProperty(NodeProperty.Label.ID)
@@ -110,26 +122,6 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull implements 
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public String getLastUpdatedBy() {
-    return lastUpdatedBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public void setLastUpdatedBy(String lastUpdatedBy) {
-    this.lastUpdatedBy = lastUpdatedBy;
-  }
-
   @JsonProperty(NodeProperty.Label.LAST_UPDATED_ON_TS)
   public long getLastUpdatedOnTS() {
     return lastUpdatedOnTS;
@@ -150,34 +142,20 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull implements 
     this.createdOnTS = createdOnTS;
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
-  public void setOwnedByUserName(String ownedByUserName) {
-    this.ownedByUserName = ownedByUserName;
+  public String getPath() {
+    return path;
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
-  public String getOwnedByUserName() {
-    return ownedByUserName;
+  public void setPath(String path) {
+    this.path = path;
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
-  public void setCreatedByUserName(String createdByUserName) {
-    this.createdByUserName = createdByUserName;
+  public String getParentPath() {
+    return parentPath;
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.CREATED_BY_USER_NAME)
-  public String getCreatedByUserName() {
-    return createdByUserName;
-  }
-
-  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
-  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
-    this.lastUpdatedByUserName = lastUpdatedByUserName;
-  }
-
-  @JsonProperty(NodeProperty.OnTheFly.LAST_UPDATED_BY_USER_NAME)
-  public String getLastUpdatedByUserName() {
-    return lastUpdatedByUserName;
+  public void setParentPath(String parentPath) {
+    this.parentPath = parentPath;
   }
 
   @JsonProperty(NodeProperty.OnTheFly.CONTEXT)
@@ -193,6 +171,66 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull implements 
   @JsonProperty(NodeProperty.OnTheFly.PATH_INFO)
   public void setPathInfo(List<FolderServerNodeExtract> pathInfo) {
     this.pathInfo = pathInfo;
+  }
+
+  @Override
+  public String getOwnedBy() {
+    return usersData.getOwnedBy();
+  }
+
+  @Override
+  public void setOwnedBy(String ownedBy) {
+    usersData.setOwnedBy(ownedBy);
+  }
+
+  @Override
+  public String getCreatedBy() {
+    return usersData.getCreatedBy();
+  }
+
+  @Override
+  public void setCreatedBy(String createdBy) {
+    usersData.setCreatedBy(createdBy);
+  }
+
+  @Override
+  public String getLastUpdatedBy() {
+    return usersData.getLastUpdatedBy();
+  }
+
+  @Override
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    usersData.setLastUpdatedBy(lastUpdatedBy);
+  }
+
+  @Override
+  public void setOwnedByUserName(String ownedByUserName) {
+    userNamesData.setOwnedByUserName(ownedByUserName);
+  }
+
+  @Override
+  public String getOwnedByUserName() {
+    return userNamesData.getOwnedByUserName();
+  }
+
+  @Override
+  public void setCreatedByUserName(String createdByUserName) {
+    userNamesData.setCreatedByUserName(createdByUserName);
+  }
+
+  @Override
+  public String getCreatedByUserName() {
+    return userNamesData.getCreatedByUserName();
+  }
+
+  @Override
+  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
+    userNamesData.setLastUpdatedByUserName(lastUpdatedByUserName);
+  }
+
+  @Override
+  public String getLastUpdatedByUserName() {
+    return userNamesData.getLastUpdatedByUserName();
   }
 
   public static FolderServerNode forType(CedarNodeType t) {
@@ -212,9 +250,12 @@ public abstract class FolderServerNode extends AbstractCedarNodeFull implements 
   }
 
   public void setCreatedByTotal(String createdBy) {
-    this.createdBy = createdBy;
-    this.ownedBy = createdBy;
-    this.lastUpdatedBy = createdBy;
+    setCreatedBy(createdBy);
+    setOwnedBy(createdBy);
+    setLastUpdatedBy(createdBy);
   }
 
+  public FolderServerResource asResource() {
+    return (FolderServerResource) this;
+  }
 }
