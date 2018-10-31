@@ -10,8 +10,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
-import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -116,8 +116,14 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter by content
     if (query != null && query.length() > 0) {
-      QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-      mainQuery.must(summaryTextQuery);
+      if (enclosedByQuotes(query)) {
+        query = query.substring(1, query.length() - 1);
+        QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
+        mainQuery.must(summaryTextQuery);
+      } else {
+        QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+        mainQuery.must(summaryTextQuery);
+      }
     }
 
     // Filter by resource type
@@ -179,4 +185,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     return searchRequestBuilder;
   }
 
+  private boolean enclosedByQuotes(String keyword) {
+    return keyword.startsWith("\"") && keyword.endsWith("\"");
+  }
 }
