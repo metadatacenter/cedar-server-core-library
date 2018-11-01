@@ -1,14 +1,14 @@
 package org.metadatacenter.config;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class ElasticsearchSettingsMappingsConfig {
 
-  private HashMap<String, Object> settings;
+  private Map<String, Object> settings;
 
   private ElasticsearchMappingsConfig mappings;
 
-  public HashMap<String, Object> getSettings() {
+  public Map<String, Object> getSettings() {
     return settings;
   }
 

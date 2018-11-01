@@ -6,42 +6,35 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import org.metadatacenter.model.workspace.ResourceWithVersionData;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
-public abstract class FolderServerResource extends FolderServerNode implements NodeWithPublicationStatus {
+public abstract class FolderServerResource extends FolderServerNode
+    implements NodeWithPublicationStatus, ResourceWithVersionData {
 
-  protected ResourceVersion version;
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
-  protected Boolean latestVersion;
+  protected VersionDataGroup versionData;
 
   public FolderServerResource(CedarNodeType nodeType) {
     super(nodeType);
+    versionData = new VersionDataGroup();
   }
 
   public static FolderServerResource fromFolderServerResourceCurrentUserReport(FolderServerResourceCurrentUserReport cur) {
     try {
       String s = JsonMapper.MAPPER.writeValueAsString(cur);
-      return JsonMapper.MAPPER.readValue(s, FolderServerResource.class);
+      return JsonMapper.MAPPER.readValue(s, FolderServerNode.class).asResource();
     } catch (IOException e) {
       e.printStackTrace();
     }
     return null;
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public ResourceVersion getVersion() {
-    return version;
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public void setVersion(String v) {
-    this.version = ResourceVersion.forValue(v);
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
@@ -74,13 +67,43 @@ public abstract class FolderServerResource extends FolderServerNode implements N
     this.derivedFrom = ResourceUri.forValue(df);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
-  public Boolean isLatestVersion() {
-    return latestVersion;
+  @Override
+  public ResourceVersion getVersion() {
+    return versionData.getVersion();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
+  @Override
+  public void setVersion(String versionString) {
+    versionData.setVersion(ResourceVersion.forValue(versionString));
+  }
+
+  @Override
+  public Boolean isLatestVersion() {
+    return versionData.isLatestVersion();
+  }
+
+  @Override
   public void setLatestVersion(Boolean latestVersion) {
-    this.latestVersion = latestVersion;
+    versionData.setLatestVersion(latestVersion);
+  }
+
+  @Override
+  public Boolean isLatestDraftVersion() {
+    return versionData.isLatestDraftVersion();
+  }
+
+  @Override
+  public void setLatestDraftVersion(Boolean latestDraftVersion) {
+    versionData.setLatestDraftVersion(latestDraftVersion);
+  }
+
+  @Override
+  public Boolean isLatestPublishedVersion() {
+    return versionData.isLatestPublishedVersion();
+  }
+
+  @Override
+  public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
+    versionData.setLatestPublishedVersion(latestPublishedVersion);
   }
 }

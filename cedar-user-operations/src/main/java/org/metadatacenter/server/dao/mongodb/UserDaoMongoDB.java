@@ -138,7 +138,7 @@ public class UserDaoMongoDB implements GenericUserDao {
 
   @Override
   public BackendCallResult<CedarUser> update(String id, CedarUser user) {
-    BackendCallResult<CedarUser> result = new BackendCallResult();
+    BackendCallResult<CedarUser> result = new BackendCallResult<>();
     if ((id == null) || (id.length() == 0)) {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
           .message("The id empty")

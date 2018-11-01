@@ -15,7 +15,6 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.config.ElasticsearchMappingsConfig;
-import org.metadatacenter.config.ElasticsearchSettingsMappingsConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.slf4j.Logger;
@@ -23,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ElasticsearchManagementService {
 
@@ -32,15 +31,15 @@ public class ElasticsearchManagementService {
 
   private final ElasticsearchConfig config;
   private final Settings settings;
-  private final HashMap<String, Object> searchIndexSettings;
-  private final HashMap<String, Object> rulesIndexSettings;
+  private final Map<String, Object> searchIndexSettings;
+  private final Map<String, Object> rulesIndexSettings;
   private final ElasticsearchMappingsConfig searchIndexMappings;
   private final ElasticsearchMappingsConfig rulesIndexMappings;
   private Client elasticClient = null;
 
   public ElasticsearchManagementService(ElasticsearchConfig config, CedarConfig cedarConfig) {
     this.config = config;
-    this.searchIndexSettings = cedarConfig.getSearchSettingsMappingsConfig().getSettings();
+    this.searchIndexSettings = (cedarConfig.getSearchSettingsMappingsConfig().getSettings());
     this.rulesIndexSettings = cedarConfig.getRulesSettingsMappingsConfig().getSettings();
     this.searchIndexMappings = cedarConfig.getSearchSettingsMappingsConfig().getMappings();
     this.rulesIndexMappings = cedarConfig.getRulesSettingsMappingsConfig().getMappings();
@@ -73,7 +72,9 @@ public class ElasticsearchManagementService {
     createIndex(indexName, rulesIndexSettings, rulesIndexMappings);
   }
 
-  private void createIndex(String indexName, HashMap<String, Object> indexSettings, ElasticsearchMappingsConfig indexMappings) throws CedarProcessingException {
+  private void createIndex(String indexName, Map<String, Object> indexSettings,
+                           ElasticsearchMappingsConfig indexMappings)
+      throws CedarProcessingException {
 
     Client client = getClient();
     CreateIndexRequestBuilder createIndexRequestBuilder = client.admin().indices().prepareCreate(indexName);

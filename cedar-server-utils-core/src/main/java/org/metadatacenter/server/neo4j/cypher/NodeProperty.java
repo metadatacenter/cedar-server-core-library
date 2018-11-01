@@ -27,6 +27,8 @@ public enum NodeProperty implements CypherQueryParameter {
   HOME_OF(Label.HOME_OF),
   PREVIOUS_VERSION(Label.PREVIOUS_VERSION),
   IS_LATEST_VERSION(Label.IS_LATEST_VERSION),
+  IS_LATEST_PUBLISHED_VERSION(Label.IS_LATEST_PUBLISHED_VERSION),
+  IS_LATEST_DRAFT_VERSION(Label.IS_LATEST_DRAFT_VERSION),
   IS_BASED_ON(Label.IS_BASED_ON),
   DERIVED_FROM(Label.DERIVED_FROM);
 
@@ -56,6 +58,8 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String HOME_OF = "homeOf";
     public static final String PREVIOUS_VERSION = "pav:previousVersion";
     public static final String IS_LATEST_VERSION = "isLatestVersion";
+    public static final String IS_LATEST_DRAFT_VERSION = "isLatestDraftVersion";
+    public static final String IS_LATEST_PUBLISHED_VERSION = "isLatestPublishedVersion";
     public static final String IS_BASED_ON = "schema:isBasedOn";
     public static final String DERIVED_FROM = "pav:derivedFrom";
   }

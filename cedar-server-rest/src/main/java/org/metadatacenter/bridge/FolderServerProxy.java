@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.model.WorkspaceObjectBuilder;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
@@ -29,9 +30,7 @@ public class FolderServerProxy {
         HttpEntity entity = proxyResponse.getEntity();
         if (entity != null) {
           if (HttpStatus.SC_OK == statusCode) {
-            FolderServerResource node = null;
-            String responseString = EntityUtils.toString(proxyResponse.getEntity());
-            node = JsonMapper.MAPPER.readValue(responseString, FolderServerResource.class);
+            FolderServerResource node = WorkspaceObjectBuilder.artifact(proxyResponse.getEntity().getContent());
             return node;
           }
         }

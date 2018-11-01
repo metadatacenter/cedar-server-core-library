@@ -322,6 +322,21 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public boolean setLatestPublishedVersion(String id) {
+    return proxies.resource().setLatestPublishedVersion(id);
+  }
+
+  @Override
+  public boolean unsetLatestPublishedVersion(String id) {
+    return proxies.resource().unsetLatestPublishedVersion(id);
+  }
+
+  @Override
+  public boolean unsetLatestDraftVersion(String id) {
+    return proxies.resource().unsetLatestDraftVersion(id);
+  }
+
+  @Override
   public long getNumberOfInstances(String templateId) {
     return proxies.resource().getIsBasedOnCount(templateId);
   }
