@@ -37,6 +37,7 @@
     <module>cedar-queue-operations</module>
     <module>cedar-permissions-operations</module>
     <module>cedar-logging-operations</module>
+    <module>cedar-valuerecommender-operations</module>
   </modules>
 
 </project>

@@ -1,6 +1,5 @@
 package org.metadatacenter.server.logging;
 
-import org.metadatacenter.model.ServerName;
 import org.metadatacenter.model.SystemComponent;
 import org.metadatacenter.server.logging.model.AppLogMessage;
 import org.metadatacenter.server.logging.model.AppLogSubType;
@@ -11,7 +10,8 @@ public class AppLogger {
   public static AppLoggerQueueService appLoggerQueueService;
   private static SystemComponent systemComponent;
 
-  public static void initLoggerQueueService(AppLoggerQueueService appLoggerQueueService, SystemComponent systemComponent) {
+  public static void initLoggerQueueService(AppLoggerQueueService appLoggerQueueService,
+                                            SystemComponent systemComponent) {
     AppLogger.appLoggerQueueService = appLoggerQueueService;
     AppLogger.systemComponent = systemComponent;
   }

@@ -251,6 +251,7 @@ cache:
       searchPermission: "CEDAR-QUEUE-search-permission"
       ncbiSubmission: "CEDAR-QUEUE-ncbi-submission"
       appLog: "CEDAR-QUEUE-app-log"
+      valuerecommender: "CEDAR-QUEUE-valuerecommender"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
