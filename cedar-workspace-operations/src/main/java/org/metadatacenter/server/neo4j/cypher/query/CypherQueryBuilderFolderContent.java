@@ -31,7 +31,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
       sb.append(getResourcePermissionConditions(" AND ", "child"));
     }
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "child"));
+      sb.append(getVersionConditions(version, " AND ", "child"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "child"));
@@ -56,7 +56,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
       sb.append(getResourcePermissionConditions(" AND ", "child"));
     }
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "child"));
+      sb.append(getVersionConditions(version, " AND ", "child"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "child"));

@@ -17,6 +17,8 @@ public final class ElasticsearchConstants {
   public static final String INFO_SCHEMA_NAME_RAW = ES_INFO_PREFIX + ModelNodeNames.SCHEMA_NAME + ".raw";
   public static final String NODE_TYPE = ES_INFO_PREFIX + "nodeType";
   public static final String INFO_IS_LATEST_VERSION = ES_INFO_PREFIX + "isLatestVersion";
+  public static final String INFO_IS_LATEST_PUBLISHED_VERSION = ES_INFO_PREFIX + "isLatestPublishedVersion";
+  public static final String INFO_IS_LATEST_DRAFT_VERSION = ES_INFO_PREFIX + "isLatestDraftVersion";
   public static final String INFO_BIBO_STATUS = ES_INFO_PREFIX + ModelNodeNames.BIBO_STATUS;
   public static final String INFO_PAV_LAST_UPDATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_LAST_UPDATED_ON;
   public static final String INFO_PAV_CREATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_CREATED_ON;

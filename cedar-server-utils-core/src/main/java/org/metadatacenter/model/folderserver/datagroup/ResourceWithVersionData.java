@@ -1,4 +1,4 @@
-package org.metadatacenter.model.workspace;
+package org.metadatacenter.model.folderserver.datagroup;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.ResourceVersion;

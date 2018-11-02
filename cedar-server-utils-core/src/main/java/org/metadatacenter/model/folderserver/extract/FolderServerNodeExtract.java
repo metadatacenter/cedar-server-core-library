@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
+import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
-import org.metadatacenter.model.workspace.ResourceWithUserNamesData;
-import org.metadatacenter.model.workspace.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUserNamesData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
@@ -31,7 +31,7 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerInstanceExtract.class, name = CedarNodeType.Types.INSTANCE)
 })
 public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
-    implements NodeWithIdAndType, ResourceWithUsersData, ResourceWithUserNamesData {
+    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData {
 
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;

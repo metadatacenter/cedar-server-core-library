@@ -5,7 +5,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
-import org.metadatacenter.model.workspace.ResourceWithVersionData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 

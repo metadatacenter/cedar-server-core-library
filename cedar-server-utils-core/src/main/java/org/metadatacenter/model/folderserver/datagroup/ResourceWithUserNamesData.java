@@ -1,9 +1,9 @@
-package org.metadatacenter.model.workspace;
+package org.metadatacenter.model.folderserver.datagroup;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
-public interface ResourceWithUsersData {
+public interface ResourceWithUserNamesData {
 
   @JsonProperty(NodeProperty.OnTheFly.OWNED_BY_USER_NAME)
   public void setOwnedByUserName(String ownedByUserName);

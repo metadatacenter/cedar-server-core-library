@@ -9,8 +9,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
 import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
-import org.metadatacenter.model.workspace.ResourceWithUserNamesData;
-import org.metadatacenter.model.workspace.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUserNamesData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
@@ -32,7 +32,7 @@ import java.util.Map;
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
 public abstract class FolderServerNode extends AbstractCedarNodeWithDates
-    implements NodeWithIdAndType, ResourceWithUsersData, ResourceWithUserNamesData {
+    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData {
 
   protected String name;
   protected String description;

@@ -136,11 +136,22 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     if (version != null && version != ResourceVersionFilter.ALL) {
       BoolQueryBuilder versionQuery = QueryBuilders.boolQuery();
       BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
-      QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(INFO_IS_LATEST_VERSION, true);
-      inner1Query.must(versionEqualsQuery);
       BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
-      QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(INFO_IS_LATEST_VERSION);
-      inner2Query.mustNot(versionExistsQuery);
+      if (version == ResourceVersionFilter.LATEST) {
+        QueryBuilder versionEqualsQuery = QueryBuilders.termsQuery(INFO_IS_LATEST_VERSION, true);
+        inner1Query.must(versionEqualsQuery);
+        QueryBuilder versionExistsQuery = QueryBuilders.existsQuery(INFO_IS_LATEST_VERSION);
+        inner2Query.mustNot(versionExistsQuery);
+      } else if (version == ResourceVersionFilter.LATEST_BY_STATUS) {
+        QueryBuilder versionEquals1Query = QueryBuilders.termsQuery(INFO_IS_LATEST_PUBLISHED_VERSION, true);
+        QueryBuilder versionEquals2Query = QueryBuilders.termsQuery(INFO_IS_LATEST_DRAFT_VERSION, true);
+        inner1Query.should(versionEquals1Query);
+        inner1Query.should(versionEquals2Query);
+        QueryBuilder versionExists1Query = QueryBuilders.existsQuery(INFO_IS_LATEST_PUBLISHED_VERSION);
+        QueryBuilder versionExists2Query = QueryBuilders.existsQuery(INFO_IS_LATEST_DRAFT_VERSION);
+        inner2Query.mustNot(versionExists1Query);
+        inner2Query.mustNot(versionExists2Query);
+      }
       versionQuery.should(inner1Query);
       versionQuery.should(inner2Query);
       mainQuery.must(versionQuery);

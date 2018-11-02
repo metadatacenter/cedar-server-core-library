@@ -1,9 +1,9 @@
-package org.metadatacenter.model.workspace;
+package org.metadatacenter.model.folderserver.datagroup;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
-public interface ResourceWithUserNamesData {
+public interface ResourceWithUsersData {
 
   @JsonProperty(NodeProperty.Label.OWNED_BY)
   public String getOwnedBy();
@@ -16,8 +16,7 @@ public interface ResourceWithUserNamesData {
 
   @JsonProperty(NodeProperty.Label.CREATED_BY)
   public void setCreatedBy(String createdBy);
-
-
+  
   @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
   public String getLastUpdatedBy();
 

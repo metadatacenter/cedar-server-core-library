@@ -1,7 +1,6 @@
 package org.metadatacenter.model;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,4 +17,34 @@ public abstract class WorkspaceObjectBuilder {
     return (FolderServerResource)folderServerNode;
   }
 
+  public static FolderServerResource forNodeType(CedarNodeType nodeType) {
+    switch (nodeType) {
+      case TEMPLATE:
+        return new FolderServerTemplate();
+      case ELEMENT:
+        return new FolderServerElement();
+      case FIELD:
+        return new FolderServerField();
+      case INSTANCE:
+        return new FolderServerInstance();
+      default:
+        return null;
+    }
+  }
+
+  public static FolderServerResource forNodeType(CedarNodeType nodeType, String newId, String name,
+                                                 String description, String identifier, ResourceVersion version,
+                                                 BiboStatus publicationStatus) {
+    FolderServerResource r = forNodeType(nodeType);
+    r.setId(newId);
+    r.setType(nodeType);
+    r.setName(name);
+    r.setDescription(description);
+    r.setIdentifier(identifier);
+    if (nodeType.isVersioned()) {
+      r.setVersion(version.getValue());
+      r.setPublicationStatus(publicationStatus.getValue());
+    }
+    return r;
+  }
 }
