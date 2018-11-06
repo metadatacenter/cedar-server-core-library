@@ -1,6 +1,7 @@
 package org.metadatacenter.error;
 
 import org.elasticsearch.ElasticsearchException;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.operation.CedarOperationDescriptor;
 
 import javax.ws.rs.core.Response;
@@ -185,13 +186,20 @@ public class CedarErrorPack {
     this.sourceException = null;
   }
 
-  private Exception normalizeException(Exception otherException) {
+  public static Exception normalizeException(Exception otherException) {
     if (otherException == null) {
       return null;
     }
     if (otherException instanceof ElasticsearchException) {
       if (otherException == ((ElasticsearchException) otherException).getRootCause()) {
         return new CedarFixedRecursiveException(otherException);
+      }
+    }
+    //TODO: Possibly we need to do this unwrapping for all the CedarProcessingException exceptions
+    if (otherException instanceof CedarProcessingException) {
+      Throwable cause = otherException.getCause();
+      if (cause instanceof ElasticsearchException) {
+        return new CedarProcessingException(otherException.getMessage(), new CedarFixedRecursiveException(cause));
       }
     }
     return otherException;

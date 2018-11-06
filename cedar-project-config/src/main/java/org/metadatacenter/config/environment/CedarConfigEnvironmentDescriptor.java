@@ -210,6 +210,10 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_LOG_MYSQL_PASSWORD);
     cedarLoggingMysqlPassword.add(SystemComponent.SERVER_WORKER);
 
+    Set<SystemComponent> cedarValidationEnabled = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_VALIDATION_ENABLED);
+    cedarValidationEnabled.add(SystemComponent.SERVER_RESOURCE);
+
     Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_SUBMISSION_TEMPLATE_ID_1);
     submissionTemplateId1.add(SystemComponent.SERVER_WORKSPACE);
@@ -318,6 +322,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarHttpPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_VALUERECOMMENDER_HTTP_PORT);
     cedarHttpPortValuerecommender.add(SystemComponent.SERVER_VALUERECOMMENDER);
+    cedarHttpPortValuerecommender.add(SystemComponent.SERVER_WORKER);
     Set<SystemComponent> cedarAdminPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_VALUERECOMMENDER_ADMIN_PORT);
     cedarAdminPortValuerecommender.add(SystemComponent.SERVER_VALUERECOMMENDER);

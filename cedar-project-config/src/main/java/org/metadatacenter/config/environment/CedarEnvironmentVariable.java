@@ -38,22 +38,24 @@ public enum CedarEnvironmentVariable {
   CEDAR_MONGO_APP_USER_NAME("CEDAR_MONGO_APP_USER_NAME"),
   CEDAR_MONGO_APP_USER_PASSWORD("CEDAR_MONGO_APP_USER_PASSWORD", CedarEnvironmentVariableSecure.YES),
   CEDAR_MONGO_HOST("CEDAR_MONGO_HOST"),
-  CEDAR_MONGO_PORT("CEDAR_MONGO_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_MONGO_PORT("CEDAR_MONGO_PORT", CedarEnvironmentVariableType.NUMERIC),
 
   CEDAR_ELASTICSEARCH_HOST("CEDAR_ELASTICSEARCH_HOST"),
-  CEDAR_ELASTICSEARCH_TRANSPORT_PORT("CEDAR_ELASTICSEARCH_TRANSPORT_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_ELASTICSEARCH_TRANSPORT_PORT("CEDAR_ELASTICSEARCH_TRANSPORT_PORT", CedarEnvironmentVariableType.NUMERIC),
 
   CEDAR_MESSAGING_MYSQL_HOST("CEDAR_MESSAGING_MYSQL_HOST"),
-  CEDAR_MESSAGING_MYSQL_PORT("CEDAR_MESSAGING_MYSQL_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_MESSAGING_MYSQL_PORT("CEDAR_MESSAGING_MYSQL_PORT", CedarEnvironmentVariableType.NUMERIC),
   CEDAR_MESSAGING_MYSQL_DB("CEDAR_MESSAGING_MYSQL_DB"),
   CEDAR_MESSAGING_MYSQL_USER("CEDAR_MESSAGING_MYSQL_USER"),
   CEDAR_MESSAGING_MYSQL_PASSWORD("CEDAR_MESSAGING_MYSQL_PASSWORD", CedarEnvironmentVariableSecure.YES),
 
   CEDAR_LOG_MYSQL_HOST("CEDAR_LOG_MYSQL_HOST"),
-  CEDAR_LOG_MYSQL_PORT("CEDAR_LOG_MYSQL_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_LOG_MYSQL_PORT("CEDAR_LOG_MYSQL_PORT", CedarEnvironmentVariableType.NUMERIC),
   CEDAR_LOG_MYSQL_DB("CEDAR_LOG_MYSQL_DB"),
   CEDAR_LOG_MYSQL_USER("CEDAR_LOG_MYSQL_USER"),
   CEDAR_LOG_MYSQL_PASSWORD("CEDAR_LOG_MYSQL_PASSWORD", CedarEnvironmentVariableSecure.YES),
+
+  CEDAR_VALIDATION_ENABLED("CEDAR_VALIDATION_ENABLED", CedarEnvironmentVariableType.BOOLEAN),
 
   CEDAR_SUBMISSION_TEMPLATE_ID_1("CEDAR_SUBMISSION_TEMPLATE_ID_1"),
 
@@ -63,90 +65,94 @@ public enum CedarEnvironmentVariable {
   CEDAR_TEST_USER2_ID("CEDAR_TEST_USER2_ID"),
 
   CEDAR_REDIS_PERSISTENT_HOST("CEDAR_REDIS_PERSISTENT_HOST"),
-  CEDAR_REDIS_PERSISTENT_PORT("CEDAR_REDIS_PERSISTENT_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_REDIS_PERSISTENT_PORT("CEDAR_REDIS_PERSISTENT_PORT", CedarEnvironmentVariableType.NUMERIC),
   CEDAR_REDIS_NONPERSISTENT_HOST("CEDAR_REDIS_NONPERSISTENT_HOST"),
-  CEDAR_REDIS_NONPERSISTENT_PORT("CEDAR_REDIS_NONPERSISTENT_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_REDIS_NONPERSISTENT_PORT("CEDAR_REDIS_NONPERSISTENT_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_WORKSPACE_HTTP_PORT("CEDAR_WORKSPACE_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_WORKSPACE_ADMIN_PORT("CEDAR_WORKSPACE_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_WORKSPACE_STOP_PORT("CEDAR_WORKSPACE_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_WORKSPACE_HTTP_PORT("CEDAR_WORKSPACE_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_WORKSPACE_ADMIN_PORT("CEDAR_WORKSPACE_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_WORKSPACE_STOP_PORT("CEDAR_WORKSPACE_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_GROUP_HTTP_PORT("CEDAR_GROUP_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_GROUP_ADMIN_PORT("CEDAR_GROUP_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_GROUP_STOP_PORT("CEDAR_GROUP_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_GROUP_HTTP_PORT("CEDAR_GROUP_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_GROUP_ADMIN_PORT("CEDAR_GROUP_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_GROUP_STOP_PORT("CEDAR_GROUP_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_MESSAGING_HTTP_PORT("CEDAR_MESSAGING_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_MESSAGING_ADMIN_PORT("CEDAR_MESSAGING_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_MESSAGING_STOP_PORT("CEDAR_MESSAGING_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_MESSAGING_HTTP_PORT("CEDAR_MESSAGING_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_MESSAGING_ADMIN_PORT("CEDAR_MESSAGING_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_MESSAGING_STOP_PORT("CEDAR_MESSAGING_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_REPO_HTTP_PORT("CEDAR_REPO_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_REPO_ADMIN_PORT("CEDAR_REPO_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_REPO_STOP_PORT("CEDAR_REPO_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_REPO_HTTP_PORT("CEDAR_REPO_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_REPO_ADMIN_PORT("CEDAR_REPO_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_REPO_STOP_PORT("CEDAR_REPO_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_RESOURCE_HTTP_PORT("CEDAR_RESOURCE_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_RESOURCE_ADMIN_PORT("CEDAR_RESOURCE_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_RESOURCE_STOP_PORT("CEDAR_RESOURCE_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_RESOURCE_HTTP_PORT("CEDAR_RESOURCE_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_RESOURCE_ADMIN_PORT("CEDAR_RESOURCE_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_RESOURCE_STOP_PORT("CEDAR_RESOURCE_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_SCHEMA_HTTP_PORT("CEDAR_SCHEMA_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_SCHEMA_ADMIN_PORT("CEDAR_SCHEMA_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_SCHEMA_STOP_PORT("CEDAR_SCHEMA_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_SCHEMA_HTTP_PORT("CEDAR_SCHEMA_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_SCHEMA_ADMIN_PORT("CEDAR_SCHEMA_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_SCHEMA_STOP_PORT("CEDAR_SCHEMA_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_SUBMISSION_HTTP_PORT("CEDAR_SUBMISSION_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_SUBMISSION_ADMIN_PORT("CEDAR_SUBMISSION_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_SUBMISSION_STOP_PORT("CEDAR_SUBMISSION_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_SUBMISSION_HTTP_PORT("CEDAR_SUBMISSION_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_SUBMISSION_ADMIN_PORT("CEDAR_SUBMISSION_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_SUBMISSION_STOP_PORT("CEDAR_SUBMISSION_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_TEMPLATE_HTTP_PORT("CEDAR_TEMPLATE_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_TEMPLATE_ADMIN_PORT("CEDAR_TEMPLATE_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_TEMPLATE_STOP_PORT("CEDAR_TEMPLATE_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_TEMPLATE_HTTP_PORT("CEDAR_TEMPLATE_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_TEMPLATE_ADMIN_PORT("CEDAR_TEMPLATE_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_TEMPLATE_STOP_PORT("CEDAR_TEMPLATE_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_TERMINOLOGY_HTTP_PORT("CEDAR_TERMINOLOGY_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_TERMINOLOGY_ADMIN_PORT("CEDAR_TERMINOLOGY_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_TERMINOLOGY_STOP_PORT("CEDAR_TERMINOLOGY_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_TERMINOLOGY_HTTP_PORT("CEDAR_TERMINOLOGY_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_TERMINOLOGY_ADMIN_PORT("CEDAR_TERMINOLOGY_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_TERMINOLOGY_STOP_PORT("CEDAR_TERMINOLOGY_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_USER_HTTP_PORT("CEDAR_USER_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_USER_ADMIN_PORT("CEDAR_USER_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_USER_STOP_PORT("CEDAR_USER_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_USER_HTTP_PORT("CEDAR_USER_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_USER_ADMIN_PORT("CEDAR_USER_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_USER_STOP_PORT("CEDAR_USER_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_VALUERECOMMENDER_HTTP_PORT("CEDAR_VALUERECOMMENDER_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_VALUERECOMMENDER_ADMIN_PORT("CEDAR_VALUERECOMMENDER_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_VALUERECOMMENDER_STOP_PORT("CEDAR_VALUERECOMMENDER_STOP_PORT", CedarEnvironmentVariableNumeric.YES),
+  CEDAR_VALUERECOMMENDER_HTTP_PORT("CEDAR_VALUERECOMMENDER_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_VALUERECOMMENDER_ADMIN_PORT("CEDAR_VALUERECOMMENDER_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_VALUERECOMMENDER_STOP_PORT("CEDAR_VALUERECOMMENDER_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
 
-  CEDAR_WORKER_HTTP_PORT("CEDAR_WORKER_HTTP_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_WORKER_ADMIN_PORT("CEDAR_WORKER_ADMIN_PORT", CedarEnvironmentVariableNumeric.YES),
-  CEDAR_WORKER_STOP_PORT("CEDAR_WORKER_STOP_PORT", CedarEnvironmentVariableNumeric.YES);
+  CEDAR_WORKER_HTTP_PORT("CEDAR_WORKER_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_WORKER_ADMIN_PORT("CEDAR_WORKER_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_WORKER_STOP_PORT("CEDAR_WORKER_STOP_PORT", CedarEnvironmentVariableType.NUMERIC);
 
   private final String name;
-  private final CedarEnvironmentVariableNumeric numeric;
   private final CedarEnvironmentVariableSecure secure;
+  private final CedarEnvironmentVariableType type;
 
   CedarEnvironmentVariable(String name) {
     this.name = name;
-    this.numeric = CedarEnvironmentVariableNumeric.NO;
     this.secure = CedarEnvironmentVariableSecure.NO;
+    this.type = CedarEnvironmentVariableType.STRING;
   }
 
-  CedarEnvironmentVariable(String name, CedarEnvironmentVariableNumeric numeric) {
+  CedarEnvironmentVariable(String name, CedarEnvironmentVariableType type) {
     this.name = name;
-    this.numeric = numeric;
     this.secure = CedarEnvironmentVariableSecure.NO;
+    this.type = type;
   }
 
   CedarEnvironmentVariable(String name, CedarEnvironmentVariableSecure secure) {
     this.name = name;
-    this.numeric = CedarEnvironmentVariableNumeric.NO;
     this.secure = secure;
+    this.type = CedarEnvironmentVariableType.STRING;
   }
 
   public String getName() {
     return name;
   }
 
-  public CedarEnvironmentVariableNumeric getNumeric() {
-    return numeric;
+  public boolean isNumeric() {
+    return type == CedarEnvironmentVariableType.NUMERIC;
   }
 
-  public CedarEnvironmentVariableSecure getSecure() {
-    return secure;
+  public boolean isBoolean() {
+    return type == CedarEnvironmentVariableType.BOOLEAN;
+  }
+
+  public boolean isSecure() {
+    return secure == CedarEnvironmentVariableSecure.YES;
   }
 
   public static CedarEnvironmentVariable forName(String name) {

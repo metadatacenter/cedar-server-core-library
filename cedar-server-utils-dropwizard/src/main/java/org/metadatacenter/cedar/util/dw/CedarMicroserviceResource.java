@@ -80,6 +80,7 @@ public abstract class CedarMicroserviceResource {
         .param(AppLogParam.JWT_TOKEN_HASH, jwtTokenHash)
         .param(AppLogParam.AUTH_SOURCE, sc.getCedarUser() != null ? sc.getCedarUser().getAuthSource() : null)
         .enqueue();
+
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();
     }

@@ -8,12 +8,14 @@ public class MicroserviceUrlUtil {
   private final UserMicroserviceUrlProvider user;
   private final TemplateMicroserviceUrlProvider template;
   private final MessagingMicroserviceUrlProvider messaging;
+  private final ValuerecommenderMicroserviceUrlProvider valuerecommender;
 
   public MicroserviceUrlUtil(ServersConfig servers) {
     workspace = new WorkspaceMicroserviceUrlProvider(servers.getWorkspace());
     user = new UserMicroserviceUrlProvider(servers.getUser());
     template = new TemplateMicroserviceUrlProvider(servers.getTemplate());
     messaging = new MessagingMicroserviceUrlProvider(servers.getMessaging());
+    valuerecommender = new ValuerecommenderMicroserviceUrlProvider(servers.getValuerecommender());
   }
 
   public WorkspaceMicroserviceUrlProvider getWorkspace() {
@@ -30,5 +32,9 @@ public class MicroserviceUrlUtil {
 
   public MessagingMicroserviceUrlProvider getMessaging() {
     return messaging;
+  }
+
+  public ValuerecommenderMicroserviceUrlProvider getValuerecommender() {
+    return valuerecommender;
   }
 }

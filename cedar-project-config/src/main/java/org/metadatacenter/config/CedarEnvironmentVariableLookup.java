@@ -64,7 +64,7 @@ public class CedarEnvironmentVariableLookup extends StrLookup<Object> {
         String value = environment.get(name);
         CedarEnvironmentVariable var = CedarEnvironmentVariable.forName(name);
         if (var != null) {
-          if (var.getSecure() == CedarEnvironmentVariableSecure.NO) {
+          if (!var.isSecure()) {
             sb.append(value);
           } else {
             int pos1 = SHOW_SECURE_CHARS;
