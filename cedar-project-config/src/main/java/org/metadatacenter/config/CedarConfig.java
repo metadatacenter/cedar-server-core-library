@@ -7,6 +7,7 @@ import io.dropwizard.configuration.ConfigurationFactory;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.configuration.YamlConfigurationFactory;
 import io.dropwizard.jackson.Jackson;
+import org.knowm.dropwizard.sundial.SundialConfiguration;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.slf4j.Logger;
@@ -86,8 +87,17 @@ public class CedarConfig extends Configuration {
   @JsonProperty("terminology")
   private TerminologyConfig terminologyConfig;
 
+  @JsonProperty("worker")
+  private WorkerConfig workerConfig;
+
   @JsonProperty("cache")
   private CacheConfig cacheConfig;
+
+  @JsonProperty("validation")
+  private ValidationConfig validationConfig;
+
+  @JsonProperty("sundial")
+  private SundialConfiguration sundialConfig;
 
   protected static final Logger log = LoggerFactory.getLogger(CedarConfig.class);
 
@@ -122,17 +132,19 @@ public class CedarConfig extends Configuration {
     final String searchSettingsMappingsConfigFileName = "cedar-search.json";
     final String rulesSettingsMappingsConfigFileName = "cedar-rules.json";
 
-    config.searchSettingsMappingsConfig = getSettingsMappingsConfigFromFile(searchSettingsMappingsConfigFileName, validator,
-        substitutingSourceProvider);
-    config.rulesSettingsMappingsConfig = getSettingsMappingsConfigFromFile(rulesSettingsMappingsConfigFileName, validator,
-        substitutingSourceProvider);
+    config.searchSettingsMappingsConfig =
+        getSettingsMappingsConfigFromFile(searchSettingsMappingsConfigFileName, validator,
+            substitutingSourceProvider);
+    config.rulesSettingsMappingsConfig =
+        getSettingsMappingsConfigFromFile(rulesSettingsMappingsConfigFileName, validator,
+            substitutingSourceProvider);
 
     return config;
   }
 
   private static ElasticsearchSettingsMappingsConfig getSettingsMappingsConfigFromFile(String configFileName,
-                                                                               Validator validator,
-                                                                               SubstitutingSourceProvider substitutingSourceProvider) {
+                                                                                       Validator validator,
+                                                                                       SubstitutingSourceProvider substitutingSourceProvider) {
     ElasticsearchSettingsMappingsConfig settingsMappingsConfig = null;
 
     final ConfigurationFactory<ElasticsearchSettingsMappingsConfig> configurationFactory = new
@@ -250,8 +262,20 @@ public class CedarConfig extends Configuration {
     return terminologyConfig;
   }
 
+  public WorkerConfig getWorkerConfig() {
+    return workerConfig;
+  }
+
   public CacheConfig getCacheConfig() {
     return cacheConfig;
+  }
+
+  public ValidationConfig getValidationConfig() {
+    return validationConfig;
+  }
+
+  public SundialConfiguration getSundialConfig() {
+    return sundialConfig;
   }
 
   // Utility methods

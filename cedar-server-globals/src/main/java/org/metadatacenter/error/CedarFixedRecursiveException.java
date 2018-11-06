@@ -1,8 +1,9 @@
 package org.metadatacenter.error;
 
 public class CedarFixedRecursiveException extends Exception {
-  public CedarFixedRecursiveException(Exception otherException) {
-    super(otherException.getMessage());
-    this.setStackTrace(otherException.getStackTrace());
+  public CedarFixedRecursiveException(Throwable throwable) {
+    super(throwable.getMessage());
+    this.setStackTrace(throwable.getStackTrace());
+    this.initCause(null);
   }
 }

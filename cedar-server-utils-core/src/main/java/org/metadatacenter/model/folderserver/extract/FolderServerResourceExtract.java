@@ -4,27 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceVersion;
+import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 
-public abstract class FolderServerResourceExtract extends FolderServerNodeExtract implements NodeWithPublicationStatus {
+public abstract class FolderServerResourceExtract extends FolderServerNodeExtract
+    implements NodeWithPublicationStatus, ResourceWithVersionData {
 
-  protected ResourceVersion version;
   protected BiboStatus publicationStatus;
-  protected Boolean latestVersion;
+  protected VersionDataGroup versionData;
 
   public FolderServerResourceExtract(CedarNodeType nodeType) {
     super(nodeType);
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public ResourceVersion getVersion() {
-    return version;
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public void setVersion(String v) {
-    this.version = ResourceVersion.forValue(v);
+    versionData = new VersionDataGroup();
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
@@ -37,13 +30,43 @@ public abstract class FolderServerResourceExtract extends FolderServerNodeExtrac
     this.publicationStatus = BiboStatus.forValue(s);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
-  public Boolean isLatestVersion() {
-    return latestVersion;
+  @Override
+  public ResourceVersion getVersion() {
+    return versionData.getVersion();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
+  @Override
+  public void setVersion(String versionString) {
+    versionData.setVersion(ResourceVersion.forValue(versionString));
+  }
+
+  @Override
+  public Boolean isLatestVersion() {
+    return versionData.isLatestVersion();
+  }
+
+  @Override
   public void setLatestVersion(Boolean latestVersion) {
-    this.latestVersion = latestVersion;
+    versionData.setLatestVersion(latestVersion);
+  }
+
+  @Override
+  public Boolean isLatestDraftVersion() {
+    return versionData.isLatestDraftVersion();
+  }
+
+  @Override
+  public void setLatestDraftVersion(Boolean latestDraftVersion) {
+    versionData.setLatestDraftVersion(latestDraftVersion);
+  }
+
+  @Override
+  public Boolean isLatestPublishedVersion() {
+    return versionData.isLatestPublishedVersion();
+  }
+
+  @Override
+  public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
+    versionData.setLatestPublishedVersion(latestPublishedVersion);
   }
 }

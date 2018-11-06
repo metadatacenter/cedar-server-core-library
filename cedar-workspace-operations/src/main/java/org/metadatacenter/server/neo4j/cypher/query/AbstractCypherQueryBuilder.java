@@ -7,8 +7,9 @@ import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.server.neo4j.cypher.sort.QuerySortOptions;
+import org.metadatacenter.server.neo4j.util.Neo4JUtil;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
 import java.util.List;
 
@@ -89,6 +90,12 @@ public abstract class AbstractCypherQueryBuilder {
       }
       if (newResource.isLatestVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_VERSION)).append(",");
+      }
+      if (newResource.isLatestDraftVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_DRAFT_VERSION)).append(",");
+      }
+      if (newResource.isLatestPublishedVersion() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_PUBLISHED_VERSION)).append(",");
       }
       if (newResource.getIdentifier() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
@@ -212,7 +219,8 @@ public abstract class AbstractCypherQueryBuilder {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->(" + nodeAlias + ")";
   }
 
-  protected static String getUserToResourceRelationThroughGroupWithContains(RelationLabel relationLabel, String nodeAlias) {
+  protected static String getUserToResourceRelationThroughGroupWithContains(RelationLabel relationLabel,
+                                                                            String nodeAlias) {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->()-[:<REL.CONTAINS>*0..]->(" + nodeAlias + ")";
   }
 
@@ -230,14 +238,32 @@ public abstract class AbstractCypherQueryBuilder {
         ")";
   }
 
-  protected static String getVersionConditions(String relationPrefix, String nodeAlias) {
-    return "" +
-        " " + relationPrefix + " " +
-        "(" +
-        nodeAlias + ".<PROP.IS_LATEST_VERSION> = true" +
-        " OR " +
-        nodeAlias + ".<PROP.IS_LATEST_VERSION> IS NULL" +
-        ")";
+  protected static String getVersionConditions(ResourceVersionFilter version,
+                                               String relationPrefix, String nodeAlias) {
+    if (version == ResourceVersionFilter.LATEST) {
+      return "" +
+          " " + relationPrefix + " " +
+          "(" +
+          nodeAlias + ".<PROP.IS_LATEST_VERSION> = true" +
+          " OR " +
+          nodeAlias + ".<PROP.IS_LATEST_VERSION> IS NULL" +
+          ")";
+    }
+    else if(version == ResourceVersionFilter.LATEST_BY_STATUS) {
+      return "" +
+          " " + relationPrefix + " " +
+          "(" +
+          nodeAlias + ".<PROP.IS_LATEST_DRAFT_VERSION> = true" +
+          " OR " +
+          nodeAlias + ".<PROP.IS_LATEST_DRAFT_VERSION> IS NULL" +
+          " OR " +
+          nodeAlias + ".<PROP.IS_LATEST_PUBLISHED_VERSION> = true" +
+          " OR " +
+          nodeAlias + ".<PROP.IS_LATEST_PUBLISHED_VERSION> IS NULL" +
+          ")";
+    } else {
+      return "";
+    }
   }
 
   protected static String getPublicationStatusConditions(String relationPrefix, String nodeAlias) {

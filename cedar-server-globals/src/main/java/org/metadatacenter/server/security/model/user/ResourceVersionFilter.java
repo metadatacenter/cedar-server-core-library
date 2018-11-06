@@ -9,6 +9,7 @@ import java.util.List;
 public enum ResourceVersionFilter {
 
   LATEST("latest"),
+  LATEST_BY_STATUS("latest-by-status"),
   ALL("all");
 
   private final String value;

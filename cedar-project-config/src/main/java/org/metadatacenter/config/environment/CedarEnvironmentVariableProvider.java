@@ -20,9 +20,12 @@ public class CedarEnvironmentVariableProvider {
         String value = System.getenv(variable.getName());
         env.put(variable.getName(), value);
       } else {
-        if (variable.getNumeric() == CedarEnvironmentVariableNumeric.YES) {
+        if (variable.isNumeric()) {
           env.put(variable.getName(), "0");
           log.info("Setting default numeric value 0 for                                   : " + variable.getName());
+        } else if (variable.isBoolean()) {
+          env.put(variable.getName(), "false");
+          log.info("Setting default boolean value false for                               : " + variable.getName());
         } else {
           String value = System.getenv(variable.getName());
           if (value != null) {

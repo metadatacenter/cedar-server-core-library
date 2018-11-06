@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
@@ -13,11 +13,11 @@ public class Neo4JProxyVersion extends AbstractNeo4JProxy {
     super(proxies);
   }
 
-  public FolderServerResource resourceWithPreviousVersion(String resourceURL) {
+  public FolderServerNode resourceWithPreviousVersion(String resourceURL) {
     String cypher = CypherQueryBuilderVersion.getResourceWithPreviousVersion();
     CypherParameters params = CypherParamBuilderResource.getResourceById(resourceURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetOne(q, FolderServerResource.class);
+    return executeReadGetOne(q, FolderServerNode.class);
   }
 
 }

@@ -372,7 +372,7 @@ public abstract class AbstractNeo4JProxy {
   }
 
   public FolderServerResource buildResource(JsonNode r) {
-    return buildClass(r, FolderServerResource.class);
+    return buildClass(r, FolderServerNode.class).asResource();
   }
 
   protected FolderServerNode buildNode(JsonNode n) {

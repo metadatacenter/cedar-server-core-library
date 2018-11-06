@@ -53,7 +53,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "node"));
+      sb.append(getVersionConditions(version, " AND ", "node"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "node"));
@@ -81,7 +81,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "node"));
+      sb.append(getVersionConditions(version, " AND ", "node"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "node"));
@@ -105,7 +105,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
     }
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "node"));
+      sb.append(getVersionConditions(version, " AND ", "node"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "node"));
@@ -130,7 +130,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
     }
     if (version != null && version != ResourceVersionFilter.ALL) {
-      sb.append(getVersionConditions(" AND ", "node"));
+      sb.append(getVersionConditions(version, " AND ", "node"));
     }
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "node"));

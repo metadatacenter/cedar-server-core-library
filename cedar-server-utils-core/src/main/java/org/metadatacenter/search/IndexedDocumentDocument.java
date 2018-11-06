@@ -2,7 +2,7 @@ package org.metadatacenter.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
+import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 
 import java.util.List;

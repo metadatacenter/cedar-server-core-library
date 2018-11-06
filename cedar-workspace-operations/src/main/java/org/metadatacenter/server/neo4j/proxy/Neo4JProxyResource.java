@@ -29,7 +29,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(newResource);
     CypherParameters params = CypherParamBuilderResource.createResource(newResource, parentId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerResource.class);
+    return executeWriteGetOne(q, FolderServerNode.class).asResource();
   }
 
   FolderServerResource updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
@@ -37,7 +37,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderResource.updateResourceById(updateFields);
     CypherParameters params = CypherParamBuilderResource.updateResourceById(resourceURL, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerResource.class);
+    return executeWriteGetOne(q, FolderServerNode.class).asResource();
   }
 
   boolean deleteResourceById(String resourceURL) {
@@ -104,7 +104,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   public FolderServerResource findResourceById(String resourceURL) {
-    return findResourceGenericById(resourceURL, FolderServerResource.class);
+    return findResourceGenericById(resourceURL, FolderServerNode.class).asResource();
   }
 
   List<FolderServerNode> findResourcePathById(String id) {
@@ -133,6 +133,27 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting isLatestVersion");
+  }
+
+  public boolean unsetLatestDraftVersion(String resourceId) {
+    String cypher = CypherQueryBuilderResource.unsetLatestDraftVersion();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "unsetting isLatestDraftVersion");
+  }
+
+  public boolean setLatestPublishedVersion(String resourceId) {
+    String cypher = CypherQueryBuilderResource.setLatestPublishedVersion();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting isLatestPublishedVersion");
+  }
+
+  public boolean unsetLatestPublishedVersion(String resourceId) {
+    String cypher = CypherQueryBuilderResource.unsetLatestPublishedVersion();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "unsetting isLatestPublishedVersion");
   }
 
   public long getIsBasedOnCount(String templateId) {

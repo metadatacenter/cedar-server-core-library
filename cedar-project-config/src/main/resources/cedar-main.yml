@@ -163,6 +163,7 @@ servers:
     httpPort: "${CEDAR_VALUERECOMMENDER_HTTP_PORT}"
     adminPort: "${CEDAR_VALUERECOMMENDER_ADMIN_PORT}"
     stopPort: "${CEDAR_VALUERECOMMENDER_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_VALUERECOMMENDER_HTTP_PORT}/"
     apiDoc: true
   worker:
     httpPort: "${CEDAR_WORKER_HTTP_PORT}"
@@ -203,6 +204,12 @@ terminology:
     connectTimeout: 3000
     socketTimeout: 30000
     defaultPageSize: 50
+
+worker:
+  valuerecommender:
+    maxReindexingThreadCount: 10
+    sleepMillisAfterTooManyProcessing: 1000
+    sleepMillisAfterCurrentIdProcessing: 1000
 
 importExport:
   exportDir: "${CEDAR_HOME}/export/"
@@ -251,6 +258,7 @@ cache:
       searchPermission: "CEDAR-QUEUE-search-permission"
       ncbiSubmission: "CEDAR-QUEUE-ncbi-submission"
       appLog: "CEDAR-QUEUE-app-log"
+      valuerecommender: "CEDAR-QUEUE-valuerecommender"
   nonPersistent:
     connection:
       host: "${CEDAR_REDIS_NONPERSISTENT_HOST}"
@@ -258,6 +266,19 @@ cache:
       timeout: 2000
   terminology:
     folder: "${CEDAR_HOME}/cache/terminology"
+
+validation:
+  enabled: "${CEDAR_VALIDATION_ENABLED}"
+
+sundial:
+  thread-pool-size: 10
+  shutdown-on-unload: true
+  wait-on-shutdown: false
+  start-delay-seconds: 0
+  start-scheduler-on-load: true
+  global-lock-on-load: false
+  annotated-jobs-package-name: org.metadatacenter.worker
+  tasks: [startjob, stopjob]
 
 submission:
   ncbi:

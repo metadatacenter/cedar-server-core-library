@@ -1,7 +1,7 @@
 package org.metadatacenter.server.search.elasticsearch.permission;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.folderserver.FolderServerNodeInfo;
+import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;

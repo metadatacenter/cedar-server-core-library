@@ -20,6 +20,7 @@ public enum AppLogParam {
   INTERPOLATED_QUERY("interpolatedQuery"),
   RUNNABLE_QUERY_HASH("runnableQueryHash"),
   QUERY_PARAMETERS_HASH("queryParametersHash"),
+  EXCEPTION("exception"),
   OPERATION("operation");
 
   private final String value;

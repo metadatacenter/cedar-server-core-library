@@ -81,6 +81,9 @@ public class ApplicationRequestLog {
   @Column(length = 2048)
   private String queryParameters;
 
+  @Lob
+  private String errorPack;
+
   public static ApplicationRequestLog fromAppRequestFilter(AppLogMessage appLog) {
     ApplicationRequestLog l = new ApplicationRequestLog();
     l.globalRequestId = appLog.getGlobalRequestId();
@@ -128,4 +131,7 @@ public class ApplicationRequestLog {
     }
   }
 
+  public void setErrorPack(String errorPack) {
+    this.errorPack = errorPack;
+  }
 }

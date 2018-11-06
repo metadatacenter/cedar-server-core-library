@@ -109,6 +109,27 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
+  public static String unsetLatestDraftVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_DRAFT_VERSION> = false" +
+        " RETURN resource";
+  }
+
+  public static String setLatestPublishedVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_PUBLISHED_VERSION> = true" +
+        " RETURN resource";
+  }
+
+  public static String unsetLatestPublishedVersion() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
+        " SET resource.<PROP.IS_LATEST_PUBLISHED_VERSION> = false" +
+        " RETURN resource";
+  }
+
   public static String getIsBasedOnCount() {
     return "" +
         " MATCH (instance:<LABEL.INSTANCE> {<PROP.IS_BASED_ON>:{resourceId}}) " +

@@ -1,4 +1,4 @@
-package org.metadatacenter.model.folderserver;
+package org.metadatacenter.model.folderserver.info;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,6 +7,10 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
+import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.json.JsonMapper;
@@ -14,7 +18,7 @@ import org.metadatacenter.util.json.JsonMapper;
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerNodeInfo {
+public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWithUsersData {
 
   protected String id;
   protected CedarNodeType nodeType;
@@ -24,16 +28,14 @@ public class FolderServerNodeInfo {
   protected String name;
   protected String description;
   protected String identifier;
-  protected String createdBy;
-  protected String lastUpdatedBy;
   protected String path;
-  protected String ownedBy;
 
-  protected ResourceVersion version;
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
-  protected Boolean latestVersion;
+
+  protected VersionDataGroup versionData;
+  protected UsersDataGroup usersData;
 
   private ResourceUri isBasedOn;
 
@@ -42,10 +44,8 @@ public class FolderServerNodeInfo {
   protected boolean isUserHome;
 
   private FolderServerNodeInfo() {
-  }
-
-  protected FolderServerNodeInfo(CedarNodeType nodeType) {
-    this.nodeType = nodeType;
+    this.versionData = new VersionDataGroup();
+    this.usersData = new UsersDataGroup();
   }
 
   public static FolderServerNodeInfo fromNode(FolderServerNode node) {
@@ -130,36 +130,6 @@ public class FolderServerNodeInfo {
     this.lastUpdatedOn = lastUpdatedOn;
   }
 
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public String getCreatedBy() {
-    return createdBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public String getLastUpdatedBy() {
-    return lastUpdatedBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public void setLastUpdatedBy(String lastUpdatedBy) {
-    this.lastUpdatedBy = lastUpdatedBy;
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public ResourceVersion getVersion() {
-    return version;
-  }
-
-  @JsonProperty(NodeProperty.Label.VERSION)
-  public void setVersion(String v) {
-    this.version = ResourceVersion.forValue(v);
-  }
-
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
   public ResourceUri getPreviousVersion() {
     return previousVersion;
@@ -190,16 +160,6 @@ public class FolderServerNodeInfo {
     this.derivedFrom = ResourceUri.forValue(df);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
-  public Boolean isLatestVersion() {
-    return latestVersion;
-  }
-
-  @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
-  public void setLatestVersion(Boolean latestVersion) {
-    this.latestVersion = latestVersion;
-  }
-
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public ResourceUri getIsBasedOn() {
     return isBasedOn;
@@ -208,14 +168,6 @@ public class FolderServerNodeInfo {
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public void setIsBasedOn(String isBasedOn) {
     this.isBasedOn = ResourceUri.forValue(isBasedOn);
-  }
-
-  public String getOwnedBy() {
-    return ownedBy;
-  }
-
-  public void setOwnedBy(String ownedBy) {
-    this.ownedBy = ownedBy;
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)
@@ -247,4 +199,75 @@ public class FolderServerNodeInfo {
   public void setIsUserHome(boolean isUserHome) {
     this.isUserHome = isUserHome;
   }
+
+  @Override
+  public ResourceVersion getVersion() {
+    return versionData.getVersion();
+  }
+
+  @Override
+  public void setVersion(String versionString) {
+    versionData.setVersion(ResourceVersion.forValue(versionString));
+  }
+
+  @Override
+  public Boolean isLatestVersion() {
+    return versionData.isLatestVersion();
+  }
+
+  @Override
+  public void setLatestVersion(Boolean latestVersion) {
+    versionData.setLatestVersion(latestVersion);
+  }
+
+  @Override
+  public Boolean isLatestDraftVersion() {
+    return versionData.isLatestDraftVersion();
+  }
+
+  @Override
+  public void setLatestDraftVersion(Boolean latestDraftVersion) {
+    versionData.setLatestDraftVersion(latestDraftVersion);
+  }
+
+  @Override
+  public Boolean isLatestPublishedVersion() {
+    return versionData.isLatestPublishedVersion();
+  }
+
+  @Override
+  public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
+    versionData.setLatestPublishedVersion(latestPublishedVersion);
+  }
+
+  @Override
+  public String getOwnedBy() {
+    return usersData.getOwnedBy();
+  }
+
+  @Override
+  public void setOwnedBy(String ownedBy) {
+    usersData.setOwnedBy(ownedBy);
+  }
+
+  @Override
+  public String getCreatedBy() {
+    return usersData.getCreatedBy();
+  }
+
+  @Override
+  public void setCreatedBy(String createdBy) {
+    usersData.setCreatedBy(createdBy);
+  }
+
+  @Override
+  public String getLastUpdatedBy() {
+    return usersData.getLastUpdatedBy();
+  }
+
+  @Override
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    usersData.setLastUpdatedBy(lastUpdatedBy);
+  }
+
 }
