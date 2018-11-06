@@ -63,6 +63,7 @@ public abstract class CedarUserRolePermissionUtil {
     searchReindexerPermissions = new HashSet<>();
     searchReindexerPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     searchReindexerPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
+    searchReindexerPermissions.add(CedarPermission.RULES_INDEX_REINDEX.getPermissionName());
 
     builtInSystemAdministratorPermissions = new HashSet<>();
     builtInSystemAdministratorPermissions.addAll(templateCreatorPermissions);
