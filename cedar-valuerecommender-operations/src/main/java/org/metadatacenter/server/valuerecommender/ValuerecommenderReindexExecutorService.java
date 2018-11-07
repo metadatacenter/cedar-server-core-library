@@ -1,5 +1,6 @@
 package org.metadatacenter.server.valuerecommender;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
@@ -8,8 +9,9 @@ import org.metadatacenter.config.WorkerValuerecommenderConfig;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
+import org.metadatacenter.server.valuerecommender.model.RulesGenerationStatus;
 import org.metadatacenter.server.valuerecommender.model.ValuerecommenderReindexMessage;
-import org.metadatacenter.util.http.CedarUrlUtil;
+import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,9 +96,35 @@ public class ValuerecommenderReindexExecutorService {
   }
 
   private Set<String> getCurrentlyProcessingIds() {
-    //GET "/command/generate-rules/status"
-    //TODO: read it
-    return new HashSet<>();
+    String url = microserviceUrlUtil.getValuerecommender().getCommandGenerateRulesStatus();
+    String authString = adminUser.getFirstApiKeyAuthHeader();
+    log.debug(url);
+    Set<String> idSet = new HashSet<>();
+    try {
+      Request request = Request.Get(url)
+          .connectTimeout(CONNECTION_TIMEOUT)
+          .socketTimeout(SOCKET_TIMEOUT)
+          .addHeader(HTTP_HEADER_AUTHORIZATION, authString);
+      HttpResponse response = request.execute().returnResponse();
+      int statusCode = response.getStatusLine().getStatusCode();
+      if (statusCode == HttpStatus.SC_OK) {
+        List<RulesGenerationStatus> list = JsonMapper.MAPPER
+            .readValue(response.getEntity().getContent(), new TypeReference<List<RulesGenerationStatus>>() {
+            });
+        for (RulesGenerationStatus status : list) {
+          if (status.getStatus() == RulesGenerationStatus.Status.PROCESSING) {
+            idSet.add(status.getTemplateId());
+          }
+        }
+        log.info("Currently executing reindexes:" + idSet);
+      } else {
+        log.error("Error while requesting reindexing rule set. HTTP status code: " + statusCode);
+      }
+    } catch (Exception e) {
+      log.error("Error while requesting reindexing rule set", e);
+    }
+
+    return idSet;
   }
 
   private void addBackMessages(List<ValuerecommenderReindexMessage> messages) {
@@ -110,7 +138,6 @@ public class ValuerecommenderReindexExecutorService {
     String url = microserviceUrlUtil.getValuerecommender().getCommandGenerateRules(templateId);
     String authString = adminUser.getFirstApiKeyAuthHeader();
     log.debug(url);
-    log.debug(authString);
     try {
       Request request = Request.Post(url)
           .connectTimeout(CONNECTION_TIMEOUT)
