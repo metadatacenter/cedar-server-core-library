@@ -12,7 +12,7 @@ public class FolderServerFolderCurrentUserReport extends FolderServerNodeCurrent
     implements FolderWithCurrentUserPermissions {
 
   public FolderServerFolderCurrentUserReport() {
-    super(CedarNodeType.FIELD);
+    super(CedarNodeType.FOLDER);
   }
 
   private boolean userHome;
