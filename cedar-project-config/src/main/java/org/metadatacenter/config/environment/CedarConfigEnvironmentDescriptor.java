@@ -118,6 +118,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_GROUP); // storage for groups
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_RESOURCE); // permission tests
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKER); // permission changes
+    cedarNeo4jUserPassword.add(SystemComponent.SERVER_FAIRDATA); // permission check
 
     Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
     cedarNeo4jUserName.addAll(cedarNeo4jUserPassword);

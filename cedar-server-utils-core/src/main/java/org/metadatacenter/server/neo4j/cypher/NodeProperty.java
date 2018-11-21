@@ -62,6 +62,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String IS_LATEST_PUBLISHED_VERSION = "isLatestPublishedVersion";
     public static final String IS_BASED_ON = "schema:isBasedOn";
     public static final String DERIVED_FROM = "pav:derivedFrom";
+    public static final String IS_PUBLIC = "isPublic";
   }
 
   public class OnTheFly {

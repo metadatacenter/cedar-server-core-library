@@ -21,6 +21,7 @@ public abstract class FolderServerResource extends FolderServerNode
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
   protected VersionDataGroup versionData;
+  protected Boolean isPublic;
 
   public FolderServerResource(CedarNodeType nodeType) {
     super(nodeType);
@@ -106,5 +107,15 @@ public abstract class FolderServerResource extends FolderServerNode
   @Override
   public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
     versionData.setLatestPublishedVersion(latestPublishedVersion);
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public Boolean isPublic() {
+    return isPublic;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public void setPublic(Boolean isPublic) {
+    this.isPublic = isPublic;
   }
 }
