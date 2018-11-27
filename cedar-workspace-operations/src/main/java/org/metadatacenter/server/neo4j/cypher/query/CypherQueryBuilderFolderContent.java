@@ -97,7 +97,8 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
         "    )" +
         " WITH childrenInAccessibleFolder + collect(directChild) as allChildren" +
         "" +
-        " UNWIND allChildren as finalChild"
+        " UNWIND allChildren as allChildrenList" +
+        " WITH DISTINCT(allChildrenList) AS finalChild"
     );
     return sb;
   }
