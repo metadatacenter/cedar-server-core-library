@@ -120,8 +120,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
       sb.append(getPublicationStatusConditions(" AND ", "finalChild"));
     }
     sb.append("" +
-        "    )" +
-        " RETURN finalChild"
+        "    )"
     );
     return sb;
   }
