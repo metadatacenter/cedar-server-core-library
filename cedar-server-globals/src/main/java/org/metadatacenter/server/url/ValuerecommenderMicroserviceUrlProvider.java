@@ -12,4 +12,8 @@ public class ValuerecommenderMicroserviceUrlProvider extends MicroserviceUrlProv
   public String getCommandGenerateRules(String templateId) {
     return base + "command/generate-rules/" + UrlUtil.urlEncode(templateId);
   }
+
+  public String getCommandGenerateRulesStatus() {
+    return base + "command/generate-rules/status";
+  }
 }

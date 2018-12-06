@@ -128,13 +128,13 @@ public abstract class AbstractNeo4JProxy {
 
     AppLogMessage appLog =
         AppLogger.message(AppLogType.CYPHER_QUERY, AppLogSubType.FULL, globalRequestId, localRequestId)
-        .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
-        .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
-        .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())
-        .param(AppLogParam.QUERY_PARAMETERS, log.getParameterMap())
-        .param(AppLogParam.RUNNABLE_QUERY_HASH, DigestUtils.md5Hex(log.getRunnableQuery()))
-        .param(AppLogParam.QUERY_PARAMETERS_HASH, DigestUtils.md5Hex(paramMapString))
-        .param(AppLogParam.OPERATION, log.getOperation());
+            .param(AppLogParam.ORIGINAL_QUERY, log.getOriginalQuery())
+            .param(AppLogParam.RUNNABLE_QUERY, log.getRunnableQuery())
+            .param(AppLogParam.INTERPOLATED_QUERY, log.getInterpolatedParamsQuery())
+            .param(AppLogParam.QUERY_PARAMETERS, log.getParameterMap())
+            .param(AppLogParam.RUNNABLE_QUERY_HASH, DigestUtils.md5Hex(log.getRunnableQuery()))
+            .param(AppLogParam.QUERY_PARAMETERS_HASH, DigestUtils.md5Hex(paramMapString))
+            .param(AppLogParam.OPERATION, log.getOperation());
     appLog.setStartTime(log.getStart());
     appLog.setEndTime(log.getEnd());
     appLog.setDuration(Duration.between(log.getStart(), log.getEnd()));
@@ -372,7 +372,8 @@ public abstract class AbstractNeo4JProxy {
   }
 
   public FolderServerResource buildResource(JsonNode r) {
-    return buildClass(r, FolderServerNode.class).asResource();
+    FolderServerNode folderServerNode = buildClass(r, FolderServerNode.class);
+    return folderServerNode == null ? null : folderServerNode.asResource();
   }
 
   protected FolderServerNode buildNode(JsonNode n) {

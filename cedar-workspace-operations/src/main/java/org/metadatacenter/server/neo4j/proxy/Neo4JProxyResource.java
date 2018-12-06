@@ -29,7 +29,8 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(newResource);
     CypherParameters params = CypherParamBuilderResource.createResource(newResource, parentId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerNode.class).asResource();
+    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
+    return folderServerNode == null ? null : folderServerNode.asResource();
   }
 
   FolderServerResource updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
@@ -37,7 +38,8 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderResource.updateResourceById(updateFields);
     CypherParameters params = CypherParamBuilderResource.updateResourceById(resourceURL, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerNode.class).asResource();
+    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
+    return folderServerNode == null ? null : folderServerNode.asResource();
   }
 
   boolean deleteResourceById(String resourceURL) {
@@ -104,7 +106,8 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   public FolderServerResource findResourceById(String resourceURL) {
-    return findResourceGenericById(resourceURL, FolderServerNode.class).asResource();
+    FolderServerNode folderServerNode = findResourceGenericById(resourceURL, FolderServerNode.class);
+    return folderServerNode == null ? null : folderServerNode.asResource();
   }
 
   List<FolderServerNode> findResourcePathById(String id) {

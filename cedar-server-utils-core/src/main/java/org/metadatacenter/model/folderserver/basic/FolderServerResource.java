@@ -6,8 +6,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
+import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 import org.metadatacenter.util.json.JsonMapper;
@@ -30,7 +30,8 @@ public abstract class FolderServerResource extends FolderServerNode
   public static FolderServerResource fromFolderServerResourceCurrentUserReport(FolderServerResourceCurrentUserReport cur) {
     try {
       String s = JsonMapper.MAPPER.writeValueAsString(cur);
-      return JsonMapper.MAPPER.readValue(s, FolderServerNode.class).asResource();
+      FolderServerNode folderServerNode = JsonMapper.MAPPER.readValue(s, FolderServerNode.class);
+      return folderServerNode == null ? null : folderServerNode.asResource();
     } catch (IOException e) {
       e.printStackTrace();
     }

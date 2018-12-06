@@ -7,7 +7,6 @@ public class CedarGroupUsersRequest {
 
   private List<CedarGroupUserRequest> users;
 
-
   public CedarGroupUsersRequest() {
     users = new ArrayList<>();
   }
