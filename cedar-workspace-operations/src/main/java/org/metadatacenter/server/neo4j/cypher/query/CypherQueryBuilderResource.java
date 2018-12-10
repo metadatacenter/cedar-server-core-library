@@ -158,4 +158,19 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
     sb.append(" )");
     return sb.toString();
   }
+
+  public static String setPublic() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
+        " SET resource.<PROP.IS_PUBLIC> = true" +
+        " RETURN resource";
+  }
+
+  public static String setNotPublic() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
+        " DELETE resource.<PROP.IS_PUBLIC>" +
+        " RETURN resource";
+  }
+
 }

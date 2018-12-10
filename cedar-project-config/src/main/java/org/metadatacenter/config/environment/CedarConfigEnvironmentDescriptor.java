@@ -357,6 +357,15 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
     cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
+    Set<SystemComponent> cedarHttpPortFairdata = variableToComponent.get(CedarEnvironmentVariable.CEDAR_FAIRDATA_HTTP_PORT);
+    cedarHttpPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
+    Set<SystemComponent> cedarAdminPortFairdata = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_FAIRDATA_ADMIN_PORT);
+    cedarAdminPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
+    Set<SystemComponent> cedarStopPortFairdata = variableToComponent.get(CedarEnvironmentVariable.CEDAR_FAIRDATA_STOP_PORT);
+    cedarStopPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
+
+
     // Compute the reverse map
     componentToVariable = new LinkedHashMap<>();
     for (SystemComponent component : SystemComponent.values()) {

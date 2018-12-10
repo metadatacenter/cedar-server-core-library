@@ -30,7 +30,8 @@ public enum NodeProperty implements CypherQueryParameter {
   IS_LATEST_PUBLISHED_VERSION(Label.IS_LATEST_PUBLISHED_VERSION),
   IS_LATEST_DRAFT_VERSION(Label.IS_LATEST_DRAFT_VERSION),
   IS_BASED_ON(Label.IS_BASED_ON),
-  DERIVED_FROM(Label.DERIVED_FROM);
+  DERIVED_FROM(Label.DERIVED_FROM),
+  IS_PUBLIC(Label.IS_PUBLIC);
 
   public static class Label {
     public static final String ID ="@id";

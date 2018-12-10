@@ -6,6 +6,7 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithPublicFlag;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -15,7 +16,7 @@ import org.metadatacenter.util.json.JsonMapper;
 import java.io.IOException;
 
 public abstract class FolderServerResource extends FolderServerNode
-    implements NodeWithPublicationStatus, ResourceWithVersionData {
+    implements NodeWithPublicationStatus, ResourceWithVersionData, ResourceWithPublicFlag {
 
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
@@ -109,12 +110,12 @@ public abstract class FolderServerResource extends FolderServerNode
     versionData.setLatestPublishedVersion(latestPublishedVersion);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  @Override
   public Boolean isPublic() {
     return isPublic;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  @Override
   public void setPublic(Boolean isPublic) {
     this.isPublic = isPublic;
   }

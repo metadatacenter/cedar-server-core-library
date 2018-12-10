@@ -112,6 +112,9 @@
             "isLatestVersion": {
               "type": "boolean"
             },
+            "isPublic": {
+              "type": "boolean"
+            },
             "schema:name": {
               "type": "text",
               "analyzer": "ngram_analyzer",

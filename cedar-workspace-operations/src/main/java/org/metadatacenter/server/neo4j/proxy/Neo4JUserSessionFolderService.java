@@ -337,6 +337,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public boolean setPublic(String id) {
+    return proxies.resource().setPublic(id);
+  }
+
+  @Override
+  public boolean setNotPublic(String id) {
+    return proxies.resource().setNotPublic(id);
+  }
+
+  @Override
   public long getNumberOfInstances(String templateId) {
     return proxies.resource().getIsBasedOnCount(templateId);
   }

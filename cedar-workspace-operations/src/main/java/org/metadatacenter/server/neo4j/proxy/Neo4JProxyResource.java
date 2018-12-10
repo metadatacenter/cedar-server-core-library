@@ -180,4 +180,19 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerResourceExtract.class);
   }
+
+  public boolean setPublic(String resourceId) {
+    String cypher = CypherQueryBuilderResource.setPublic();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting isPublic");
+  }
+
+  public boolean setNotPublic(String resourceId) {
+    String cypher = CypherQueryBuilderResource.setNotPublic();
+    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting isPublic");
+  }
+
 }
