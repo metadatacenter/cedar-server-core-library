@@ -38,4 +38,8 @@ public abstract class QueueServiceWithBlockingQueue extends QueueService {
     return blockingQueue.blpop(0, queueName);
   }
 
+  @Override
+  public long messageCount() {
+    return blockingQueue.llen(queueName);
+  }
 }
