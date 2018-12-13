@@ -116,14 +116,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter by content
     if (query != null && query.length() > 0) {
-      if (enclosedByQuotes(query)) {
-        query = query.substring(1, query.length() - 1);
-        QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
-        mainQuery.must(summaryTextQuery);
-      } else {
-        QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-        mainQuery.must(summaryTextQuery);
-      }
+      QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+      mainQuery.must(summaryTextQuery);
     }
 
     // Filter by resource type
@@ -194,9 +188,5 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       }
     }
     return searchRequestBuilder;
-  }
-
-  private boolean enclosedByQuotes(String keyword) {
-    return keyword.startsWith("\"") && keyword.endsWith("\"");
   }
 }

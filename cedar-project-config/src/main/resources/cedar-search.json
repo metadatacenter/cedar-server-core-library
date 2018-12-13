@@ -43,13 +43,7 @@
         "summaryText": {
           "type": "text",
           "analyzer": "ngram_analyzer",
-          "search_analyzer": "standard",
-          "fields": {
-            "raw": {
-              "type": "text",
-              "analyzer": "standard"
-            }
-          }
+          "search_analyzer": "standard"
         },
         "users": {
           "properties": {
