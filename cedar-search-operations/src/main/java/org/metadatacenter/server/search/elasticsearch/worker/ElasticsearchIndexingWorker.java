@@ -1,6 +1,9 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -16,10 +19,13 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.search.IndexedDocumentType;
+import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
@@ -69,6 +75,7 @@ public class ElasticsearchIndexingWorker {
 
   /**
    * Removes from the index all documents that match a given CEDAR resource id
+   *
    * @param resourceId
    * @return
    * @throws CedarProcessingException
@@ -103,6 +110,7 @@ public class ElasticsearchIndexingWorker {
 
   /**
    * Removes from the index all documents with fieldName = fieldValue
+   *
    * @param fieldName
    * @param fieldValue
    * @return
@@ -135,6 +143,30 @@ public class ElasticsearchIndexingWorker {
           + " _id:" + documentId + " from the " + indexName + " index");
     } else {
       log.debug("The " + documentType + " " + documentId + " has been removed from the " + indexName + " index");
+    }
+  }
+
+  public void addBatch(List<IndexingDocumentDocument> currentBatch) {
+    if (currentBatch != null) {
+      BulkRequestBuilder bulkRequest = client.prepareBulk();
+
+      for (IndexingDocumentDocument ir : currentBatch) {
+        JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
+
+        try {
+          bulkRequest.add(client.prepareIndex(indexName, documentType)
+              .setSource(JsonMapper.MAPPER.writeValueAsString(jsonResource), XContentType.JSON));
+        } catch (JsonProcessingException e) {
+          log.error("Error while serializing indexing document", e);
+        }
+      }
+
+      BulkResponse bulkResponse = bulkRequest.get();
+      if (bulkResponse.hasFailures()) {
+        // process failures by iterating through each bulk response item
+        log.error("Failure when processing bulk request:");
+        log.error(bulkResponse.buildFailureMessage());
+      }
     }
   }
 }
