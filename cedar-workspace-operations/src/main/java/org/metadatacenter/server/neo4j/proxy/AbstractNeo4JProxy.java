@@ -61,29 +61,32 @@ public abstract class AbstractNeo4JProxy {
 
   protected boolean executeWrite(CypherQuery q, String eventDescription) {
     boolean result = false;
+    CypherQueryLog queryLog = null;
     try (Session session = driver.session()) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
         final Map<String, Object> parameterMap = qp.getParameterMap();
-        CypherQueryLog queryLog = prepareQueryLog("write", qp);
+        queryLog = prepareQueryLog("write", qp);
         result = session.writeTransaction(tx -> {
           tx.run(runnableQuery, parameterMap);
           return true;
         });
-        commitQueryLog(queryLog);
       } else if (q instanceof CypherQueryLiteral) {
         final String runnableQuery = q.getRunnableQuery();
-        CypherQueryLog queryLog = prepareQueryLog("write", q);
+        queryLog = prepareQueryLog("write", q);
         result = session.writeTransaction(tx -> {
           tx.run(runnableQuery);
           return true;
         });
-        commitQueryLog(queryLog);
       }
     } catch (ClientException ex) {
       log.error("Error while " + eventDescription, ex);
       reportQueryError(ex, q);
+    } finally {
+      if (queryLog != null) {
+        commitQueryLog(queryLog);
+      }
     }
     return result;
   }
@@ -155,28 +158,31 @@ public abstract class AbstractNeo4JProxy {
 
   protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
     Record record = null;
+    CypherQueryLog queryLog = null;
     try (Session session = driver.session()) {
       if (q instanceof CypherQueryWithParameters) {
         CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
         final String runnableQuery = qp.getRunnableQuery();
         final Map<String, Object> parameterMap = qp.getParameterMap();
-        CypherQueryLog queryLog = prepareQueryLog("writeGetOne", qp);
+        queryLog = prepareQueryLog("writeGetOne", qp);
         record = session.writeTransaction(tx -> {
           StatementResult result = tx.run(runnableQuery, parameterMap);
           return result.hasNext() ? result.next() : null;
         });
-        commitQueryLog(queryLog);
       } else if (q instanceof CypherQueryLiteral) {
         final String runnableQuery = q.getRunnableQuery();
-        CypherQueryLog queryLog = prepareQueryLog("writeGetOne", q);
+        queryLog = prepareQueryLog("writeGetOne", q);
         record = session.writeTransaction(tx -> {
           StatementResult result = tx.run(runnableQuery);
           return result.hasNext() ? result.next() : null;
         });
-        commitQueryLog(queryLog);
       }
     } catch (ClientException ex) {
       reportQueryError(ex, q);
+    } finally {
+      if (queryLog != null) {
+        commitQueryLog(queryLog);
+      }
     }
 
     return extractClassFromRecord(record, type);
@@ -195,23 +201,25 @@ public abstract class AbstractNeo4JProxy {
 
   private Record executeQueryGetRecord(Session session, CypherQuery q) {
     Record record = null;
+    CypherQueryLog queryLog = null;
     if (q instanceof CypherQueryWithParameters) {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
       final String runnableQuery = qp.getRunnableQuery();
       final Map<String, Object> parameterMap = qp.getParameterMap();
-      CypherQueryLog queryLog = prepareQueryLog("getRecord", qp);
+      queryLog = prepareQueryLog("getRecord", qp);
       record = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery, parameterMap);
         return result.hasNext() ? result.next() : null;
       });
-      commitQueryLog(queryLog);
     } else if (q instanceof CypherQueryLiteral) {
       final String runnableQuery = q.getRunnableQuery();
-      CypherQueryLog queryLog = prepareQueryLog("getRecord", q);
+      queryLog = prepareQueryLog("getRecord", q);
       record = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery);
         return result.hasNext() ? result.next() : null;
       });
+    }
+    if (queryLog != null) {
       commitQueryLog(queryLog);
     }
     return record;
@@ -245,11 +253,12 @@ public abstract class AbstractNeo4JProxy {
 
   private List<Record> executeQueryGetRecordList(Session session, CypherQuery q) {
     List<Record> records = null;
+    CypherQueryLog queryLog = null;
     if (q instanceof CypherQueryWithParameters) {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
       final String runnableQuery = qp.getRunnableQuery();
       final Map<String, Object> parameterMap = qp.getParameterMap();
-      CypherQueryLog queryLog = prepareQueryLog("getRecordList", qp);
+      queryLog = prepareQueryLog("getRecordList", qp);
       records = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery, parameterMap);
         List<Record> nodes = new ArrayList<>();
@@ -258,10 +267,9 @@ public abstract class AbstractNeo4JProxy {
         }
         return nodes;
       });
-      commitQueryLog(queryLog);
     } else if (q instanceof CypherQueryLiteral) {
       final String runnableQuery = q.getRunnableQuery();
-      CypherQueryLog queryLog = prepareQueryLog("getRecordList", q);
+      queryLog = prepareQueryLog("getRecordList", q);
       records = session.readTransaction(tx -> {
         StatementResult result = tx.run(runnableQuery);
         List<Record> nodes = new ArrayList<>();
@@ -270,6 +278,8 @@ public abstract class AbstractNeo4JProxy {
         }
         return nodes;
       });
+    }
+    if (queryLog != null) {
       commitQueryLog(queryLog);
     }
     return records;

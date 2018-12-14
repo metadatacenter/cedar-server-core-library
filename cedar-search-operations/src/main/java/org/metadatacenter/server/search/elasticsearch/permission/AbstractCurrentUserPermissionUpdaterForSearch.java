@@ -42,6 +42,7 @@ public abstract class AbstractCurrentUserPermissionUpdaterForSearch extends Curr
   }
 
   protected boolean containsPermissions(List<IdNodePermissionPair> users, NodePermission permission) {
+    //TODO: Optimize this, use map instead
     for (IdNodePermissionPair pair : users) {
       if (pair.getPermission().equals(permission) && pair.getId().equals(cedarUser.getId())) {
         return true;

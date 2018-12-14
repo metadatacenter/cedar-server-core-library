@@ -10,6 +10,7 @@ import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.model.AppLogParam;
 import org.metadatacenter.server.logging.model.AppLogSubType;
 import org.metadatacenter.server.logging.model.AppLogType;
+import org.metadatacenter.server.security.model.user.CedarUserAuthSource;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
 import org.slf4j.Logger;
@@ -84,6 +85,23 @@ public abstract class CedarMicroserviceResource {
     if (sc.getUserCreationException() != null) {
       throw sc.getUserCreationException();
     }
+    return sc;
+  }
+
+  protected CedarRequestContext buildAnonymousRequestContext() throws CedarAccessException {
+    HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    StackTraceElement caller = stackTrace[2];
+
+    AppLogger.message(AppLogType.REQUEST_HANDLER, AppLogSubType.START, sc.getGlobalRequestIdHeader(),
+        sc.getLocalRequestIdHeader())
+        .param(AppLogParam.CLASS_NAME, caller.getClassName())
+        .param(AppLogParam.METHOD_NAME, caller.getMethodName())
+        .param(AppLogParam.LINE_NUMBER, caller.getLineNumber())
+        .param(AppLogParam.CLIENT_SESSION_ID, sc.getClientSessionIdHeader())
+        .param(AppLogParam.AUTH_SOURCE, CedarUserAuthSource.ANONYMOUS)
+        .enqueue();
+
     return sc;
   }
 

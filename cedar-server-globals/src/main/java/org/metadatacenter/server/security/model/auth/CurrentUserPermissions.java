@@ -13,6 +13,8 @@ public class CurrentUserPermissions {
   private boolean canSubmit;
   private boolean canPopulate;
   private boolean canCopy;
+  private boolean canMakePublic;
+  private boolean canMakeNotPublic;
 
   private CedarErrorKey createDraftErrorKey;
   private CedarErrorKey publishErrorKey;
@@ -95,6 +97,22 @@ public class CurrentUserPermissions {
 
   public void setCanCopy(boolean canCopy) {
     this.canCopy = canCopy;
+  }
+
+  public boolean isCanMakePublic() {
+    return canMakePublic;
+  }
+
+  public void setCanMakePublic(boolean canMakePublic) {
+    this.canMakePublic = canMakePublic;
+  }
+
+  public boolean isCanMakeNotPublic() {
+    return canMakeNotPublic;
+  }
+
+  public void setCanMakeNotPublic(boolean canMakeNotPublic) {
+    this.canMakeNotPublic = canMakeNotPublic;
   }
 
   public CedarErrorKey getCreateDraftErrorKey() {

@@ -29,6 +29,7 @@ public abstract class FolderServerResourceReport extends FolderServerResourceCur
 
   private FolderServerResourceExtract derivedFromExtract;
   private List<FolderServerResourceExtract> versions;
+  private Boolean isPublic;
 
   public FolderServerResourceReport(CedarNodeType nodeType) {
     super(nodeType);
@@ -63,5 +64,15 @@ public abstract class FolderServerResourceReport extends FolderServerResourceCur
   @JsonProperty(NodeProperty.OnTheFly.VERSIONS)
   public void setVersions(List<FolderServerResourceExtract> versions) {
     this.versions = versions;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public Boolean isPublic() {
+    return isPublic;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public void setPublic(Boolean isPublic) {
+    this.isPublic = isPublic;
   }
 }

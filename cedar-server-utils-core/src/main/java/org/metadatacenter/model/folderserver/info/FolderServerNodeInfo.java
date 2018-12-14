@@ -43,6 +43,8 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   protected boolean isSystem;
   protected boolean isUserHome;
 
+  protected boolean isPublic;
+
   private FolderServerNodeInfo() {
     this.versionData = new VersionDataGroup();
     this.usersData = new UsersDataGroup();
@@ -198,6 +200,16 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   @JsonProperty(NodeProperty.Label.IS_USER_HOME)
   public void setIsUserHome(boolean isUserHome) {
     this.isUserHome = isUserHome;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public boolean getIsPublic() {
+    return isPublic;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_PUBLIC)
+  public void setIsPublic(boolean isPublic) {
+    this.isPublic = isPublic;
   }
 
   @Override

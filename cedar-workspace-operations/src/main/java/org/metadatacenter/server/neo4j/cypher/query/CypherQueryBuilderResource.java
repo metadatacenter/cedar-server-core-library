@@ -169,7 +169,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
   public static String setNotPublic() {
     return "" +
         " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " DELETE resource.<PROP.IS_PUBLIC>" +
+        " REMOVE resource.<PROP.IS_PUBLIC>" +
         " RETURN resource";
   }
 
