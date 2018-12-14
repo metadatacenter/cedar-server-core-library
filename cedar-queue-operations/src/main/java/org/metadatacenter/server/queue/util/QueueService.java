@@ -22,4 +22,6 @@ public abstract class QueueService {
   }
 
   public abstract void close();
+
+  public abstract long messageCount();
 }

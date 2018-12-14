@@ -18,6 +18,8 @@ import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class NodeIndexingService extends AbstractIndexingService {
 
   private static final Logger log = LoggerFactory.getLogger(NodeIndexingService.class);
@@ -28,31 +30,31 @@ public class NodeIndexingService extends AbstractIndexingService {
     indexWorker = new ElasticsearchIndexingWorker(indexName, client);
   }
 
-  public IndexedDocumentId indexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
-    log.debug("Indexing node (id = " + node.getId() + ")");
+  public IndexingDocumentDocument createIndexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
-
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
     ir.setSummaryText(getSummaryText(node));
+    return ir;
+  }
 
+  public IndexedDocumentId indexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
+    log.debug("Indexing node (id = " + node.getId() + ")");
+    IndexingDocumentDocument ir = createIndexDocument(node, permissions);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource);
   }
 
   public IndexedDocumentId indexDocument(FolderServerNode node, CedarRequestContext c) throws CedarProcessingException {
     log.debug("Indexing node (id = " + node.getId() + ")");
-    IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
     CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId(),
         node.getType().asFolderOrResource());
+    return indexDocument(node, permissions);
+  }
 
-    ir.setInfo(FolderServerNodeInfo.fromNode(node));
-    ir.setMaterializedPermissions(permissions);
-    ir.setSummaryText(getSummaryText(node));
-
-    JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
-    return indexWorker.addToIndex(jsonResource);
+  public void indexBatch(List<IndexingDocumentDocument> currentBatch) {
+    indexWorker.addBatch(currentBatch);
   }
 
   private String getSummaryText(FolderServerNode node) {

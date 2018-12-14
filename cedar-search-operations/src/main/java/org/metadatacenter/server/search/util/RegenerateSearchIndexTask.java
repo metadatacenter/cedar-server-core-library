@@ -7,8 +7,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
-import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
@@ -26,6 +26,8 @@ import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_
 public class RegenerateSearchIndexTask {
 
   private static final Logger log = LoggerFactory.getLogger(RegenerateSearchIndexTask.class);
+
+  private final static int BATCH_SIZE = 1000;
 
   private final CedarConfig cedarConfig;
 
@@ -103,6 +105,8 @@ public class RegenerateSearchIndexTask {
 
         // Get resources content and index it
         int count = 1;
+        int batchCount = 1;
+        List<IndexingDocumentDocument> currentBatch = new ArrayList<>();
         for (FolderServerNode node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = null;
@@ -111,17 +115,27 @@ public class RegenerateSearchIndexTask {
             } else {
               perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
             }
-            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();
               log.info(String.format("Progress: %.0f%%", progress));
             }
+            if (currentBatch.size() >= BATCH_SIZE) {
+              log.info(String.format("Batch progress: %d", batchCount));
+              nodeIndexingService.indexBatch(currentBatch);
+              currentBatch.clear();
+            }
             count++;
+            batchCount++;
           } catch (Exception e) {
             log.error("Error while indexing document: " + node.getId(), e);
           }
         }
+
+        log.info(String.format("Batch progress remaining: %d", currentBatch.size()));
+        nodeIndexingService.indexBatch(currentBatch);
+
         // Point alias to new index
         esManagementService.addAlias(newIndexName, aliasName);
 

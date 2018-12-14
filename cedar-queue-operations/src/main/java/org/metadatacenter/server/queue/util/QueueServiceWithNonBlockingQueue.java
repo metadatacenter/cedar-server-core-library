@@ -49,4 +49,9 @@ public abstract class QueueServiceWithNonBlockingQueue extends QueueService {
     return messages;
   }
 
+  @Override
+  public long messageCount() {
+    return nonBlockingQueue.llen(queueName);
+  }
+
 }
