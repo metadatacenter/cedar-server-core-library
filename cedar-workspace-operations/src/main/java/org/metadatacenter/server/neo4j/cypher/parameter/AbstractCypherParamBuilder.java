@@ -77,8 +77,8 @@ public abstract class AbstractCypherParamBuilder {
           params.put(NodeProperty.IS_BASED_ON, newInstance.getIsBasedOn());
         }
       }
-      if (newResource.isPublic() != null) {
-        params.put(NodeProperty.IS_PUBLIC, newResource.isPublic());
+      if (newResource.isOpen() != null) {
+        params.put(NodeProperty.IS_OPEN, newResource.isOpen());
       }
     } else if (newNode instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newNode;

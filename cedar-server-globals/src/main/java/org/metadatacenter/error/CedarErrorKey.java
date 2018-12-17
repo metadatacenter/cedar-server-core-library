@@ -118,7 +118,6 @@ public enum CedarErrorKey {
   NON_VERSIONED_ARTIFACT_TYPE("nonVersionedArtifactType"),
   CREATE_DRAFT_ONLY_FROM_PUBLISHED("createDraftOnlyFromPublished"),
   PUBLISH_ONLY_DRAFT("publishOnlyDraft"),
-  RESOURCE_NOT_PUBLIC("resourceNotPublic"),
 
   DRAFT_NOT_CREATED("draftNotCreated"),
 

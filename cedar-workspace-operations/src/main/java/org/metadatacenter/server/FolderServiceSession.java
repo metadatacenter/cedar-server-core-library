@@ -111,9 +111,9 @@ public interface FolderServiceSession {
 
   boolean unsetLatestDraftVersion(String id);
 
-  boolean setPublic(String id);
+  boolean setOpen(String id);
 
-  boolean setNotPublic(String id);
+  boolean setNotOpen(String id);
 
   long getNumberOfInstances(String templateId);
 

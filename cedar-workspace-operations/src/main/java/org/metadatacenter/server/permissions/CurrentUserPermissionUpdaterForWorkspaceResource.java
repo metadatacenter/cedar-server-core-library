@@ -81,8 +81,8 @@ public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUse
       }
     }
     currentUserPermissions.setCanCopy(true);
-    currentUserPermissions.setCanMakePublic(resource.isPublic() == null || !resource.isPublic());
-    currentUserPermissions.setCanMakeNotPublic(resource.isPublic() != null && resource.isPublic());
+    currentUserPermissions.setCanMakeOpen(resource.isOpen() == null || !resource.isOpen());
+    currentUserPermissions.setCanMakeNotOpen(resource.isOpen() != null && resource.isOpen());
   }
 
   private boolean isSubmittable(String basedOnTemplateId) {

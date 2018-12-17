@@ -112,7 +112,7 @@
             "isLatestVersion": {
               "type": "boolean"
             },
-            "isPublic": {
+            "isOpen": {
               "type": "boolean"
             },
             "schema:name": {

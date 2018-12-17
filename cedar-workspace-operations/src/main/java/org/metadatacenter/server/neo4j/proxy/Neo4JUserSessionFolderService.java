@@ -337,13 +337,13 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public boolean setPublic(String id) {
-    return proxies.resource().setPublic(id);
+  public boolean setOpen(String id) {
+    return proxies.resource().setOpen(id);
   }
 
   @Override
-  public boolean setNotPublic(String id) {
-    return proxies.resource().setNotPublic(id);
+  public boolean setNotOpen(String id) {
+    return proxies.resource().setNotOpen(id);
   }
 
   @Override

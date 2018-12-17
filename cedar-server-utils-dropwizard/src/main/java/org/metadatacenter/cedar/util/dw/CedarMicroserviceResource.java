@@ -88,7 +88,7 @@ public abstract class CedarMicroserviceResource {
     return sc;
   }
 
-  protected CedarRequestContext buildAnonymousRequestContext() throws CedarAccessException {
+  protected CedarRequestContext buildAnonymousRequestContext() {
     HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request, httpHeaders);
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     StackTraceElement caller = stackTrace[2];
