@@ -118,7 +118,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_GROUP); // storage for groups
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_RESOURCE); // permission tests
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKER); // permission changes
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_FAIRDATA); // permission check
+    cedarNeo4jUserPassword.add(SystemComponent.SERVER_OPEN); // permission check
 
     Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
     cedarNeo4jUserName.addAll(cedarNeo4jUserPassword);
@@ -268,7 +268,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarHttpPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_HTTP_PORT);
     cedarHttpPortUser.addAll(allMicroservices);
-    cedarHttpPortUser.remove(SystemComponent.SERVER_FAIRDATA);
+    cedarHttpPortUser.remove(SystemComponent.SERVER_OPEN);
     Set<SystemComponent> cedarAdminPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_ADMIN_PORT);
     cedarAdminPortUser.add(SystemComponent.SERVER_USER);
     Set<SystemComponent> cedarStopPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_STOP_PORT);
@@ -358,13 +358,13 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
     cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarHttpPortFairdata = variableToComponent.get(CedarEnvironmentVariable.CEDAR_FAIRDATA_HTTP_PORT);
-    cedarHttpPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
-    Set<SystemComponent> cedarAdminPortFairdata = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_FAIRDATA_ADMIN_PORT);
-    cedarAdminPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
-    Set<SystemComponent> cedarStopPortFairdata = variableToComponent.get(CedarEnvironmentVariable.CEDAR_FAIRDATA_STOP_PORT);
-    cedarStopPortFairdata.add(SystemComponent.SERVER_FAIRDATA);
+    Set<SystemComponent> cedarHttpPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_HTTP_PORT);
+    cedarHttpPortOpen.add(SystemComponent.SERVER_OPEN);
+    Set<SystemComponent> cedarAdminPortOpen = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_OPEN_ADMIN_PORT);
+    cedarAdminPortOpen.add(SystemComponent.SERVER_OPEN);
+    Set<SystemComponent> cedarStopPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_STOP_PORT);
+    cedarStopPortOpen.add(SystemComponent.SERVER_OPEN);
 
 
     // Compute the reverse map

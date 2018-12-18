@@ -14,7 +14,7 @@ public enum ServerName {
   USER("user"),
   VALUERECOMMENDER("valuerecommender"),
   WORKER("worker"),
-  FAIRDATA("fairdata");
+  OPEN("open");
 
   private String name;
 

@@ -28,7 +28,7 @@ public class ServersConfig {
 
   private ServerConfig worker;
 
-  private ServerConfig fairdata;
+  private ServerConfig open;
 
   public WorkspaceServerConfig getWorkspace() {
     return workspace;
@@ -78,8 +78,8 @@ public class ServersConfig {
     return worker;
   }
 
-  public ServerConfig getFairdata() {
-    return fairdata;
+  public ServerConfig getOpen() {
+    return open;
   }
 
   public ServerConfig get(ServerName serverName) {
@@ -108,8 +108,8 @@ public class ServersConfig {
         return valuerecommender;
       case WORKER:
         return worker;
-      case FAIRDATA:
-        return fairdata;
+      case OPEN:
+        return open;
       default:
         return null;
     }
