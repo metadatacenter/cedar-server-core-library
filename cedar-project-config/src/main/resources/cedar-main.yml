@@ -169,6 +169,10 @@ servers:
     httpPort: "${CEDAR_WORKER_HTTP_PORT}"
     adminPort: "${CEDAR_WORKER_ADMIN_PORT}"
     stopPort: "${CEDAR_WORKER_STOP_PORT}"
+  open:
+    httpPort: "${CEDAR_OPEN_HTTP_PORT}"
+    adminPort: "${CEDAR_OPEN_ADMIN_PORT}"
+    stopPort: "${CEDAR_OPEN_STOP_PORT}"
 
 
 #Default values for user profile

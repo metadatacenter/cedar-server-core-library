@@ -30,7 +30,8 @@ public enum NodeProperty implements CypherQueryParameter {
   IS_LATEST_PUBLISHED_VERSION(Label.IS_LATEST_PUBLISHED_VERSION),
   IS_LATEST_DRAFT_VERSION(Label.IS_LATEST_DRAFT_VERSION),
   IS_BASED_ON(Label.IS_BASED_ON),
-  DERIVED_FROM(Label.DERIVED_FROM);
+  DERIVED_FROM(Label.DERIVED_FROM),
+  IS_OPEN(Label.IS_OPEN);
 
   public static class Label {
     public static final String ID ="@id";
@@ -62,6 +63,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String IS_LATEST_PUBLISHED_VERSION = "isLatestPublishedVersion";
     public static final String IS_BASED_ON = "schema:isBasedOn";
     public static final String DERIVED_FROM = "pav:derivedFrom";
+    public static final String IS_OPEN = "isOpen";
   }
 
   public class OnTheFly {

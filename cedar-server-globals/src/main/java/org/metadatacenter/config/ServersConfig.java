@@ -28,6 +28,8 @@ public class ServersConfig {
 
   private ServerConfig worker;
 
+  private ServerConfig open;
+
   public WorkspaceServerConfig getWorkspace() {
     return workspace;
   }
@@ -76,6 +78,10 @@ public class ServersConfig {
     return worker;
   }
 
+  public ServerConfig getOpen() {
+    return open;
+  }
+
   public ServerConfig get(ServerName serverName) {
     switch (serverName) {
       case WORKSPACE:
@@ -102,6 +108,8 @@ public class ServersConfig {
         return valuerecommender;
       case WORKER:
         return worker;
+      case OPEN:
+        return open;
       default:
         return null;
     }

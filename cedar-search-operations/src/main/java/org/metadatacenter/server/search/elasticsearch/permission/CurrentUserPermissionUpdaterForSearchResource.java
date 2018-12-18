@@ -66,6 +66,9 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
         currentUserPermissions.setCanSubmit(true);
       }
     }
+
+    currentUserPermissions.setCanMakeOpen(userCanWrite() && !indexedDocument.getInfo().getIsOpen());
+    currentUserPermissions.setCanMakeNotOpen(userCanWrite() && indexedDocument.getInfo().getIsOpen());
   }
 
   private boolean isSubmittable() {

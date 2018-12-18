@@ -111,6 +111,10 @@ public interface FolderServiceSession {
 
   boolean unsetLatestDraftVersion(String id);
 
+  boolean setOpen(String id);
+
+  boolean setNotOpen(String id);
+
   long getNumberOfInstances(String templateId);
 
   FolderServerResourceExtract findResourceExtractById(ResourceUri id);
