@@ -3,7 +3,6 @@ package org.metadatacenter.config;
 import io.dropwizard.configuration.UndefinedEnvironmentVariableException;
 import org.apache.commons.text.StrLookup;
 import org.metadatacenter.config.environment.CedarEnvironmentVariable;
-import org.metadatacenter.config.environment.CedarEnvironmentVariableSecure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
