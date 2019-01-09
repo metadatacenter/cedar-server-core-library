@@ -185,7 +185,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           s = s.substring(1);
         }
         if (SORT_BY_NAME.equals(s)) {
-          searchRequestBuilder.addSort(INFO_SCHEMA_NAME_RAW, sortOrder);
+          searchRequestBuilder.addSort(INFO_SCHEMA_NAME, sortOrder);
         } else if (SORT_LAST_UPDATED_ON_FIELD.equals(s)) {
           searchRequestBuilder.addSort(INFO_PAV_LAST_UPDATED_ON, sortOrder);
         } else if (SORT_CREATED_ON_FIELD.equals(s)) {
