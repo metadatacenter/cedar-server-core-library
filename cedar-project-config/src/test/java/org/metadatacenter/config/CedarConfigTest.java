@@ -205,7 +205,7 @@ public class CedarConfigTest {
     Map<String, Object> index = (Map<String, Object>) settings.get("index");
     Map<String, Object> analysis = (Map<String, Object>) index.get("analysis");
     Map<String, Object> tokenizer = (Map<String, Object>) analysis.get("tokenizer");
-    Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("ngram_tokenizer");
+    Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("cedar_ngram_tokenizer");
 
     Assert.assertEquals("ngram", ngram_tokenizer.get("type"));
   }
