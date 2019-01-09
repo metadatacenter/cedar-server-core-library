@@ -16,7 +16,7 @@ public class IndexedDocumentDocument {
 
   protected FolderServerNodeInfo info;
 
-  protected List<IdNodePermissionPair> users;
+  protected List<String> users;
 
   public IndexedDocumentDocument() {
   }
@@ -50,7 +50,7 @@ public class IndexedDocumentDocument {
     this.info = info;
   }
 
-  public List<IdNodePermissionPair> getUsers() {
+  public List<String> getUsers() {
     return users;
   }
 }

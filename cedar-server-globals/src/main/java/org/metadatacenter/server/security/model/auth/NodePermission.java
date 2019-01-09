@@ -41,4 +41,11 @@ public enum NodePermission {
     }
     return null;
   }
+
+  public boolean equals(NodePermission other) {
+    return other != null &&
+        (
+            (this.value == null && other.value == null) || (this.value != null && this.value.equals(other.value))
+        );
+  }
 }

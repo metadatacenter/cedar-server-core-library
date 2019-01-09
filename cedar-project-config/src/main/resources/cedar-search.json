@@ -52,24 +52,10 @@
           }
         },
         "users": {
-          "properties": {
-            "id": {
-              "type": "keyword"
-            },
-            "permission": {
-              "type": "keyword"
-            }
-          }
+          "type": "keyword"
         },
         "groups": {
-          "properties": {
-            "id": {
-              "type": "keyword"
-            },
-            "permission": {
-              "type": "keyword"
-            }
-          }
+          "type": "keyword"
         },
         "info": {
           "properties": {
