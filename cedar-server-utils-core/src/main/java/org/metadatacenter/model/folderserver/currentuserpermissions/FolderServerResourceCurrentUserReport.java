@@ -6,19 +6,22 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermissionAndOpenFlag;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
+import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
 public abstract class FolderServerResourceCurrentUserReport extends FolderServerNodeCurrentUserReport
-    implements ResourceWithCurrentUserPermissions, ResourceWithVersionData {
+    implements ResourceWithCurrentUserPermissions, ResourceWithVersionData, NodeWithEverybodyPermissionAndOpenFlag {
 
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
   protected VersionDataGroup versionData;
   protected Boolean isOpen;
+  protected NodeSharePermission everybodyPermission;
 
   public FolderServerResourceCurrentUserReport(CedarNodeType nodeType) {
     super(nodeType);
@@ -95,14 +98,24 @@ public abstract class FolderServerResourceCurrentUserReport extends FolderServer
     versionData.setLatestPublishedVersion(latestPublishedVersion);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_OPEN)
+  @Override
   public Boolean isOpen() {
     return isOpen;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_OPEN)
+  @Override
   public void setOpen(Boolean isOpen) {
     this.isOpen = isOpen;
+  }
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 
   @JsonIgnore

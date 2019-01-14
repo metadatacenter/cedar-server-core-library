@@ -6,23 +6,25 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
+import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermissionAndOpenFlag;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
 public abstract class FolderServerResource extends FolderServerNode
-    implements NodeWithPublicationStatus, ResourceWithVersionData, ResourceWithOpenFlag {
+    implements NodeWithPublicationStatus, ResourceWithVersionData, NodeWithEverybodyPermissionAndOpenFlag {
 
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
   protected VersionDataGroup versionData;
   protected Boolean isOpen;
+  protected NodeSharePermission everybodyPermission;
 
   public FolderServerResource(CedarNodeType nodeType) {
     super(nodeType);
@@ -118,5 +120,15 @@ public abstract class FolderServerResource extends FolderServerNode
   @Override
   public void setOpen(Boolean isOpen) {
     this.isOpen = isOpen;
+  }
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 }
