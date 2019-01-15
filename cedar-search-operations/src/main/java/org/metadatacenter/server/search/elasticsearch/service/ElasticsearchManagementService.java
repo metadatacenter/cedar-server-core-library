@@ -1,11 +1,10 @@
 package org.metadatacenter.server.search.elasticsearch.service;
 
 import com.carrotsearch.hppc.cursors.ObjectCursor;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -100,7 +99,7 @@ public class ElasticsearchManagementService {
   }
 
   public boolean deleteIndex(String indexName) throws CedarProcessingException {
-    DeleteIndexResponse deleteIndexResponse =
+    AcknowledgedResponse deleteIndexResponse =
         getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
     if (!deleteIndexResponse.isAcknowledged()) {
       throw new CedarProcessingException("Failed to delete index '" + indexName + "'");
@@ -111,7 +110,7 @@ public class ElasticsearchManagementService {
   }
 
   public boolean addAlias(String indexName, String aliasName) throws CedarProcessingException {
-    IndicesAliasesResponse response = getClient().admin().indices().prepareAliases()
+    AcknowledgedResponse response = getClient().admin().indices().prepareAliases()
         .addAlias(indexName, aliasName)
         .execute().actionGet();
     if (!response.isAcknowledged()) {
@@ -123,7 +122,7 @@ public class ElasticsearchManagementService {
   }
 
   public boolean deleteAlias(String indexName, String aliasName) throws CedarProcessingException {
-    IndicesAliasesResponse response = getClient().admin().indices().prepareAliases()
+    AcknowledgedResponse response = getClient().admin().indices().prepareAliases()
         .removeAlias(indexName, aliasName)
         .execute().actionGet();
     if (!response.isAcknowledged()) {
