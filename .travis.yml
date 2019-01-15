@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: java
 jdk:
-- oraclejdk11
+- openjdk11
 branches:
   only:
   - develop
