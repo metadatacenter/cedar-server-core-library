@@ -15,7 +15,24 @@ import java.time.Instant;
 import java.util.Map;
 
 @Entity
-@Table(name = "log_request")
+@Table(name = "log_request",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"localRequestId"}, name = "UK_localRequestId"),
+    indexes = {
+        @Index(columnList = "globalRequestId", name = "IDX_globalRequestId"),
+        @Index(columnList = "localRequestId", name = "IDX_localRequestId"),
+        @Index(columnList = "systemComponentName", name = "IDX_systemComponentName"),
+        @Index(columnList = "type", name = "IDX_type"),
+        @Index(columnList = "subType", name = "IDX_subType"),
+        @Index(columnList = "globalRequestIdSource", name = "IDX_globalRequestIdSource"),
+        @Index(columnList = "userId", name = "IDX_userId"),
+        @Index(columnList = "requestTime", name = "IDX_requestTime"),
+        @Index(columnList = "startTime", name = "IDX_startTime"),
+        @Index(columnList = "endTime", name = "IDX_endTime"),
+        @Index(columnList = "handlerDuration", name = "IDX_handlerDuration"),
+        @Index(columnList = "methodName", name = "IDX_methodName"),
+        @Index(columnList = "className", name = "IDX_className"),
+        @Index(columnList = "httpMethod", name = "IDX_httpMethod"),
+    })
 public class ApplicationRequestLog {
 
   private static final Logger log = LoggerFactory.getLogger(ApplicationRequestLog.class);
