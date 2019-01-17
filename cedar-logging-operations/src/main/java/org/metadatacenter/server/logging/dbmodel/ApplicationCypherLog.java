@@ -14,18 +14,18 @@ import java.util.Map;
 @Entity
 @Table(name = "log_cypher",
     indexes = {
-        @Index(columnList = "globalRequestId", name = "IDX_globalRequestId"),
-        @Index(columnList = "localRequestId", name = "IDX_localRequestId"),
-        @Index(columnList = "systemComponentName", name = "IDX_systemComponentName"),
-        @Index(columnList = "duration", name = "IDX_duration"),
-        @Index(columnList = "logTime", name = "IDX_logTime"),
-        @Index(columnList = "startTime", name = "IDX_startTime"),
-        @Index(columnList = "endTime", name = "IDX_endTime"),
-        @Index(columnList = "methodName", name = "IDX_methodName"),
-        @Index(columnList = "className", name = "IDX_className"),
-        @Index(columnList = "operation", name = "IDX_operation"),
-        @Index(columnList = "runnableHash", name = "IDX_runnableHash"),
-        @Index(columnList = "parametersHash", name = "IDX_parametersHash")
+        @Index(columnList = "globalRequestId", name = "IDX_log_cypher_globalRequestId"),
+        @Index(columnList = "localRequestId", name = "IDX_log_cypher_localRequestId"),
+        @Index(columnList = "systemComponentName", name = "IDX_log_cypher_systemComponentName"),
+        @Index(columnList = "duration", name = "IDX_log_cypher_duration"),
+        @Index(columnList = "logTime", name = "IDX_log_cypher_logTime"),
+        @Index(columnList = "startTime", name = "IDX_log_cypher_startTime"),
+        @Index(columnList = "endTime", name = "IDX_log_cypher_endTime"),
+        @Index(columnList = "methodName", name = "IDX_log_cypher_methodName"),
+        @Index(columnList = "className", name = "IDX_log_cypher_className"),
+        @Index(columnList = "operation", name = "IDX_log_cypher_operation"),
+        @Index(columnList = "runnableHash", name = "IDX_log_cypher_runnableHash"),
+        @Index(columnList = "parametersHash", name = "IDX_log_cypher_parametersHash")
     })
 public class ApplicationCypherLog {
 
