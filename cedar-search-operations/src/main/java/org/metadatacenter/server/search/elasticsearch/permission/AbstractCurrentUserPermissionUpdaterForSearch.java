@@ -5,8 +5,8 @@ import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
-import org.metadatacenter.search.IdNodePermissionPair;
 import org.metadatacenter.search.IndexedDocumentDocument;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -41,9 +41,11 @@ public abstract class AbstractCurrentUserPermissionUpdaterForSearch extends Curr
     return containsPermissions(indexedDocument.getUsers(), NodePermission.READ);
   }
 
-  protected boolean containsPermissions(List<IdNodePermissionPair> users, NodePermission permission) {
-    for (IdNodePermissionPair pair : users) {
-      if (pair.getPermission().equals(permission) && pair.getId().equals(cedarUser.getId())) {
+  protected boolean containsPermissions(List<String> users, NodePermission permission) {
+    //TODO: Optimize this, use map instead
+    String lookup = CedarNodeMaterializedPermissions.getKey(cedarUser.getId(), permission);
+    for (String pair : users) {
+      if (pair.equals(lookup)) {
         return true;
       }
     }

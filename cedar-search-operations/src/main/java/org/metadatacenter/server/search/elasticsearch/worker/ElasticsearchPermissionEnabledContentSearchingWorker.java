@@ -12,7 +12,9 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
@@ -36,11 +38,10 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                         publicationStatus, List<String> sortList, String isBasedOn, int limit, int
-                                         offset) {
+                                         publicationStatus, List<String> sortList, int limit, int offset) {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList, isBasedOn);
+        publicationStatus, sortList);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -63,11 +64,10 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                          ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                             publicationStatus, List<String> sortList, String isBasedOn, int limit,
-                                         int offset) {
+                                             publicationStatus, List<String> sortList, int limit, int offset) {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList, isBasedOn);
+        publicationStatus, sortList);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -99,7 +99,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query,
                                                        List<String> resourceTypes, ResourceVersionFilter version,
                                                        ResourcePublicationStatusFilter publicationStatus,
-                                                       List<String> sortList, String isBasedOn) {
+                                                       List<String> sortList) {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.DOC.getValue());
@@ -110,7 +110,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       // Filter by user
-      QueryBuilder userIdQuery = QueryBuilders.termQuery("users.id", userId);
+      QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId,
+          NodePermission.READ));
       mainQuery.must(userIdQuery);
     }
 
@@ -185,7 +186,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           s = s.substring(1);
         }
         if (SORT_BY_NAME.equals(s)) {
-          searchRequestBuilder.addSort(INFO_SCHEMA_NAME_RAW, sortOrder);
+          searchRequestBuilder.addSort(INFO_SCHEMA_NAME, sortOrder);
         } else if (SORT_LAST_UPDATED_ON_FIELD.equals(s)) {
           searchRequestBuilder.addSort(INFO_PAV_LAST_UPDATED_ON, sortOrder);
         } else if (SORT_CREATED_ON_FIELD.equals(s)) {

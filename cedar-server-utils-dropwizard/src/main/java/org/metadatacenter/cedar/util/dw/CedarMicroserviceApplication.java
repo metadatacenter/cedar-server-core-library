@@ -139,6 +139,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     setupEnvironment(environment);
     runApp(configuration, environment);
 
+    environment.jersey().register(CedarServerInsightReportResource.class);
     environment.jersey().register(RequestIdGeneratorFilter.class);
     environment.jersey().register(ResponseLoggerFilter.class);
   }

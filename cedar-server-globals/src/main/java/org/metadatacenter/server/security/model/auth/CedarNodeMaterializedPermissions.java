@@ -1,9 +1,10 @@
 package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CedarNodeMaterializedPermissions {
 
@@ -37,5 +38,13 @@ public class CedarNodeMaterializedPermissions {
 
   public void setGroupPermission(String id, NodePermission groupPermission) {
     groupPermissions.put(id, groupPermission);
+  }
+
+  public static String getKey(String userOrGroupId, NodePermission permission) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(userOrGroupId);
+    sb.append("|");
+    sb.append(permission.getValue());
+    return DigestUtils.md5Hex(sb.toString());
   }
 }

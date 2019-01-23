@@ -3,21 +3,21 @@
     "index": {
       "analysis": {
         "tokenizer": {
-          "ngram_tokenizer": {
+          "cedar_ngram_tokenizer": {
             "type": "ngram",
-            "min_gram": "1",
-            "max_gram": "40"
+            "min_gram": "2",
+            "max_gram": "20"
           }
         },
         "analyzer": {
-          "ngram_analyzer": {
-            "tokenizer": "ngram_tokenizer",
+          "cedar_ngram_analyzer": {
+            "tokenizer": "cedar_ngram_tokenizer",
             "filter": [
               "lowercase"
             ]
           },
-          "analyzer_keyword": {
-            "tokenizer": "keyword",
+          "cedar_search_analyzer": {
+            "tokenizer": "standard",
             "filter": [
               "lowercase"
             ]
@@ -42,8 +42,8 @@
         },
         "summaryText": {
           "type": "text",
-          "analyzer": "ngram_analyzer",
-          "search_analyzer": "standard",
+          "analyzer": "cedar_ngram_analyzer",
+          "search_analyzer": "cedar_search_analyzer",
           "fields": {
             "raw": {
               "type": "text",
@@ -52,24 +52,10 @@
           }
         },
         "users": {
-          "properties": {
-            "id": {
-              "type": "keyword"
-            },
-            "permission": {
-              "type": "keyword"
-            }
-          }
+          "type": "keyword"
         },
         "groups": {
-          "properties": {
-            "id": {
-              "type": "keyword"
-            },
-            "permission": {
-              "type": "keyword"
-            }
-          }
+          "type": "keyword"
         },
         "info": {
           "properties": {
@@ -112,25 +98,14 @@
             "isLatestVersion": {
               "type": "boolean"
             },
+            "isOpen": {
+              "type": "boolean"
+            },
             "schema:name": {
-              "type": "text",
-              "analyzer": "ngram_analyzer",
-              "search_analyzer": "standard",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
+              "type": "keyword"
             },
             "schema:description": {
-              "type": "text",
-              "analyzer": "ngram_analyzer",
-              "search_analyzer": "standard",
-              "fields": {
-                "raw": {
-                  "type": "keyword"
-                }
-              }
+              "type": "keyword"
             }
           }
         }

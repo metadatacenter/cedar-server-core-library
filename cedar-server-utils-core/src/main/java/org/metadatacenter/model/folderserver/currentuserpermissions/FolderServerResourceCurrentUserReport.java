@@ -18,6 +18,7 @@ public abstract class FolderServerResourceCurrentUserReport extends FolderServer
   protected BiboStatus publicationStatus;
   protected ResourceUri derivedFrom;
   protected VersionDataGroup versionData;
+  protected Boolean isOpen;
 
   public FolderServerResourceCurrentUserReport(CedarNodeType nodeType) {
     super(nodeType);
@@ -92,6 +93,16 @@ public abstract class FolderServerResourceCurrentUserReport extends FolderServer
   @Override
   public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
     versionData.setLatestPublishedVersion(latestPublishedVersion);
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_OPEN)
+  public Boolean isOpen() {
+    return isOpen;
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_OPEN)
+  public void setOpen(Boolean isOpen) {
+    this.isOpen = isOpen;
   }
 
   @JsonIgnore

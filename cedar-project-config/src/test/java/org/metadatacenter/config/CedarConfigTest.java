@@ -133,6 +133,10 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_WORKER_ADMIN_PORT.getName(), "9111");
     env.put(CedarEnvironmentVariable.CEDAR_WORKER_STOP_PORT.getName(), "9211");
 
+    env.put(CedarEnvironmentVariable.CEDAR_OPEN_HTTP_PORT.getName(), "9013");
+    env.put(CedarEnvironmentVariable.CEDAR_OPEN_ADMIN_PORT.getName(), "9113");
+    env.put(CedarEnvironmentVariable.CEDAR_OPEN_STOP_PORT.getName(), "9213");
+
     env.put(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID.getName(), "https://metadatacenter.org/users/user1-uuid");
     env.put(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID.getName(), "https://metadatacenter.org/users/user2-uuid");
 
@@ -201,7 +205,7 @@ public class CedarConfigTest {
     Map<String, Object> index = (Map<String, Object>) settings.get("index");
     Map<String, Object> analysis = (Map<String, Object>) index.get("analysis");
     Map<String, Object> tokenizer = (Map<String, Object>) analysis.get("tokenizer");
-    Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("ngram_tokenizer");
+    Map<String, Object> ngram_tokenizer = (Map<String, Object>) tokenizer.get("cedar_ngram_tokenizer");
 
     Assert.assertEquals("ngram", ngram_tokenizer.get("type"));
   }

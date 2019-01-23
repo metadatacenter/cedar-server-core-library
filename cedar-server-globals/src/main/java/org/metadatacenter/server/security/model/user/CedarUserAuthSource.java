@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CedarUserAuthSource {
   TOKEN("token"),
-  API_KEY("apiKey");
+  API_KEY("apiKey"),
+  ANONYMOUS("anonymous");
 
   private final String value;
 

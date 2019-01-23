@@ -6,12 +6,12 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
-import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.util.json.JsonMapper;
@@ -30,7 +30,8 @@ public class NodeIndexingService extends AbstractIndexingService {
     indexWorker = new ElasticsearchIndexingWorker(indexName, client);
   }
 
-  public IndexingDocumentDocument createIndexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
+  public IndexingDocumentDocument createIndexDocument(FolderServerNode node,
+                                                      CedarNodeMaterializedPermissions permissions) {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
@@ -38,7 +39,8 @@ public class NodeIndexingService extends AbstractIndexingService {
     return ir;
   }
 
-  public IndexedDocumentId indexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions) throws CedarProcessingException {
+  public IndexedDocumentId indexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions)
+      throws CedarProcessingException {
     log.debug("Indexing node (id = " + node.getId() + ")");
     IndexingDocumentDocument ir = createIndexDocument(node, permissions);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
@@ -59,17 +61,30 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   private String getSummaryText(FolderServerNode node) {
     StringBuilder sb = new StringBuilder();
-    sb.append(node.getName());
-    sb.append(" ").append(node.getDescription());
+    if (node.getName() != null) {
+      sb.append(node.getName());
+    }
+    if (node.getDescription() != null) {
+      if (sb.length() > 0) {
+        sb.append(" ");
+      }
+      sb.append(node.getDescription());
+    }
     if (node instanceof FolderServerResource) {
       FolderServerResource resource = (FolderServerResource) node;
       ResourceVersion version = resource.getVersion();
       if (version != null) {
-        sb.append(" ").append(version.getValue());
+        if (sb.length() > 0) {
+          sb.append(" ");
+        }
+        sb.append(version.getValue());
       }
       String identifier = resource.getIdentifier();
       if (identifier != null) {
-        sb.append(" ").append(identifier);
+        if (sb.length() > 0) {
+          sb.append(" ");
+        }
+        sb.append(identifier);
       }
     }
     return sb.toString();
