@@ -6,7 +6,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermissionAndOpenFlag;
+import org.metadatacenter.model.folderserver.datagroup.NodeWithOpenFlag;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -14,7 +14,7 @@ import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
 public abstract class FolderServerResourceCurrentUserReport extends FolderServerNodeCurrentUserReport
-    implements ResourceWithCurrentUserPermissions, ResourceWithVersionData, NodeWithEverybodyPermissionAndOpenFlag {
+    implements ResourceWithCurrentUserPermissions, ResourceWithVersionData, NodeWithOpenFlag {
 
   protected ResourceUri previousVersion;
   protected BiboStatus publicationStatus;

@@ -11,13 +11,12 @@ import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolderContent;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.parameter.*;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -201,7 +200,6 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return findNodePathGenericById(id, FolderServerNodeExtract.class);
   }
 
-
   public List<FolderServerNodeExtract> searchIsBasedOn(List<CedarNodeType> nodeTypes, String isBasedOn, int limit,
                                                        int offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = true;
@@ -225,5 +223,12 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
         cu.getId(), addPermissionConditions);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetCount(q);
+  }
+
+  public boolean setEverybodyPermission(String nodeId, NodeSharePermission everybodyPermission) {
+    String cypher = CypherQueryBuilderNode.setEverybodyPermission();
+    CypherParameters params = CypherParamBuilderNode.matchNodeIdAndEverybodyPermission(nodeId, everybodyPermission);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting everybodyPermission");
   }
 }

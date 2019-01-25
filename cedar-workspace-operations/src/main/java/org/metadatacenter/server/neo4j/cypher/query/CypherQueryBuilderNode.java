@@ -202,4 +202,11 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     sb.append(" RETURN count(node)");
     return sb.toString();
   }
+
+  public static String setEverybodyPermission() {
+    return "" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " SET node.<PROP.EVERYBODY_PERMISSION> = {everybodyPermission}" +
+        " RETURN node";
+  }
 }

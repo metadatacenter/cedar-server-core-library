@@ -6,15 +6,13 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.datagroup.*;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
-import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUserNamesData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
@@ -31,11 +29,13 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerInstanceExtract.class, name = CedarNodeType.Types.INSTANCE)
 })
 public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
-    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData {
+    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData, NodeWithEverybodyPermission {
 
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;
   protected boolean activeUserCanRead = true;
+
+  protected NodeSharePermission everybodyPermission;
 
   protected FolderServerNodeExtract(CedarNodeType nodeType) {
     this.nodeType = nodeType;
@@ -199,6 +199,17 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
   @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)
   public void setActiveUserCanRead(boolean activeUserCanRead) {
     this.activeUserCanRead = activeUserCanRead;
+  }
+
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 
   public static FolderServerNodeExtract forType(CedarNodeType t) {
