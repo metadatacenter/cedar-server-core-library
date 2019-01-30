@@ -5,14 +5,17 @@ import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
+import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermission;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
+import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -120,6 +123,33 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
         Neo4JUserSessionGroupOperations.addGroupPermissions(proxies.permission(), nodeURL, toAddGroupPermissions,
             folderOrResource);
       }
+
+      NodeWithEverybodyPermission node = null;
+      if (folderOrResource == FolderOrResource.FOLDER) {
+        node = proxies.folder().findFolderById(nodeURL);
+      } else {
+        node = proxies.resource().findResourceById(nodeURL);
+      }
+      if (node != null) {
+        FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+        NodeSharePermission setEverybodyPermission = null;
+        for (NodePermissionGroupPermissionPair groupPermission : newGroupPermissions) {
+          if (groupPermission.getGroup().getId().equals(everybody.getId())) {
+            NodeSharePermission everybodyPermissionCandidate = NodeSharePermission.fromGroupPermission(groupPermission);
+            if (everybodyPermissionCandidate != node.getEverybodyPermission()) {
+              setEverybodyPermission = everybodyPermissionCandidate;
+            }
+          }
+        }
+        if (setEverybodyPermission == null && node.getEverybodyPermission() != NodeSharePermission.NONE) {
+          setEverybodyPermission = NodeSharePermission.NONE;
+        }
+
+        if (setEverybodyPermission != null) {
+          proxies.node().setEverybodyPermission(nodeURL, setEverybodyPermission);
+        }
+      }
+
       return new BackendCallResult();
     }
   }
@@ -240,14 +270,30 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       node = proxies.resource().findResourceById(nodeURL);
     }
     if (node != null) {
-      List<FolderServerUser> readUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.READ,
-          folderOrResource);
-      List<FolderServerUser> writeUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.WRITE,
-          folderOrResource);
-      List<FolderServerGroup> readGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.READ,
-          folderOrResource);
-      List<FolderServerGroup> writeGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.WRITE,
-          folderOrResource);
+      NodeSharePermission everybodyPermission = node.getEverybodyPermission();
+      if (everybodyPermission == null) {
+        everybodyPermission = NodeSharePermission.NONE;
+      }
+
+      List<FolderServerUser> readUsers = new ArrayList<>();
+      List<FolderServerUser> writeUsers = new ArrayList<>();
+      List<FolderServerGroup> readGroups = new ArrayList<>();
+      List<FolderServerGroup> writeGroups = new ArrayList<>();
+
+      if (everybodyPermission == NodeSharePermission.WRITE) {
+        // do not read permissions, since everybody will have full access
+      } else if (everybodyPermission == NodeSharePermission.READ) {
+        // read just write permissions, since everybody can read
+        writeUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.WRITE, folderOrResource);
+        writeGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.WRITE, folderOrResource);
+      } else {
+        // read all permissions, since there is no everybody permission
+        writeUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.WRITE, folderOrResource);
+        writeGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.WRITE, folderOrResource);
+        readUsers = getUsersWithTransitivePermission(nodeURL, NodePermission.READ, folderOrResource);
+        readGroups = getGroupsWithTransitivePermission(nodeURL, NodePermission.READ, folderOrResource);
+      }
+
       return buildMaterializedPermissions(nodeURL, readUsers, writeUsers, readGroups, writeGroups);
     } else {
       return null;

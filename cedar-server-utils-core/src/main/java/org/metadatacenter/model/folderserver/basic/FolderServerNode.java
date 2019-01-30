@@ -6,14 +6,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeWithDates;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
-import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.*;
 import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUserNamesData;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.ArrayList;
@@ -32,13 +30,14 @@ import java.util.Map;
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarNodeType.Types.INSTANCE)
 })
 public abstract class FolderServerNode extends AbstractCedarNodeWithDates
-    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData {
+    implements NodeWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData, NodeWithEverybodyPermission {
 
   protected String name;
   protected String description;
   protected String identifier;
   protected String path;
   protected String parentPath;
+  protected NodeSharePermission everybodyPermission;
 
   private List<FolderServerNodeExtract> pathInfo;
 
@@ -226,6 +225,16 @@ public abstract class FolderServerNode extends AbstractCedarNodeWithDates
   @Override
   public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
     userNamesData.setLastUpdatedByUserName(lastUpdatedByUserName);
+  }
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 
   @Override

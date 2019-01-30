@@ -13,6 +13,7 @@ import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
@@ -44,6 +45,8 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   protected boolean isUserHome;
 
   protected boolean isOpen;
+
+  protected NodeSharePermission everybodyPermission;
 
   private FolderServerNodeInfo() {
     this.versionData = new VersionDataGroup();
@@ -210,6 +213,16 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   @JsonProperty(NodeProperty.Label.IS_OPEN)
   public void setIsOpen(boolean isOpen) {
     this.isOpen = isOpen;
+  }
+
+  @JsonProperty(NodeProperty.Label.EVERYBODY_PERMISSION)
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @JsonProperty(NodeProperty.Label.EVERYBODY_PERMISSION)
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 
   @Override

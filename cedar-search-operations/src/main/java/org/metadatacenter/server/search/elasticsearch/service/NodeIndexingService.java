@@ -64,27 +64,27 @@ public class NodeIndexingService extends AbstractIndexingService {
     if (node.getName() != null) {
       sb.append(node.getName());
     }
-    if (node.getDescription() != null) {
+    if (node.getDescription() != null && !node.getDescription().isBlank()) {
       if (sb.length() > 0) {
         sb.append(" ");
       }
-      sb.append(node.getDescription());
+      sb.append(node.getDescription().trim());
     }
     if (node instanceof FolderServerResource) {
       FolderServerResource resource = (FolderServerResource) node;
       ResourceVersion version = resource.getVersion();
-      if (version != null) {
+      if (version != null && version.getValue() != null && !version.getValue().isBlank()) {
         if (sb.length() > 0) {
           sb.append(" ");
         }
-        sb.append(version.getValue());
+        sb.append(version.getValue().trim());
       }
       String identifier = resource.getIdentifier();
-      if (identifier != null) {
+      if (identifier != null && !identifier.isBlank()) {
         if (sb.length() > 0) {
           sb.append(" ");
         }
-        sb.append(identifier);
+        sb.append(identifier.trim());
       }
     }
     return sb.toString();
