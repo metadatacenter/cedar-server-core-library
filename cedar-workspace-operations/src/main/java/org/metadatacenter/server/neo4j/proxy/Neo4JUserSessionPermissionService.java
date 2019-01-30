@@ -132,13 +132,21 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
       }
       if (node != null) {
         FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+        NodeSharePermission setEverybodyPermission = null;
         for (NodePermissionGroupPermissionPair groupPermission : newGroupPermissions) {
           if (groupPermission.getGroup().getId().equals(everybody.getId())) {
-            NodeSharePermission everybodyPermission = NodeSharePermission.fromGroupPermission(groupPermission);
-            if (everybodyPermission != node.getEverybodyPermission()) {
-              proxies.node().setEverybodyPermission(nodeURL, everybodyPermission);
+            NodeSharePermission everybodyPermissionCandidate = NodeSharePermission.fromGroupPermission(groupPermission);
+            if (everybodyPermissionCandidate != node.getEverybodyPermission()) {
+              setEverybodyPermission = everybodyPermissionCandidate;
             }
           }
+        }
+        if (setEverybodyPermission == null && node.getEverybodyPermission() != NodeSharePermission.NONE) {
+          setEverybodyPermission = NodeSharePermission.NONE;
+        }
+
+        if (setEverybodyPermission != null) {
+          proxies.node().setEverybodyPermission(nodeURL, setEverybodyPermission);
         }
       }
 
