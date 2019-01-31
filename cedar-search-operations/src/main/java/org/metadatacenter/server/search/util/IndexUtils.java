@@ -11,6 +11,9 @@ import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
+import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
+import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
+import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
 import org.metadatacenter.util.http.CedarEntityUtil;
 import org.metadatacenter.util.http.ProxyUtil;
@@ -32,9 +35,11 @@ public class IndexUtils {
   private final int maxAttempts;
   private final int delayAttempts;
   private final MicroserviceUrlUtil microserviceUrlUtil;
+  private final CedarConfig cedarConfig;
 
   public IndexUtils(CedarConfig cedarConfig) {
-    microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
+    this.cedarConfig = cedarConfig;
+    this.microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
     this.limit = cedarConfig.getFolderRESTAPI().getPagination().getMaxPageSize();
     this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
     this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
@@ -172,5 +177,25 @@ public class IndexUtils {
       esManagementService.addAlias(newIndexName, aliasName);
     }
 
+  }
+
+  public ElasticsearchManagementService getEsManagementService() {
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    return esServiceFactory.getManagementService();
+  }
+
+  public NodeSearchingService getNodeSearchingService() {
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    return esServiceFactory.nodeSearchingService();
+  }
+
+  public NodeIndexingService getNodeIndexingService(String newIndexName) {
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    return esServiceFactory.nodeIndexingService(newIndexName);
+  }
+
+  public NodeIndexingService getNodeIndexingService() {
+    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
+    return esServiceFactory.nodeIndexingService();
   }
 }

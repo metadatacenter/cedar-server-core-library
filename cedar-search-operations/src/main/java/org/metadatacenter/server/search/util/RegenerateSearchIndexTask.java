@@ -10,7 +10,6 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
-import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
@@ -38,8 +37,7 @@ public class RegenerateSearchIndexTask {
 
   public void ensureSearchIndexExists() throws CedarProcessingException {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
-    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
-    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
+    ElasticsearchManagementService esManagementService = indexUtils.getEsManagementService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
@@ -50,9 +48,8 @@ public class RegenerateSearchIndexTask {
     log.info("Regenerating search index. Force:" + force);
 
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
-    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
-    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
-    NodeSearchingService nodeSearchingService = esServiceFactory.nodeSearchingService();
+    ElasticsearchManagementService esManagementService = indexUtils.getEsManagementService();
+    NodeSearchingService nodeSearchingService = indexUtils.getNodeSearchingService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
 
@@ -101,7 +98,7 @@ public class RegenerateSearchIndexTask {
         esManagementService.createSearchIndex(newIndexName);
         log.info("Search index created:" + newIndexName);
 
-        NodeIndexingService nodeIndexingService = esServiceFactory.nodeIndexingService(newIndexName);
+        NodeIndexingService nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;

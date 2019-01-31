@@ -24,8 +24,7 @@ public class RegenerateRulesIndexTask {
 
   public void ensureRulesIndexExists() throws CedarProcessingException {
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
-    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
-    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
+    ElasticsearchManagementService esManagementService = indexUtils.getEsManagementService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getRulesIndex().getName();
 
@@ -36,8 +35,7 @@ public class RegenerateRulesIndexTask {
     log.info("Regenerating rules index. Force:" + force);
 
     IndexUtils indexUtils = new IndexUtils(cedarConfig);
-    ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
-    ElasticsearchManagementService esManagementService = esServiceFactory.getManagementService();
+    ElasticsearchManagementService esManagementService = indexUtils.getEsManagementService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getRulesIndex().getName();
 
