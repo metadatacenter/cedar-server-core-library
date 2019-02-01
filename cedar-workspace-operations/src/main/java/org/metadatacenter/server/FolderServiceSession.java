@@ -61,7 +61,15 @@ public interface FolderServiceSession {
                                                                   ResourcePublicationStatusFilter publicationStatus,
                                                                   int limit, int offset, List<String> sortList);
 
+  List<FolderServerNodeExtract> findFolderContentsExtract(String folderURL, List<CedarNodeType> nodeTypeList,
+                                                                  ResourceVersionFilter version,
+                                                                  ResourcePublicationStatusFilter publicationStatus,
+                                                                  int limit, int offset, List<String> sortList);
+
   long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus);
+
+  long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus);
 
   long findFolderContentsUnfilteredCount(String folderURL);

@@ -129,6 +129,13 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList,
+                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                  publicationStatus) {
+    return proxies.node().findFolderContentsCount(folderURL, nodeTypeList, version, publicationStatus, cu);
+  }
+
+  @Override
   public long findFolderContentsUnfilteredCount(String folderURL) {
     return proxies.node().findFolderContentsUnfilteredCount(folderURL);
   }
@@ -162,6 +169,14 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
       nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
                                                                              offset, List<String> sortList) {
     return proxies.node().findFolderContentsExtractFiltered(folderURL, nodeTypeList, version, publicationStatus, limit,
+        offset, sortList, cu);
+  }
+
+  @Override
+  public List<FolderServerNodeExtract> findFolderContentsExtract(String folderURL, List<CedarNodeType>
+      nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                             offset, List<String> sortList) {
+    return proxies.node().findFolderContentsExtract(folderURL, nodeTypeList, version, publicationStatus, limit,
         offset, sortList, cu);
   }
 

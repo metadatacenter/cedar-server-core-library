@@ -46,6 +46,17 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
+  long findFolderContentsCount(String folderId, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    boolean addPermissionConditions = false;
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery(version, publicationStatus,
+        addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredCountParameters(folderId,
+        nodeTypeList, version, publicationStatus, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
   long findFolderContentsUnfilteredCount(String folderId) {
     String cypher = CypherQueryBuilderFolderContent.getFolderContentsUnfilteredCountQuery();
     CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
@@ -95,6 +106,18 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
                                                                       offset, List<String> sortList, CedarUser cu) {
     return findFolderContentsFilteredGeneric(folderId, nodeTypes, version, publicationStatus, limit, offset,
         sortList, cu, FolderServerNodeExtract.class);
+  }
+
+  List<FolderServerNodeExtract> findFolderContentsExtract(String folderId, Collection<CedarNodeType>
+      nodeTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                      offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = false;
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version,
+        publicationStatus, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId,
+        nodeTypes, version, publicationStatus, limit, offset, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 
   FolderServerNode findNodeByParentIdAndName(String parentId, String name) {
