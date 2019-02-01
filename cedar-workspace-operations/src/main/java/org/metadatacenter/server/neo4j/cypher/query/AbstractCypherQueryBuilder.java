@@ -231,8 +231,6 @@ public abstract class AbstractCypherQueryBuilder {
     return "" +
         " " + relationPrefix + " " +
         "(" +
-        getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, nodeAlias) +
-        " OR " +
         getUserToResourceRelationWithContains(RelationLabel.OWNS, nodeAlias) +
         " OR " +
         getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, nodeAlias) +
@@ -251,8 +249,7 @@ public abstract class AbstractCypherQueryBuilder {
           " OR " +
           nodeAlias + ".<PROP.IS_LATEST_VERSION> IS NULL" +
           ")";
-    }
-    else if(version == ResourceVersionFilter.LATEST_BY_STATUS) {
+    } else if (version == ResourceVersionFilter.LATEST_BY_STATUS) {
       return "" +
           " " + relationPrefix + " " +
           "(" +
