@@ -11,10 +11,12 @@ import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.cypher.parameter.*;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolderContent;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -110,7 +112,7 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
   List<FolderServerNodeExtract> findFolderContentsExtract(String folderId, Collection<CedarNodeType>
       nodeTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
-                                                                      offset, List<String> sortList, CedarUser cu) {
+                                                              offset, List<String> sortList, CedarUser cu) {
     boolean addPermissionConditions = false;
     String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version,
         publicationStatus, addPermissionConditions);
@@ -161,10 +163,31 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerNodeExtract.class);
   }
 
+  public List<FolderServerNodeExtract> viewSharedWithEverybodyFiltered(List<CedarNodeType> nodeTypes,
+                                                                       ResourceVersionFilter version,
+                                                                       ResourcePublicationStatusFilter publicationStatus,
+                                                                       int limit, int offset, List<String> sortList,
+                                                                       CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithEverybodyLookupQuery(version, publicationStatus, sortList);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithEverybodyLookupParameters(nodeTypes, version,
+        publicationStatus, limit, offset, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerNodeExtract.class);
+  }
+
   public long viewSharedWithMeFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
                                             ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
     String cypher = CypherQueryBuilderNode.getSharedWithMeCountQuery(version, publicationStatus);
     CypherParameters params = CypherParamBuilderNode.getSharedWithMeCountParameters(nodeTypes, version,
+        publicationStatus, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  public long viewSharedWithEverybodyFilteredCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                                   ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithEverybodyCountQuery(version, publicationStatus);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithEverybodyCountParameters(nodeTypes, version,
         publicationStatus, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetCount(q);

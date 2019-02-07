@@ -62,9 +62,9 @@ public interface FolderServiceSession {
                                                                   int limit, int offset, List<String> sortList);
 
   List<FolderServerNodeExtract> findFolderContentsExtract(String folderURL, List<CedarNodeType> nodeTypeList,
-                                                                  ResourceVersionFilter version,
-                                                                  ResourcePublicationStatusFilter publicationStatus,
-                                                                  int limit, int offset, List<String> sortList);
+                                                          ResourceVersionFilter version,
+                                                          ResourcePublicationStatusFilter publicationStatus,
+                                                          int limit, int offset, List<String> sortList);
 
   long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus);
@@ -85,12 +85,18 @@ public interface FolderServiceSession {
   FolderServerFolder ensureUserHomeExists();
 
   List<FolderServerNodeExtract> viewSharedWithMe(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
-                                                 ResourcePublicationStatusFilter publicationStatus, int limit, int
-                                                     offset,
-                                                 List<String> sortList);
+                                                 ResourcePublicationStatusFilter publicationStatus, int limit,
+                                                 int offset, List<String> sortList);
+
+  List<FolderServerNodeExtract> viewSharedWithEverybody(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                                        ResourcePublicationStatusFilter publicationStatus, int limit,
+                                                        int offset, List<String> sortList);
 
   long viewSharedWithMeCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
                              ResourcePublicationStatusFilter publicationStatus);
+
+  long viewSharedWithEverybodyCount(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
+                                    ResourcePublicationStatusFilter publicationStatus);
 
   List<FolderServerNodeExtract> viewAll(List<CedarNodeType> nodeTypeList, ResourceVersionFilter version,
                                         ResourcePublicationStatusFilter publicationStatus, int limit, int offset,

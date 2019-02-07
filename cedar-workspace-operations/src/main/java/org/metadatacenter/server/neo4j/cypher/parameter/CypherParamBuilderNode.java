@@ -50,8 +50,34 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
+  public static CypherParameters getSharedWithEverybodyLookupParameters(List<CedarNodeType> nodeTypes,
+                                                                        ResourceVersionFilter version,
+                                                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset, String ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    if (publicationStatus != null) {
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
+    params.put(ParameterPlaceholder.LIMIT, limit);
+    params.put(ParameterPlaceholder.OFFSET, offset);
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
   public static CypherParameters getSharedWithMeCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    if (publicationStatus != null) {
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
+  public static CypherParameters getSharedWithEverybodyCountParameters(List<CedarNodeType> nodeTypes,
+                                                                       ResourceVersionFilter version,
+                                                                       ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
     params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {

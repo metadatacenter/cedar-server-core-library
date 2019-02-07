@@ -123,15 +123,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public long findFolderContentsFilteredCount(String folderURL, List<CedarNodeType> nodeTypeList,
-                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                  publicationStatus) {
+                                              ResourceVersionFilter version,
+                                              ResourcePublicationStatusFilter publicationStatus) {
     return proxies.node().findFolderContentsFilteredCount(folderURL, nodeTypeList, version, publicationStatus, cu);
   }
 
   @Override
   public long findFolderContentsCount(String folderURL, List<CedarNodeType> nodeTypeList,
-                                              ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                  publicationStatus) {
+                                      ResourceVersionFilter version,
+                                      ResourcePublicationStatusFilter publicationStatus) {
     return proxies.node().findFolderContentsCount(folderURL, nodeTypeList, version, publicationStatus, cu);
   }
 
@@ -175,7 +175,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public List<FolderServerNodeExtract> findFolderContentsExtract(String folderURL, List<CedarNodeType>
       nodeTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
-                                                                             offset, List<String> sortList) {
+                                                                     offset, List<String> sortList) {
     return proxies.node().findFolderContentsExtract(folderURL, nodeTypeList, version, publicationStatus, limit,
         offset, sortList, cu);
   }
@@ -255,15 +255,29 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public List<FolderServerNodeExtract> viewSharedWithMe(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
                                                         ResourcePublicationStatusFilter publicationStatus, int limit,
-                                                        int
-                                                            offset, List<String> sortList) {
+                                                        int offset, List<String> sortList) {
     return proxies.node().viewSharedWithMeFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
+  }
+
+  @Override
+  public List<FolderServerNodeExtract> viewSharedWithEverybody(List<CedarNodeType> nodeTypes,
+                                                               ResourceVersionFilter version,
+                                                               ResourcePublicationStatusFilter publicationStatus,
+                                                               int limit, int offset, List<String> sortList) {
+    return proxies.node()
+        .viewSharedWithEverybodyFiltered(nodeTypes, version, publicationStatus, limit, offset, sortList, cu);
   }
 
   @Override
   public long viewSharedWithMeCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
                                     ResourcePublicationStatusFilter publicationStatus) {
     return proxies.node().viewSharedWithMeFilteredCount(nodeTypes, version, publicationStatus, cu);
+  }
+
+  @Override
+  public long viewSharedWithEverybodyCount(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+                                           ResourcePublicationStatusFilter publicationStatus) {
+    return proxies.node().viewSharedWithEverybodyFilteredCount(nodeTypes, version, publicationStatus, cu);
   }
 
   @Override
