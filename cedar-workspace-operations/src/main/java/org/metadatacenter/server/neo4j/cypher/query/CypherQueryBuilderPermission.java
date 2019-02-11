@@ -96,8 +96,6 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
     if (relationLabel == RelationLabel.CANREAD) {
       sb.append(" OR ");
-      sb.append(getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, "node"));
-      sb.append(" OR ");
       sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
     }
     sb.append(" OR ");
@@ -136,8 +134,6 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
 
     sb.append(" (");
     sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
-    sb.append(" OR ");
-    sb.append(getUserToResourceRelationThroughGroup(RelationLabel.CANREADTHIS, "node"));
     sb.append(" OR ");
     sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
     sb.append(" )");

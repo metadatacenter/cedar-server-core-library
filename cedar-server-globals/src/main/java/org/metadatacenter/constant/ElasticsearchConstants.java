@@ -24,6 +24,7 @@ public final class ElasticsearchConstants {
   public static final String INFO_PAV_LAST_UPDATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_LAST_UPDATED_ON;
   public static final String INFO_PAV_CREATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_CREATED_ON;
   public static final String INFO_IS_BASED_ON = ES_INFO_PREFIX + ModelNodeNames.SCHEMA_IS_BASED_ON;
+  public static final String INFO_EVERYBODY_PERMISSION = ES_INFO_PREFIX + "everybodyPermission";
 
   // Sortable fields
   public static final String SORT_BY_NAME = "name";

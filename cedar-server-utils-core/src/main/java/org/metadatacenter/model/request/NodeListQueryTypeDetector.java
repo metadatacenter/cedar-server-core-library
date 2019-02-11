@@ -27,6 +27,8 @@ public class NodeListQueryTypeDetector {
     if (sharing != null && sharing.isPresent() && !sharing.get().isEmpty()) {
       if ("shared-with-me".equals(sharing.get())) {
         return NodeListQueryType.VIEW_SHARED_WITH_ME;
+      } else if ("shared-with-everybody".equals(sharing.get())) {
+        return NodeListQueryType.VIEW_SHARED_WITH_EVERYBODY;
       }
     }
     return NodeListQueryType.UNKNOWN;

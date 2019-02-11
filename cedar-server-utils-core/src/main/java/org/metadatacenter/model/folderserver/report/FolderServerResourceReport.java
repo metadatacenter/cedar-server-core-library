@@ -29,7 +29,6 @@ public abstract class FolderServerResourceReport extends FolderServerResourceCur
 
   private FolderServerResourceExtract derivedFromExtract;
   private List<FolderServerResourceExtract> versions;
-  private Boolean isOpen;
 
   public FolderServerResourceReport(CedarNodeType nodeType) {
     super(nodeType);
@@ -66,13 +65,4 @@ public abstract class FolderServerResourceReport extends FolderServerResourceCur
     this.versions = versions;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_OPEN)
-  public Boolean isOpen() {
-    return isOpen;
-  }
-
-  @JsonProperty(NodeProperty.Label.IS_OPEN)
-  public void setOpen(Boolean isOpen) {
-    this.isOpen = isOpen;
-  }
 }

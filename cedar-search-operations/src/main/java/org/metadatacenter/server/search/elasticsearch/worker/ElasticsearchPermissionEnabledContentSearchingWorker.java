@@ -15,6 +15,7 @@ import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
@@ -112,7 +113,17 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       // Filter by user
       QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId,
           NodePermission.READ));
-      mainQuery.must(userIdQuery);
+      BoolQueryBuilder permissionQuery = QueryBuilders.boolQuery();
+
+      QueryBuilder everybodyReadQuery =
+          QueryBuilders.termsQuery(INFO_EVERYBODY_PERMISSION, NodeSharePermission.READ.getValue());
+      QueryBuilder everybodyWriteQuery =
+          QueryBuilders.termsQuery(INFO_EVERYBODY_PERMISSION, NodeSharePermission.WRITE.getValue());
+
+      permissionQuery.should(userIdQuery);
+      permissionQuery.should(everybodyReadQuery);
+      permissionQuery.should(everybodyWriteQuery);
+      mainQuery.must(permissionQuery);
     }
 
     // Filter by content

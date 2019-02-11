@@ -135,7 +135,9 @@ servers:
     apiDoc: true
     base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/"
     regenerateSearchIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-search-index"
+    generateEmptySearchIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/generate-empty-search-index"
     regenerateRulesIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/regenerate-rules-index"
+    generateEmptyRulesIndex: "http://${CEDAR_NET_GATEWAY}:${CEDAR_RESOURCE_HTTP_PORT}/command/generate-empty-rules-index"
   schema:
     httpPort: "${CEDAR_SCHEMA_HTTP_PORT}"
     adminPort: "${CEDAR_SCHEMA_ADMIN_PORT}"

@@ -5,10 +5,10 @@ import org.metadatacenter.server.neo4j.PathUtil;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
@@ -50,8 +50,34 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
+  public static CypherParameters getSharedWithEverybodyLookupParameters(List<CedarNodeType> nodeTypes,
+                                                                        ResourceVersionFilter version,
+                                                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset, String ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    if (publicationStatus != null) {
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
+    params.put(ParameterPlaceholder.LIMIT, limit);
+    params.put(ParameterPlaceholder.OFFSET, offset);
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
   public static CypherParameters getSharedWithMeCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.addNodeTypes(nodeTypes);
+    if (publicationStatus != null) {
+      params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
+    }
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
+  public static CypherParameters getSharedWithEverybodyCountParameters(List<CedarNodeType> nodeTypes,
+                                                                       ResourceVersionFilter version,
+                                                                       ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
     params.addNodeTypes(nodeTypes);
     if (publicationStatus != null) {
@@ -117,6 +143,14 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     if (addPermissionConditions) {
       params.put(ParameterPlaceholder.USER_ID, ownerId);
     }
+    return params;
+  }
+
+  public static CypherParameters matchNodeIdAndEverybodyPermission(String nodeId,
+                                                                   NodeSharePermission everybodyPermission) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.NODE_ID, nodeId);
+    params.put(ParameterPlaceholder.EVERYBODY_PERMISSION, everybodyPermission.getValue());
     return params;
   }
 }

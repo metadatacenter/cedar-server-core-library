@@ -49,6 +49,32 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
             "(node)" +
             " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND NOT EXISTS(node.<PROP.EVERYBODY_PERMISSION>)" +
+            " AND node.<PROP.OWNED_BY> <> {userId}" +
+            " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
+    }
+    sb.append(" RETURN DISTINCT(node)");
+    sb.append(" ORDER BY node.<PROP.NODE_SORT_ORDER>,");
+    sb.append(getOrderByExpression("node", sortList));
+    sb.append(", node.<PROP.VERSION> DESC");
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getSharedWithEverybodyLookupQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus, List<String> sortList) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
+        " MATCH (node:<LABEL.FSNODE>)" +
+            " WHERE EXISTS(node.<PROP.EVERYBODY_PERMISSION>) AND node.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
+            " AND node.<PROP.NODE_TYPE> in {nodeTypeList}" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
@@ -77,6 +103,29 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
             "(node)" +
             " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND NOT EXISTS(node.<PROP.EVERYBODY_PERMISSION>)" +
+            " AND node.<PROP.OWNED_BY> <> {userId}" +
+            " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "node"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "node"));
+    }
+    sb.append(
+        " RETURN count(node)"
+    );
+    return sb.toString();
+  }
+
+  public static String getSharedWithEverybodyCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter
+      publicationStatus) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
+        " MATCH (node:<LABEL.FSNODE>)" +
+            " WHERE EXISTS(node.<PROP.EVERYBODY_PERMISSION>) AND node.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
+            " AND node.<PROP.NODE_TYPE> in {nodeTypeList}" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
@@ -201,5 +250,12 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     }
     sb.append(" RETURN count(node)");
     return sb.toString();
+  }
+
+  public static String setEverybodyPermission() {
+    return "" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " SET node.<PROP.EVERYBODY_PERMISSION> = {everybodyPermission}" +
+        " RETURN node";
   }
 }

@@ -4,19 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
+import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermission;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolder extends FolderServerNode implements NodeWithIdAndType {
+public class FolderServerFolder extends FolderServerNode implements NodeWithIdAndType, NodeWithEverybodyPermission {
 
   private boolean userHome;
   private boolean system;
   private boolean root;
   private String homeOf;
+  protected NodeSharePermission everybodyPermission;
 
   public FolderServerFolder() {
     super(CedarNodeType.FOLDER);
@@ -70,5 +73,15 @@ public class FolderServerFolder extends FolderServerNode implements NodeWithIdAn
   @JsonProperty(NodeProperty.Label.HOME_OF)
   public void setHomeOf(String homeOf) {
     this.homeOf = homeOf;
+  }
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
   }
 }
