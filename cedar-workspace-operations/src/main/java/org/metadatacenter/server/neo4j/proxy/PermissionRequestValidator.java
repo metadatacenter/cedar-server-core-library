@@ -1,8 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
-import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.basic.*;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
@@ -21,18 +22,16 @@ public class PermissionRequestValidator {
   private final BackendCallResult callResult;
   private final CedarNodePermissions permissions;
   private final String nodeURL;
-  private final FolderOrResource folderOrResource;
 
   private FolderServerNode node;
 
   public PermissionRequestValidator(PermissionServiceSession permissionService, Neo4JProxies proxies, String nodeURL,
-                                    CedarNodePermissionsRequest request, FolderOrResource folderOrResource) {
+                                    CedarNodePermissionsRequest request) {
     this.permissionService = permissionService;
     this.proxies = proxies;
     this.callResult = new BackendCallResult();
     this.request = request;
     this.nodeURL = nodeURL;
-    this.folderOrResource = folderOrResource;
     this.permissions = new CedarNodePermissions();
 
     validateNodeExistence();
@@ -64,24 +63,13 @@ public class PermissionRequestValidator {
   }
 
   private void validateNodeExistence() {
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-      node = folder;
-      if (folder == null) {
-        callResult.addError(NOT_FOUND)
-            .errorKey(CedarErrorKey.FOLDER_NOT_FOUND)
-            .message("Folder not found by id")
-            .parameter("folderId", nodeURL);
-      }
-    } else {
-      FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-      node = resource;
-      if (resource == null) {
-        callResult.addError(NOT_FOUND)
-            .errorKey(CedarErrorKey.RESOURCE_NOT_FOUND)
-            .message("Resource not found by id")
-            .parameter("resourceId", nodeURL);
-      }
+    FolderServerNode folder = proxies.node().findNodeById(nodeURL);
+    node = folder;
+    if (folder == null) {
+      callResult.addError(NOT_FOUND)
+          .errorKey(CedarErrorKey.NODE_NOT_FOUND)
+          .message("Node not found by id")
+          .parameter("nodeId", nodeURL);
     }
   }
 
@@ -226,7 +214,7 @@ public class PermissionRequestValidator {
 
   private void validateOwnerSetPermission() {
     String newOwnerId = permissions.getOwner().getId();
-    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL, folderOrResource);
+    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       // if it has the role, we do not check

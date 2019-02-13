@@ -33,13 +33,8 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource) {
-    FolderServerNode node;
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      node = proxies.folder().findFolderById(nodeURL);
-    } else {
-      node = proxies.resource().findResourceById(nodeURL);
-    }
+  public CedarNodePermissions getNodePermissions(String nodeURL) {
+    FolderServerNode node = proxies.node().findNodeById(nodeURL);
     if (node != null) {
       FolderServerUser owner = getNodeOwner(nodeURL);
       List<FolderServerUser> readUsers = getUsersWithDirectPermission(nodeURL, NodePermission.READ);
@@ -64,12 +59,12 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
                                                  FolderOrResource folderOrResource) {
 
-    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, folderOrResource);
+    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request);
     BackendCallResult bcr = prv.getCallResult();
     if (bcr.isError()) {
       return bcr;
     } else {
-      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, folderOrResource);
+      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL);
       CedarNodePermissions newPermissions = prv.getPermissions();
 
       String oldOwnerId = currentPermissions.getOwner().getId();
