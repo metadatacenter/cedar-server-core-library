@@ -24,17 +24,17 @@ public class CurrentUserPermissionUpdaterForWorkspaceFolder extends CurrentUserP
   @Override
   public void update(CurrentUserPermissions currentUserPermissions) {
     String id = folder.getId();
-    if (permissionSession.userHasWriteAccessToFolder(id)) {
+    if (permissionSession.userHasWriteAccessToNode(id)) {
       folder.getCurrentUserPermissions().setCanWrite(true);
       folder.getCurrentUserPermissions().setCanDelete(true);
       folder.getCurrentUserPermissions().setCanRead(true);
       if (!folder.isRoot() && !folder.isSystem() && !folder.isUserHome()) {
         folder.getCurrentUserPermissions().setCanShare(true);
       }
-    } else if (permissionSession.userHasReadAccessToFolder(id)) {
+    } else if (permissionSession.userHasReadAccessToNode(id)) {
       folder.getCurrentUserPermissions().setCanRead(true);
     }
-    if (permissionSession.userCanChangeOwnerOfFolder(id)) {
+    if (permissionSession.userCanChangeOwnerOfNode(id)) {
       folder.getCurrentUserPermissions().setCanChangeOwner(true);
     }
   }

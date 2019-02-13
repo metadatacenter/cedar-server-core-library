@@ -13,6 +13,7 @@ import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 
@@ -95,8 +96,8 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   private <T extends CedarNode> T findResourceGenericById(String id, Class<T> klazz) {
-    String cypher = CypherQueryBuilderResource.getResourceById();
-    CypherParameters params = CypherParamBuilderResource.getResourceById(id);
+    String cypher = CypherQueryBuilderNode.getNodeById();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, klazz);
   }

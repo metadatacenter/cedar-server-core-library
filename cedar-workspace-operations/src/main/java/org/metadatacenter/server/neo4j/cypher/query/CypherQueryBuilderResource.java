@@ -66,12 +66,6 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
-  public static String getResourceById() {
-    return "" +
-        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
-        " RETURN resource";
-  }
-
   public static String getResourceLookupQueryById() {
     return "" +
         " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +

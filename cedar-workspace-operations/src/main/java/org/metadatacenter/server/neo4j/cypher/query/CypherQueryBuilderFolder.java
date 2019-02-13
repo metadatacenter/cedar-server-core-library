@@ -98,12 +98,6 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
         " RETURN folder";
   }
 
-  public static String getFolderById() {
-    return "" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
-        " RETURN folder";
-  }
-
   public static String getFolderLookupQueryByDepth(int cnt) {
     StringBuilder sb = new StringBuilder();
     if (cnt >= 1) {

@@ -74,22 +74,18 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
-  public static String userCanReadNode(FolderOrResource folderOrResource) {
-    return userHasPermissionOnNode(RelationLabel.CANREAD, folderOrResource);
+  public static String userCanReadNode() {
+    return userHasPermissionOnNode(RelationLabel.CANREAD);
   }
 
-  public static String userCanWriteNode(FolderOrResource folderOrResource) {
-    return userHasPermissionOnNode(RelationLabel.CANWRITE, folderOrResource);
+  public static String userCanWriteNode() {
+    return userHasPermissionOnNode(RelationLabel.CANWRITE);
   }
 
-  private static String userHasPermissionOnNode(RelationLabel relationLabel, FolderOrResource folderOrResource) {
+  private static String userHasPermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      sb.append(" MATCH (node:<LABEL.FOLDER> {<PROP.ID>:{nodeId}})");
-    } else {
-      sb.append(" MATCH (node:<LABEL.RESOURCE> {<PROP.ID>:{nodeId}})");
-    }
+    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");

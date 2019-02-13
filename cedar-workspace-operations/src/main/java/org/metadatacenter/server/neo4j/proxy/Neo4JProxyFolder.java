@@ -2,13 +2,16 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 
 import java.util.List;
@@ -128,13 +131,6 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return false;
   }
 
-  FolderServerFolder findFolderById(String folderUUID) {
-    String cypher = CypherQueryBuilderFolder.getFolderById();
-    CypherParameters params = CypherParamBuilderFolder.getFolderById(folderUUID);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetOne(q, FolderServerFolder.class);
-  }
-
   FolderServerFolder createRootFolder(String creatorId) {
     FolderServerFolder newRoot = new FolderServerFolder();
     newRoot.setName(proxies.config.getRootFolderPath());
@@ -153,6 +149,13 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   public FolderServerFolder findHomeFolderOf(String userId) {
     String cypher = CypherQueryBuilderFolder.getHomeFolderOf();
     CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerFolder.class);
+  }
+
+  public FolderServerFolder findFolderById(String nodeUUID) {
+    String cypher = CypherQueryBuilderNode.getNodeById();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(nodeUUID);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerFolder.class);
   }

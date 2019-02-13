@@ -38,15 +38,15 @@ public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUse
   @Override
   public void update(CurrentUserPermissions currentUserPermissions) {
     String id = resource.getId();
-    if (permissionSession.userHasWriteAccessToResource(id)) {
+    if (permissionSession.userHasWriteAccessToNode(id)) {
       currentUserPermissions.setCanWrite(true);
       currentUserPermissions.setCanDelete(true);
       currentUserPermissions.setCanRead(true);
       currentUserPermissions.setCanShare(true);
-    } else if (permissionSession.userHasReadAccessToResource(id)) {
+    } else if (permissionSession.userHasReadAccessToNode(id)) {
       currentUserPermissions.setCanRead(true);
     }
-    if (permissionSession.userCanChangeOwnerOfResource(id)) {
+    if (permissionSession.userCanChangeOwnerOfNode(id)) {
       currentUserPermissions.setCanChangeOwner(true);
     }
     OutcomeWithReason versioningOutcome = versionSession.userCanPerformVersioning(resource);

@@ -155,60 +155,31 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public boolean userCanChangeOwnerOfFolder(String folderURL) {
+  public boolean userCanChangeOwnerOfNode(String nodeURL) {
     if (cu.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
       return true;
     } else {
-      FolderServerUser owner = getNodeOwner(folderURL);
+      FolderServerUser owner = getNodeOwner(nodeURL);
       return owner != null && owner.getId().equals(cu.getId());
     }
   }
 
   @Override
-  public boolean userHasReadAccessToFolder(String folderURL) {
+  public boolean userHasReadAccessToNode(String nodeURL) {
     if (cu.has(CedarPermission.READ_NOT_READABLE_NODE)) {
       return true;
     } else {
-      return proxies.permission().userHasReadAccessToFolder(cu.getId(), folderURL) || proxies.permission()
-          .userHasWriteAccessToFolder(cu.getId(), folderURL);
+      return proxies.permission().userHasReadAccessToNode(cu.getId(), nodeURL)
+          || proxies.permission().userHasWriteAccessToNode(cu.getId(), nodeURL);
     }
   }
 
   @Override
-  public boolean userHasWriteAccessToFolder(String folderURL) {
+  public boolean userHasWriteAccessToNode(String nodeURL) {
     if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_NODE)) {
       return true;
     } else {
-      return proxies.permission().userHasWriteAccessToFolder(cu.getId(), folderURL);
-    }
-  }
-
-  @Override
-  public boolean userCanChangeOwnerOfResource(String resourceURL) {
-    if (cu.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
-      return true;
-    } else {
-      FolderServerUser owner = getNodeOwner(resourceURL);
-      return owner != null && owner.getId().equals(cu.getId());
-    }
-  }
-
-  @Override
-  public boolean userHasReadAccessToResource(String resourceURL) {
-    if (cu.has(CedarPermission.READ_NOT_READABLE_NODE)) {
-      return true;
-    } else {
-      return proxies.permission().userHasReadAccessToResource(cu.getId(), resourceURL) || proxies.permission()
-          .userHasWriteAccessToFolder(cu.getId(), resourceURL);
-    }
-  }
-
-  @Override
-  public boolean userHasWriteAccessToResource(String resourceURL) {
-    if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_NODE)) {
-      return true;
-    } else {
-      return proxies.permission().userHasWriteAccessToResource(cu.getId(), resourceURL);
+      return proxies.permission().userHasWriteAccessToNode(cu.getId(), nodeURL);
     }
   }
 

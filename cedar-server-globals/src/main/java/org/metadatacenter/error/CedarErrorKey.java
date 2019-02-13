@@ -30,6 +30,9 @@ public enum CedarErrorKey {
   TEMPLATE_INSTANCE_NOT_UPDATED("templateInstanceNotUpdated"),
   TEMPLATE_INSTANCES_NOT_LISTED("templateInstancesNotListed"),
 
+  NO_READ_ACCESS_TO_NODE("noReadAccessToNode"),
+  NO_WRITE_ACCESS_TO_NODE("noWriteAccessToNode"),
+
   NO_READ_ACCESS_TO_FOLDER("noReadAccessToFolder"),
   NO_WRITE_ACCESS_TO_FOLDER("noWriteAccessToFolder"),
 
@@ -48,11 +51,11 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
   NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
 
-  NO_READ_ACCESS_TO_NODE("noWriteAccessToNode"),
-
   FOLDER_NOT_FOUND("folderNotFound"),
 
   RESOURCE_NOT_FOUND("resourceNotFound"),
+
+  NODE_NOT_FOUND("nodeNotFound"),
 
   UNKNOWN_NODE_TYPE("unknownNodeType"),
 

@@ -17,17 +17,11 @@ public interface PermissionServiceSession {
   BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request, FolderOrResource
       folderOrResource);
 
-  boolean userCanChangeOwnerOfFolder(String folderURL);
+  boolean userCanChangeOwnerOfNode(String nodeURL);
 
-  boolean userHasReadAccessToFolder(String folderURL);
+  boolean userHasReadAccessToNode(String nodeURL);
 
-  boolean userHasWriteAccessToFolder(String folderURL);
-
-  boolean userCanChangeOwnerOfResource(String resourceURL);
-
-  boolean userHasReadAccessToResource(String resourceURL);
-
-  boolean userHasWriteAccessToResource(String resourceURL);
+  boolean userHasWriteAccessToNode(String nodeURL);
 
   boolean userIsOwnerOfNode(FolderServerNode node);
 

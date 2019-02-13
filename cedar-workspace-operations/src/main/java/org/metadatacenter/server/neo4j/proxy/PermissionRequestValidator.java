@@ -86,20 +86,11 @@ public class PermissionRequestValidator {
   }
 
   private void validateWritePermission() {
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      if (!permissionService.userHasWriteAccessToFolder(nodeURL)) {
-        callResult.addError(AUTHORIZATION)
-            .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_FOLDER)
-            .message("The current user has no write access to the folder")
-            .parameter("folderId", nodeURL);
-      }
-    } else {
-      if (!permissionService.userHasWriteAccessToResource(nodeURL)) {
-        callResult.addError(AUTHORIZATION)
-            .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_RESOURCE)
-            .message("The current user has no write access to the resource")
-            .parameter("resourceId", nodeURL);
-      }
+    if (!permissionService.userHasWriteAccessToNode(nodeURL)) {
+      callResult.addError(AUTHORIZATION)
+          .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_NODE)
+          .message("The current user has no write access to the node")
+          .parameter("nodeId", nodeURL);
     }
   }
 

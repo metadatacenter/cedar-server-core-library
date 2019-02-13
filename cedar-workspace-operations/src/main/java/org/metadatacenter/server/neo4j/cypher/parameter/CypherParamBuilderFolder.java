@@ -5,8 +5,8 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.PathUtil;
-import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
+import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.util.Map;
@@ -59,10 +59,6 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
     String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
     newFolder.setId(nodeId);
     return createNode(newFolder, parentId);
-  }
-
-  public static CypherParameters getFolderById(String folderURL) {
-    return getNodeByIdentity(folderURL);
   }
 
 }

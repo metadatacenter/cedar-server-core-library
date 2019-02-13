@@ -30,6 +30,8 @@ public interface FolderServiceSession {
 
   FolderServerResource findResourceById(String resourceURL);
 
+  FolderServerNode findNodeById(String nodeURL);
+
   FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL);
 
   FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentFolderURL);
