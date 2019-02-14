@@ -146,6 +146,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public FolderServerNode findNodeById(String nodeURL) {
+    return proxies.node().findNodeById(nodeURL);
+  }
+
+  @Override
   public List<FolderServerNodeExtract> findAllNodes(int limit, int offset, List<String> sortList) {
     return proxies.node().findAllNodes(limit, offset, sortList);
   }

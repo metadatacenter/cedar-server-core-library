@@ -33,13 +33,8 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public CedarNodePermissions getNodePermissions(String nodeURL, FolderOrResource folderOrResource) {
-    FolderServerNode node;
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      node = proxies.folder().findFolderById(nodeURL);
-    } else {
-      node = proxies.resource().findResourceById(nodeURL);
-    }
+  public CedarNodePermissions getNodePermissions(String nodeURL) {
+    FolderServerNode node = proxies.node().findNodeById(nodeURL);
     if (node != null) {
       FolderServerUser owner = getNodeOwner(nodeURL);
       List<FolderServerUser> readUsers = getUsersWithDirectPermission(nodeURL, NodePermission.READ);
@@ -64,12 +59,12 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   public BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request,
                                                  FolderOrResource folderOrResource) {
 
-    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request, folderOrResource);
+    PermissionRequestValidator prv = new PermissionRequestValidator(this, proxies, nodeURL, request);
     BackendCallResult bcr = prv.getCallResult();
     if (bcr.isError()) {
       return bcr;
     } else {
-      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL, folderOrResource);
+      CedarNodePermissions currentPermissions = getNodePermissions(nodeURL);
       CedarNodePermissions newPermissions = prv.getPermissions();
 
       String oldOwnerId = currentPermissions.getOwner().getId();
@@ -155,60 +150,31 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public boolean userCanChangeOwnerOfFolder(String folderURL) {
+  public boolean userCanChangeOwnerOfNode(String nodeURL) {
     if (cu.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
       return true;
     } else {
-      FolderServerUser owner = getNodeOwner(folderURL);
+      FolderServerUser owner = getNodeOwner(nodeURL);
       return owner != null && owner.getId().equals(cu.getId());
     }
   }
 
   @Override
-  public boolean userHasReadAccessToFolder(String folderURL) {
+  public boolean userHasReadAccessToNode(String nodeURL) {
     if (cu.has(CedarPermission.READ_NOT_READABLE_NODE)) {
       return true;
     } else {
-      return proxies.permission().userHasReadAccessToFolder(cu.getId(), folderURL) || proxies.permission()
-          .userHasWriteAccessToFolder(cu.getId(), folderURL);
+      return proxies.permission().userHasReadAccessToNode(cu.getId(), nodeURL)
+          || proxies.permission().userHasWriteAccessToNode(cu.getId(), nodeURL);
     }
   }
 
   @Override
-  public boolean userHasWriteAccessToFolder(String folderURL) {
+  public boolean userHasWriteAccessToNode(String nodeURL) {
     if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_NODE)) {
       return true;
     } else {
-      return proxies.permission().userHasWriteAccessToFolder(cu.getId(), folderURL);
-    }
-  }
-
-  @Override
-  public boolean userCanChangeOwnerOfResource(String resourceURL) {
-    if (cu.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
-      return true;
-    } else {
-      FolderServerUser owner = getNodeOwner(resourceURL);
-      return owner != null && owner.getId().equals(cu.getId());
-    }
-  }
-
-  @Override
-  public boolean userHasReadAccessToResource(String resourceURL) {
-    if (cu.has(CedarPermission.READ_NOT_READABLE_NODE)) {
-      return true;
-    } else {
-      return proxies.permission().userHasReadAccessToResource(cu.getId(), resourceURL) || proxies.permission()
-          .userHasWriteAccessToFolder(cu.getId(), resourceURL);
-    }
-  }
-
-  @Override
-  public boolean userHasWriteAccessToResource(String resourceURL) {
-    if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_NODE)) {
-      return true;
-    } else {
-      return proxies.permission().userHasWriteAccessToResource(cu.getId(), resourceURL);
+      return proxies.permission().userHasWriteAccessToNode(cu.getId(), nodeURL);
     }
   }
 

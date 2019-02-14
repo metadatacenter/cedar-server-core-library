@@ -277,4 +277,11 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting everybodyPermission");
   }
+
+  public FolderServerNode findNodeById(String nodeUUID) {
+    String cypher = CypherQueryBuilderNode.getNodeById();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(nodeUUID);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerNode.class);
+  }
 }

@@ -258,4 +258,11 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " SET node.<PROP.EVERYBODY_PERMISSION> = {everybodyPermission}" +
         " RETURN node";
   }
+
+  public static String getNodeById() {
+    return "" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN node";
+  }
+
 }

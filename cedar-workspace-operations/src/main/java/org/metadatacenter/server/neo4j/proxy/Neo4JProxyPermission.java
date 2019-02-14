@@ -150,33 +150,17 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  boolean userHasReadAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilderPermission.userCanReadNode(FolderOrResource.FOLDER);
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
+  boolean userHasReadAccessToNode(String userURL, String nodeURL) {
+    String cypher = CypherQueryBuilderPermission.userCanReadNode();
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
     return cedarFSUser != null;
   }
 
-  boolean userHasWriteAccessToFolder(String userURL, String folderURL) {
-    String cypher = CypherQueryBuilderPermission.userCanWriteNode(FolderOrResource.FOLDER);
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, folderURL);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
-    return cedarFSUser != null;
-  }
-
-  boolean userHasReadAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilderPermission.userCanReadNode(FolderOrResource.RESOURCE);
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
-    return cedarFSUser != null;
-  }
-
-  boolean userHasWriteAccessToResource(String userURL, String resourceURL) {
-    String cypher = CypherQueryBuilderPermission.userCanWriteNode(FolderOrResource.RESOURCE);
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, resourceURL);
+  boolean userHasWriteAccessToNode(String userURL, String nodeURL) {
+    String cypher = CypherQueryBuilderPermission.userCanWriteNode();
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndNodeId(userURL, nodeURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
     return cedarFSUser != null;
