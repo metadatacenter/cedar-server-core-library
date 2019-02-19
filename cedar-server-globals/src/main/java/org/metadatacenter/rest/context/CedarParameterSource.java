@@ -4,7 +4,8 @@ public enum CedarParameterSource {
 
   EmptyBody("EmptyBody"),
   JsonBody("JsonBody"),
-  QueryString("QueryString");
+  QueryString("QueryString"),
+  InPlace("InPlace");
 
   private final String value;
 
