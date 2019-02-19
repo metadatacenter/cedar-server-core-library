@@ -43,7 +43,7 @@ public interface FolderServiceSession {
 
   boolean deleteFolderById(String folderURL);
 
-  boolean deleteResourceById(String resourceURL, CedarNodeType nodeType);
+  boolean deleteResourceById(String resourceURL);
 
   FolderServerFolder findFolderByPath(String path);
 

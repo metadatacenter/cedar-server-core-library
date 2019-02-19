@@ -2,10 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.FolderOrResource;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
@@ -129,19 +126,12 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerNode.class);
   }
 
-  void updateNodeOwner(String nodeURL, String userURL, FolderOrResource folderOrResource) {
+  void updateNodeOwner(String nodeURL, String userURL) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-        if (folder != null) {
-          proxies.folder().updateOwner(folder, user);
-        }
-      } else {
-        FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-        if (resource != null) {
-          proxies.resource().updateOwner(resource, user);
-        }
+      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      if (node != null) {
+        proxies.node().updateOwner(node, user);
       }
     }
   }
@@ -284,4 +274,27 @@ public class Neo4JProxyNode extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerNode.class);
   }
+
+  private boolean setOwner(FolderServerNode node, FolderServerUser user) {
+    String cypher = CypherQueryBuilderNode.setNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeAndUser(node.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting owner");
+  }
+
+  private boolean removeOwner(FolderServerNode node) {
+    String cypher = CypherQueryBuilderNode.removeNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(node.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "removing owner");
+  }
+
+  boolean updateOwner(FolderServerNode node, FolderServerUser user) {
+    boolean removed = removeOwner(node);
+    if (removed) {
+      return setOwner(node, user);
+    }
+    return false;
+  }
+
 }

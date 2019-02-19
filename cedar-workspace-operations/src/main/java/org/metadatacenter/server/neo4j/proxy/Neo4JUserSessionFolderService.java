@@ -60,7 +60,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
-  public boolean deleteResourceById(String resourceURL, CedarNodeType nodeType) {
+  public boolean deleteResourceById(String resourceURL) {
     return proxies.resource().deleteResourceById(resourceURL);
   }
 

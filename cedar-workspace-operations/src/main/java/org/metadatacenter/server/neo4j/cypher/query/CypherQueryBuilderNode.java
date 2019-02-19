@@ -265,4 +265,24 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " RETURN node";
   }
 
+  public static String setNodeOwner() {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " CREATE (user)-[:<REL.OWNS>]->(node)" +
+        " SET node.<PROP.OWNED_BY> = {userId}" +
+        " RETURN node";
+  }
+
+  public static String removeNodeOwner() {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user)-[relation:<REL.OWNS>]->(node)" +
+        " DELETE (relation)" +
+        " SET node.<PROP.OWNED_BY> = null" +
+        " RETURN node";
+  }
+
+
 }

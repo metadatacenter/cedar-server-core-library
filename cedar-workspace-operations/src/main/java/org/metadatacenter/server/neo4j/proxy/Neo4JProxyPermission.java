@@ -1,10 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -22,130 +20,70 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     super(proxies);
   }
 
-  boolean addPermission(FolderServerFolder folder, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.addPermissionToFolderForGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
+  boolean addPermission(FolderServerNode node, FolderServerGroup group, NodePermission permission) {
+    String cypher = CypherQueryBuilderPermission.addPermissionToNodeForGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean addPermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.addPermissionToFolderForUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+  boolean addPermission(FolderServerNode node, FolderServerUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilderPermission.addPermissionToNodeForUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean addPermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.addPermissionToResourceForGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "adding permission");
-  }
-
-  boolean addPermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.addPermissionToResourceForUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "adding permission");
-  }
-
-  boolean removePermission(FolderServerFolder folder, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.removePermissionForFolderFromUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndUser(folder.getId(), user.getId());
+  boolean removePermission(FolderServerNode node, FolderServerUser user, NodePermission permission) {
+    String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromUser(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
-  boolean removePermission(FolderServerFolder folder, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.removePermissionForFolderFromGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFolderAndGroup(folder.getId(), group.getId());
+  boolean removePermission(FolderServerNode node, FolderServerGroup group, NodePermission permission) {
+    String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromGroup(permission);
+    CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
-  boolean removePermission(FolderServerResource resource, FolderServerUser user, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.removePermissionForResourceFromUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "removing permission");
-  }
-
-  boolean removePermission(FolderServerResource resource, FolderServerGroup group, NodePermission permission) {
-    String cypher = CypherQueryBuilderPermission.removePermissionForResourceFromGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndGroup(resource.getId(), group.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "removing permission");
-  }
-
-  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource
-      folderOrResource) {
+  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-        if (folder != null) {
-          addPermission(folder, user, permission);
-        }
-      } else {
-        FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-        if (resource != null) {
-          addPermission(resource, user, permission);
-        }
+      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      if (node != null) {
+        addPermission(node, user, permission);
       }
     }
   }
 
-  void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission, FolderOrResource
-      folderOrResource) {
+  void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-        if (folder != null) {
-          removePermission(folder, user, permission);
-        }
-      } else {
-        FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-        if (resource != null) {
-          removePermission(resource, user, permission);
-        }
+      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      if (node != null) {
+        removePermission(node, user, permission);
       }
     }
   }
 
-  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource
-      folderOrResource) {
+  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-        if (folder != null) {
-          proxies.permission().addPermission(folder, group, permission);
-        }
-      } else {
-        FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-        if (resource != null) {
-          proxies.permission().addPermission(resource, group, permission);
-        }
+      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      if (node != null) {
+        proxies.permission().addPermission(node, group, permission);
       }
     }
   }
 
-  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission, FolderOrResource
-      folderOrResource) {
+  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        FolderServerFolder folder = proxies.folder().findFolderById(nodeURL);
-        if (folder != null) {
-          proxies.permission().removePermission(folder, group, permission);
-        }
-      } else {
-        FolderServerResource resource = proxies.resource().findResourceById(nodeURL);
-        if (resource != null) {
-          proxies.permission().removePermission(resource, group, permission);
-        }
+      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      if (node != null) {
+        proxies.permission().removePermission(node, group, permission);
       }
     }
   }
@@ -198,15 +136,14 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
-  List<FolderServerUser> getUsersWithTransitivePermissionOnNode(String nodeURL, NodePermission permission,
-                                                                FolderOrResource folderOrResource) {
+  List<FolderServerUser> getUsersWithTransitivePermissionOnNode(String nodeURL, NodePermission permission) {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveReadOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveReadOnNode();
         break;
       case WRITE:
-        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveWriteOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getUsersWithTransitiveWriteOnNode();
         break;
     }
 
@@ -215,15 +152,14 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, NodePermission permission,
-                                                                  FolderOrResource folderOrResource) {
+  List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, NodePermission permission) {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveReadOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveReadOnNode();
         break;
       case WRITE:
-        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveWriteOnNode(folderOrResource);
+        cypher = CypherQueryBuilderPermission.getGroupsWithTransitiveWriteOnNode();
         break;
     }
 
