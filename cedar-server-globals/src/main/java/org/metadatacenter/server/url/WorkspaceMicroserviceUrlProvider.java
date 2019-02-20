@@ -43,8 +43,4 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return base + PREFIX_NODES;
   }
 
-  public String getUsers() {
-    return users;
-  }
-
 }
