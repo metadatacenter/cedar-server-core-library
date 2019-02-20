@@ -19,32 +19,12 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
     return base + PREFIX_RESOURCES;
   }
 
-  public String getResourceWithId(String id) {
-    return getResources() + "/" + UrlUtil.urlEncode(id);
-  }
-
-  public String getResourceWithIdPermissions(String id) {
-    return getResourceWithId(id) + "/permissions";
-  }
-
-  public String getResourceWithIdReport(String id) {
-    return getResourceWithId(id) + "/report";
-  }
-
-  public String getResourceWithIdVersions(String id) {
-    return getResourceWithId(id) + "/versions";
-  }
-
   public String getFolders() {
     return base + CedarNodeType.Prefix.FOLDERS;
   }
 
   public String getFolderWithId(String id) {
     return getFolders() + "/" + UrlUtil.urlEncode(id);
-  }
-
-  public String getFolderWithIdPermissions(String id) {
-    return getFolderWithId(id) + "/permissions";
   }
 
   public String getFolderWithIdReport(String id) {
