@@ -147,7 +147,7 @@ public class FolderServerProxy {
     return null;
   }
 
-  public static void decorateFolderWithCurrentUserPermissions(CedarRequestContext c,
+  private static void decorateFolderWithCurrentUserPermissions(CedarRequestContext c,
                                                               FolderWithCurrentUserPermissions folder) {
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
     CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForWorkspaceFolder.get(permissionSession, folder);
