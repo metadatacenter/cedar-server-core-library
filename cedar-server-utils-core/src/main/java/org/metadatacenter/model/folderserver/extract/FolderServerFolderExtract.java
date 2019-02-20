@@ -31,7 +31,7 @@ public class FolderServerFolderExtract extends FolderServerNodeExtract implement
     return null;
   }
 
-  @JsonIgnore
+  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
   public boolean isUserHome() {
     return userHome;
   }
@@ -41,7 +41,7 @@ public class FolderServerFolderExtract extends FolderServerNodeExtract implement
     this.userHome = userHome;
   }
 
-  @JsonIgnore
+  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
   public boolean isSystem() {
     return system;
   }
@@ -51,7 +51,7 @@ public class FolderServerFolderExtract extends FolderServerNodeExtract implement
     this.system = system;
   }
 
-  @JsonIgnore
+  @JsonProperty(NodeProperty.Label.IS_ROOT)
   public boolean isRoot() {
     return root;
   }

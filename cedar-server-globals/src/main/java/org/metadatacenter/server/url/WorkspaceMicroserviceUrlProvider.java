@@ -7,7 +7,6 @@ import org.metadatacenter.util.http.UrlUtil;
 public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   protected static final String PREFIX_RESOURCES = "resources";
-  protected static final String PREFIX_NODES = "nodes";
   protected final String users;
 
   public WorkspaceMicroserviceUrlProvider(WorkspaceServerConfig server) {
@@ -37,10 +36,6 @@ public class WorkspaceMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   public String getCommand(String command) {
     return base + "command/" + command;
-  }
-
-  public String getNodes() {
-    return base + PREFIX_NODES;
   }
 
 }
