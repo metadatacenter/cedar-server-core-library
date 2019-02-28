@@ -1,15 +1,9 @@
 package org.metadatacenter.bridge;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.util.EntityUtils;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarObjectNotFoundException;
-import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.WorkspaceObjectBuilder;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
@@ -21,49 +15,25 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
-import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForWorkspaceFolder;
-import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForWorkspaceResource;
+import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbFolder;
+import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
-import org.metadatacenter.util.http.CedarUrlUtil;
-import org.metadatacenter.util.http.ProxyUtil;
-import org.metadatacenter.util.json.JsonMapper;
 
 import java.util.List;
 
-public class FolderServerProxy {
+public class GraphDbPermissionReader {
 
-  private FolderServerProxy() {
-  }
-
-  public static FolderServerResource getResource(String folderBaseResource, String resourceId, CedarRequestContext
-      context) throws CedarProcessingException {
-    if (resourceId != null) {
-      try {
-        String url = folderBaseResource + "/" + CedarUrlUtil.urlEncode(resourceId);
-        HttpResponse proxyResponse = ProxyUtil.proxyGet(url, context);
-        int statusCode = proxyResponse.getStatusLine().getStatusCode();
-        HttpEntity entity = proxyResponse.getEntity();
-        if (entity != null) {
-          if (HttpStatus.SC_OK == statusCode) {
-            FolderServerResource node = WorkspaceObjectBuilder.artifact(proxyResponse.getEntity().getContent());
-            return node;
-          }
-        }
-      } catch (Exception e) {
-        throw new CedarProcessingException(e);
-      }
-    }
-    return null;
+  private GraphDbPermissionReader() {
   }
 
   public static FolderServerResourceCurrentUserReport getResourceCurrentUserReport(CedarRequestContext context,
+                                                                                   FolderServiceSession folderSession,
+                                                                                   PermissionServiceSession permissionSession,
                                                                                    CedarConfig cedarConfig,
                                                                                    String resourceId)
       throws CedarException {
     if (resourceId != null) {
-      FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(context);
-
       FolderServerResource resource = folderSession.findResourceById(resourceId);
       if (resource == null) {
         throw new CedarObjectNotFoundException("The resource can not be found by id")
@@ -79,7 +49,7 @@ public class FolderServerProxy {
       FolderServerResourceCurrentUserReport resourceReport =
           (FolderServerResourceCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(resource);
 
-      decorateResourceWithCurrentUserPermissions(context, cedarConfig, resourceReport);
+      decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, resourceReport);
 
       return resourceReport;
     }
@@ -87,43 +57,20 @@ public class FolderServerProxy {
   }
 
   public static void decorateResourceWithCurrentUserPermissions(CedarRequestContext c,
+                                                                PermissionServiceSession permissionSession,
                                                                 CedarConfig cedarConfig,
                                                                 ResourceWithCurrentUserPermissions resource) {
-    PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
     VersionServiceSession versionSession = CedarDataServices.getVersionServiceSession(c);
-    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForWorkspaceResource.get(permissionSession,
+    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbResource.get(permissionSession,
         versionSession, cedarConfig, resource);
     cupu.update(resource.getCurrentUserPermissions());
   }
 
-  public static FolderServerFolder getFolder(String folderBaseFolders, String folderId, CedarRequestContext context)
-      throws CedarProcessingException {
-    if (folderId != null) {
-      try {
-        String url = folderBaseFolders + "/" + CedarUrlUtil.urlEncode(folderId);
-        HttpResponse proxyResponse = ProxyUtil.proxyGet(url, context);
-        int statusCode = proxyResponse.getStatusLine().getStatusCode();
-        HttpEntity entity = proxyResponse.getEntity();
-        if (entity != null) {
-          if (HttpStatus.SC_OK == statusCode) {
-            FolderServerFolder folder = null;
-            String responseString = EntityUtils.toString(proxyResponse.getEntity());
-            folder = JsonMapper.MAPPER.readValue(responseString, FolderServerFolder.class);
-            return folder;
-          }
-        }
-      } catch (Exception e) {
-        throw new CedarProcessingException(e);
-      }
-    }
-    return null;
-  }
-
   public static FolderServerFolderCurrentUserReport getFolderCurrentUserReport(CedarRequestContext context,
+                                                                               FolderServiceSession folderSession,
+                                                                               PermissionServiceSession permissionSession,
                                                                                String folderId) throws CedarException {
     if (folderId != null) {
-
-      FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(context);
 
       FolderServerFolder folder = folderSession.findFolderById(folderId);
       if (folder == null) {
@@ -140,7 +87,7 @@ public class FolderServerProxy {
       FolderServerFolderCurrentUserReport folderReport =
           (FolderServerFolderCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(folder);
 
-      decorateFolderWithCurrentUserPermissions(context, folderReport);
+      decorateFolderWithCurrentUserPermissions(context, permissionSession, folderReport);
 
       return folderReport;
     }
@@ -148,9 +95,9 @@ public class FolderServerProxy {
   }
 
   private static void decorateFolderWithCurrentUserPermissions(CedarRequestContext c,
-                                                              FolderWithCurrentUserPermissions folder) {
-    PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
-    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForWorkspaceFolder.get(permissionSession, folder);
+                                                               PermissionServiceSession permissionSession,
+                                                               FolderWithCurrentUserPermissions folder) {
+    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbFolder.get(permissionSession, folder);
     cupu.update(folder.getCurrentUserPermissions());
   }
 

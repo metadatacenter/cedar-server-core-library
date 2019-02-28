@@ -93,7 +93,7 @@ linkedData:
   base: "https://repo.${CEDAR_HOST}/"
   usersBase: "https://metadatacenter.org/users/"
 
-#Workspace server global structure
+#Graph DB server global structure
 folderStructure:
   rootFolder:
     path: "/"
@@ -109,12 +109,6 @@ folderStructure:
 #Server bases
 #for inter-service REST calls
 servers:
-  workspace:
-    httpPort: "${CEDAR_WORKSPACE_HTTP_PORT}"
-    adminPort: "${CEDAR_WORKSPACE_ADMIN_PORT}"
-    stopPort: "${CEDAR_WORKSPACE_STOP_PORT}"
-    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_WORKSPACE_HTTP_PORT}/"
-    users: "http://${CEDAR_NET_GATEWAY}:${CEDAR_WORKSPACE_HTTP_PORT}/users"
   group:
     httpPort: "${CEDAR_GROUP_HTTP_PORT}"
     adminPort: "${CEDAR_GROUP_ADMIN_PORT}"

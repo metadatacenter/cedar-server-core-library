@@ -49,7 +49,7 @@ public class IndexUtils {
   }
 
   /**
-   * This method retrieves all the resources from the Workspace Server that are expected to be in the search index.
+   * This method retrieves all the resources from the Neo4j Server that are expected to be in the search index.
    * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {

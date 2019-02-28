@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class WorkspaceObjectBuilder {
+public abstract class GraphDbObjectBuilder {
 
-  private static final Logger log = LoggerFactory.getLogger(WorkspaceObjectBuilder.class);
+  private static final Logger log = LoggerFactory.getLogger(GraphDbObjectBuilder.class);
 
   public static FolderServerResource artifact(InputStream stream) throws IOException {
     FolderServerNode folderServerNode = JsonMapper.MAPPER.readValue(stream, FolderServerNode.class);

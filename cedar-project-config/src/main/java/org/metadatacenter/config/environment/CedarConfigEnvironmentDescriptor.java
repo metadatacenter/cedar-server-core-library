@@ -114,11 +114,11 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL); // reset tasks
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKSPACE); // storage for file system
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_GROUP); // storage for groups
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_RESOURCE); // permission tests
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKER); // permission changes
     cedarNeo4jUserPassword.add(SystemComponent.SERVER_OPEN); // permission check
+    cedarNeo4jUserPassword.add(SystemComponent.SERVER_REPO);
 
     Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
     cedarNeo4jUserName.addAll(cedarNeo4jUserPassword);
@@ -136,7 +136,6 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
     cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
-    cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKSPACE); // to create global objects
     cedarAdminUserApiKey.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable
@@ -217,7 +216,6 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_SUBMISSION_TEMPLATE_ID_1);
-    submissionTemplateId1.add(SystemComponent.SERVER_WORKSPACE);
     submissionTemplateId1.add(SystemComponent.SERVER_WORKER);
     submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
 
@@ -234,19 +232,6 @@ public class CedarConfigEnvironmentDescriptor {
         .CEDAR_REDIS_PERSISTENT_PORT);
     redisPersistentPort.addAll(allMicroservices);
     redisPersistentPort.add(SystemComponent.ADMIN_TOOL);
-
-    Set<SystemComponent> cedarHttpPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_WORKSPACE_HTTP_PORT);
-    cedarHttpPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
-    cedarHttpPortWorkspace.add(SystemComponent.SERVER_RESOURCE);
-    cedarHttpPortWorkspace.add(SystemComponent.SERVER_REPO);
-    cedarHttpPortWorkspace.add(SystemComponent.SERVER_WORKER);
-    Set<SystemComponent> cedarAdminPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_WORKSPACE_ADMIN_PORT);
-    cedarAdminPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
-    Set<SystemComponent> cedarStopPortWorkspace = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_WORKSPACE_STOP_PORT);
-    cedarStopPortWorkspace.add(SystemComponent.SERVER_WORKSPACE);
 
     Set<SystemComponent> cedarHttpPortGroup = variableToComponent.get(CedarEnvironmentVariable.CEDAR_GROUP_HTTP_PORT);
     cedarHttpPortGroup.add(SystemComponent.SERVER_GROUP);
