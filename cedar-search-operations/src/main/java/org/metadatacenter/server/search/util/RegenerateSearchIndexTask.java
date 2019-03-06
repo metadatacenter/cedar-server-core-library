@@ -124,7 +124,9 @@ public class RegenerateSearchIndexTask {
         }
 
         log.info(String.format("Batch progress remaining: %d", currentBatch.size()));
-        nodeIndexingService.indexBatch(currentBatch);
+        if (currentBatch.size() > 0) {
+          nodeIndexingService.indexBatch(currentBatch);
+        }
 
         // Point alias to new index
         esManagementService.addAlias(newIndexName, aliasName);
