@@ -4,8 +4,6 @@ import org.metadatacenter.model.ServerName;
 
 public class ServersConfig {
 
-  private WorkspaceServerConfig workspace;
-
   private ServerConfig group;
 
   private ServerConfig messaging;
@@ -29,10 +27,6 @@ public class ServersConfig {
   private ServerConfig worker;
 
   private ServerConfig open;
-
-  public WorkspaceServerConfig getWorkspace() {
-    return workspace;
-  }
 
   public ServerConfig getGroup() {
     return group;
@@ -84,8 +78,6 @@ public class ServersConfig {
 
   public ServerConfig get(ServerName serverName) {
     switch (serverName) {
-      case WORKSPACE:
-        return workspace;
       case GROUP:
         return group;
       case MESSAGING:

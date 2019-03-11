@@ -1,23 +1,25 @@
 package org.metadatacenter.server.search.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
+import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.ModelPaths;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.request.NodeListQueryType;
+import org.metadatacenter.model.request.NodeListRequest;
+import org.metadatacenter.model.response.FolderServerNodeListResponse;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
-import org.metadatacenter.util.http.CedarEntityUtil;
-import org.metadatacenter.util.http.ProxyUtil;
-import org.metadatacenter.util.json.JsonMapper;
+import org.metadatacenter.util.http.LinkHeaderUtil;
+import org.metadatacenter.util.http.PagedSortedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class IndexUtils {
 
@@ -46,67 +49,48 @@ public class IndexUtils {
   }
 
   /**
-   * This method retrieves all the resources from the Workspace Server that are expected to be in the search index.
+   * This method retrieves all the resources from the Neo4j Server that are expected to be in the search index.
    * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
   public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
     log.info("Retrieving all resources.");
     List<FolderServerNode> resources = new ArrayList<>();
     boolean finished = false;
-    String baseUrl = microserviceUrlUtil.getWorkspace().getNodes();
+
     int offset = 0;
     int countSoFar = 0;
     while (!finished) {
-      String url = baseUrl + "?offset=" + offset + "&limit=" + limit;
-      log.info("Retrieving resources from Workspace Server. Url: " + url);
-      int statusCode = -1;
-      int attemp = 1;
-      HttpResponse response = null;
-      while (true) {
-        response = ProxyUtil.proxyGet(url, context);
-        statusCode = response.getStatusLine().getStatusCode();
-        if ((statusCode != HttpStatus.SC_BAD_GATEWAY) || (attemp > maxAttempts)) {
-          break;
-        } else {
-          log.error("Failed to retrieve resource. The Workspace Server might have not been started yet. " +
-              "Retrying... (attemp " + attemp + "/" + maxAttempts + ")");
-          attemp++;
-          try {
-            Thread.sleep(delayAttempts);
-          } catch (InterruptedException e) {
-            log.error("Error while waiting", e);
-          }
-        }
+      log.info("Reading resources");
+
+      FolderServerNodeListResponse pagedNodes = null;
+      try {
+        pagedNodes = findAllNodes(context, Optional.empty(), limit, offset);
+      } catch (CedarException e) {
+        log.error("Error whiler reading nodes", e);
+        e.printStackTrace();
       }
-      // The resources were successfully retrieved
-      if (statusCode == HttpStatus.SC_OK) {
-        JsonNode resultJson = null;
-        try {
-          resultJson = JsonMapper.MAPPER.readTree(CedarEntityUtil.toString(response.getEntity()));
-        } catch (Exception e) {
-          throw new CedarProcessingException(e);
-        }
-        int count = resultJson.get("resources").size();
-        int totalCount = resultJson.get("totalCount").asInt();
+      int count = 0;
+      long totalCount = 0;
+      long currentOffset = 0;
+      if (pagedNodes != null) {
+        count = pagedNodes.getResources().size();
+        totalCount = pagedNodes.getTotalCount();
         countSoFar += count;
         log.info("Retrieved " + countSoFar + "/" + totalCount + " resources");
-        int currentOffset = resultJson.get("currentOffset").asInt();
-        for (JsonNode resource : resultJson.get("resources")) {
-          FolderServerNode folderServerNode = JsonMapper.MAPPER.convertValue(resource, FolderServerNode.class);
+        currentOffset = pagedNodes.getCurrentOffset();
+        for (FolderServerNodeExtract folderServerNodeExtract : pagedNodes.getResources()) {
+          FolderServerNode folderServerNode = FolderServerNode.fromNodeExtract(folderServerNodeExtract);
           if (needsIndexing(folderServerNode)) {
             resources.add(folderServerNode);
           } else {
-            log.info("The node '" + resource.at(ModelPaths.SCHEMA_NAME).asText() + "' has been ignored");
+            log.info("The node '" + folderServerNode.getName() + "' has been ignored");
           }
         }
-        if (currentOffset + count >= totalCount) {
-          finished = true;
-        } else {
-          offset = offset + count;
-        }
+      }
+      if (currentOffset + count >= totalCount) {
+        finished = true;
       } else {
-        throw new CedarProcessingException("Error retrieving resources from the Workspace server. HTTP status code: " +
-            statusCode + " (" + response.getStatusLine().getReasonPhrase() + ")");
+        offset = offset + count;
       }
     }
     return resources;
@@ -116,7 +100,7 @@ public class IndexUtils {
     boolean needsIndexing = true;
     if (folderServerNode.getType() == CedarNodeType.FOLDER) {
       FolderServerFolder folderServerFolder = (FolderServerFolder) folderServerNode;
-      if (folderServerFolder.isSystem()) {
+      if (folderServerFolder.isSystem() || folderServerFolder.isUserHome()) {
         needsIndexing = false;
       }
     }
@@ -197,5 +181,39 @@ public class IndexUtils {
   public NodeIndexingService getNodeIndexingService() {
     ElasticsearchServiceFactory esServiceFactory = ElasticsearchServiceFactory.getInstance(cedarConfig);
     return esServiceFactory.nodeIndexingService();
+  }
+
+  public FolderServerNodeListResponse findAllNodes(CedarRequestContext c, Optional<String> sortParam, int limit, int offset)
+      throws CedarException {
+
+    PagedSortedQuery pagedSortedQuery = new PagedSortedQuery(
+        cedarConfig.getFolderRESTAPI().getPagination())
+        .sort(sortParam)
+        .limit(Optional.of(limit))
+        .offset(Optional.of(offset));
+    pagedSortedQuery.validate();
+
+    List<String> sortList = pagedSortedQuery.getSortList();
+
+    FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(c);
+
+    // Retrieve all resources
+    List<FolderServerNodeExtract> resources = folderSession.findAllNodes(limit, offset, sortList);
+
+    // Build response
+    FolderServerNodeListResponse r = new FolderServerNodeListResponse();
+    r.setNodeListQueryType(NodeListQueryType.ALL_NODES);
+    NodeListRequest req = new NodeListRequest();
+    req.setLimit(limit);
+    req.setOffset(offset);
+    req.setSort(sortList);
+    r.setRequest(req);
+    long total = folderSession.findAllNodesCount();
+    r.setTotalCount(total);
+    r.setCurrentOffset(offset);
+    r.setResources(resources);
+    r.setPaging(LinkHeaderUtil.getPagingLinkHeaders("", total, limit, offset));
+
+    return r;
   }
 }

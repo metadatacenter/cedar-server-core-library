@@ -13,7 +13,9 @@ import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.FolderServerNodeContext;
+import org.metadatacenter.util.json.JsonMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,15 @@ public abstract class FolderServerNode extends AbstractCedarNodeWithDates
     this.pathInfo = new ArrayList<>();
     this.usersData = new UsersDataGroup();
     this.userNamesData = new UserNamesDataGroup();
+  }
+
+  public static FolderServerNode fromNodeExtract(FolderServerNodeExtract node) {
+    try {
+      return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNode.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @JsonProperty(NodeProperty.Label.ID)

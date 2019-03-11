@@ -37,10 +37,16 @@
             "fieldType": {
               "type": "keyword"
             },
+            "fieldTypeMappings": {
+              "type": "keyword"
+            },
             "fieldNormalizedPath": {
               "type": "keyword"
             },
             "fieldValueType": {
+              "type": "keyword"
+            },
+            "fieldValueMappings": {
               "type": "keyword"
             },
             "fieldValueLabel": {
@@ -63,10 +69,16 @@
             "fieldType": {
               "type": "keyword"
             },
+            "fieldTypeMappings": {
+              "type": "keyword"
+            },
             "fieldNormalizedPath": {
               "type": "keyword"
             },
             "fieldValueType": {
+              "type": "keyword"
+            },
+            "fieldValueMappings": {
               "type": "keyword"
             },
             "fieldValueLabel": {

@@ -2,7 +2,6 @@ package org.metadatacenter.model;
 
 public enum ServerName {
 
-  WORKSPACE("workspace"),
   GROUP("group"),
   MESSAGING("messaging"),
   REPO("repo"),

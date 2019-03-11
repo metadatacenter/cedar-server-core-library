@@ -3,8 +3,6 @@ package org.metadatacenter.server.search.util;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
@@ -106,12 +104,7 @@ public class RegenerateSearchIndexTask {
         List<IndexingDocumentDocument> currentBatch = new ArrayList<>();
         for (FolderServerNode node : resources) {
           try {
-            CedarNodeMaterializedPermissions perm = null;
-            if (node.getType() == CedarNodeType.FOLDER) {
-              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
-            } else {
-              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
-            }
+            CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
             currentBatch.add(nodeIndexingService.createIndexDocument(node, perm));
 
             if (count % 100 == 0) {
@@ -131,7 +124,9 @@ public class RegenerateSearchIndexTask {
         }
 
         log.info(String.format("Batch progress remaining: %d", currentBatch.size()));
-        nodeIndexingService.indexBatch(currentBatch);
+        if (currentBatch.size() > 0) {
+          nodeIndexingService.indexBatch(currentBatch);
+        }
 
         // Point alias to new index
         esManagementService.addAlias(newIndexName, aliasName);

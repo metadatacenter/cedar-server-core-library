@@ -11,17 +11,17 @@ import org.metadatacenter.server.security.model.NodeWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
 
-public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUserPermissionUpdater {
+public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
   private final PermissionServiceSession permissionSession;
   private final VersionServiceSession versionSession;
   private final CedarConfig cedarConfig;
   private final ResourceWithCurrentUserPermissions resource;
 
-  private CurrentUserPermissionUpdaterForWorkspaceResource(PermissionServiceSession permissionSession,
-                                                           VersionServiceSession versionSession,
-                                                           CedarConfig cedarConfig,
-                                                           ResourceWithCurrentUserPermissions resource) {
+  private CurrentUserPermissionUpdaterForGraphDbResource(PermissionServiceSession permissionSession,
+                                                         VersionServiceSession versionSession,
+                                                         CedarConfig cedarConfig,
+                                                         ResourceWithCurrentUserPermissions resource) {
     this.permissionSession = permissionSession;
     this.versionSession = versionSession;
     this.cedarConfig = cedarConfig;
@@ -31,7 +31,7 @@ public class CurrentUserPermissionUpdaterForWorkspaceResource extends CurrentUse
   public static CurrentUserPermissionUpdater get(PermissionServiceSession permissionSession,
                                                  VersionServiceSession versionSession,
                                                  CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
-    return new CurrentUserPermissionUpdaterForWorkspaceResource(permissionSession, versionSession, cedarConfig,
+    return new CurrentUserPermissionUpdaterForGraphDbResource(permissionSession, versionSession, cedarConfig,
         resource);
   }
 

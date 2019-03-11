@@ -1,77 +1,42 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
 public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
 
-  public static String addPermissionToFolderForUser(NodePermission permission) {
+  public static String addPermissionToNodeForUser(NodePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
-        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
         " RETURN user";
   }
 
-  public static String addPermissionToResourceForGroup(NodePermission permission) {
+  public static String addPermissionToNodeForGroup(NodePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
         " RETURN group";
   }
 
-  public static String addPermissionToFolderForGroup(NodePermission permission) {
-    return "" +
-        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
-        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
-        " RETURN group";
-  }
-
-  public static String addPermissionToResourceForUser(NodePermission permission) {
+  public static String removePermissionForNodeFromUser(NodePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
-        " RETURN user";
-  }
-
-  public static String removePermissionForFolderFromUser(NodePermission permission) {
-    return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
-        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
         " DELETE (relation)" +
-        " RETURN folder";
+        " RETURN node";
   }
 
-  public static String removePermissionForFolderFromGroup(NodePermission permission) {
+  public static String removePermissionForNodeFromGroup(NodePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId} })" +
-        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(folder)" +
+        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId} })" +
+        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
         " DELETE (relation)" +
-        " RETURN folder";
-  }
-
-  public static String removePermissionForResourceFromUser(NodePermission permission) {
-    return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
-        " DELETE (relation)" +
-        " RETURN resource";
-  }
-
-  public static String removePermissionForResourceFromGroup(NodePermission permission) {
-    return "" +
-        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
-        " DELETE (relation)" +
-        " RETURN resource";
+        " RETURN node";
   }
 
   public static String userCanReadNode() {
@@ -117,15 +82,10 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
         " RETURN group";
   }
 
-  public static String getUsersWithTransitiveReadOnNode(FolderOrResource folderOrResource) {
+  public static String getUsersWithTransitiveReadOnNode() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      sb.append(" MATCH (node:<LABEL.FOLDER> {<PROP.ID>:{nodeId}})");
-    } else {
-      sb.append(" MATCH (node:<LABEL.RESOURCE> {<PROP.ID>:{nodeId}})");
-    }
+    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");
@@ -137,15 +97,10 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getUsersWithTransitiveWriteOnNode(FolderOrResource folderOrResource) {
+  public static String getUsersWithTransitiveWriteOnNode() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      sb.append(" MATCH (node:<LABEL.FOLDER> {<PROP.ID>:{nodeId}})");
-    } else {
-      sb.append(" MATCH (node:<LABEL.RESOURCE> {<PROP.ID>:{nodeId}})");
-    }
+    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");
@@ -157,13 +112,8 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getGroupsWithTransitiveReadOnNode(FolderOrResource folderOrResource) {
-    String node;
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      node = "(node:<LABEL.FOLDER> {<PROP.ID>:{nodeId}})";
-    } else {
-      node = "(node:<LABEL.RESOURCE> {<PROP.ID>:{nodeId}})";
-    }
+  public static String getGroupsWithTransitiveReadOnNode() {
+    String node = "(node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");
@@ -181,13 +131,8 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
-  public static String getGroupsWithTransitiveWriteOnNode(FolderOrResource folderOrResource) {
-    String node;
-    if (folderOrResource == FolderOrResource.FOLDER) {
-      node = "(node:<LABEL.FOLDER> {<PROP.ID>:{nodeId}})";
-    } else {
-      node = "(node:<LABEL.RESOURCE> {<PROP.ID>:{nodeId}})";
-    }
+  public static String getGroupsWithTransitiveWriteOnNode() {
+    String node = "(node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");

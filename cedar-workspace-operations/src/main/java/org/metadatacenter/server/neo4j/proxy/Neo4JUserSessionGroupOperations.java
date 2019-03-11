@@ -1,6 +1,5 @@
 package org.metadatacenter.server.neo4j.proxy;
 
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.security.model.auth.CedarGroupUser;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsers;
@@ -64,35 +63,35 @@ public final class Neo4JUserSessionGroupOperations {
   }
 
   static void addGroupPermissions(Neo4JProxyPermission neo4JProxy, String nodeURL,
-                                  Set<NodePermissionGroupPermissionPair> toAddGroupPermissions, FolderOrResource folderOrResource) {
+                                  Set<NodePermissionGroupPermissionPair> toAddGroupPermissions) {
     for (NodePermissionGroupPermissionPair pair : toAddGroupPermissions) {
-      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), folderOrResource);
+      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroup().getId(), pair.getPermission());
     }
   }
 
   static void removeGroupPermissions(Neo4JProxyPermission neo4JProxy, String nodeURL,
-                                     Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions, FolderOrResource folderOrResource) {
+                                     Set<NodePermissionGroupPermissionPair> toRemoveGroupPermissions) {
     for (NodePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
-      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroup().getId(), pair.getPermission(), folderOrResource);
+      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroup().getId(), pair.getPermission());
     }
   }
 
   static void addUserPermissions(Neo4JProxyPermission neo4JProxy, String nodeURL,
-                                 Set<NodePermissionUserPermissionPair> toAddUserPermissions, FolderOrResource folderOrResource) {
+                                 Set<NodePermissionUserPermissionPair> toAddUserPermissions) {
     for (NodePermissionUserPermissionPair pair : toAddUserPermissions) {
-      neo4JProxy.addPermissionToUser(nodeURL, pair.getUser().getId(), pair.getPermission(), folderOrResource);
+      neo4JProxy.addPermissionToUser(nodeURL, pair.getUser().getId(), pair.getPermission());
     }
   }
 
   static void removeUserPermissions(Neo4JProxyPermission neo4JProxy, String nodeURL,
-                                    Set<NodePermissionUserPermissionPair> toRemoveUserPermissions, FolderOrResource folderOrResource) {
+                                    Set<NodePermissionUserPermissionPair> toRemoveUserPermissions) {
     for (NodePermissionUserPermissionPair pair : toRemoveUserPermissions) {
-      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUser().getId(), pair.getPermission(), folderOrResource);
+      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUser().getId(), pair.getPermission());
     }
   }
 
-  static void updateNodeOwner(Neo4JProxyNode neo4JProxy, String nodeURL, String ownerURL, FolderOrResource folderOrResource) {
-    neo4JProxy.updateNodeOwner(nodeURL, ownerURL, folderOrResource);
+  static void updateNodeOwner(Neo4JProxyNode neo4JProxy, String nodeURL, String ownerURL) {
+    neo4JProxy.updateNodeOwner(nodeURL, ownerURL);
   }
 
 }

@@ -50,8 +50,7 @@ public class NodeIndexingService extends AbstractIndexingService {
   public IndexedDocumentId indexDocument(FolderServerNode node, CedarRequestContext c) throws CedarProcessingException {
     log.debug("Indexing node (id = " + node.getId() + ")");
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
-    CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId(),
-        node.getType().asFolderOrResource());
+    CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
     return indexDocument(node, permissions);
   }
 

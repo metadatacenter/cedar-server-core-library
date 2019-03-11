@@ -3,14 +3,11 @@ package org.metadatacenter.server.search.permission;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.FolderOrResource;
 import org.metadatacenter.model.Upsert;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
-import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
@@ -77,7 +74,7 @@ public class SearchPermissionExecutorService {
     FolderServerResource resource = folderSession.findResourceById(id);
     if (resource != null) {
       log.debug("Update one resource:" + resource.getName());
-      upsertOnePermissions(Upsert.UPDATE, id, FolderOrResource.RESOURCE);
+      upsertOnePermissions(Upsert.UPDATE, id);
     } else {
       log.error("Resource was not found:" + id);
     }
@@ -87,7 +84,7 @@ public class SearchPermissionExecutorService {
     log.debug("Update recursive folder:");
     List<FolderServerNode> subtree = folderSession.findAllDescendantNodesById(id);
     for (FolderServerNode n : subtree) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType());
+      upsertOnePermissions(Upsert.UPDATE, n.getId());
     }
   }
 
@@ -96,7 +93,7 @@ public class SearchPermissionExecutorService {
     List<FolderServerNode> collection = folderSession.findAllNodesVisibleByGroupId(id);
     for (FolderServerNode n : collection) {
       if (indexUtils.needsIndexing(n)) {
-        upsertOnePermissions(Upsert.UPDATE, n.getId(), n.getType());
+        upsertOnePermissions(Upsert.UPDATE, n.getId());
       } else {
         log.info("The node was skipped from indexing:" + n.getId());
       }
@@ -115,30 +112,15 @@ public class SearchPermissionExecutorService {
 
     for (String cid : allCedarIdsForGroup) {
       log.info("Need to update permissions for:" + cid);
-      try {
-        IndexedDocumentDocument originalNode = nodeSearchingService.getDocumentByCedarId(cid);
-        upsertOnePermissions(Upsert.UPDATE, cid, originalNode.getInfo().getType());
-      } catch (CedarProcessingException e) {
-        log.error("There was an error while updating permissions for updated group:" + id + " node:" + cid, e);
-      }
+      upsertOnePermissions(Upsert.UPDATE, cid);
     }
   }
 
-  // Executors
-  private void upsertOnePermissions(Upsert upsert, String id, CedarNodeType nodeType) {
-    upsertOnePermissions(upsert, id, nodeType.asFolderOrResource());
-  }
-
-  private void upsertOnePermissions(Upsert upsert, String id, FolderOrResource folderOrResource) {
-    log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + folderOrResource + ":" + id);
+  private void upsertOnePermissions(Upsert upsert, String id) {
+    log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + id);
     try {
-      FolderServerNode node = null;
-      if (folderOrResource == FolderOrResource.FOLDER) {
-        node = folderSession.findFolderById(id);
-      } else {
-        node = folderSession.findResourceById(id);
-      }
-      CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id, folderOrResource);
+      FolderServerNode node = folderSession.findNodeById(id);
+      CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id);
       if (upsert == Upsert.UPDATE) {
         nodeIndexingService.removeDocumentFromIndex(id);
       }

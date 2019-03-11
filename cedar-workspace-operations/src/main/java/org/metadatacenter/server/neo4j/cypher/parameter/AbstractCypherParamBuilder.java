@@ -195,4 +195,19 @@ public abstract class AbstractCypherParamBuilder {
     params.put(ParameterPlaceholder.TARGET_ID, targetId);
     return params;
   }
+
+  public static CypherParameters matchNodeAndUser(String nodeURL, String userURL) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.NODE_ID, nodeURL);
+    params.put(ParameterPlaceholder.USER_ID, userURL);
+    return params;
+  }
+
+  public static CypherParameters matchNodeAndGroup(String nodeURL, String groupURL) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.NODE_ID, nodeURL);
+    params.put(ParameterPlaceholder.GROUP_ID, groupURL);
+    return params;
+  }
+
 }

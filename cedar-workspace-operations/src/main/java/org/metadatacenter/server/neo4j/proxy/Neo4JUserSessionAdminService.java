@@ -45,7 +45,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     String userId = cu.getId();
     log.info("Current User Id: " + userId);
 
-    log.info("Looking for Admin User in Workspace");
+    log.info("Looking for Admin User in Neo4j");
     FolderServerUser cedarAdmin = proxies.user().findUserById(userId);
     if (cedarAdmin == null) {
       log.info("Admin user not found, trying to create it");
@@ -57,7 +57,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       log.info("Admin user found");
     }
 
-    log.info("Looking for Everybody Group in Workspace");
+    log.info("Looking for Everybody Group in Neo4j");
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (everybody == null) {
       log.info("Everybody Group not found, trying to create it");
