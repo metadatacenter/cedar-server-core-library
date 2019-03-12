@@ -9,7 +9,6 @@ import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerNodeCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
@@ -19,8 +18,6 @@ import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGrap
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
-
-import java.util.List;
 
 public class GraphDbPermissionReader {
 
@@ -43,8 +40,7 @@ public class GraphDbPermissionReader {
 
       folderSession.addPathAndParentId(resource);
 
-      List<FolderServerNodeExtract> pathInfo = folderSession.findNodePathExtract(resource);
-      resource.setPathInfo(pathInfo);
+      resource.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, resource));
 
       FolderServerResourceCurrentUserReport resourceReport =
           (FolderServerResourceCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(resource);
@@ -81,8 +77,7 @@ public class GraphDbPermissionReader {
 
       folderSession.addPathAndParentId(folder);
 
-      List<FolderServerNodeExtract> pathInfo = folderSession.findNodePathExtract(folder);
-      folder.setPathInfo(pathInfo);
+      folder.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, folder));
 
       FolderServerFolderCurrentUserReport folderReport =
           (FolderServerFolderCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(folder);

@@ -117,13 +117,6 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");
-    sb.append(" -[:<REL.CANREADTHIS>]->");
-    sb.append(node);
-    sb.append(" RETURN group");
-
-    sb.append(" UNION");
-
-    sb.append(" MATCH (group:<LABEL.GROUP>)");
     sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
     sb.append(node);
     sb.append(" RETURN group");
