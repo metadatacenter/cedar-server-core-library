@@ -21,26 +21,26 @@ public abstract class CedarMicroserviceApplicationWithMongo<T extends CedarMicro
   protected static TemplateService<String, JsonNode> templateService;
   protected static TemplateInstanceService<String, JsonNode> templateInstanceService;
 
-  protected void initMongoServices(MongoClient mongoClientForDocuments, MongoConfig templateServerConfig) {
+  protected void initMongoServices(MongoClient mongoClientForDocuments, MongoConfig artifactServerConfig) {
     templateFieldService = new TemplateFieldServiceMongoDB(
         mongoClientForDocuments,
-        templateServerConfig.getDatabaseName(),
-        templateServerConfig.getMongoCollectionName(CedarNodeType.FIELD));
+        artifactServerConfig.getDatabaseName(),
+        artifactServerConfig.getMongoCollectionName(CedarNodeType.FIELD));
 
     templateElementService = new TemplateElementServiceMongoDB(
         mongoClientForDocuments,
-        templateServerConfig.getDatabaseName(),
-        templateServerConfig.getMongoCollectionName(CedarNodeType.ELEMENT));
+        artifactServerConfig.getDatabaseName(),
+        artifactServerConfig.getMongoCollectionName(CedarNodeType.ELEMENT));
 
     templateService = new TemplateServiceMongoDB(
         mongoClientForDocuments,
-        templateServerConfig.getDatabaseName(),
-        templateServerConfig.getMongoCollectionName(CedarNodeType.TEMPLATE));
+        artifactServerConfig.getDatabaseName(),
+        artifactServerConfig.getMongoCollectionName(CedarNodeType.TEMPLATE));
 
     templateInstanceService = new TemplateInstanceServiceMongoDB(
         mongoClientForDocuments,
-        templateServerConfig.getDatabaseName(),
-        templateServerConfig.getMongoCollectionName(CedarNodeType.INSTANCE));
+        artifactServerConfig.getDatabaseName(),
+        artifactServerConfig.getMongoCollectionName(CedarNodeType.INSTANCE));
   }
 
 }

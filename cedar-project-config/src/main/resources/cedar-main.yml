@@ -20,7 +20,7 @@ keycloak:
   publicClient: true
 
 #MongoDB settings
-templateServer:
+artifactServer:
   mongoConnection:
     host: "${CEDAR_MONGO_HOST}"
     port: "${CEDAR_MONGO_PORT}"
@@ -140,11 +140,11 @@ servers:
     httpPort: "${CEDAR_SUBMISSION_HTTP_PORT}"
     adminPort: "${CEDAR_SUBMISSION_ADMIN_PORT}"
     stopPort: "${CEDAR_SUBMISSION_STOP_PORT}"
-  template:
-    httpPort: "${CEDAR_TEMPLATE_HTTP_PORT}"
-    adminPort: "${CEDAR_TEMPLATE_ADMIN_PORT}"
-    stopPort: "${CEDAR_TEMPLATE_STOP_PORT}"
-    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_TEMPLATE_HTTP_PORT}/"
+  artifact:
+    httpPort: "${CEDAR_ARTIFACT_HTTP_PORT}"
+    adminPort: "${CEDAR_ARTIFACT_ADMIN_PORT}"
+    stopPort: "${CEDAR_ARTIFACT_STOP_PORT}"
+    base: "http://${CEDAR_NET_GATEWAY}:${CEDAR_ARTIFACT_HTTP_PORT}/"
   terminology:
     httpPort: "${CEDAR_TERMINOLOGY_HTTP_PORT}"
     adminPort: "${CEDAR_TERMINOLOGY_ADMIN_PORT}"
@@ -215,12 +215,12 @@ importExport:
   exportDir: "${CEDAR_HOME}/export/"
   importDir: "${CEDAR_HOME}/import/"
 
-folderRESTAPI:
+resourceRESTAPI:
   pagination:
     defaultPageSize: 100
     maxPageSize: 500
 
-templateRESTAPI:
+artifactRESTAPI:
   pagination:
     defaultPageSize: 20
     maxPageSize: 500

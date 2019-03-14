@@ -16,7 +16,7 @@ public class ServersConfig {
 
   private ServerConfig submission;
 
-  private ServerConfig template;
+  private ServerConfig artifact;
 
   private ServerConfig terminology;
 
@@ -52,8 +52,8 @@ public class ServersConfig {
     return submission;
   }
 
-  public ServerConfig getTemplate() {
-    return template;
+  public ServerConfig getArtifact() {
+    return artifact;
   }
 
   public ServerConfig getTerminology() {
@@ -90,8 +90,8 @@ public class ServersConfig {
         return schema;
       case SUBMISSION:
         return submission;
-      case TEMPLATE:
-        return template;
+      case ARTIFACT:
+        return artifact;
       case TERMINOLOGY:
         return terminology;
       case USER:

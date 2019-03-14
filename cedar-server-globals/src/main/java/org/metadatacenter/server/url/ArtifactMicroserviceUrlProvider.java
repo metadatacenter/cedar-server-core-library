@@ -9,11 +9,11 @@ import java.util.Optional;
 import static org.metadatacenter.constant.CedarQueryParameters.QP_FORMAT;
 import static org.metadatacenter.constant.CedarQueryParameters.QP_RESOURCE_TYPE;
 
-public class TemplateMicroserviceUrlProvider extends MicroserviceUrlProvider {
+public class ArtifactMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
   protected static final String VALIDATE_COMMAND = "command/validate";
 
-  public TemplateMicroserviceUrlProvider(ServerConfig server) {
+  public ArtifactMicroserviceUrlProvider(ServerConfig server) {
     super(server.getBase());
   }
 

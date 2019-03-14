@@ -110,7 +110,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
           && isValidURL(isBasedOnInput.get())) {
         isBasedOn = isBasedOnInput.get();
       } else {
-        throw new CedarAssertionException("You must pass in 'is_based_on' as a valid template identifier!")
+        throw new CedarAssertionException("You must pass in 'is_based_on' as a valid artifact identifier!")
             .badRequest()
             .parameter("template_id", isBasedOnInput.get());
       }

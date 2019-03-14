@@ -10,7 +10,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
+import org.metadatacenter.exception.ArtifactServerResourceNotFoundException;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.util.json.JsonMapper;
@@ -136,17 +136,17 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    * @param content The new content of the document
    * @return The updated JSON representation of the element
    * @throws IllegalArgumentException                If the ID is not valid
-   * @throws TemplateServerResourceNotFoundException If the element is not found
+   * @throws ArtifactServerResourceNotFoundException If the element is not found
    * @throws IOException                             If an error occurs during update
    */
   @Override
   public JsonNode update(String id, JsonNode content)
-      throws TemplateServerResourceNotFoundException, IOException {
+      throws ArtifactServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
     if (!exists(id)) {
-      throw new TemplateServerResourceNotFoundException();
+      throw new ArtifactServerResourceNotFoundException();
     }
     // Adapts all keys not accepted by MongoDB
     content = jsonUtils.fixMongoDB(content, FixMongoDirection.WRITE_TO_MONGO);
@@ -165,16 +165,16 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
    *
    * @param id The linked data ID of the element to delete
    * @throws IllegalArgumentException                If the ID is not valid
-   * @throws TemplateServerResourceNotFoundException If the element is not found
+   * @throws ArtifactServerResourceNotFoundException If the element is not found
    * @throws IOException                             If an error occurs during deletion
    */
   @Override
-  public void delete(String id) throws TemplateServerResourceNotFoundException, IOException {
+  public void delete(String id) throws ArtifactServerResourceNotFoundException, IOException {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
     if (!exists(id)) {
-      throw new TemplateServerResourceNotFoundException();
+      throw new ArtifactServerResourceNotFoundException();
     }
     DeleteResult deleteResult = entityCollection.deleteOne(eq("@id", id));
     if (deleteResult.getDeletedCount() != 1) {

@@ -1,6 +1,6 @@
 package org.metadatacenter.server.service;
 
-import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
+import org.metadatacenter.exception.ArtifactServerResourceNotFoundException;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,9 +14,9 @@ public interface TemplateFieldService<K, T> {
 
   T findTemplateField(String templateFieldId) throws IOException;
 
-  T updateTemplateField(K templateFieldId, T content) throws TemplateServerResourceNotFoundException, IOException;
+  T updateTemplateField(K templateFieldId, T content) throws ArtifactServerResourceNotFoundException, IOException;
 
-  void deleteTemplateField(K templateFieldId) throws TemplateServerResourceNotFoundException, IOException;
+  void deleteTemplateField(K templateFieldId) throws ArtifactServerResourceNotFoundException, IOException;
 
   void deleteAllTemplateFields();
 

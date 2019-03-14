@@ -1,6 +1,6 @@
 package org.metadatacenter.config;
 
-public class FolderRESTAPI {
+public class ResourceRESTAPI {
 
   private PaginationConfig pagination;
 

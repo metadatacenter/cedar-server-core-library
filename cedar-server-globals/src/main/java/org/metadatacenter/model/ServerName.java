@@ -8,7 +8,7 @@ public enum ServerName {
   RESOURCE("resource"),
   SCHEMA("schema"),
   SUBMISSION("submission"),
-  TEMPLATE("template"),
+  ARTIFACT("artifact"),
   TERMINOLOGY("terminology"),
   USER("user"),
   VALUERECOMMENDER("valuerecommender"),

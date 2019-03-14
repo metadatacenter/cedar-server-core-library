@@ -32,8 +32,8 @@ public class CedarConfig extends Configuration {
   @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
-  @JsonProperty("templateServer")
-  private MongoConfig templateServerConfig;
+  @JsonProperty("artifactServer")
+  private MongoConfig artifactServerConfig;
 
   @JsonProperty("userServer")
   private MongoConfig userServerConfig;
@@ -72,11 +72,11 @@ public class CedarConfig extends Configuration {
   @JsonProperty("importExport")
   private ImportExportConfig importExportConfig;
 
-  @JsonProperty("folderRESTAPI")
-  private FolderRESTAPI folderRESTAPI;
+  @JsonProperty("resourceRESTAPI")
+  private ResourceRESTAPI resourceRESTAPI;
 
-  @JsonProperty("templateRESTAPI")
-  private TemplateRESTAPI templateRESTAPI;
+  @JsonProperty("artifactRESTAPI")
+  private ArtifactRESTAPI artifactRESTAPI;
 
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
@@ -186,8 +186,8 @@ public class CedarConfig extends Configuration {
     return keycloakConfig;
   }
 
-  public MongoConfig getTemplateServerConfig() {
-    return templateServerConfig;
+  public MongoConfig getArtifactServerConfig() {
+    return artifactServerConfig;
   }
 
   public MongoConfig getUserServerConfig() {
@@ -242,12 +242,12 @@ public class CedarConfig extends Configuration {
     return importExportConfig;
   }
 
-  public FolderRESTAPI getFolderRESTAPI() {
-    return folderRESTAPI;
+  public ResourceRESTAPI getResourceRESTAPI() {
+    return resourceRESTAPI;
   }
 
-  public TemplateRESTAPI getTemplateRESTAPI() {
-    return templateRESTAPI;
+  public ArtifactRESTAPI getArtifactRESTAPI() {
+    return artifactRESTAPI;
   }
 
   public SubmissionConfig getSubmissionConfig() {

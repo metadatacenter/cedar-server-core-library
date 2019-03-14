@@ -2,7 +2,7 @@ package org.metadatacenter.config;
 
 import java.util.List;
 
-public class TemplateRESTAPISummary {
+public class ArtifactRESTAPISummary {
 
   private List<String> fields;
 
