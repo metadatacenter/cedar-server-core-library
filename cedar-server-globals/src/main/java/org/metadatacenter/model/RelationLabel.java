@@ -8,7 +8,6 @@ public enum RelationLabel {
   CONTAINS(PlainLabels.CONTAINS, null),
   MEMBEROF(PlainLabels.MEMBEROF, null),
   CANREAD(PlainLabels.CANREAD, NodePermission.READ),
-  CANREADTHIS(PlainLabels.CANREADTHIS, NodePermission.READTHIS),
   CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE),
   ADMINISTERS(PlainLabels.ADMINISTERS, null),
   PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null),
@@ -19,7 +18,6 @@ public enum RelationLabel {
     public static final String CONTAINS = "CONTAINS";
     public static final String MEMBEROF = "MEMBEROF";
     public static final String CANREAD = "CANREAD";
-    public static final String CANREADTHIS = "CANREADTHIS";
     public static final String CANWRITE = "CANWRITE";
     public static final String ADMINISTERS = "ADMINISTERS";
     public static final String PREVIOUSVERSION = "PREVIOUSVERSION";

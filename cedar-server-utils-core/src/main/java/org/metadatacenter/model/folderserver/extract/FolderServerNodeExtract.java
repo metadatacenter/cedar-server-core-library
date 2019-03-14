@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarNodeExtract;
 import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.datagroup.*;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.NodeWithIdAndType;
@@ -200,7 +200,6 @@ public abstract class FolderServerNodeExtract extends AbstractCedarNodeExtract
   public void setActiveUserCanRead(boolean activeUserCanRead) {
     this.activeUserCanRead = activeUserCanRead;
   }
-
 
   @Override
   public NodeSharePermission getEverybodyPermission() {

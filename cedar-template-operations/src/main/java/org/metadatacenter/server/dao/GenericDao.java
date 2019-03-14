@@ -1,6 +1,6 @@
 package org.metadatacenter.server.dao;
 
-import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
+import org.metadatacenter.exception.ArtifactServerResourceNotFoundException;
 import org.metadatacenter.server.service.FieldNameInEx;
 
 import java.io.IOException;
@@ -19,9 +19,9 @@ public interface GenericDao<K, T> {
 
   T find(K id) throws IOException;
 
-  T update(K id, T content) throws TemplateServerResourceNotFoundException, IOException;
+  T update(K id, T content) throws ArtifactServerResourceNotFoundException, IOException;
 
-  void delete(K id) throws TemplateServerResourceNotFoundException, IOException;
+  void delete(K id) throws ArtifactServerResourceNotFoundException, IOException;
 
   boolean exists(K id) throws IOException;
 

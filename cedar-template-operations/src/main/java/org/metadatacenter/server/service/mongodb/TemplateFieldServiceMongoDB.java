@@ -2,7 +2,7 @@ package org.metadatacenter.server.service.mongodb;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoClient;
-import org.metadatacenter.exception.TemplateServerResourceNotFoundException;
+import org.metadatacenter.exception.ArtifactServerResourceNotFoundException;
 import org.metadatacenter.server.dao.mongodb.TemplateFieldDaoMongoDB;
 import org.metadatacenter.server.service.FieldNameInEx;
 import org.metadatacenter.server.service.TemplateFieldService;
@@ -37,12 +37,12 @@ public class TemplateFieldServiceMongoDB extends GenericTemplateServiceMongoDB<S
 
   @Override
   public JsonNode updateTemplateField(String templateFieldId, JsonNode content) throws
-      TemplateServerResourceNotFoundException, IOException {
+      ArtifactServerResourceNotFoundException, IOException {
     return templateFieldDao.update(templateFieldId, content);
   }
 
   @Override
-  public void deleteTemplateField(String templateFieldId) throws TemplateServerResourceNotFoundException, IOException {
+  public void deleteTemplateField(String templateFieldId) throws ArtifactServerResourceNotFoundException, IOException {
     templateFieldDao.delete(templateFieldId);
   }
 

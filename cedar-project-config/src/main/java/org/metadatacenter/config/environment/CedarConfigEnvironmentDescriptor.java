@@ -285,16 +285,16 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarStopPortSchema = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SCHEMA_STOP_PORT);
     cedarStopPortSchema.add(SystemComponent.SERVER_SCHEMA);
 
-    Set<SystemComponent> cedarPortTemplate = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEMPLATE_HTTP_PORT);
-    cedarPortTemplate.add(SystemComponent.SERVER_TEMPLATE);
-    cedarPortTemplate.add(SystemComponent.SERVER_RESOURCE);
-    cedarPortTemplate.add(SystemComponent.SERVER_WORKER);
+    Set<SystemComponent> cedarPortArtifact = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ARTIFACT_HTTP_PORT);
+    cedarPortArtifact.add(SystemComponent.SERVER_ARTIFACT);
+    cedarPortArtifact.add(SystemComponent.SERVER_RESOURCE);
+    cedarPortArtifact.add(SystemComponent.SERVER_WORKER);
     Set<SystemComponent> cedarAdminPortTemplate = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_TEMPLATE_ADMIN_PORT);
-    cedarAdminPortTemplate.add(SystemComponent.SERVER_TEMPLATE);
+        .CEDAR_ARTIFACT_ADMIN_PORT);
+    cedarAdminPortTemplate.add(SystemComponent.SERVER_ARTIFACT);
     Set<SystemComponent> cedarStopPortTemplate = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_TEMPLATE_STOP_PORT);
-    cedarStopPortTemplate.add(SystemComponent.SERVER_TEMPLATE);
+        .CEDAR_ARTIFACT_STOP_PORT);
+    cedarStopPortTemplate.add(SystemComponent.SERVER_ARTIFACT);
 
     Set<SystemComponent> cedarHttpPortTerminology = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_TERMINOLOGY_HTTP_PORT);
@@ -336,7 +336,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarStopPortWorker.add(SystemComponent.SERVER_WORKER);
 
     Set<SystemComponent> cedarTestUser1Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER1_ID);
-    cedarTestUser1Id.add(SystemComponent.SERVER_TEMPLATE);
+    cedarTestUser1Id.add(SystemComponent.SERVER_ARTIFACT);
     cedarTestUser1Id.add(SystemComponent.SERVER_TERMINOLOGY);
     cedarTestUser1Id.add(SystemComponent.SERVER_MESSAGING);
 

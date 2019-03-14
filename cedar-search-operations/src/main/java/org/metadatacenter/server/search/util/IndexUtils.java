@@ -43,7 +43,7 @@ public class IndexUtils {
   public IndexUtils(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
     this.microserviceUrlUtil = cedarConfig.getMicroserviceUrlUtil();
-    this.limit = cedarConfig.getFolderRESTAPI().getPagination().getMaxPageSize();
+    this.limit = cedarConfig.getResourceRESTAPI().getPagination().getMaxPageSize();
     this.maxAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getMaxAttempts();
     this.delayAttempts = cedarConfig.getSearchSettings().getSearchRetrieveSettings().getDelayAttempts();
   }
@@ -187,7 +187,7 @@ public class IndexUtils {
       throws CedarException {
 
     PagedSortedQuery pagedSortedQuery = new PagedSortedQuery(
-        cedarConfig.getFolderRESTAPI().getPagination())
+        cedarConfig.getResourceRESTAPI().getPagination())
         .sort(sortParam)
         .limit(Optional.of(limit))
         .offset(Optional.of(offset));

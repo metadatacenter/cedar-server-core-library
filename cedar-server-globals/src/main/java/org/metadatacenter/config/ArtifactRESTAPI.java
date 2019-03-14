@@ -2,13 +2,13 @@ package org.metadatacenter.config;
 
 import java.util.List;
 
-public class TemplateRESTAPI {
+public class ArtifactRESTAPI {
 
   private PaginationConfig pagination;
 
   private List<String> excludedFields;
 
-  private TemplateRESTAPISummaries summaries;
+  private ArtifactRESTAPISummaries summaries;
 
   public PaginationConfig getPagination() {
     return pagination;
@@ -18,7 +18,7 @@ public class TemplateRESTAPI {
     return excludedFields;
   }
 
-  public TemplateRESTAPISummaries getSummaries() {
+  public ArtifactRESTAPISummaries getSummaries() {
     return summaries;
   }
 }

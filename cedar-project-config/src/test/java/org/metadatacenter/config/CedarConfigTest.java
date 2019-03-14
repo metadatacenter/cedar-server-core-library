@@ -109,9 +109,9 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_ADMIN_PORT.getName(), "9110");
     env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_STOP_PORT.getName(), "9210");
 
-    env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_HTTP_PORT.getName(), "9001");
-    env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_ADMIN_PORT.getName(), "9101");
-    env.put(CedarEnvironmentVariable.CEDAR_TEMPLATE_STOP_PORT.getName(), "9201");
+    env.put(CedarEnvironmentVariable.CEDAR_ARTIFACT_HTTP_PORT.getName(), "9001");
+    env.put(CedarEnvironmentVariable.CEDAR_ARTIFACT_ADMIN_PORT.getName(), "9101");
+    env.put(CedarEnvironmentVariable.CEDAR_ARTIFACT_STOP_PORT.getName(), "9201");
 
     env.put(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_HTTP_PORT.getName(), "9004");
     env.put(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_ADMIN_PORT.getName(), "9104");
@@ -166,16 +166,16 @@ public class CedarConfigTest {
   @Test
   public void testMongoConfig() throws Exception {
     CedarConfig instance = getCedarConfig();
-    MongoConfig templateServerConfig = instance.getTemplateServerConfig();
-    Assert.assertNotNull(templateServerConfig);
-    Assert.assertEquals("cedar", templateServerConfig.getDatabaseName());
+    MongoConfig artifactServerConfig = instance.getArtifactServerConfig();
+    Assert.assertNotNull(artifactServerConfig);
+    Assert.assertEquals("cedar", artifactServerConfig.getDatabaseName());
 
-    Map<String, String> templateServerCollections = templateServerConfig.getCollections();
-    Assert.assertNotNull(templateServerCollections);
-    //Assert.assertEquals("template-fields", collections.get("field"));
-    Assert.assertEquals("template-elements", templateServerCollections.get("element"));
-    Assert.assertEquals("templates", templateServerCollections.get("template"));
-    Assert.assertEquals("template-instances", templateServerCollections.get("instance"));
+    Map<String, String> artifactServerCollections = artifactServerConfig.getCollections();
+    Assert.assertNotNull(artifactServerCollections);
+    Assert.assertEquals("template-fields", artifactServerCollections.get("field"));
+    Assert.assertEquals("template-elements", artifactServerCollections.get("element"));
+    Assert.assertEquals("templates", artifactServerCollections.get("template"));
+    Assert.assertEquals("template-instances", artifactServerCollections.get("instance"));
 
     MongoConfig userServerConfig = instance.getUserServerConfig();
     Assert.assertNotNull(userServerConfig);
