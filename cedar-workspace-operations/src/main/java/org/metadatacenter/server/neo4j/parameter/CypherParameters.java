@@ -6,7 +6,9 @@ import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
+import org.metadatacenter.server.security.model.user.CedarUserApiKey;
 
 import java.util.*;
 
@@ -47,6 +49,10 @@ public class CypherParameters {
   }
 
   public void put(ParameterPlaceholder parameter, List<String> value) {
+    map.put(parameter, value);
+  }
+
+  public void put(NodeProperty parameter, List<String> value) {
     map.put(parameter, value);
   }
 

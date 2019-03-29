@@ -35,7 +35,7 @@ public class SearchPermissionExecutorService {
                                          IndexUtils indexUtils,
                                          NodeSearchingService nodeSearchingService,
                                          NodeIndexingService nodeIndexingService) {
-    UserService userService = CedarDataServices.getUserService();
+    UserService userService = CedarDataServices.getNeoUserService();
     this.nodeSearchingService = nodeSearchingService;
     this.nodeIndexingService = nodeIndexingService;
     this.indexUtils = indexUtils;

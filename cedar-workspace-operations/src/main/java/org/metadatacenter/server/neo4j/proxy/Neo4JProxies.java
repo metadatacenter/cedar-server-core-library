@@ -1,11 +1,13 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.PathUtil;
 
 public class Neo4JProxies {
 
+  protected final CedarConfig cedarConfig;
   protected final Neo4jConfig config;
   protected final PathUtil pathUtil;
   protected final LinkedDataUtil linkedDataUtil;
@@ -20,20 +22,21 @@ public class Neo4JProxies {
   private final Neo4JProxyGraph graphProxy;
   private final Neo4JProxyVersion versionProxy;
 
-  public Neo4JProxies(Neo4jConfig config, LinkedDataUtil linkedDataUtil) {
-    this.config = config;
-    this.linkedDataUtil = linkedDataUtil;
-    this.pathUtil = new Neo4JPathUtil(config);
+  public Neo4JProxies(CedarConfig cedarConfig) {
+    this.cedarConfig = cedarConfig;
+    this.config = Neo4jConfig.fromCedarConfig(cedarConfig);
+    this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
+    this.pathUtil = new Neo4JPathUtil(cedarConfig);
 
-    this.adminProxy = new Neo4JProxyAdmin(this);
-    this.folderProxy = new Neo4JProxyFolder(this);
-    this.groupProxy = new Neo4JProxyGroup(this);
-    this.userProxy = new Neo4JProxyUser(this);
-    this.permissionProxy = new Neo4JProxyPermission(this);
-    this.resourceProxy = new Neo4JProxyResource(this);
-    this.nodeProxy = new Neo4JProxyNode(this);
-    this.graphProxy = new Neo4JProxyGraph(this);
-    this.versionProxy = new Neo4JProxyVersion(this);
+    this.adminProxy = new Neo4JProxyAdmin(this, cedarConfig);
+    this.folderProxy = new Neo4JProxyFolder(this, cedarConfig);
+    this.groupProxy = new Neo4JProxyGroup(this, cedarConfig);
+    this.userProxy = new Neo4JProxyUser(this, cedarConfig);
+    this.permissionProxy = new Neo4JProxyPermission(this, cedarConfig);
+    this.resourceProxy = new Neo4JProxyResource(this, cedarConfig);
+    this.nodeProxy = new Neo4JProxyNode(this, cedarConfig);
+    this.graphProxy = new Neo4JProxyGraph(this, cedarConfig);
+    this.versionProxy = new Neo4JProxyVersion(this, cedarConfig);
   }
 
   public Neo4JProxyAdmin admin() {

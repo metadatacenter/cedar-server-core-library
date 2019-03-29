@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j.proxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
@@ -21,7 +22,6 @@ import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.log.CypherQueryLog;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
-import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 import org.neo4j.driver.v1.*;
 import org.neo4j.driver.v1.exceptions.ClientException;
@@ -39,13 +39,15 @@ import java.util.Map;
 public abstract class AbstractNeo4JProxy {
 
   protected final Neo4JProxies proxies;
+  protected final CedarConfig cedarConfig;
 
   protected final Driver driver;
 
   protected static final Logger log = LoggerFactory.getLogger(AbstractNeo4JProxy.class);
 
-  protected AbstractNeo4JProxy(Neo4JProxies proxies) {
+  protected AbstractNeo4JProxy(Neo4JProxies proxies, CedarConfig cedarConfig) {
     this.proxies = proxies;
+    this.cedarConfig = cedarConfig;
     driver = GraphDatabase.driver(proxies.config.getUri(),
         AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }

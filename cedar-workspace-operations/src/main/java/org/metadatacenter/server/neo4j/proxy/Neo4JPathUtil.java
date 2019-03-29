@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.apache.commons.lang.StringUtils;
-import org.metadatacenter.server.neo4j.Neo4jConfig;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.server.neo4j.PathUtil;
 
 import java.util.regex.Matcher;
@@ -16,8 +16,8 @@ public class Neo4JPathUtil implements PathUtil {
 
   private final String rootPath;
 
-  Neo4JPathUtil(Neo4jConfig config) {
-    rootPath = config.getRootFolderPath();
+  Neo4JPathUtil(CedarConfig cedarConfig) {
+    rootPath = cedarConfig.getFolderStructureConfig().getRootFolder().getPath();
   }
 
   private boolean isRoot(String path) {

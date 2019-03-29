@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
@@ -27,8 +28,8 @@ import static org.metadatacenter.server.security.model.auth.CedarPermission.READ
 
 public class Neo4JProxyNode extends AbstractNeo4JProxy {
 
-  Neo4JProxyNode(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyNode(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   long findFolderContentsFilteredCount(String folderId, List<CedarNodeType> nodeTypeList, ResourceVersionFilter

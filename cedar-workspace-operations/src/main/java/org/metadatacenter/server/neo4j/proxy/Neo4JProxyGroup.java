@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -19,8 +20,8 @@ import java.util.Map;
 
 public class Neo4JProxyGroup extends AbstractNeo4JProxy {
 
-  Neo4JProxyGroup(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyGroup(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   FolderServerGroup createGroup(String groupURL, String name, String displayName, String description, String

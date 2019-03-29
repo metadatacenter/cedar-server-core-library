@@ -49,8 +49,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerUser cedarAdmin = proxies.user().findUserById(userId);
     if (cedarAdmin == null) {
       log.info("Admin user not found, trying to create it");
-      String displayName = CedarUserNameUtil.getDisplayName(cedarConfig, cu);
-      cedarAdmin = proxies.user().createUser(userId, displayName, cu.getFirstName(), cu.getLastName(), cu.getEmail());
+      cedarAdmin = proxies.user().createUser(cu);
       log.info("Admin user created, returned:" + cedarAdmin);
       addAdminToEverybody = true;
     } else {
@@ -84,7 +83,6 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     String rootFolderURL = null;
     if (rootFolder == null) {
       rootFolder = proxies.folder().createRootFolder(userId);
-      proxies.permission().addPermission(rootFolder, everybody, NodePermission.READTHIS);
     }
     if (rootFolder != null) {
       rootFolderURL = rootFolder.getId();
@@ -102,8 +100,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       newUsersFolder.setSystem(true);
       newUsersFolder.setUserHome(false);
 
-      usersFolder = proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
-      proxies.permission().addPermission(usersFolder, everybody, NodePermission.READTHIS);
+      proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
     }
   }
 

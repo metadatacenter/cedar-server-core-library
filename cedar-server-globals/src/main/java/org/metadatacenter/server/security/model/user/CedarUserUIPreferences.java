@@ -1,5 +1,9 @@
 package org.metadatacenter.server.security.model.user;
 
+import org.metadatacenter.util.json.JsonMapper;
+
+import java.io.IOException;
+
 public class CedarUserUIPreferences {
 
   private CedarUserUIFolderView folderView;
@@ -26,6 +30,22 @@ public class CedarUserUIPreferences {
     infoPanel = new CedarUserUIInfoPanel();
     templateEditor = new CedarUserUITemplateEditor();
     metadataEditor = new CedarUserUIMetadataEditor();
+  }
+
+  public CedarUserUIPreferences(String jsonSource) {
+    try {
+      CedarUserUIPreferences deser = JsonMapper.MAPPER.readValue(jsonSource, CedarUserUIPreferences.class);
+      folderView = deser.folderView;
+      resourceTypeFilters = deser.resourceTypeFilters;
+      resourcePublicationStatusFilter = deser.resourcePublicationStatusFilter;
+      resourceVersionFilter = deser.resourceVersionFilter;
+      infoPanel = deser.infoPanel;
+      templateEditor = deser.templateEditor;
+      metadataEditor = deser.metadataEditor;
+      stylesheet = deser.stylesheet;
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public CedarUserUIFolderView getFolderView() {

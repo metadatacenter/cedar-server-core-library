@@ -1,8 +1,6 @@
 package org.metadatacenter.server.dao.mongodb;
 
-import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -13,8 +11,7 @@ import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.dao.GenericUserDao;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import org.metadatacenter.server.security.model.user.CedarUserUIFolderView;
-import org.metadatacenter.server.security.model.user.CedarUserUIPreferences;
+import org.metadatacenter.server.user.UserServiceUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.metadatacenter.util.json.JsonUtils;
 import org.metadatacenter.util.mongo.FixMongoDirection;
@@ -105,8 +102,8 @@ public class UserDaoMongoDB implements GenericUserDao {
       // Adapts all keys not accepted by MongoDB
       modifications = jsonUtils.fixMongoDB(modifications, FixMongoDirection.WRITE_TO_MONGO);
       Map<String, Object> modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
-      boolean modificationsOk = validateModifications(cedarUser, modificationsMap);
-      if (modificationsOk) {
+      CedarUser modifiedCedarUser = UserServiceUtil.validateModifications(cedarUser, modificationsMap);
+      if (modifiedCedarUser != null) {
         UpdateResult updateResult = entityCollection.updateOne(eq(USER_PK_FIELD, id),
             new Document("$set", modificationsMap));
         long matchedCount = updateResult.getMatchedCount();
@@ -137,8 +134,9 @@ public class UserDaoMongoDB implements GenericUserDao {
   }
 
   @Override
-  public BackendCallResult<CedarUser> update(String id, CedarUser user) {
+  public BackendCallResult<CedarUser> update(CedarUser user) {
     BackendCallResult<CedarUser> result = new BackendCallResult<>();
+    String id = user.getId();
     if ((id == null) || (id.length() == 0)) {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
           .message("The id empty")
@@ -176,71 +174,6 @@ public class UserDaoMongoDB implements GenericUserDao {
           .parameter("id", id)
           .sourceException(e);
       return result;
-    }
-  }
-
-  private boolean validateModifications(CedarUser cedarUser, Map<String, Object> modificationsMap) {
-    JsonNode userNode = JsonMapper.MAPPER.valueToTree(cedarUser);
-    for (String k : modificationsMap.keySet()) {
-      String pointerS = "/" + k.replace(".", "/");
-      pointerS.replaceAll("//", "/");
-      if (!pointerS.startsWith("/uiPreferences/")) {
-        return false;
-      }
-      JsonPointer pointer = JsonPointer.compile(pointerS);
-      JsonNode v = userNode.at(pointer);
-      if (!v.isMissingNode()) {
-        JsonNode newValue = JsonMapper.MAPPER.valueToTree(modificationsMap.get(k));
-        JsonNode parentNode = userNode.at(pointer.head());
-        String lastNodeName = pointer.last().toString().replace("/", "");
-        ((ObjectNode) parentNode).set(lastNodeName, newValue);
-      } else {
-        return false;
-      }
-    }
-    CedarUser modifiedUser = null;
-    try {
-      modifiedUser = JsonMapper.MAPPER.convertValue(userNode, CedarUser.class);
-      if (!userUIPreferencesAreNotNull(modifiedUser)) {
-        return false;
-      }
-    } catch (Exception e) {
-      // DO NOTHING, it means the modifications render the user invalid.
-    }
-    return modifiedUser != null;
-  }
-
-  private boolean userUIPreferencesAreNotNull(CedarUser user) {
-    CedarUserUIPreferences uiPreferences = user.getUiPreferences();
-    if (uiPreferences == null) {
-      return false;
-    }
-    if (uiPreferences.getStylesheet() == null) {
-      return false;
-    }
-    if (uiPreferences.getTemplateEditor() == null) {
-      return false;
-    }
-    if (uiPreferences.getMetadataEditor() == null) {
-      return false;
-    }
-    if (uiPreferences.getInfoPanel() == null) {
-      return false;
-    }
-    if (uiPreferences.getResourceTypeFilters() == null) {
-      return false;
-    }
-    if (uiPreferences.getResourceVersionFilter() == null) {
-      return false;
-    }
-    if (uiPreferences.getResourcePublicationStatusFilter() == null) {
-      return false;
-    }
-    if (uiPreferences.getFolderView() == null) {
-      return false;
-    } else {
-      CedarUserUIFolderView folderView = uiPreferences.getFolderView();
-      return folderView.getSortBy() != null && folderView.getSortDirection() != null && folderView.getViewMode() != null;
     }
   }
 

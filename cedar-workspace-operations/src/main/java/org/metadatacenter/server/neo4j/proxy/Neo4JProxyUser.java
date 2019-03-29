@@ -1,5 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.error.CedarErrorType;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
@@ -9,19 +13,28 @@ import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuild
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderUser;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.result.BackendCallResult;
+import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.user.UserServiceUtil;
+import org.metadatacenter.util.json.JsonMapper;
 
 import java.util.List;
+import java.util.Map;
 
 public class Neo4JProxyUser extends AbstractNeo4JProxy {
 
-  Neo4JProxyUser(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyUser(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
-  FolderServerUser createUser(String userURL, String name, String firstName, String lastName, String email) {
+  public FolderServerUser createUser(CedarUser user) {
     String cypher = CypherQueryBuilderUser.createUser();
-    CypherParameters params = CypherParamBuilderUser.createUser(userURL, name, firstName, lastName,
-        email);
+    CypherParameters params = null;
+    try {
+      params = CypherParamBuilderUser.createUser(user, cedarConfig);
+    } catch (CedarProcessingException e) {
+      log.error("Error while assembling create user parameters", e);
+    }
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerUser.class);
   }
@@ -46,4 +59,78 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerUser.class);
   }
 
+  public BackendCallResult<CedarUser> updateUser(CedarUser user) {
+    BackendCallResult<CedarUser> result = new BackendCallResult<>();
+    String cypher = CypherQueryBuilderUser.updateUser();
+    CypherParameters params;
+    try {
+      params = CypherParamBuilderUser.updateUser(user, cedarConfig);
+    } catch (CedarProcessingException e) {
+      result.addError(CedarErrorType.SERVER_ERROR)
+          .sourceException(e)
+          .message("There was an error while updating the user")
+          .parameter("id", user.getId());
+      return result;
+    }
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    FolderServerUser updatedUser = executeWriteGetOne(q, FolderServerUser.class);
+    result.setPayload(updatedUser.buildUser());
+    return result;
+  }
+
+  public FolderServerUser findUserByApiKey(String apiKey) {
+    String cypher = CypherQueryBuilderUser.getUserByApiKey();
+    CypherParameters params = CypherParamBuilderUser.getUserByApiKey(apiKey);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerUser.class);
+  }
+
+  public BackendCallResult<CedarUser> patchUser(String id, JsonNode modifications) {
+    BackendCallResult<CedarUser> result = new BackendCallResult<>();
+    if ((id == null) || (id.length() == 0)) {
+      result.addError(CedarErrorType.INVALID_ARGUMENT)
+          .message("The id empty")
+          .parameter("id", id);
+      return result;
+    }
+
+    FolderServerUser oldUser = findUserById(id);
+    if (oldUser == null) {
+      result.addError(CedarErrorType.NOT_FOUND)
+          .message("The user can not be found by id")
+          .parameter("id", id);
+      return result;
+    }
+
+    CedarUser oldCedarUser = oldUser.buildUser();
+
+    Map<String, Object> modificationsMap = JsonMapper.MAPPER.convertValue(modifications, Map.class);
+    CedarUser modifiedCedarUser = UserServiceUtil.validateModifications(oldCedarUser, modificationsMap);
+
+    if (modifiedCedarUser != null) {
+      String cypher = CypherQueryBuilderUser.updateUser();
+      CypherParameters params;
+      try {
+        params = CypherParamBuilderUser.updateUser(modifiedCedarUser, cedarConfig);
+      } catch (CedarProcessingException e) {
+        result.addError(CedarErrorType.SERVER_ERROR)
+            .sourceException(e)
+            .message("There was an error while updating the user")
+            .parameter("id", oldCedarUser.getId());
+        return result;
+      }
+      CypherQuery q = new CypherQueryWithParameters(cypher, params);
+      FolderServerUser updatedUser = executeWriteGetOne(q, FolderServerUser.class);
+      result.setPayload(updatedUser.buildUser());
+      return result;
+    } else {
+      result.addError(CedarErrorType.INVALID_ARGUMENT)
+          .message("The requested modifications are invalid")
+          .parameter("id", id)
+          .parameter("modifications", modifications);
+      return result;
+    }
+  }
+
 }
+

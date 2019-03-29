@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
@@ -22,8 +23,8 @@ import java.util.Map;
 
 public class Neo4JProxyResource extends AbstractNeo4JProxy {
 
-  Neo4JProxyResource(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyResource(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentId) {

@@ -15,7 +15,7 @@ public interface GenericUserDao {
 
   List<CedarUser> findAll() throws IOException;
 
-  BackendCallResult<CedarUser> update(String userId, CedarUser user);
+  BackendCallResult<CedarUser> update(CedarUser user);
 
   BackendCallResult<CedarUser> patch(String userId, JsonNode modification);
 }

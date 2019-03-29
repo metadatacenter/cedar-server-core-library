@@ -35,8 +35,8 @@ public class UserServiceMongoDB implements UserService {
   }
 
   @Override
-  public BackendCallResult<CedarUser> updateUser(String userId, CedarUser user) {
-    return userDao.update(userId, user);
+  public BackendCallResult<CedarUser> updateUser(CedarUser user) {
+    return userDao.update(user);
   }
 
   @Override

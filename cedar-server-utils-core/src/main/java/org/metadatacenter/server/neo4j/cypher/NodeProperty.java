@@ -32,10 +32,16 @@ public enum NodeProperty implements CypherQueryParameter {
   IS_BASED_ON(Label.IS_BASED_ON),
   DERIVED_FROM(Label.DERIVED_FROM),
   IS_OPEN(Label.IS_OPEN),
-  EVERYBODY_PERMISSION(Label.EVERYBODY_PERMISSION);
+  EVERYBODY_PERMISSION(Label.EVERYBODY_PERMISSION),
+  HOME_FOLDER_ID(Label.HOME_FOLDER_ID),
+  API_KEYS(Label.API_KEYS),
+  API_KEY_MAP(Label.API_KEY_MAP),
+  ROLES(Label.ROLES),
+  PERMISSIONS(Label.PERMISSIONS),
+  UI_PREFERENCES(Label.UI_PREFERENCES);
 
   public static class Label {
-    public static final String ID ="@id";
+    public static final String ID = "@id";
     public static final String LAST_UPDATED_ON_TS = "lastUpdatedOnTS";
     public static final String LAST_UPDATED_ON = "pav:lastUpdatedOn";
     public static final String LAST_UPDATED_BY = "oslc:modifiedBy";
@@ -66,6 +72,12 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String DERIVED_FROM = "pav:derivedFrom";
     public static final String IS_OPEN = "isOpen";
     public static final String EVERYBODY_PERMISSION = "everybodyPermission";
+    public static final String HOME_FOLDER_ID = "homeFolderId";
+    public static final String API_KEYS = "apiKeys";
+    public static final String API_KEY_MAP = "apiKeyMap";
+    public static final String ROLES = "roles";
+    public static final String PERMISSIONS = "permissions";
+    public static final String UI_PREFERENCES = "uiPreferences";
   }
 
   public class OnTheFly {
@@ -75,7 +87,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String CONTEXT = "@context";
     public static final String CURRENT_USER_PERMISSIONS = "currentUserPermissions";
     public static final String PATH_INFO = "pathInfo";
-    public static final String IS_BASED_ON ="isBasedOn";
+    public static final String IS_BASED_ON = "isBasedOn";
     public static final String NUMBER_OF_INSTANCES = "numberOfInstances";
     public static final String DERIVED_FROM = "derivedFrom";
     public static final String VERSIONS = "versions";
