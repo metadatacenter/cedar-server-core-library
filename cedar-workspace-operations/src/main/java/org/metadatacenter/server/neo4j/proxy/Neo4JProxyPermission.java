@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
@@ -16,8 +17,8 @@ import java.util.List;
 
 public class Neo4JProxyPermission extends AbstractNeo4JProxy {
 
-  Neo4JProxyPermission(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyPermission(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   boolean addPermission(FolderServerNode node, FolderServerGroup group, NodePermission permission) {

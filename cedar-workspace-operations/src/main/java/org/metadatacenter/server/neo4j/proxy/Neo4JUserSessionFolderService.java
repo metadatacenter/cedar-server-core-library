@@ -4,7 +4,6 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
 import org.metadatacenter.model.folderserver.extract.FolderServerFolderExtract;
@@ -12,10 +11,8 @@ import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
-import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -253,6 +250,8 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     FolderServerFolder currentUserHomeFolder = findHomeFolderOf();
     if (currentUserHomeFolder == null) {
       currentUserHomeFolder = createUserHomeFolder();
+      cu.setHomeFolderId(currentUserHomeFolder.getId());
+      proxies.user().updateUser(cu);
     }
     return currentUserHomeFolder;
   }
@@ -331,12 +330,6 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
     newUserHome.setCreatedByTotal(userId);
     newUserHome.setHomeOf(userId);
     currentUserHomeFolder = createFolderAsChildOfId(newUserHome, usersFolder.getId());
-    if (currentUserHomeFolder != null) {
-      FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
-      if (everybody != null) {
-        proxies.permission().addPermission(currentUserHomeFolder, everybody, NodePermission.READTHIS);
-      }
-    }
     return currentUserHomeFolder;
   }
 

@@ -5,10 +5,10 @@ import org.metadatacenter.config.MongoConnection;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.*;
-import org.metadatacenter.server.neo4j.Neo4jConfig;
 import org.metadatacenter.server.neo4j.proxy.*;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.server.service.mongodb.UserServiceMongoDB;
+import org.metadatacenter.server.service.neo4j.UserServiceNeo4j;
 import org.metadatacenter.util.mongo.MongoClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,8 @@ public final class CedarDataServices {
 
   private static final Logger log = LoggerFactory.getLogger(CedarDataServices.class);
 
-  private UserService userService;
+  private UserService mongoUserService;
+  private UserService neoUserService;
   private Neo4JProxies proxies;
   private CedarConfig cedarConfig;
   private MongoClientFactory mongoClientFactoryForDocuments;
@@ -37,8 +38,8 @@ public final class CedarDataServices {
     instance.mongoClientFactoryForUsers.buildClient();
   }
 
-  public static void initializeUserService(CedarConfig cedarConfig) {
-    instance.userService = new UserServiceMongoDB(
+  public static void initializeMongoUserService(CedarConfig cedarConfig) {
+    instance.mongoUserService = new UserServiceMongoDB(
         instance.mongoClientFactoryForUsers.getClient(),
         cedarConfig.getUserServerConfig().getDatabaseName(),
         cedarConfig.getUserServerConfig().getMongoCollectionName(CedarNodeType.USER));
@@ -46,8 +47,8 @@ public final class CedarDataServices {
 
   public static void initializeNeo4jServices(CedarConfig cedarConfig) {
     instance.cedarConfig = cedarConfig;
-    Neo4jConfig neo4jConfig = Neo4jConfig.fromCedarConfig(cedarConfig);
-    instance.proxies = new Neo4JProxies(neo4jConfig, cedarConfig.getLinkedDataUtil());
+    instance.proxies = new Neo4JProxies(cedarConfig);
+    instance.neoUserService = new UserServiceNeo4j(instance.proxies.user());
   }
 
   public static GroupServiceSession getGroupServiceSession(CedarRequestContext context) {
@@ -134,13 +135,23 @@ public final class CedarDataServices {
     }
   }
 
-  public static UserService getUserService() {
-    if (instance.userService == null) {
-      log.error("You need to initialize user service: CedarDataServices.initializeUserService(cedarConfig)");
+  public static UserService getMongoUserService() {
+    if (instance.mongoUserService == null) {
+      log.error("You need to initialize mongo user service: CedarDataServices.initializeMongoUserService(cedarConfig)");
       System.exit(-1);
       return null;
     } else {
-      return instance.userService;
+      return instance.mongoUserService;
+    }
+  }
+
+  public static UserService getNeoUserService() {
+    if (instance.neoUserService == null) {
+      log.error("You need to initialize neo user service: CedarDataServices.initializeNeoUserService()");
+      System.exit(-1);
+      return null;
+    } else {
+      return instance.neoUserService;
     }
   }
 

@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -9,8 +10,8 @@ import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 
 public class Neo4JProxyVersion extends AbstractNeo4JProxy {
 
-  Neo4JProxyVersion(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyVersion(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   public FolderServerNode resourceWithPreviousVersion(String resourceURL) {

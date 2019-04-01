@@ -19,7 +19,8 @@ public enum ParameterPlaceholder implements CypherQueryParameter {
   SOURCE_ID("sourceId"),
   TARGET_ID("targetId"),
   IS_BASED_ON("isBasedOn"),
-  EVERYBODY_PERMISSION("everybodyPermission");
+  EVERYBODY_PERMISSION("everybodyPermission"),
+  API_KEY("apiKey");
 
   private final String value;
 

@@ -16,7 +16,7 @@ public interface UserService extends IUserService {
 
   CedarUser findUserByApiKey(String apiKey) throws IOException;
 
-  BackendCallResult<CedarUser> updateUser(String userId, CedarUser user);
+  BackendCallResult<CedarUser> updateUser(CedarUser user);
 
   BackendCallResult<CedarUser> patchUser(String userId, JsonNode modifications);
 

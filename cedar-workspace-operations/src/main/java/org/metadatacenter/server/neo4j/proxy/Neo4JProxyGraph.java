@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.*;
@@ -17,10 +18,9 @@ import java.util.List;
 
 public class Neo4JProxyGraph extends AbstractNeo4JProxy {
 
-  Neo4JProxyGraph(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyGraph(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
-
 
   public List<FolderServerArc> getOutgoingArcs(String nodeId) {
     String cypher = CypherQueryBuilderGraph.getOutgoingArcs();

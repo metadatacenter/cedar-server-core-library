@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
@@ -19,8 +20,8 @@ import java.util.Map;
 
 public class Neo4JProxyFolder extends AbstractNeo4JProxy {
 
-  Neo4JProxyFolder(Neo4JProxies proxies) {
-    super(proxies);
+  Neo4JProxyFolder(Neo4JProxies proxies, CedarConfig cedarConfig) {
+    super(proxies, cedarConfig);
   }
 
   boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder) {

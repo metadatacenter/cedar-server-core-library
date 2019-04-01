@@ -113,12 +113,8 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_NEO4J_USER_PASSWORD);
-    cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL); // reset tasks
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_GROUP); // storage for groups
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_RESOURCE); // permission tests
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_WORKER); // permission changes
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_OPEN); // permission check
-    cedarNeo4jUserPassword.add(SystemComponent.SERVER_REPO);
+    cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL);
+    cedarNeo4jUserPassword.addAll(allMicroservices);
 
     Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
     cedarNeo4jUserName.addAll(cedarNeo4jUserPassword);

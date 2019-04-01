@@ -8,8 +8,6 @@ import org.metadatacenter.server.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-
 public class CedarRequestContextFactory {
 
   private static LinkedDataUtil linkedDataUtil;
@@ -19,14 +17,6 @@ public class CedarRequestContextFactory {
   public static void init(LinkedDataUtil linkedDataUtil) {
     CedarRequestContextFactory.linkedDataUtil = linkedDataUtil;
   }
-
-  /*public static CedarRequestContext fromRequest(HttpServletRequest request) throws CedarAccessException {
-    HttpServletRequestContext sc = new HttpServletRequestContext(linkedDataUtil, request);
-    if (sc.getUserCreationException() != null) {
-      throw sc.getUserCreationException();
-    }
-    return sc;
-  }*/
 
   public static CedarRequestContext fromUser(CedarUser user) throws CedarAccessException {
     LocalRequestContext lrc = new LocalRequestContext(linkedDataUtil, user);

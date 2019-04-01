@@ -105,8 +105,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
 
     //Initialize user service
     CedarDataServices.initializeMongoClientFactoryForUsers(cedarConfig.getUserServerConfig().getMongoConnection());
-    CedarDataServices.initializeUserService(cedarConfig);
-    userService = CedarDataServices.getUserService();
+    CedarDataServices.initializeNeo4jServices(cedarConfig);
+    userService = CedarDataServices.getNeoUserService();
 
     //Initialize Keycloak
     KeycloakDeploymentProvider keycloakDeploymentProvider = new KeycloakDeploymentProvider();
@@ -114,7 +114,7 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     // Init Authorization Resolver
     IAuthorizationResolver authResolver = new AuthorizationKeycloakAndApiKeyResolver();
     Authorization.setAuthorizationResolver(authResolver);
-    Authorization.setUserService(CedarDataServices.getUserService());
+    Authorization.setUserService(CedarDataServices.getNeoUserService());
 
     appLoggerQueueService = new AppLoggerQueueService(cedarConfig.getCacheConfig().getPersistent());
     AppLogger.initLoggerQueueService(appLoggerQueueService, SystemComponent.getFor(getServerName()));

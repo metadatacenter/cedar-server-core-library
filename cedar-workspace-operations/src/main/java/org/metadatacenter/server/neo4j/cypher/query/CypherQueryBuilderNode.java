@@ -202,8 +202,6 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " MATCH (node)" +
         " WHERE" +
         " (" +
-        " (group)-[:<REL.CANREADTHIS>]->(node)" +
-        " OR " +
         " (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(node)" +
         " OR " +
         " (group)-[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->(node)" +

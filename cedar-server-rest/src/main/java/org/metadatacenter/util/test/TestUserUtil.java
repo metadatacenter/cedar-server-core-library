@@ -14,7 +14,7 @@ public class TestUserUtil {
     CedarUser user = null;
 
     try {
-      user = CedarDataServices.getUserService().findUser(id);
+      user = CedarDataServices.getNeoUserService().findUser(id);
     } catch (IOException e) {
       e.printStackTrace();
     }
