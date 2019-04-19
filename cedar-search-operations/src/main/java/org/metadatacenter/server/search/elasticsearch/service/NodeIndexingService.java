@@ -7,6 +7,7 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.fieldValues.FolderServerNodeField;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
@@ -34,6 +35,7 @@ public class NodeIndexingService extends AbstractIndexingService {
                                                       CedarNodeMaterializedPermissions permissions) {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
+    ir.setFields(FolderServerNodeField.fromNode(node));
     ir.setMaterializedPermissions(permissions);
     ir.setSummaryText(getSummaryText(node));
     return ir;
