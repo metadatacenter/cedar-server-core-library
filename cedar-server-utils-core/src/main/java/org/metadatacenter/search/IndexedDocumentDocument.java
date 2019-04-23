@@ -17,7 +17,7 @@ public class IndexedDocumentDocument {
 
   protected FolderServerNodeInfo info;
 
-  protected List<FolderServerNodeField> fields;
+  protected List<FolderServerNodeField> content;
 
   protected List<String> users;
 
@@ -53,9 +53,9 @@ public class IndexedDocumentDocument {
     this.info = info;
   }
 
-  public List<FolderServerNodeField> getFields() { return fields; }
+  public List<FolderServerNodeField> getContent() { return content; }
 
-  public void setFields(List<FolderServerNodeField> fields) { this.fields = fields; }
+  public void setContent(List<FolderServerNodeField> content) { this.content = content; }
 
   public List<String> getUsers() {
     return users;

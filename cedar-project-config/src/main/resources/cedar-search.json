@@ -108,6 +108,29 @@
               "type": "keyword"
             }
           }
+        },
+        "content": {
+          "properties": {
+            "fieldName": {
+              "type": "text"
+            },
+            "fieldValueUri": {
+              "type": "keyword"
+            },
+            "fieldValue": {
+              "type": "text",
+              "fields": {
+                "numeric": {
+                  "type": "double",
+                  "ignore_malformed": true
+                },
+                "date": {
+                  "type": "date",
+                  "ignore_malformed": true
+                }
+              }
+            }
+          }
         }
       }
     }

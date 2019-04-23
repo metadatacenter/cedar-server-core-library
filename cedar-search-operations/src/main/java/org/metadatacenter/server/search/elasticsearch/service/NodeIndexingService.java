@@ -35,7 +35,7 @@ public class NodeIndexingService extends AbstractIndexingService {
                                                       CedarNodeMaterializedPermissions permissions) {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
-    ir.setFields(FolderServerNodeField.fromNode(node));
+    ir.setContent(FolderServerNodeField.fromNode(node));
     ir.setMaterializedPermissions(permissions);
     ir.setSummaryText(getSummaryText(node));
     return ir;
