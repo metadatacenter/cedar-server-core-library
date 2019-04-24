@@ -109,7 +109,7 @@
             }
           }
         },
-        "content": {
+        "infoFields": {
           "properties": {
             "fieldName": {
               "type": "text"
