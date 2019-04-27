@@ -34,7 +34,7 @@ public class ElasticsearchServiceFactory {
   }
 
   public NodeIndexingService nodeIndexingService(String indexName) {
-    return new NodeIndexingService(indexName, instance.managementService.getClient());
+    return new NodeIndexingService(cedarConfig, indexName, instance.managementService.getClient());
   }
 
   public NodeSearchingService nodeSearchingService() {

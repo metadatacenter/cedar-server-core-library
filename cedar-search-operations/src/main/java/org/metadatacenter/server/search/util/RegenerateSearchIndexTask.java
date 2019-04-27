@@ -1,33 +1,22 @@
 package org.metadatacenter.server.search.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
-import org.metadatacenter.server.security.model.user.CedarUserSummary;
-import org.metadatacenter.util.http.ProxyUtil;
-import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
 
@@ -116,15 +105,7 @@ public class RegenerateSearchIndexTask {
         for (FolderServerNode node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-
-            // In the case of template instances, we will index their field names and values, so we need to retrieve
-            // the corresponding document and pass it to createIndexDocument
-            Optional<JsonNode> artifactContent = Optional.empty();
-            if (node.getType().equals(CedarNodeType.INSTANCE)) {
-              artifactContent = Optional.of(indexUtils.getArtifactById(node.getId(), node.getType(), requestContext));
-            }
-
-            currentBatch.add(nodeIndexingService.createIndexDocument(node, artifactContent, perm));
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();

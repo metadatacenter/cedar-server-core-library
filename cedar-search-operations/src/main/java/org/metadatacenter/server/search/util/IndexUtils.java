@@ -1,12 +1,7 @@
 package org.metadatacenter.server.search.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
@@ -23,15 +18,11 @@ import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServi
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
-import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.LinkHeaderUtil;
 import org.metadatacenter.util.http.PagedSortedQuery;
-import org.metadatacenter.util.http.ProxyUtil;
-import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -124,7 +115,6 @@ public class IndexUtils {
     String nowString = dateTimeFormatter.format(now);
     return prefix + "-" + nowString;
   }
-
 
   public void deleteOldIndices(ElasticsearchManagementService esManagementService, String aliasName,
                                String newIndexName) throws CedarProcessingException {
@@ -225,23 +215,5 @@ public class IndexUtils {
 
     return r;
   }
-
-  public JsonNode getArtifactById(String artifactId, CedarNodeType nodeType, CedarRequestContext requestContext) throws CedarProcessingException, IOException {
-
-    String url =
-        cedarConfig.getMicroserviceUrlUtil().getArtifact().getNodeType(nodeType) + "/" + CedarUrlUtil.urlEncode(artifactId);
-    HttpResponse proxyResponse = ProxyUtil.proxyGet(url, requestContext);
-    HttpEntity entity = proxyResponse.getEntity();
-    if (proxyResponse.getStatusLine().getStatusCode() == HttpConstants.OK && entity != null) {
-      String artifactString = EntityUtils.toString(entity);
-      JsonNode artifactJson = JsonMapper.MAPPER.readTree(artifactString);
-      return artifactJson;
-    } else {
-      throw new CedarProcessingException("Error when retrieving artifact: " + artifactId);
-    }
-
-  }
-
-
 
 }
