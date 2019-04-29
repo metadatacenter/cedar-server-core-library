@@ -32,14 +32,11 @@ public class TemplateInstanceContentExtractor {
   public List<InfoField> generateInfoFields(FolderServerNode folderServerNode, CedarRequestContext requestContext)
       throws CedarProcessingException {
 
-    if (!folderServerNode.getType().equals(CedarNodeType.INSTANCE)) {
-      throw new CedarProcessingException("The artifact must be an Instance but it is a "
-          + folderServerNode.getType().name());
-    }
-    else {
+    if (folderServerNode.getType().equals(CedarNodeType.INSTANCE)) {
 
       List<InfoField> infoFields = new ArrayList<>();
-      JsonNode templateInstance = extractionUtils.getArtifactById(folderServerNode.getId(), folderServerNode.getType(), requestContext);
+      JsonNode templateInstance = extractionUtils.getArtifactById(folderServerNode.getId(),
+          folderServerNode.getType(), requestContext);
       String templateId = templateInstance.get(SCHEMA_IS_BASED_ON_FIELD_NAME).asText();
       JsonNode template = extractionUtils.getArtifactById(templateId, CedarNodeType.TEMPLATE, requestContext);
       List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
@@ -51,11 +48,23 @@ public class TemplateInstanceContentExtractor {
       List<FieldValue> fieldValues = getFieldValues(templateInstance, nodesMap, null, null);
 
       for (FieldValue fieldValue : fieldValues) {
-        // TODO: set field name
-        infoFields.add(new InfoField("", fieldValue.getFieldKey(), fieldValue.generatePathDotNotation(),
+        String fieldName = null;
+        String fieldPrefLabel = null;
+        if (nodesMap.containsKey(fieldValue.generatePathDotNotation())) {
+          TemplateNode templateNode = nodesMap.get(fieldValue.generatePathDotNotation());
+          fieldName = templateNode.getName();
+          fieldPrefLabel = templateNode.getPrefLabel();
+        } else {
+          throw new CedarProcessingException("Field path not found in nodesMap: " +
+              fieldValue.generatePathDotNotation());
+        }
+        infoFields.add(new InfoField(fieldName, fieldPrefLabel, fieldValue.generatePathDotNotation(),
             fieldValue.getFieldValue(), fieldValue.getFieldValueUri()));
       }
       return infoFields;
+    } else {
+      throw new CedarProcessingException("The artifact must be an Instance but it is a "
+          + folderServerNode.getType().name());
     }
   }
 

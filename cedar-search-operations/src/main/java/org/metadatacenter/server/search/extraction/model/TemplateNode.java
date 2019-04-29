@@ -10,17 +10,19 @@ import java.util.Optional;
  */
 public class TemplateNode {
 
-  private String id; // resource identifier (i.e., @id field)
-  private String key; // json key
+  private String id; // Resource identifier (i.e., @id field)
+  private String name; // Json key
+  private String prefLabel; // Resource name
   private List<String> path; // List of json keys from the root (it includes the key of the current node)
   private CedarNodeType type; // Node type (e.g. field)
   private Optional<String> instanceType; // Instance type. It is the type of the field defined using an ontology term
   private boolean isArray;
 
-  public TemplateNode(String id, String key, List<String> path, CedarNodeType type, Optional<String> instanceType,
-                      boolean isArray) {
+  public TemplateNode(String id, String name, String prefLabel, List<String> path, CedarNodeType type,
+                      Optional<String> instanceType, boolean isArray) {
     this.id = id;
-    this.key = key;
+    this.name = name;
+    this.prefLabel = prefLabel;
     this.path = path;
     this.type = type;
     this.instanceType = instanceType;
@@ -29,9 +31,9 @@ public class TemplateNode {
 
   public String getId() { return id;}
 
-  public String getKey() {
-    return key;
-  }
+  public String getName() { return name; }
+
+  public String getPrefLabel() { return prefLabel; }
 
   public List<String> getPath() { return path;}
 

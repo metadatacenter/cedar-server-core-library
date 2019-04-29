@@ -3,14 +3,14 @@ package org.metadatacenter.search;
 public class InfoField {
 
   private String fieldName;
-  private String fieldKey;
+  private String fieldPrefLabel;
   private String fieldPath;
   private Object fieldValue;
   private String fieldValueUri;
 
-  public InfoField(String fieldName, String fieldKey, String fieldPath, Object fieldValue, String fieldValueUri) {
+  public InfoField(String fieldName, String fieldPrefLabel, String fieldPath, Object fieldValue, String fieldValueUri) {
     this.fieldName = fieldName;
-    this.fieldKey = fieldKey;
+    this.fieldPrefLabel = fieldPrefLabel;
     this.fieldPath = fieldPath;
     this.fieldValue = fieldValue;
     this.fieldValueUri = fieldValueUri;
@@ -24,9 +24,9 @@ public class InfoField {
     this.fieldName = fieldName;
   }
 
-  public String getFieldKey() { return fieldKey; }
+  public String getFieldPrefLabel() { return fieldPrefLabel; }
 
-  public void setFieldKey(String fieldKey) { this.fieldKey = fieldKey; }
+  public void setFieldPrefLabel(String fieldPrefLabel) { this.fieldPrefLabel = fieldPrefLabel; }
 
   public String getFieldPath() { return fieldPath; }
 

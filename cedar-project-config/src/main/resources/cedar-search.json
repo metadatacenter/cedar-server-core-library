@@ -114,6 +114,12 @@
             "fieldName": {
               "type": "text"
             },
+            "fieldPrefLabel": {
+              "type": "text"
+            },
+            "fieldPath": {
+              "type": "keyword"
+            },
             "fieldValueUri": {
               "type": "keyword"
             },

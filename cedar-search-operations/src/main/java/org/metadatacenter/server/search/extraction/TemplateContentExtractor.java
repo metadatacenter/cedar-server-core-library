@@ -16,6 +16,8 @@ public class TemplateContentExtractor {
   private final String PROPERTIES_FIELD_NAME = "properties";
   private final String ONEOF_FIELD_NAME = "oneOf";
   private final String ENUM_FIELD_NAME = "enum";
+  private final String NAME_FIELD_NAME = "schema:name";
+  private final String PREF_LABEL_FIELD_NAME = "skos:prefLabel";
 
   public List<TemplateNode> getTemplateNodes(JsonNode template) throws CedarProcessingException {
     return getTemplateNodes(template, null, null);
@@ -66,6 +68,24 @@ public class TemplateContentExtractor {
             throw (new CedarProcessingException(ID_FIELD_NAME + " not found for template field"));
           }
 
+          // Get name
+          String name = null;
+          if ((jsonFieldNode.get(NAME_FIELD_NAME) != null) && (jsonFieldNode.get(NAME_FIELD_NAME).asText().length() > 0)) {
+            name = jsonFieldNode.get(NAME_FIELD_NAME).asText();
+          }
+          else {
+            // Do nothing. This field is not required.
+          }
+
+          // Get preferred label
+          String prefLabel = null;
+          if ((jsonFieldNode.get(PREF_LABEL_FIELD_NAME) != null) && (jsonFieldNode.get(PREF_LABEL_FIELD_NAME).asText().length() > 0)) {
+            prefLabel = jsonFieldNode.get(PREF_LABEL_FIELD_NAME).asText();
+          }
+          else {
+            // Do nothing. This field is not required.
+          }
+
           // Add json field path to the results. I create a new list to not modify currentPath
           List<String> jsonFieldPath = new ArrayList<>(currentPath);
           jsonFieldPath.add(jsonFieldKey);
@@ -75,11 +95,11 @@ public class TemplateContentExtractor {
             // Get instance type (@type) if it exists)
             Optional<String> instanceType = getInstanceType(jsonFieldNode);
 
-            results.add(new TemplateNode(id, jsonFieldKey, jsonFieldPath, CedarNodeType.FIELD, instanceType, isArray));
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.FIELD, instanceType, isArray));
           }
           // Element
           else if (isTemplateElementNode(jsonFieldNode)) {
-            results.add(new TemplateNode(id, jsonFieldKey, jsonFieldPath, CedarNodeType.ELEMENT, Optional.empty(),
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.ELEMENT, Optional.empty(),
                 isArray));
             getTemplateNodes(jsonFieldNode, jsonFieldPath, results);
           }
