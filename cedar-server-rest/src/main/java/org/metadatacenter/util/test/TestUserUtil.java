@@ -6,19 +6,10 @@ import org.metadatacenter.server.security.CedarApiKeyAuthRequest;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import java.io.IOException;
-
 public class TestUserUtil {
 
   private static String getTestUserAuthHeader(String id) {
-    CedarUser user = null;
-
-    try {
-      user = CedarDataServices.getNeoUserService().findUser(id);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
+    CedarUser user = CedarDataServices.getNeoUserService().findUser(id);
     AuthRequest authRequest = new CedarApiKeyAuthRequest(user.getFirstActiveApiKey());
     return authRequest.getAuthHeader();
   }

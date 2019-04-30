@@ -104,7 +104,6 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     CedarRequestContextFactory.init(cedarConfig.getLinkedDataUtil());
 
     //Initialize user service
-    CedarDataServices.initializeMongoClientFactoryForUsers(cedarConfig.getUserServerConfig().getMongoConnection());
     CedarDataServices.initializeNeo4jServices(cedarConfig);
     userService = CedarDataServices.getNeoUserService();
 
