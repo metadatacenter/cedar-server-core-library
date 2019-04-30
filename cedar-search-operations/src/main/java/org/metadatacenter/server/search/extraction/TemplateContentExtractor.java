@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.server.search.extraction.model.TemplateNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -13,6 +15,8 @@ import static org.metadatacenter.model.ModelNodeNames.*;
  * Utilities to extract information from CEDAR Templates
  */
 public class TemplateContentExtractor {
+
+  private static final Logger log = LoggerFactory.getLogger(TemplateContentExtractor.class);
 
   public List<TemplateNode> getTemplateNodes(JsonNode template) throws CedarProcessingException {
     return getTemplateNodes(template, null, null);

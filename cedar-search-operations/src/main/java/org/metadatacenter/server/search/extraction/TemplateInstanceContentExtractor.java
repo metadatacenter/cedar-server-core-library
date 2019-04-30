@@ -9,6 +9,8 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.InfoField;
 import org.metadatacenter.server.search.extraction.model.FieldValue;
 import org.metadatacenter.server.search.extraction.model.TemplateNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.metadatacenter.model.ModelNodeNames.*;
 
@@ -19,12 +21,19 @@ import java.util.*;
  */
 public class TemplateInstanceContentExtractor {
 
+  private static final Logger log = LoggerFactory.getLogger(TemplateInstanceContentExtractor.class);
+
   private ExtractionUtils extractionUtils;
   private TemplateContentExtractor templateContentExtractor;
+  /**
+   * Cache of template nodes, which is used to avoid retrieving and parsing the same template multiple times.
+   */
+  private HashMap<String, HashMap<String, TemplateNode>> templateNodesCache;
 
   public TemplateInstanceContentExtractor(CedarConfig cedarConfig) {
     this.extractionUtils = new ExtractionUtils(cedarConfig);
     this.templateContentExtractor = new TemplateContentExtractor();
+    this.templateNodesCache = new HashMap<>();
   }
 
   /**
@@ -36,7 +45,8 @@ public class TemplateInstanceContentExtractor {
    * @return
    * @throws CedarProcessingException
    */
-  public List<InfoField> generateInfoFields(FolderServerNode folderServerNode, CedarRequestContext requestContext)
+  public List<InfoField> generateInfoFields(FolderServerNode folderServerNode,
+                                            CedarRequestContext requestContext, boolean isIndexRegenerationTask)
       throws CedarProcessingException {
 
     if (folderServerNode.getType().equals(CedarNodeType.INSTANCE)) {
@@ -45,13 +55,26 @@ public class TemplateInstanceContentExtractor {
       JsonNode templateInstance = extractionUtils.getArtifactById(folderServerNode.getId(),
           folderServerNode.getType(), requestContext);
       String templateId = templateInstance.get(SCHEMA_IS_BASED_ON).asText();
-      JsonNode template = extractionUtils.getArtifactById(templateId, CedarNodeType.TEMPLATE, requestContext);
-      List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
 
-      HashMap<String, TemplateNode> nodesMap = new HashMap<>();
-      for (TemplateNode node : templateNodes) {
-        nodesMap.put(node.generatePathDotNotation(), node);
+      HashMap<String, TemplateNode> nodesMap = null;
+      // If it's an index regeneration task the cache will be needed to avoid retrieving and parsing the same
+      // template multiple times. If the cache contains the nodes for the current template, return them
+      if (isIndexRegenerationTask && templateNodesCache.containsKey(templateId)) {
+        nodesMap = templateNodesCache.get(templateId);
       }
+      // Otherwise, retrieve the template and parse it
+      else {
+        JsonNode template = extractionUtils.getArtifactById(templateId, CedarNodeType.TEMPLATE, requestContext);
+        List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
+        nodesMap = new HashMap<>();
+        for (TemplateNode node : templateNodes) {
+          nodesMap.put(node.generatePathDotNotation(), node);
+        }
+        if (isIndexRegenerationTask) {
+          templateNodesCache.put(templateId, nodesMap);
+        }
+      }
+
       List<FieldValue> fieldValues = getFieldValues(templateInstance, nodesMap, null, null);
 
       for (FieldValue fieldValue : fieldValues) {
@@ -156,6 +179,7 @@ public class TemplateInstanceContentExtractor {
     FieldValue fieldValue = new FieldValue();
     fieldValue.setFieldKey(fieldPath.get(fieldPath.size() - 1));
     fieldValue.setFieldPath(fieldPath);
+
     // Regular value
     if (fieldNode.hasNonNull(LD_VALUE) && !fieldNode.get(LD_VALUE).asText().isEmpty()) {
       fieldValue.setFieldValue(fieldNode.get(LD_VALUE).asText());
@@ -172,5 +196,9 @@ public class TemplateInstanceContentExtractor {
     return fieldValue;
   }
 
+  public void clearNodesCache() {
+    this.templateNodesCache.clear();
+    log.info("The template nodes cache has been cleared");
+  }
 
 }

@@ -9,9 +9,12 @@ import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.server.search.util.GenerateEmptyRulesIndexTask;
 import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
 import org.metadatacenter.util.json.JsonMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -19,6 +22,8 @@ import java.io.IOException;
  * Utilities used to extract information from CEDAR artifacts
  */
 public class ExtractionUtils {
+
+  private static final Logger log = LoggerFactory.getLogger(ExtractionUtils.class);
 
   private final CedarConfig cedarConfig;
 
