@@ -7,30 +7,24 @@ import org.metadatacenter.server.search.extraction.model.TemplateNode;
 
 import java.util.*;
 
-public class TemplateContentExtractor {
+import static org.metadatacenter.model.ModelNodeNames.*;
 
-  // TODO: Move to constants file
-  private final String ID_FIELD_NAME = "@id";
-  private final String TYPE_FIELD_NAME = "@type";
-  private final String ITEMS_FIELD_NAME = "items";
-  private final String PROPERTIES_FIELD_NAME = "properties";
-  private final String ONEOF_FIELD_NAME = "oneOf";
-  private final String ENUM_FIELD_NAME = "enum";
-  private final String NAME_FIELD_NAME = "schema:name";
-  private final String PREF_LABEL_FIELD_NAME = "skos:prefLabel";
+/**
+ * Utilities to extract information from CEDAR Templates
+ */
+public class TemplateContentExtractor {
 
   public List<TemplateNode> getTemplateNodes(JsonNode template) throws CedarProcessingException {
     return getTemplateNodes(template, null, null);
   }
 
   /**
-   * Returns summary information of all template nodes in the template, considering that a template node may be
-   * either a template element or a template field.
+   * Returns summary information of all template nodes in the template.
    *
-   * @param template
+   * @param template Template in JSON
    * @param currentPath Used internally to store the current node path
    * @param results     Used internally to store the results
-   * @return A list all template elements and fields in the template, represented using the TemplateNode class
+   * @return A list of the template elements and fields in the template, represented using the TemplateNode class
    */
   private List<TemplateNode> getTemplateNodes(JsonNode template, List<String> currentPath, List results) throws
       CedarProcessingException {
@@ -48,13 +42,13 @@ public class TemplateContentExtractor {
         JsonNode jsonFieldNode;
         boolean isArray;
         // Single-instance node
-        if (!jsonField.getValue().has(ITEMS_FIELD_NAME)) {
+        if (!jsonField.getValue().has(ITEMS)) {
           jsonFieldNode = jsonField.getValue();
           isArray = false;
         }
         // Multi-instance node
         else {
-          jsonFieldNode = jsonField.getValue().get(ITEMS_FIELD_NAME);
+          jsonFieldNode = jsonField.getValue().get(ITEMS);
           isArray = true;
         }
         // Field or Element
@@ -62,27 +56,25 @@ public class TemplateContentExtractor {
 
           // Get field/element identifier
           String id = null;
-          if ((jsonFieldNode.get(ID_FIELD_NAME) != null) && (jsonFieldNode.get(ID_FIELD_NAME).asText().length() > 0)) {
-            id = jsonFieldNode.get(ID_FIELD_NAME).asText();
+          if ((jsonFieldNode.get(LD_ID) != null) && (jsonFieldNode.get(LD_ID).asText().length() > 0)) {
+            id = jsonFieldNode.get(LD_ID).asText();
           } else {
-            throw (new CedarProcessingException(ID_FIELD_NAME + " not found for template field"));
+            throw (new CedarProcessingException(LD_ID + " not found for template field"));
           }
 
           // Get name
           String name = null;
-          if ((jsonFieldNode.get(NAME_FIELD_NAME) != null) && (jsonFieldNode.get(NAME_FIELD_NAME).asText().length() > 0)) {
-            name = jsonFieldNode.get(NAME_FIELD_NAME).asText();
-          }
-          else {
+          if ((jsonFieldNode.get(SCHEMA_NAME) != null) && (jsonFieldNode.get(SCHEMA_NAME).asText().length() > 0)) {
+            name = jsonFieldNode.get(SCHEMA_NAME).asText();
+          } else {
             // Do nothing. This field is not required.
           }
 
           // Get preferred label
           String prefLabel = null;
-          if ((jsonFieldNode.get(PREF_LABEL_FIELD_NAME) != null) && (jsonFieldNode.get(PREF_LABEL_FIELD_NAME).asText().length() > 0)) {
-            prefLabel = jsonFieldNode.get(PREF_LABEL_FIELD_NAME).asText();
-          }
-          else {
+          if ((jsonFieldNode.get(SKOS_PREFLABEL) != null) && (jsonFieldNode.get(SKOS_PREFLABEL).asText().length() > 0)) {
+            prefLabel = jsonFieldNode.get(SKOS_PREFLABEL).asText();
+          } else {
             // Do nothing. This field is not required.
           }
 
@@ -95,12 +87,11 @@ public class TemplateContentExtractor {
             // Get instance type (@type) if it exists)
             Optional<String> instanceType = getInstanceType(jsonFieldNode);
 
-            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.FIELD, instanceType, isArray));
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.FIELD, isArray));
           }
           // Element
           else if (isTemplateElementNode(jsonFieldNode)) {
-            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.ELEMENT, Optional.empty(),
-                isArray));
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.ELEMENT, isArray));
             getTemplateNodes(jsonFieldNode, jsonFieldPath, results);
           }
         }
@@ -119,9 +110,8 @@ public class TemplateContentExtractor {
    * @param node
    * @return
    */
-  public boolean isTemplateFieldNode(JsonNode node) {
-    if (node.get(TYPE_FIELD_NAME) != null && node.get(TYPE_FIELD_NAME).asText().equals(CedarNodeType.FIELD.getAtType
-        ())) {
+  private boolean isTemplateFieldNode(JsonNode node) {
+    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarNodeType.FIELD.getAtType())) {
       return true;
     } else {
       return false;
@@ -134,24 +124,8 @@ public class TemplateContentExtractor {
    * @param node
    * @return
    */
-  public boolean isTemplateElementNode(JsonNode node) {
-    if (node.get(TYPE_FIELD_NAME) != null && node.get(TYPE_FIELD_NAME).asText().equals(CedarNodeType.ELEMENT
-        .getAtType())) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Checks if a map contains a valid String value
-   *
-   * @param map
-   * @param key
-   * @return
-   */
-  public static boolean containsValidValue(Map map, String key) {
-    if (map.containsKey(key) && map.get(key) != null && map.get(key).toString().trim().length() > 0) {
+  private boolean isTemplateElementNode(JsonNode node) {
+    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarNodeType.ELEMENT.getAtType())) {
       return true;
     } else {
       return false;
@@ -164,34 +138,20 @@ public class TemplateContentExtractor {
    * @param fieldNode
    * @return
    */
-  public Optional<String> getInstanceType(JsonNode fieldNode) {
+  private Optional<String> getInstanceType(JsonNode fieldNode) {
     if (isTemplateFieldNode(fieldNode)) {
-      if (fieldNode.get(PROPERTIES_FIELD_NAME) != null &&
-          fieldNode.get(PROPERTIES_FIELD_NAME).get(TYPE_FIELD_NAME) != null &&
-          fieldNode.get(PROPERTIES_FIELD_NAME).get(TYPE_FIELD_NAME).get(ONEOF_FIELD_NAME) != null &&
-          fieldNode.get(PROPERTIES_FIELD_NAME).get(TYPE_FIELD_NAME).get(ONEOF_FIELD_NAME).size() > 0 &&
-          fieldNode.get(PROPERTIES_FIELD_NAME).get(TYPE_FIELD_NAME).get(ONEOF_FIELD_NAME).get(0).get(ENUM_FIELD_NAME) != null &&
-          fieldNode.get(PROPERTIES_FIELD_NAME).get(TYPE_FIELD_NAME).get(ONEOF_FIELD_NAME).get(0).get(ENUM_FIELD_NAME).size() > 0) {
+      if (fieldNode.get(PROPERTIES) != null &&
+          fieldNode.get(PROPERTIES).get(LD_TYPE) != null &&
+          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF) != null &&
+          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).size() > 0 &&
+          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM) != null &&
+          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).size() > 0) {
 
-        return Optional.of(fieldNode.get(PROPERTIES_FIELD_NAME).
-            get(TYPE_FIELD_NAME).get(ONEOF_FIELD_NAME).get(0).get(ENUM_FIELD_NAME).get(0).asText());
+        return Optional.of(fieldNode.get(PROPERTIES).
+            get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).get(0).asText());
       }
     }
     return Optional.empty();
-  }
-
-  /**
-   * Basic test to check if a string corresponds to a URI (just for http and https)
-   *
-   * @return
-   */
-  public static boolean isUri(String value) {
-    value = value.toLowerCase();
-    if (value.startsWith("http://") || value.startsWith("https://")) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
 }

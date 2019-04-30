@@ -1,47 +1,85 @@
 package org.metadatacenter.server.search.extraction.model;
 
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarNodeType;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Stores path and some basic characteristics of template elements and fields
+ * This class stores information about JSON nodes in a CEDAR template. A template node can contain:
+ * 1) A template element, or
+ * 2) A template field, or
+ * 3) An array of template elements, or
+ * 4) An array of template fields
+ *
  */
 public class TemplateNode {
 
-  private String id; // Resource identifier (i.e., @id field)
-  private String name; // Json key
-  private String prefLabel; // Resource name
-  private List<String> path; // List of json keys from the root (it includes the key of the current node)
+  /**
+   * Artifact id. It corresponds to the '@id' JSON field.
+   */
+  private String id;
+
+  /**
+   * Artifact name. It corresponds to the 'schema:name' JSON field.
+   */
+  private String name;
+
+  /**
+   * Artifact preferred label. It corresponds to the 'skos:prefLabel' JSON field.
+   */
+  private String prefLabel;
+
+  /**
+   * List of JSON keys from the root, including the key of the current JSON node.
+   */
+  private List<String> path;
+
+  /**
+   * Artifact type, that is, 'FIELD' or 'ELEMENT'.
+   */
   private CedarNodeType type; // Node type (e.g. field)
-  private Optional<String> instanceType; // Instance type. It is the type of the field defined using an ontology term
+  
+  /**
+   * Specifies if the JSON node contains just one artifact or an array of artifacts.
+   */
   private boolean isArray;
 
-  public TemplateNode(String id, String name, String prefLabel, List<String> path, CedarNodeType type,
-                      Optional<String> instanceType, boolean isArray) {
-    this.id = id;
-    this.name = name;
-    this.prefLabel = prefLabel;
-    this.path = path;
-    this.type = type;
-    this.instanceType = instanceType;
-    this.isArray = isArray;
+  public TemplateNode(String id, String name, String prefLabel, List<String> path,
+                           CedarNodeType type, boolean isArray) throws CedarProcessingException {
+
+    if (type.equals(CedarNodeType.ELEMENT) || type.equals(CedarNodeType.FIELD)) {
+      this.id = id;
+      this.name = name;
+      this.prefLabel = prefLabel;
+      this.path = path;
+      this.type = type;
+      this.isArray = isArray;
+    }
+    else {
+      throw new CedarProcessingException("Invalid node type: " + type.name());
+    }
   }
 
-  public String getId() { return id;}
+  public String getId() {
+    return id;
+  }
 
-  public String getName() { return name; }
+  public String getName() {
+    return name;
+  }
 
-  public String getPrefLabel() { return prefLabel; }
+  public String getPrefLabel() {
+    return prefLabel;
+  }
 
-  public List<String> getPath() { return path;}
+  public List<String> getPath() {
+    return path;
+  }
 
   public CedarNodeType getType() {
     return type;
   }
-
-  public Optional<String> getInstanceType() { return instanceType; }
 
   public boolean isArray() {
     return isArray;
@@ -54,8 +92,7 @@ public class TemplateNode {
   public boolean isTemplateFieldNode() {
     if (type.equals(CedarNodeType.FIELD)) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
@@ -63,8 +100,7 @@ public class TemplateNode {
   public boolean isTemplateElementNode() {
     if (type.equals(CedarNodeType.ELEMENT)) {
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }

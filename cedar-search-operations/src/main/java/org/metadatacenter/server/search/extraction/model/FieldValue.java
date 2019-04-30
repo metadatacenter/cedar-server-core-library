@@ -1,21 +1,35 @@
 package org.metadatacenter.server.search.extraction.model;
 
-import org.metadatacenter.model.CedarNodeType;
-
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Stores path and some basic characteristics of template elements and fields
+ * This class stores information about CEDAR fields extracted from template instances.
  */
 public class FieldValue {
 
-  private String fieldKey; // field json key
-  private String fieldValue; // field value (@value). For ontology terms, it stores the value from rdfs:label
-  private String fieldValueUri; // ontology term URI (@id)
-  private List<String> fieldPath; // List of json keys from the root (it includes the key of the current node)
+  /**
+   * Field JSON key.
+   */
+  private String fieldKey;
 
-  public FieldValue() {}
+  /**
+   * Field value. For textual values, it corresponds to the values of the '@value' property in template instances.
+   * For ontology terms, it corresponds to the value of the 'rdfs:label' property.
+   */
+  private String fieldValue;
+
+  /**
+   * For ontology terms, it stores the value of the '@id' field in template instances.
+   */
+  private String fieldValueUri;
+
+  /**
+   * List of json keys from the root of the JSON document. It includes the key of the current node.
+   */
+  private List<String> fieldPath;
+
+  public FieldValue() {
+  }
 
   public FieldValue(String fieldKey, String fieldValue, String fieldValueUri, List<String> fieldPath) {
     this.fieldKey = fieldKey;

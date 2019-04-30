@@ -15,6 +15,9 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
+/**
+ * Utilities used to extract information from CEDAR artifacts
+ */
 public class ExtractionUtils {
 
   private final CedarConfig cedarConfig;
@@ -23,9 +26,11 @@ public class ExtractionUtils {
     this.cedarConfig = cedarConfig;
   }
 
-  public JsonNode getArtifactById(String artifactId, CedarNodeType nodeType, CedarRequestContext requestContext) throws CedarProcessingException {
+  public JsonNode getArtifactById(String artifactId, CedarNodeType nodeType,
+                                  CedarRequestContext requestContext) throws CedarProcessingException {
     String url =
-        cedarConfig.getMicroserviceUrlUtil().getArtifact().getNodeType(nodeType) + "/" + CedarUrlUtil.urlEncode(artifactId);
+        cedarConfig.getMicroserviceUrlUtil().getArtifact().getNodeType(nodeType) + "/"
+            + CedarUrlUtil.urlEncode(artifactId);
     HttpResponse proxyResponse = ProxyUtil.proxyGet(url, requestContext);
     HttpEntity entity = proxyResponse.getEntity();
     if (proxyResponse.getStatusLine().getStatusCode() == HttpConstants.OK && entity != null) {
@@ -42,6 +47,5 @@ public class ExtractionUtils {
       throw new CedarProcessingException("Error when retrieving artifact: " + artifactId);
     }
   }
-
 
 }

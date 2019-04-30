@@ -9,17 +9,15 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.InfoField;
 import org.metadatacenter.server.search.extraction.model.FieldValue;
 import org.metadatacenter.server.search.extraction.model.TemplateNode;
-import org.neo4j.driver.internal.async.HandshakeHandler;
+
+import static org.metadatacenter.model.ModelNodeNames.*;
 
 import java.util.*;
 
+/**
+ * Utilities to extract information from CEDAR Template Instances
+ */
 public class TemplateInstanceContentExtractor {
-
-  // TODO: Move to constants file
-  private final String VALUE_FIELD_NAME = "@value";
-  private final String ID_FIELD_NAME = "@id";
-  private final String LABEL_FIELD_NAME = "rdfs:label";
-  private final String SCHEMA_IS_BASED_ON_FIELD_NAME = "schema:isBasedOn";
 
   private ExtractionUtils extractionUtils;
   private TemplateContentExtractor templateContentExtractor;
@@ -29,6 +27,15 @@ public class TemplateInstanceContentExtractor {
     this.templateContentExtractor = new TemplateContentExtractor();
   }
 
+  /**
+   * Retrieves the content of a template instance, as well as the corresponding template, and returns a list of
+   * InfoField objects, which contain relevant information for each field and its value
+   *
+   * @param folderServerNode
+   * @param requestContext
+   * @return
+   * @throws CedarProcessingException
+   */
   public List<InfoField> generateInfoFields(FolderServerNode folderServerNode, CedarRequestContext requestContext)
       throws CedarProcessingException {
 
@@ -37,7 +44,7 @@ public class TemplateInstanceContentExtractor {
       List<InfoField> infoFields = new ArrayList<>();
       JsonNode templateInstance = extractionUtils.getArtifactById(folderServerNode.getId(),
           folderServerNode.getType(), requestContext);
-      String templateId = templateInstance.get(SCHEMA_IS_BASED_ON_FIELD_NAME).asText();
+      String templateId = templateInstance.get(SCHEMA_IS_BASED_ON).asText();
       JsonNode template = extractionUtils.getArtifactById(templateId, CedarNodeType.TEMPLATE, requestContext);
       List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
 
@@ -68,11 +75,27 @@ public class TemplateInstanceContentExtractor {
     }
   }
 
+  /**
+   * Extracts field and field values from a template instance. Note that some information, such as the field name,
+   * cannot be extracted from the instance because it's not available there. The field names will be extracted from
+   * the template in the method 'generateInfoFields'.
+   *
+   * @param currentNode
+   * @param templateNodesMap
+   * @param currentPath Used internally
+   * @param results Used internally
+   * @return
+   * @throws CedarProcessingException
+   */
   private List<FieldValue> getFieldValues(JsonNode currentNode, HashMap<String, TemplateNode> templateNodesMap,
                                           List<String> currentPath, List<FieldValue> results) throws CedarProcessingException {
 
-    if (currentPath == null) { currentPath = new ArrayList<>(); }
-    if (results == null) { results = new ArrayList(); }
+    if (currentPath == null) {
+      currentPath = new ArrayList<>();
+    }
+    if (results == null) {
+      results = new ArrayList();
+    }
 
     Iterator<Map.Entry<String, JsonNode>> jsonNodesIterator = currentNode.fields();
     while (jsonNodesIterator.hasNext()) {
@@ -94,8 +117,7 @@ public class TemplateInstanceContentExtractor {
           else if (templateNode.isTemplateFieldNode()) {
             // Extract value and save it to the results
             results.add(generateFieldValue(currentNodeMap.getValue(), tmpPath));
-          }
-          else {
+          } else {
             throw new CedarProcessingException("Unrecognized node type. The template node must be either a " +
                 "Template Field or a Template Element. Node type: " + templateNode.getType().name());
           }
@@ -114,14 +136,12 @@ public class TemplateInstanceContentExtractor {
               // Extract value and save it to the results
               results.add(generateFieldValue(node, tmpPath));
             }
-          }
-          else {
+          } else {
             throw new CedarProcessingException("Unrecognized node type. The template node must be either a " +
                 "Template Field or a Template Element. Node type: " + templateNode.getType().name());
           }
         }
-      }
-      else {
+      } else {
         // Node not found in the map of template nodes. It is not a relevant node (e.g. @context) so we ignore it.
       }
     }
@@ -134,19 +154,19 @@ public class TemplateInstanceContentExtractor {
 
   private FieldValue generateFieldValue(JsonNode fieldNode, List<String> fieldPath) {
     FieldValue fieldValue = new FieldValue();
-    fieldValue.setFieldKey(fieldPath.get(fieldPath.size()-1));
+    fieldValue.setFieldKey(fieldPath.get(fieldPath.size() - 1));
     fieldValue.setFieldPath(fieldPath);
     // Regular value
-    if (fieldNode.hasNonNull(VALUE_FIELD_NAME) && !fieldNode.get(VALUE_FIELD_NAME).asText().isEmpty()) {
-      fieldValue.setFieldValue(fieldNode.get(VALUE_FIELD_NAME).asText());
+    if (fieldNode.hasNonNull(LD_VALUE) && !fieldNode.get(LD_VALUE).asText().isEmpty()) {
+      fieldValue.setFieldValue(fieldNode.get(LD_VALUE).asText());
     }
     // Ontology term
     else {
-      if (fieldNode.hasNonNull(LABEL_FIELD_NAME) && !fieldNode.get(LABEL_FIELD_NAME).asText().isEmpty()) {
-        fieldValue.setFieldValue(fieldNode.get(LABEL_FIELD_NAME).asText());
+      if (fieldNode.hasNonNull(RDFS_LABEL) && !fieldNode.get(RDFS_LABEL).asText().isEmpty()) {
+        fieldValue.setFieldValue(fieldNode.get(RDFS_LABEL).asText());
       }
-      if (fieldNode.hasNonNull(ID_FIELD_NAME) && !fieldNode.get(ID_FIELD_NAME).asText().isEmpty()) {
-        fieldValue.setFieldValueUri(fieldNode.get(ID_FIELD_NAME).asText());
+      if (fieldNode.hasNonNull(LD_ID) && !fieldNode.get(LD_ID).asText().isEmpty()) {
+        fieldValue.setFieldValueUri(fieldNode.get(LD_ID).asText());
       }
     }
     return fieldValue;
