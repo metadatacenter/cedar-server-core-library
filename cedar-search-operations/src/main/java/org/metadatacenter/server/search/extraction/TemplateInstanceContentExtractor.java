@@ -88,8 +88,12 @@ public class TemplateInstanceContentExtractor {
           throw new CedarProcessingException("Field path not found in nodesMap: " +
               fieldValue.generatePathDotNotation());
         }
-        infoFields.add(new InfoField(fieldName, fieldPrefLabel, fieldValue.generatePathDotNotation(),
-            fieldValue.getFieldValue(), fieldValue.getFieldValueUri()));
+        // Add to the list if it's not already there
+        InfoField infoField = new InfoField(fieldName, fieldPrefLabel, fieldValue.generatePathBracketNotation(),
+            fieldValue.getFieldValue(), fieldValue.getFieldValueUri());
+        if (!infoFields.contains(infoField)) {
+          infoFields.add(infoField);
+        }
       }
       return infoFields;
     } else {

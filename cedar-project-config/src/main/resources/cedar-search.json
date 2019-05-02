@@ -110,6 +110,7 @@
           }
         },
         "infoFields": {
+          "type": "nested",
           "properties": {
             "fieldName": {
               "type": "text"

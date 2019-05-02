@@ -70,8 +70,20 @@ public class FieldValue {
     this.fieldPath = fieldPath;
   }
 
+  /**
+   * Generates the field path in dot notation. Example: level1.level2.level3
+   * @return
+   */
   public String generatePathDotNotation() {
     return String.join(".", fieldPath);
+  }
+
+  /**
+   * Generates the field path in brackets notation. Example: ['level1']['level2']['level3']
+   * @return
+   */
+  public String generatePathBracketNotation() {
+    return "['" + String.join("']['", fieldPath) + "']";
   }
 
 }

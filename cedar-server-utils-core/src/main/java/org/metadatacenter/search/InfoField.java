@@ -1,5 +1,7 @@
 package org.metadatacenter.search;
 
+import java.util.Objects;
+
 public class InfoField {
 
   private String fieldName;
@@ -46,6 +48,27 @@ public class InfoField {
 
   public void setFieldValueUri(String fieldValueUri) {
     this.fieldValueUri = fieldValueUri;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    InfoField infoField = (InfoField) o;
+    return Objects.equals(getFieldName(), infoField.getFieldName()) &&
+        Objects.equals(getFieldPrefLabel(), infoField.getFieldPrefLabel()) &&
+        Objects.equals(getFieldPath(), infoField.getFieldPath()) &&
+        Objects.equals(getFieldValue(), infoField.getFieldValue()) &&
+        Objects.equals(getFieldValueUri(), infoField.getFieldValueUri());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getFieldName(), getFieldPrefLabel(), getFieldPath(), getFieldValue(), getFieldValueUri());
   }
 
 }
