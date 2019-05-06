@@ -1,5 +1,6 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -126,17 +127,28 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       mainQuery.must(permissionQuery);
     }
 
-    // Filter by content
+    // Filter by summary information (Note that the current implementation does not support queries addressed to
+    // summaryText and infoFields at the same time (e.g., cancer AND disease:crc).
     if (query != null && query.length() > 0) {
-      if (enclosedByQuotes(query)) {
-        query = query.substring(1, query.length() - 1);
-        QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
-        mainQuery.must(summaryTextQuery);
-      } else {
-        QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-        mainQuery.must(summaryTextQuery);
+      if (!query.contains(":")) { // We assume that it is a query on the summaryText field
+        if (enclosedByQuotes(query)) {
+          query = query.substring(1, query.length() - 1);
+          QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
+          mainQuery.must(summaryTextQuery);
+        } else {
+          QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+          mainQuery.must(summaryTextQuery);
+        }
+      } else { // We assume that it is a query on the infoFields field
+        QueryBuilder infoFieldsQuery = QueryBuilders.queryStringQuery(query);
+        QueryBuilder nestedInfoFieldsQuery =
+            QueryBuilders.nestedQuery("infoFields", infoFieldsQuery, ScoreMode.None);
+        mainQuery.must(nestedInfoFieldsQuery);
       }
     }
+
+    // Filter by field name (and field values, in the case of template instances)
+
 
     // Filter by resource type
     if (resourceTypes != null && resourceTypes.size() > 0) {
@@ -186,6 +198,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Set main query
     searchRequestBuilder.setQuery(mainQuery);
+    //log.info("Search query in Query DSL:\n" + mainQuery);
 
     // Sort by field
     // The name is stored on the node, so we can sort by that
@@ -211,4 +224,31 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private boolean enclosedByQuotes(String keyword) {
     return keyword.startsWith("\"") && keyword.endsWith("\"");
   }
+
+  // TODO
+
+  /**
+   * Extract from the original query the fragment addressed to query the summaryText field
+   *
+   * @param query
+   * @return
+   */
+  private String extractSummaryTextQuery(String query) {
+    String summaryTextQuery = null;
+    return null;
+  }
+
+  // TODO
+
+  /**
+   * Extract from the original query the fragment addressed to query the infoFields field
+   *
+   * @param query
+   * @return
+   */
+  private String extractInfoFieldsQuery(String query) {
+    String infoFieldsQuery = null;
+    return null;
+  }
+
 }

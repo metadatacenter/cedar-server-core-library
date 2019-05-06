@@ -10,6 +10,8 @@ public class InfoField {
   private Object fieldValue;
   private String fieldValueUri;
 
+  public InfoField() {}
+
   public InfoField(String fieldName, String fieldPrefLabel, String fieldPath, Object fieldValue, String fieldValueUri) {
     this.fieldName = fieldName;
     this.fieldPrefLabel = fieldPrefLabel;
