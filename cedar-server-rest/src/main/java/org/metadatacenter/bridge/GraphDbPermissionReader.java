@@ -5,10 +5,10 @@ import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarObjectNotFoundException;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
-import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerNodeCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
@@ -24,14 +24,14 @@ public class GraphDbPermissionReader {
   private GraphDbPermissionReader() {
   }
 
-  public static FolderServerResourceCurrentUserReport getResourceCurrentUserReport(CedarRequestContext context,
+  public static FolderServerArtifactCurrentUserReport getResourceCurrentUserReport(CedarRequestContext context,
                                                                                    FolderServiceSession folderSession,
                                                                                    PermissionServiceSession permissionSession,
                                                                                    CedarConfig cedarConfig,
                                                                                    String resourceId)
       throws CedarException {
     if (resourceId != null) {
-      FolderServerResource resource = folderSession.findResourceById(resourceId);
+      FolderServerArtifact resource = folderSession.findResourceById(resourceId);
       if (resource == null) {
         throw new CedarObjectNotFoundException("The resource can not be found by id")
             .errorKey(CedarErrorKey.RESOURCE_NOT_FOUND)
@@ -42,8 +42,8 @@ public class GraphDbPermissionReader {
 
       resource.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, resource));
 
-      FolderServerResourceCurrentUserReport resourceReport =
-          (FolderServerResourceCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(resource);
+      FolderServerArtifactCurrentUserReport resourceReport =
+          (FolderServerArtifactCurrentUserReport) FolderServerResourceCurrentUserReport.fromNode(resource);
 
       decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, resourceReport);
 
@@ -80,7 +80,7 @@ public class GraphDbPermissionReader {
       folder.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, folder));
 
       FolderServerFolderCurrentUserReport folderReport =
-          (FolderServerFolderCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(folder);
+          (FolderServerFolderCurrentUserReport) FolderServerResourceCurrentUserReport.fromNode(folder);
 
       decorateFolderWithCurrentUserPermissions(context, permissionSession, folderReport);
 

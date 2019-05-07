@@ -3,7 +3,7 @@ package org.metadatacenter.util.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 
 import java.util.Iterator;
@@ -15,16 +15,16 @@ public class JsonIdUtil {
   public static JsonNode localizeAtIdsAndTemplateId(JsonNode node, LinkedDataUtil
       linkedDataUtil) {
     ObjectNode object = (ObjectNode) node;
-    localizeFieldValueAsId(object, SCHEMA_IS_BASED_ON, linkedDataUtil, CedarNodeType.TEMPLATE);
+    localizeFieldValueAsId(object, SCHEMA_IS_BASED_ON, linkedDataUtil, CedarResourceType.TEMPLATE);
     localizeAtIdRecursively(object, linkedDataUtil);
     return object;
   }
 
   private static void localizeAtIdRecursively(ObjectNode object, LinkedDataUtil linkedDataUtil) {
     String atType = getKeyValueIfString(object, "@type");
-    CedarNodeType nodeType = CedarNodeType.forAtType(atType);
-    if (nodeType != null) {
-      localizeFieldValueAsId(object, "@id", linkedDataUtil, nodeType);
+    CedarResourceType resourceType = CedarResourceType.forAtType(atType);
+    if (resourceType != null) {
+      localizeFieldValueAsId(object, "@id", linkedDataUtil, resourceType);
       Iterator<Map.Entry<String, JsonNode>> fields = object.fields();
       while (fields.hasNext()) {
         Map.Entry<String, JsonNode> entry = fields.next();
@@ -52,13 +52,13 @@ public class JsonIdUtil {
   }
 
   private static void localizeFieldValueAsId(ObjectNode object, String fieldName, LinkedDataUtil
-      linkedDataUtil, CedarNodeType nodeType) {
+      linkedDataUtil, CedarResourceType resourceType) {
     String v = getKeyValueIfString(object, fieldName);
     if (v != null) {
       int lastPos = v.lastIndexOf('/');
       if (lastPos != -1) {
         String uuid = v.substring(lastPos + 1);
-        object.put(fieldName, linkedDataUtil.getLinkedDataId(nodeType, uuid));
+        object.put(fieldName, linkedDataUtil.getLinkedDataId(resourceType, uuid));
       }
     }
   }

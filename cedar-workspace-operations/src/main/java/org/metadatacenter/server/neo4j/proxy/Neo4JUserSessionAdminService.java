@@ -1,16 +1,14 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.AdminServiceSession;
 import org.metadatacenter.server.neo4j.*;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.NodePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
-import org.metadatacenter.util.CedarUserNameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +58,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (everybody == null) {
       log.info("Everybody Group not found, trying to create it");
-      String everybodyURL = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.GROUP);
+      String everybodyURL = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.GROUP);
       log.info("Everybody Group URL just generated:" + everybodyURL);
       everybody = proxies.group().createGroup(everybodyURL, config.getEverybodyGroupName(),
           config.getEverybodyGroupDisplayName(), config.getEverybodyGroupDescription(), userId, Neo4JFieldValues

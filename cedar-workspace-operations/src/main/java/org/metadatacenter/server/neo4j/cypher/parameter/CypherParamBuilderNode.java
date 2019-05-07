@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.PathUtil;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -37,10 +37,11 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getSharedWithMeLookupParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
+  public static CypherParameters getSharedWithMeLookupParameters(List<CedarResourceType> resourceTypes,
+                                                                 ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, int limit, int offset, String ownerId) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -50,11 +51,11 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getSharedWithEverybodyLookupParameters(List<CedarNodeType> nodeTypes,
+  public static CypherParameters getSharedWithEverybodyLookupParameters(List<CedarResourceType> resourceTypes,
                                                                         ResourceVersionFilter version,
                                                                         ResourcePublicationStatusFilter publicationStatus, int limit, int offset, String ownerId) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -64,10 +65,11 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getSharedWithMeCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter
+  public static CypherParameters getSharedWithMeCountParameters(List<CedarResourceType> resourceTypes,
+                                                                ResourceVersionFilter
       version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -75,11 +77,11 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getSharedWithEverybodyCountParameters(List<CedarNodeType> nodeTypes,
+  public static CypherParameters getSharedWithEverybodyCountParameters(List<CedarResourceType> resourceTypes,
                                                                        ResourceVersionFilter version,
                                                                        ResourcePublicationStatusFilter publicationStatus, String ownerId) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -87,11 +89,12 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getAllLookupParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+  public static CypherParameters getAllLookupParameters(List<CedarResourceType> resourceTypes,
+                                                        ResourceVersionFilter version,
                                                         ResourcePublicationStatusFilter publicationStatus, int limit,
                                                         int offset, String ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -103,11 +106,12 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getAllCountParameters(List<CedarNodeType> nodeTypes, ResourceVersionFilter version,
+  public static CypherParameters getAllCountParameters(List<CedarResourceType> resourceTypes,
+                                                       ResourceVersionFilter version,
                                                        ResourcePublicationStatusFilter publicationStatus, String
                                                            ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
@@ -121,11 +125,12 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return getNodeByIdentity(nodeURL);
   }
 
-  public static CypherParameters getSearchIsBasedOnLookupParameters(List<CedarNodeType> nodeTypes, String isBasedOn,
+  public static CypherParameters getSearchIsBasedOnLookupParameters(List<CedarResourceType> resourceTypes,
+                                                                    String isBasedOn,
                                                                     int limit, int offset, String ownerId,
                                                                     boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     params.put(ParameterPlaceholder.IS_BASED_ON, isBasedOn);
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
@@ -135,10 +140,11 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters getSearchIsBasedOnCountParameters(List<CedarNodeType> nodeTypes, String isBasedOn,
+  public static CypherParameters getSearchIsBasedOnCountParameters(List<CedarResourceType> resourceTypes,
+                                                                   String isBasedOn,
                                                                    String ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
-    params.addNodeTypes(nodeTypes);
+    params.addResourceTypes(resourceTypes);
     params.put(ParameterPlaceholder.IS_BASED_ON, isBasedOn);
     if (addPermissionConditions) {
       params.put(ParameterPlaceholder.USER_ID, ownerId);

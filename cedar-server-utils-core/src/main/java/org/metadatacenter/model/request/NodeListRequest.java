@@ -1,7 +1,7 @@
 package org.metadatacenter.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class NodeListRequest {
 
   @JsonProperty("resource_types")
-  private List<CedarNodeType> nodeTypes;
+  private List<CedarResourceType> resourceTypes;
   private ResourceVersionFilter version;
   private ResourcePublicationStatusFilter publicationStatus;
   private long limit;
@@ -21,12 +21,12 @@ public class NodeListRequest {
   @JsonProperty("is_based_on")
   private String isBasedOn;
 
-  public List<CedarNodeType> getNodeTypes() {
-    return nodeTypes;
+  public List<CedarResourceType> getResourceTypes() {
+    return resourceTypes;
   }
 
-  public void setNodeTypes(List<CedarNodeType> nodeTypes) {
-    this.nodeTypes = nodeTypes;
+  public void setResourceTypes(List<CedarResourceType> resourceTypes) {
+    this.resourceTypes = resourceTypes;
   }
 
   public ResourceVersionFilter getVersion() {

@@ -3,7 +3,7 @@ package org.metadatacenter.cedar.util.dw;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mongodb.MongoClient;
 import org.metadatacenter.config.MongoConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.service.TemplateElementService;
 import org.metadatacenter.server.service.TemplateFieldService;
 import org.metadatacenter.server.service.TemplateInstanceService;
@@ -25,22 +25,22 @@ public abstract class CedarMicroserviceApplicationWithMongo<T extends CedarMicro
     templateFieldService = new TemplateFieldServiceMongoDB(
         mongoClientForDocuments,
         artifactServerConfig.getDatabaseName(),
-        artifactServerConfig.getMongoCollectionName(CedarNodeType.FIELD));
+        artifactServerConfig.getMongoCollectionName(CedarResourceType.FIELD));
 
     templateElementService = new TemplateElementServiceMongoDB(
         mongoClientForDocuments,
         artifactServerConfig.getDatabaseName(),
-        artifactServerConfig.getMongoCollectionName(CedarNodeType.ELEMENT));
+        artifactServerConfig.getMongoCollectionName(CedarResourceType.ELEMENT));
 
     templateService = new TemplateServiceMongoDB(
         mongoClientForDocuments,
         artifactServerConfig.getDatabaseName(),
-        artifactServerConfig.getMongoCollectionName(CedarNodeType.TEMPLATE));
+        artifactServerConfig.getMongoCollectionName(CedarResourceType.TEMPLATE));
 
     templateInstanceService = new TemplateInstanceServiceMongoDB(
         mongoClientForDocuments,
         artifactServerConfig.getDatabaseName(),
-        artifactServerConfig.getMongoCollectionName(CedarNodeType.INSTANCE));
+        artifactServerConfig.getMongoCollectionName(CedarResourceType.INSTANCE));
   }
 
 }

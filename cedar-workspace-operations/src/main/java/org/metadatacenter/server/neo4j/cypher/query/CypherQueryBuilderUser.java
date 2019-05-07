@@ -21,7 +21,7 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
         buildCreateAssignment(NodeProperty.ROLES) + "," +
         buildCreateAssignment(NodeProperty.PERMISSIONS) + "," +
         buildCreateAssignment(NodeProperty.UI_PREFERENCES) + "," +
-        buildCreateAssignment(NodeProperty.NODE_TYPE) +
+        buildCreateAssignment(NodeProperty.RESOURCE_TYPE) +
         " })" +
         " RETURN user";
   }

@@ -5,8 +5,9 @@ import org.elasticsearch.client.Client;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
+import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
@@ -30,7 +31,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     indexWorker = new ElasticsearchIndexingWorker(indexName, client);
   }
 
-  public IndexingDocumentDocument createIndexDocument(FolderServerNode node,
+  public IndexingDocumentDocument createIndexDocument(FileSystemResource node,
                                                       CedarNodeMaterializedPermissions permissions) {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
@@ -39,7 +40,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     return ir;
   }
 
-  public IndexedDocumentId indexDocument(FolderServerNode node, CedarNodeMaterializedPermissions permissions)
+  public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions)
       throws CedarProcessingException {
     log.debug("Indexing node (id = " + node.getId() + ")");
     IndexingDocumentDocument ir = createIndexDocument(node, permissions);
@@ -47,7 +48,8 @@ public class NodeIndexingService extends AbstractIndexingService {
     return indexWorker.addToIndex(jsonResource);
   }
 
-  public IndexedDocumentId indexDocument(FolderServerNode node, CedarRequestContext c) throws CedarProcessingException {
+  public IndexedDocumentId indexDocument(FileSystemResource node, CedarRequestContext c)
+      throws CedarProcessingException {
     log.debug("Indexing node (id = " + node.getId() + ")");
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(c);
     CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
@@ -58,7 +60,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     indexWorker.addBatch(currentBatch);
   }
 
-  private String getSummaryText(FolderServerNode node) {
+  private String getSummaryText(FileSystemResource node) {
     StringBuilder sb = new StringBuilder();
     if (node.getName() != null) {
       sb.append(node.getName());
@@ -69,15 +71,19 @@ public class NodeIndexingService extends AbstractIndexingService {
       }
       sb.append(node.getDescription().trim());
     }
-    if (node instanceof FolderServerResource) {
-      FolderServerResource resource = (FolderServerResource) node;
-      ResourceVersion version = resource.getVersion();
-      if (version != null && version.getValue() != null && !version.getValue().isBlank()) {
-        if (sb.length() > 0) {
-          sb.append(" ");
+    if (node instanceof FolderServerArtifact) {
+      if (node instanceof FolderServerSchemaArtifact) {
+        FolderServerSchemaArtifact resource = (FolderServerSchemaArtifact) node;
+        ResourceVersion version = resource.getVersion();
+        if (version != null && version.getValue() != null && !version.getValue().isBlank()) {
+          if (sb.length() > 0) {
+            sb.append(" ");
+          }
+          sb.append(version.getValue().trim());
         }
-        sb.append(version.getValue().trim());
       }
+
+      FolderServerArtifact resource = (FolderServerArtifact) node;
       String identifier = resource.getIdentifier();
       if (identifier != null && !identifier.isBlank()) {
         if (sb.length() > 0) {

@@ -2,9 +2,9 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
-import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermission;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithEverybodyPermission;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
@@ -33,7 +33,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
 
   @Override
   public CedarNodePermissions getNodePermissions(String nodeURL) {
-    FolderServerNode node = proxies.node().findNodeById(nodeURL);
+    FileSystemResource node = proxies.node().findNodeById(nodeURL);
     if (node != null) {
       FolderServerUser owner = getNodeOwner(nodeURL);
       List<FolderServerUser> readUsers = getUsersWithDirectPermission(nodeURL, NodePermission.READ);
@@ -113,7 +113,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
         Neo4JUserSessionGroupOperations.addGroupPermissions(proxies.permission(), nodeURL, toAddGroupPermissions);
       }
 
-      NodeWithEverybodyPermission node = proxies.node().findNodeById(nodeURL);
+      ResourceWithEverybodyPermission node = proxies.node().findNodeById(nodeURL);
       if (node != null) {
         FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
         NodeSharePermission setEverybodyPermission = null;
@@ -168,7 +168,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   }
 
   @Override
-  public boolean userIsOwnerOfNode(FolderServerNode node) {
+  public boolean userIsOwnerOfNode(FileSystemResource node) {
     FolderServerUser owner = getNodeOwner(node.getId());
     return owner != null && owner.getId().equals(cu.getId());
   }
@@ -217,7 +217,7 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
 
   @Override
   public CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL) {
-    FolderServerNode node = proxies.node().findNodeById(nodeURL);
+    FileSystemResource node = proxies.node().findNodeById(nodeURL);
     if (node != null) {
       NodeSharePermission everybodyPermission = node.getEverybodyPermission();
       if (everybodyPermission == null) {

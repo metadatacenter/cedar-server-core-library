@@ -2,7 +2,7 @@ package org.metadatacenter.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum CedarNodeType {
+public enum CedarResourceType {
 
   FOLDER(Types.FOLDER, Prefix.FOLDERS, null),
   FIELD(Types.FIELD, Prefix.FIELDS, AtType.FIELD),
@@ -55,7 +55,7 @@ public enum CedarNodeType {
   private final String prefix;
   private final String atType;
 
-  CedarNodeType(String value, String prefix, String atType) {
+  CedarResourceType(String value, String prefix, String atType) {
     this.value = value;
     this.prefix = prefix;
     this.atType = atType;
@@ -74,8 +74,8 @@ public enum CedarNodeType {
     return atType;
   }
 
-  public static CedarNodeType forValue(String type) {
-    for (CedarNodeType t : values()) {
+  public static CedarResourceType forValue(String type) {
+    for (CedarResourceType t : values()) {
       if (t.getValue().equals(type)) {
         return t;
       }
@@ -83,9 +83,9 @@ public enum CedarNodeType {
     return null;
   }
 
-  public static CedarNodeType forAtType(String atType) {
+  public static CedarResourceType forAtType(String atType) {
     if (atType != null) {
-      for (CedarNodeType t : values()) {
+      for (CedarResourceType t : values()) {
         if (atType.equals(t.getAtType())) {
           return t;
         }
@@ -96,10 +96,6 @@ public enum CedarNodeType {
 
   public boolean isVersioned() {
     return this == ELEMENT || this == TEMPLATE || this == FIELD;
-  }
-
-  public FolderOrResource asFolderOrResource() {
-    return this == FOLDER ? FolderOrResource.FOLDER : FolderOrResource.RESOURCE;
   }
 
 }

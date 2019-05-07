@@ -1,126 +1,50 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.ResourceUri;
-import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.datagroup.NodeWithOpenFlag;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.NodeSharePermission;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.NodeWithCurrentUserPermissions;
+import org.metadatacenter.util.json.JsonMapper;
 
-public abstract class FolderServerResourceCurrentUserReport extends FolderServerNodeCurrentUserReport
-    implements ResourceWithCurrentUserPermissions, ResourceWithVersionData, NodeWithOpenFlag {
+import java.io.IOException;
 
-  protected ResourceUri previousVersion;
-  protected BiboStatus publicationStatus;
-  protected ResourceUri derivedFrom;
-  protected VersionDataGroup versionData;
-  protected Boolean isOpen;
-  protected NodeSharePermission everybodyPermission;
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "resourceType")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = FolderServerFolderCurrentUserReport.class, name = CedarResourceType.Types.FOLDER),
+    @JsonSubTypes.Type(value = FolderServerFieldCurrentUserReport.class, name = CedarResourceType.Types.FIELD),
+    @JsonSubTypes.Type(value = FolderServerElementCurrentUserReport.class, name = CedarResourceType.Types.ELEMENT),
+    @JsonSubTypes.Type(value = FolderServerTemplateCurrentUserReport.class, name = CedarResourceType.Types.TEMPLATE),
+    @JsonSubTypes.Type(value = FolderServerInstanceCurrentUserReport.class, name = CedarResourceType.Types.INSTANCE)
+})
+public abstract class FolderServerResourceCurrentUserReport extends FileSystemResource
+    implements NodeWithCurrentUserPermissions {
 
-  public FolderServerResourceCurrentUserReport(CedarNodeType nodeType) {
-    super(nodeType);
-    versionData = new VersionDataGroup();
+  private CurrentUserPermissions currentUserPermissions = new CurrentUserPermissions();
+
+  public FolderServerResourceCurrentUserReport(CedarResourceType resourceType) {
+    super(resourceType);
   }
 
-  @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public ResourceUri getPreviousVersion() {
-    return previousVersion;
+  public static FolderServerResourceCurrentUserReport fromNode(FileSystemResource node) {
+    try {
+      String s = JsonMapper.MAPPER.writeValueAsString(node);
+      return JsonMapper.MAPPER.readValue(s, FolderServerResourceCurrentUserReport.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public void setPreviousVersion(String pv) {
-    this.previousVersion = ResourceUri.forValue(pv);
-  }
-
-  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
-  public BiboStatus getPublicationStatus() {
-    return publicationStatus;
-  }
-
-  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
-  public void setPublicationStatus(String s) {
-    this.publicationStatus = BiboStatus.forValue(s);
-  }
-
-  @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public ResourceUri getDerivedFrom() {
-    return derivedFrom;
-  }
-
-  @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public void setDerivedFrom(String df) {
-    this.derivedFrom = ResourceUri.forValue(df);
-  }
-
-  @Override
-  public ResourceVersion getVersion() {
-    return versionData.getVersion();
-  }
-
-  @Override
-  public void setVersion(String versionString) {
-    versionData.setVersion(ResourceVersion.forValue(versionString));
-  }
-
-  @Override
-  public Boolean isLatestVersion() {
-    return versionData.isLatestVersion();
-  }
-
-  @Override
-  public void setLatestVersion(Boolean latestVersion) {
-    versionData.setLatestVersion(latestVersion);
-  }
-
-  @Override
-  public Boolean isLatestDraftVersion() {
-    return versionData.isLatestDraftVersion();
-  }
-
-  @Override
-  public void setLatestDraftVersion(Boolean latestDraftVersion) {
-    versionData.setLatestDraftVersion(latestDraftVersion);
-  }
-
-  @Override
-  public Boolean isLatestPublishedVersion() {
-    return versionData.isLatestPublishedVersion();
-  }
-
-  @Override
-  public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
-    versionData.setLatestPublishedVersion(latestPublishedVersion);
-  }
-
-  @Override
-  public Boolean isOpen() {
-    return isOpen;
-  }
-
-  @Override
-  public void setOpen(Boolean isOpen) {
-    this.isOpen = isOpen;
-  }
-
-  @Override
-  public NodeSharePermission getEverybodyPermission() {
-    return everybodyPermission;
-  }
-
-  @Override
-  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
-    this.everybodyPermission = everybodyPermission;
-  }
-
-  @JsonIgnore
-  public boolean hasPreviousVersion() {
-    return previousVersion != null && previousVersion.getValue() != null;
+  @JsonProperty(NodeProperty.OnTheFly.CURRENT_USER_PERMISSIONS)
+  public CurrentUserPermissions getCurrentUserPermissions() {
+    return currentUserPermissions;
   }
 
 }

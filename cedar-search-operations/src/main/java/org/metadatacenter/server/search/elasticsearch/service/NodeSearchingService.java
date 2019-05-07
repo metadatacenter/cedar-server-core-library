@@ -8,8 +8,8 @@ import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.model.response.FolderServerNodeListResponse;
@@ -119,7 +119,7 @@ public class NodeSearchingService extends AbstractSearchingService {
                                                         ResourcePublicationStatusFilter publicationStatus,
                                                         List<String> sortList, int limit, int offset,
                                                         String absoluteUrl) {
-    List<FolderServerNodeExtract> resources = new ArrayList<>();
+    List<FolderServerResourceExtract> resources = new ArrayList<>();
 
     // Get the object from the result
     for (SearchHit hit : searchResult.getHits()) {
@@ -128,7 +128,7 @@ public class NodeSearchingService extends AbstractSearchingService {
         IndexedDocumentDocument indexedDocument = JsonMapper.MAPPER.readValue(hitJson, IndexedDocumentDocument.class);
 
         FolderServerNodeInfo info = indexedDocument.getInfo();
-        FolderServerNodeExtract folderServerNodeExtract = FolderServerNodeExtract.fromNodeInfo(info);
+        FolderServerResourceExtract folderServerNodeExtract = FolderServerResourceExtract.fromNodeInfo(info);
         resources.add(folderServerNodeExtract);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
@@ -144,15 +144,15 @@ public class NodeSearchingService extends AbstractSearchingService {
     response.setPaging(LinkHeaderUtil.getPagingLinkHeaders(absoluteUrl, total, limit, offset));
     response.setResources(resources);
 
-    List<CedarNodeType> nodeTypeList = new ArrayList<>();
+    List<CedarResourceType> resourceTypeList = new ArrayList<>();
     if (resourceTypes != null) {
       for (String rt : resourceTypes) {
-        nodeTypeList.add(CedarNodeType.forValue(rt));
+        resourceTypeList.add(CedarResourceType.forValue(rt));
       }
     }
 
     NodeListRequest req = new NodeListRequest();
-    req.setNodeTypes(nodeTypeList);
+    req.setResourceTypes(resourceTypeList);
     req.setVersion(version);
     req.setPublicationStatus(publicationStatus);
     req.setLimit(limit);

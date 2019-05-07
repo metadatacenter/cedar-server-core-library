@@ -3,7 +3,7 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -21,28 +21,28 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     super(proxies, cedarConfig);
   }
 
-  boolean addPermission(FolderServerNode node, FolderServerGroup group, NodePermission permission) {
+  boolean addPermission(FileSystemResource node, FolderServerGroup group, NodePermission permission) {
     String cypher = CypherQueryBuilderPermission.addPermissionToNodeForGroup(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean addPermission(FolderServerNode node, FolderServerUser user, NodePermission permission) {
+  boolean addPermission(FileSystemResource node, FolderServerUser user, NodePermission permission) {
     String cypher = CypherQueryBuilderPermission.addPermissionToNodeForUser(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean removePermission(FolderServerNode node, FolderServerUser user, NodePermission permission) {
+  boolean removePermission(FileSystemResource node, FolderServerUser user, NodePermission permission) {
     String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromUser(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
-  boolean removePermission(FolderServerNode node, FolderServerGroup group, NodePermission permission) {
+  boolean removePermission(FileSystemResource node, FolderServerGroup group, NodePermission permission) {
     String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromGroup(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -52,7 +52,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   void addPermissionToUser(String nodeURL, String userURL, NodePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      FileSystemResource node = proxies.node().findNodeById(nodeURL);
       if (node != null) {
         addPermission(node, user, permission);
       }
@@ -62,7 +62,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
-      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      FileSystemResource node = proxies.node().findNodeById(nodeURL);
       if (node != null) {
         removePermission(node, user, permission);
       }
@@ -72,7 +72,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      FileSystemResource node = proxies.node().findNodeById(nodeURL);
       if (node != null) {
         proxies.permission().addPermission(node, group, permission);
       }
@@ -82,7 +82,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
   void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
-      FolderServerNode node = proxies.node().findNodeById(nodeURL);
+      FileSystemResource node = proxies.node().findNodeById(nodeURL);
       if (node != null) {
         proxies.permission().removePermission(node, group, permission);
       }

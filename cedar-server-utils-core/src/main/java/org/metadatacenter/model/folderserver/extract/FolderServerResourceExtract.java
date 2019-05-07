@@ -1,72 +1,174 @@
 package org.metadatacenter.model.folderserver.extract;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.model.AbstractCedarResourceExtract;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.datagroup.*;
+import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
+import org.metadatacenter.server.security.model.ResourceWithIdAndType;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
+import org.metadatacenter.util.json.JsonMapper;
 
-public abstract class FolderServerResourceExtract extends FolderServerNodeExtract
-    implements NodeWithPublicationStatus, ResourceWithVersionData {
+import java.io.IOException;
 
-  protected BiboStatus publicationStatus;
-  protected VersionDataGroup versionData;
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "resourceType")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = FolderServerFolderExtract.class, name = CedarResourceType.Types.FOLDER),
+    @JsonSubTypes.Type(value = FolderServerFieldExtract.class, name = CedarResourceType.Types.FIELD),
+    @JsonSubTypes.Type(value = FolderServerElementExtract.class, name = CedarResourceType.Types.ELEMENT),
+    @JsonSubTypes.Type(value = FolderServerTemplateExtract.class, name = CedarResourceType.Types.TEMPLATE),
+    @JsonSubTypes.Type(value = FolderServerTemplateInstanceExtract.class, name = CedarResourceType.Types.INSTANCE)
+})
+public abstract class FolderServerResourceExtract extends AbstractCedarResourceExtract
+    implements ResourceWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData, ResourceWithEverybodyPermission {
 
-  public FolderServerResourceExtract(CedarNodeType nodeType) {
-    super(nodeType);
-    versionData = new VersionDataGroup();
+  protected UsersDataGroup usersData;
+  protected UserNamesDataGroup userNamesData;
+  protected boolean activeUserCanRead = true;
+
+  protected NodeSharePermission everybodyPermission;
+
+  protected FolderServerResourceExtract(CedarResourceType resourceType) {
+    super();
+    this.usersData = new UsersDataGroup();
+    this.userNamesData = new UserNamesDataGroup();
+    this.setType(resourceType);
   }
 
-  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
-  public BiboStatus getPublicationStatus() {
-    return publicationStatus;
+  public static FolderServerResourceExtract fromNode(FileSystemResource node) {
+    try {
+      return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerResourceExtract.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
-  public void setPublicationStatus(String s) {
-    this.publicationStatus = BiboStatus.forValue(s);
-  }
-
-  @Override
-  public ResourceVersion getVersion() {
-    return versionData.getVersion();
-  }
-
-  @Override
-  public void setVersion(String versionString) {
-    versionData.setVersion(ResourceVersion.forValue(versionString));
-  }
-
-  @Override
-  public Boolean isLatestVersion() {
-    return versionData.isLatestVersion();
-  }
-
-  @Override
-  public void setLatestVersion(Boolean latestVersion) {
-    versionData.setLatestVersion(latestVersion);
-  }
-
-  @Override
-  public Boolean isLatestDraftVersion() {
-    return versionData.isLatestDraftVersion();
-  }
-
-  @Override
-  public void setLatestDraftVersion(Boolean latestDraftVersion) {
-    versionData.setLatestDraftVersion(latestDraftVersion);
-  }
-
-  @Override
-  public Boolean isLatestPublishedVersion() {
-    return versionData.isLatestPublishedVersion();
+  public static FolderServerResourceExtract fromNodeInfo(FolderServerNodeInfo info) {
+    try {
+      return JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(info), FolderServerResourceExtract.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @Override
-  public void setLatestPublishedVersion(Boolean latestPublishedVersion) {
-    versionData.setLatestPublishedVersion(latestPublishedVersion);
+  public String getOwnedBy() {
+    return usersData.getOwnedBy();
   }
+
+  @Override
+  public void setOwnedBy(String ownedBy) {
+    usersData.setOwnedBy(ownedBy);
+  }
+
+  @Override
+  public String getCreatedBy() {
+    return usersData.getCreatedBy();
+  }
+
+  @Override
+  public void setCreatedBy(String createdBy) {
+    usersData.setCreatedBy(createdBy);
+  }
+
+  @Override
+  public String getLastUpdatedBy() {
+    return usersData.getLastUpdatedBy();
+  }
+
+  @Override
+  public void setLastUpdatedBy(String lastUpdatedBy) {
+    usersData.setLastUpdatedBy(lastUpdatedBy);
+  }
+
+  @Override
+  public void setOwnedByUserName(String ownedByUserName) {
+    userNamesData.setOwnedByUserName(ownedByUserName);
+  }
+
+  @Override
+  public String getOwnedByUserName() {
+    return userNamesData.getOwnedByUserName();
+  }
+
+  @Override
+  public void setCreatedByUserName(String createdByUserName) {
+    userNamesData.setCreatedByUserName(createdByUserName);
+  }
+
+  @Override
+  public String getCreatedByUserName() {
+    return userNamesData.getCreatedByUserName();
+  }
+
+  @Override
+  public void setLastUpdatedByUserName(String lastUpdatedByUserName) {
+    userNamesData.setLastUpdatedByUserName(lastUpdatedByUserName);
+  }
+
+  @Override
+  public String getLastUpdatedByUserName() {
+    return userNamesData.getLastUpdatedByUserName();
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)
+  public boolean isActiveUserCanRead() {
+    return activeUserCanRead;
+  }
+
+  @JsonProperty(NodeProperty.OnTheFly.ACTIVE_USER_CAN_READ)
+  public void setActiveUserCanRead(boolean activeUserCanRead) {
+    this.activeUserCanRead = activeUserCanRead;
+  }
+
+  @Override
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
+  }
+
+  @Override
+  public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
+    this.everybodyPermission = everybodyPermission;
+  }
+
+  public static FolderServerResourceExtract forType(CedarResourceType t) {
+    switch (t) {
+      case FOLDER:
+        return new FolderServerFolderExtract();
+      case FIELD:
+        return new FolderServerFieldExtract();
+      case ELEMENT:
+        return new FolderServerElementExtract();
+      case TEMPLATE:
+        return new FolderServerTemplateExtract();
+      case INSTANCE:
+        return new FolderServerTemplateInstanceExtract();
+    }
+    return null;
+  }
+
+  public static FolderServerTemplateExtract anonymous(FolderServerTemplateExtract resource) {
+    FolderServerTemplateExtract anon = new FolderServerTemplateExtract();
+    anon.setId(resource.getId());
+    anon.setActiveUserCanRead(false);
+    return anon;
+  }
+
+  public static FolderServerArtifactExtract anonymous(FolderServerArtifactExtract resource) {
+    FolderServerArtifactExtract anon =
+        (FolderServerArtifactExtract) FolderServerResourceExtract.forType(resource.getType());
+    anon.setId(resource.getId());
+    anon.setActiveUserCanRead(false);
+    return anon;
+  }
+
 }

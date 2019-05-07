@@ -3,7 +3,7 @@ package org.metadatacenter.search;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 
 import java.util.List;
 
@@ -42,8 +42,8 @@ public class IndexedDocumentDocument {
   }
 
   @JsonIgnore
-  public FolderServerNodeExtract getInfoExtract() {
-    return FolderServerNodeExtract.fromNodeInfo(info);
+  public FolderServerResourceExtract getInfoExtract() {
+    return FolderServerResourceExtract.fromNodeInfo(info);
   }
 
   public void setInfo(FolderServerNodeInfo info) {

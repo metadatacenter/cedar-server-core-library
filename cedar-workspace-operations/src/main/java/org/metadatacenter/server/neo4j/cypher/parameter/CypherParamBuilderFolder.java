@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.apache.commons.lang.StringUtils;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.PathUtil;
@@ -56,7 +56,7 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
 
   public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, FolderServerFolder newFolder, String
       parentId) {
-    String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FOLDER);
+    String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.FOLDER);
     newFolder.setId(nodeId);
     return createNode(newFolder, parentId);
   }
