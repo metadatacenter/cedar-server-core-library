@@ -4,11 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.metadatacenter.config.PaginationConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
-import org.metadatacenter.util.CedarNodeTypeUtil;
+import org.metadatacenter.util.CedarResourceTypeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class PagedSortedTypedQuery extends PagedSortedQuery {
 
   protected Optional<String> resourceTypesInput;
-  protected List<CedarNodeType> nodeTypeList;
+  protected List<CedarResourceType> resourceTypeList;
   protected Optional<String> versionInput;
   protected ResourceVersionFilter version;
   protected Optional<String> publicationStatusInput;
@@ -27,7 +27,7 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
   public PagedSortedTypedQuery(PaginationConfig config) {
     super(config);
 
-    this.nodeTypeList = new ArrayList<>();
+    this.resourceTypeList = new ArrayList<>();
   }
 
   public PagedSortedTypedQuery resourceTypes(Optional<String> resourceTypesInput) {
@@ -73,23 +73,23 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
     validatePublicationStatus();
   }
 
-  public List<CedarNodeType> getNodeTypeList() {
-    return nodeTypeList;
+  public List<CedarResourceType> getResourceTypeList() {
+    return resourceTypeList;
   }
 
-  public List<String> getNodeTypeAsStringList() {
+  public List<String> getResourceTypeAsStringList() {
     List<String> r = new ArrayList<>();
-    for (CedarNodeType nt : nodeTypeList) {
+    for (CedarResourceType nt : resourceTypeList) {
       r.add(nt.getValue());
     }
     return r;
   }
 
-  public String getNodeTypesAsString() {
+  public String getResourceTypesAsString() {
     StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < nodeTypeList.size(); i++) {
-      sb.append(nodeTypeList.get(i).getValue());
-      if (i != nodeTypeList.size() - 1) {
+    for (int i = 0; i < resourceTypeList.size(); i++) {
+      sb.append(resourceTypeList.get(i).getValue());
+      if (i != resourceTypeList.size() - 1) {
         sb.append(",");
       }
     }
@@ -97,36 +97,36 @@ public class PagedSortedTypedQuery extends PagedSortedQuery {
   }
 
   protected void validateResourceTypes() throws CedarException {
-    String nodeTypesString = null;
-    List<String> nodeTypeStringList;
+    String resourceTypesString = null;
+    List<String> resourceTypeStringList;
     if (!resourceTypesInput.isPresent()) {
-      nodeTypeStringList = CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls();
+      resourceTypeStringList = CedarResourceTypeUtil.getValidResourceTypeValuesForRestCalls();
     } else {
-      nodeTypesString = resourceTypesInput.get();
-      if (nodeTypesString != null) {
-        nodeTypesString = nodeTypesString.trim();
+      resourceTypesString = resourceTypesInput.get();
+      if (resourceTypesString != null) {
+        resourceTypesString = resourceTypesString.trim();
       }
-      if (nodeTypesString == null || nodeTypesString.isEmpty()) {
+      if (resourceTypesString == null || resourceTypesString.isEmpty()) {
         throw new CedarAssertionException("If present, 'resource_types' must be a comma separated list!")
             .badRequest()
-            .parameter("resource_types", nodeTypesString);
+            .parameter("resource_types", resourceTypesString);
       }
-      nodeTypeStringList = Arrays.asList(StringUtils.split(nodeTypesString, ","));
+      resourceTypeStringList = Arrays.asList(StringUtils.split(resourceTypesString, ","));
     }
-    nodeTypeList = new ArrayList<>();
-    for (String rt : nodeTypeStringList) {
-      CedarNodeType crt = CedarNodeType.forValue(rt);
-      if (CedarNodeTypeUtil.isNotValidForRestCall(crt)) {
+    resourceTypeList = new ArrayList<>();
+    for (String rt : resourceTypeStringList) {
+      CedarResourceType crt = CedarResourceType.forValue(rt);
+      if (CedarResourceTypeUtil.isNotValidForRestCall(crt)) {
         throw new CedarAssertionException("You passed an illegal 'resource_types':'" + rt + "'. The allowed values " +
             "are:" +
-            CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls())
-            .errorKey(CedarErrorKey.INVALID_NODE_TYPE)
+            CedarResourceTypeUtil.getValidResourceTypeValuesForRestCalls())
+            .errorKey(CedarErrorKey.INVALID_RESOURCE_TYPE)
             .badRequest()
-            .parameter("resource_types", nodeTypesString)
+            .parameter("resource_types", resourceTypesString)
             .parameter("invalidResourceTypes", rt)
-            .parameter("allowedResourceTypes", CedarNodeTypeUtil.getValidNodeTypeValuesForRestCalls());
+            .parameter("allowedResourceTypes", CedarResourceTypeUtil.getValidResourceTypeValuesForRestCalls());
       } else {
-        nodeTypeList.add(crt);
+        resourceTypeList.add(crt);
       }
     }
   }

@@ -1,14 +1,13 @@
 package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerTemplate extends FolderServerResource {
-
+public class FolderServerTemplate extends FolderServerSchemaArtifact {
 
   public FolderServerTemplate() {
-    super(CedarNodeType.TEMPLATE);
+    super(CedarResourceType.TEMPLATE);
   }
 
 }

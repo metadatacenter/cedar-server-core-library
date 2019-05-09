@@ -16,6 +16,7 @@ import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
+@Deprecated
 public class ValidFieldAssertion implements CedarAssertion {
 
   ValidFieldAssertion() {

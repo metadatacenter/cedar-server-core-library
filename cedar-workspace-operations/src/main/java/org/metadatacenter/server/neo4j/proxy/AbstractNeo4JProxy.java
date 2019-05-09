@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNode;
+import org.metadatacenter.model.CedarResource;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.filter.LoggingContext;
 import org.metadatacenter.server.logging.filter.ThreadLocalRequestIdHolder;
@@ -159,7 +159,7 @@ public abstract class AbstractNeo4JProxy {
     appLog.enqueue();
   }
 
-  protected <T extends CedarNode> T executeWriteGetOne(CypherQuery q, Class<T> type) {
+  protected <T extends CedarResource> T executeWriteGetOne(CypherQuery q, Class<T> type) {
     Record record = null;
     CypherQueryLog queryLog = null;
     try (Session session = driver.session()) {
@@ -191,7 +191,7 @@ public abstract class AbstractNeo4JProxy {
     return extractClassFromRecord(record, type);
   }
 
-  private <T extends CedarNode> T extractClassFromRecord(Record record, Class<T> type) {
+  private <T extends CedarResource> T extractClassFromRecord(Record record, Class<T> type) {
     if (record != null) {
       Node n = record.get(0).asNode();
       if (n != null) {
@@ -244,7 +244,7 @@ public abstract class AbstractNeo4JProxy {
     return -1;
   }
 
-  protected <T extends CedarNode> T executeReadGetOne(CypherQuery q, Class<T> type) {
+  protected <T extends CedarResource> T executeReadGetOne(CypherQuery q, Class<T> type) {
     try (Session session = driver.session()) {
       Record record = executeQueryGetRecord(session, q);
       return extractClassFromRecord(record, type);
@@ -289,7 +289,7 @@ public abstract class AbstractNeo4JProxy {
   }
 
 
-  protected <T extends CedarNode> List<T> executeReadGetList(CypherQuery q, Class<T> type) {
+  protected <T extends CedarResource> List<T> executeReadGetList(CypherQuery q, Class<T> type) {
     List<T> folderServerNodeList = new ArrayList<>();
     try (Session session = driver.session()) {
       List<Record> records = executeQueryGetRecordList(session, q);
@@ -367,7 +367,7 @@ public abstract class AbstractNeo4JProxy {
   }
 
 
-  private <T extends CedarNode> T buildClass(JsonNode node, Class<T> type) {
+  private <T extends CedarResource> T buildClass(JsonNode node, Class<T> type) {
     T cn = null;
     if (node != null && !node.isMissingNode()) {
       try {
@@ -384,13 +384,13 @@ public abstract class AbstractNeo4JProxy {
     return buildClass(f, FolderServerFolder.class);
   }
 
-  public FolderServerResource buildResource(JsonNode r) {
-    FolderServerNode folderServerNode = buildClass(r, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
+  public FolderServerArtifact buildResource(JsonNode r) {
+    FileSystemResource folderServerNode = buildClass(r, FileSystemResource.class);
+    return folderServerNode == null ? null : folderServerNode.asArtifact();
   }
 
-  protected FolderServerNode buildNode(JsonNode n) {
-    return buildClass(n, FolderServerNode.class);
+  protected FileSystemResource buildNode(JsonNode n) {
+    return buildClass(n, FileSystemResource.class);
   }
 
   protected FolderServerArc buildArc(JsonNode a) {

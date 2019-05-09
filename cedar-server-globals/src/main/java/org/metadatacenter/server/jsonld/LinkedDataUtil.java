@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterators;
 import org.metadatacenter.config.LinkedDataConfig;
 import org.metadatacenter.constant.LinkedData;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 import java.util.*;
 
@@ -19,32 +19,32 @@ public class LinkedDataUtil {
   public LinkedDataUtil(LinkedDataConfig ldConfig) {
     this.ldConfig = ldConfig;
     knownPrefixes = new ArrayList<>();
-    for (CedarNodeType nt : CedarNodeType.values()) {
+    for (CedarResourceType nt : CedarResourceType.values()) {
       knownPrefixes.add(getLinkedDataPrefix(nt));
     }
   }
 
-  private String getLinkedDataPrefix(CedarNodeType nodeType) {
-    if (nodeType == CedarNodeType.USER) {
+  private String getLinkedDataPrefix(CedarResourceType resourceType) {
+    if (resourceType == CedarResourceType.USER) {
       return ldConfig.getUsersBase();
     } else {
-      return ldConfig.getBase() + nodeType.getPrefix() + SEPARATOR;
+      return ldConfig.getBase() + resourceType.getPrefix() + SEPARATOR;
     }
   }
 
   public String getUserId(String uuid) {
-    return getLinkedDataId(CedarNodeType.USER, uuid);
+    return getLinkedDataId(CedarResourceType.USER, uuid);
   }
 
-  public String getLinkedDataId(CedarNodeType nodeType, String uuid) {
-    return getLinkedDataPrefix(nodeType) + uuid;
+  public String getLinkedDataId(CedarResourceType resourceType, String uuid) {
+    return getLinkedDataPrefix(resourceType) + uuid;
   }
 
-  public String buildNewLinkedDataId(CedarNodeType nodeType) {
-    return getLinkedDataId(nodeType, UUID.randomUUID().toString());
+  public String buildNewLinkedDataId(CedarResourceType resourceType) {
+    return getLinkedDataId(resourceType, UUID.randomUUID().toString());
   }
 
-  public String getUUID(String resourceId, CedarNodeType nodeType) {
+  public String getUUID(String resourceId, CedarResourceType resourceType) {
     if (resourceId != null) {
       int pos = resourceId.lastIndexOf(SEPARATOR);
       return resourceId.substring(pos + 1);
@@ -56,8 +56,8 @@ public class LinkedDataUtil {
   /**
    * Adds template element instance @id's to the instance if necessary
    */
-  public void addElementInstanceIds(JsonNode nodeContent, CedarNodeType nodeType) {
-    if (nodeType.equals(CedarNodeType.INSTANCE)) { // this is just a check to avoid running it for other node types
+  public void addElementInstanceIds(JsonNode nodeContent, CedarResourceType resourceType) {
+    if (resourceType.equals(CedarResourceType.INSTANCE)) { // this is just a check to avoid running it for other node types
       Iterator<Map.Entry<String, JsonNode>> fieldsIterator = nodeContent.fields();
       while (fieldsIterator.hasNext()) {
         Map.Entry<String, JsonNode> field = fieldsIterator.next();
@@ -77,9 +77,9 @@ public class LinkedDataUtil {
       if (!fieldContent.has(LinkedData.VALUE) && !fieldContent.has(LinkedData.ID)) {
         if ((!fieldContent.has(LinkedData.TYPE) && Iterators.size(fieldContent.elements()) > 0) || (fieldContent.has
             (LinkedData.TYPE) && Iterators.size(fieldContent.elements()) > 1)) {
-          String id = buildNewLinkedDataId(CedarNodeType.ELEMENT_INSTANCE);
+          String id = buildNewLinkedDataId(CedarResourceType.ELEMENT_INSTANCE);
           ((ObjectNode) fieldContent).put(LinkedData.ID, id);
-          addElementInstanceIds(fieldContent, CedarNodeType.INSTANCE);
+          addElementInstanceIds(fieldContent, CedarResourceType.INSTANCE);
         }
       }
     }

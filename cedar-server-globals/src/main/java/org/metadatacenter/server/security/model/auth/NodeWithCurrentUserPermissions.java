@@ -1,8 +1,8 @@
 package org.metadatacenter.server.security.model.auth;
 
-import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.server.security.model.ResourceWithIdAndType;
 
-public interface NodeWithCurrentUserPermissions extends NodeWithIdAndType {
+public interface NodeWithCurrentUserPermissions extends ResourceWithIdAndType {
 
   CurrentUserPermissions getCurrentUserPermissions();
 }

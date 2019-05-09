@@ -1,32 +1,40 @@
 package org.metadatacenter.model.folderserver.datagroup;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public interface ResourceWithVersionData {
 
   @JsonProperty(NodeProperty.Label.VERSION)
-  public ResourceVersion getVersion();
+  ResourceVersion getVersion();
 
   @JsonProperty(NodeProperty.Label.VERSION)
-  public void setVersion(String versionString);
+  void setVersion(String versionString);
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
   Boolean isLatestVersion();
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_VERSION)
-  public void setLatestVersion(Boolean latestVersion);
+  void setLatestVersion(Boolean latestVersion);
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_DRAFT_VERSION)
-  public Boolean isLatestDraftVersion();
+  Boolean isLatestDraftVersion();
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_DRAFT_VERSION)
-  public void setLatestDraftVersion(Boolean latestDraftVersion);
+  void setLatestDraftVersion(Boolean latestDraftVersion);
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_PUBLISHED_VERSION)
-  public Boolean isLatestPublishedVersion();
+  Boolean isLatestPublishedVersion();
 
   @JsonProperty(NodeProperty.Label.IS_LATEST_PUBLISHED_VERSION)
-  public void setLatestPublishedVersion(Boolean latestPublishedVersion);
+  void setLatestPublishedVersion(Boolean latestPublishedVersion);
+
+  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
+  BiboStatus getPublicationStatus();
+
+  @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
+  void setPublicationStatus(String s);
+
 }

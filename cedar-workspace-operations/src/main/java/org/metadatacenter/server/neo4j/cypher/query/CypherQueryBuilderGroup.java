@@ -21,7 +21,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.SPECIAL_GROUP)).append(",");
-    sb.append(buildCreateAssignment(NodeProperty.NODE_TYPE));
+    sb.append(buildCreateAssignment(NodeProperty.RESOURCE_TYPE));
     sb.append("})");
 
     sb.append(" RETURN group");
@@ -42,7 +42,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.SPECIAL_GROUP)).append(",");
-    sb.append(buildCreateAssignment(NodeProperty.NODE_TYPE));
+    sb.append(buildCreateAssignment(NodeProperty.RESOURCE_TYPE));
     sb.append("})");
 
     sb.append(" WITH group");

@@ -1,6 +1,6 @@
 package org.metadatacenter.config;
 
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class MongoConfig {
     return collections;
   }
 
-  public String getMongoCollectionName(CedarNodeType nt) {
+  public String getMongoCollectionName(CedarResourceType nt) {
     return collections.get(nt.getValue());
   }
 

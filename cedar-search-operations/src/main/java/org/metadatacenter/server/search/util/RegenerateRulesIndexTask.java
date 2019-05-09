@@ -2,10 +2,9 @@ package org.metadatacenter.server.search.util;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
-import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +42,7 @@ public class RegenerateRulesIndexTask {
     try {
       // Get all resources
       log.info("Reading all resources from the existing index.");
-      List<FolderServerNode> resources = indexUtils.findAllResources(requestContext);
+      List<FileSystemResource> resources = indexUtils.findAllResources(requestContext);
       // Checks if is necessary to regenerate the index or not
       if (!force) {
         log.info("Checking if it is necessary to regenerate the rules index from DB");

@@ -3,7 +3,7 @@ package org.metadatacenter.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.model.provenance.ProvenanceInfo;
 import org.metadatacenter.util.provenance.ProvenanceUtil;
@@ -41,27 +41,27 @@ public class ModelUtil {
     return r;
   }
 
-  public static JsonPointerValuePair extractAtIdFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractAtIdFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, AT_ID);
   }
 
-  public static JsonPointerValuePair extractNameFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractNameFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, SCHEMA_NAME);
   }
 
-  public static JsonPointerValuePair extractDescriptionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractDescriptionFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, SCHEMA_DESCRIPTION);
   }
 
-  public static JsonPointerValuePair extractIdentifierFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractIdentifierFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, SCHEMA_IDENTIFIER);
   }
 
-  public static JsonPointerValuePair extractVersionFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractVersionFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, PAV_VERSION);
   }
 
-  public static JsonPointerValuePair extractPublicationStatusFromResource(CedarNodeType nodeType, JsonNode jsonNode) {
+  public static JsonPointerValuePair extractPublicationStatusFromResource(CedarResourceType resourceType, JsonNode jsonNode) {
     return extractStringFromPointer(jsonNode, BIBO_STATUS);
   }
 
@@ -108,7 +108,7 @@ public class ModelUtil {
   }
 
   private static String generateNewFieldId(LinkedDataUtil linkedDataUtil) {
-    return linkedDataUtil.buildNewLinkedDataId(CedarNodeType.FIELD);
+    return linkedDataUtil.buildNewLinkedDataId(CedarResourceType.FIELD);
   }
 
 }

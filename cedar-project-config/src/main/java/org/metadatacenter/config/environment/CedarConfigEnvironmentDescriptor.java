@@ -208,7 +208,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarValidationEnabled = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_VALIDATION_ENABLED);
-    cedarValidationEnabled.add(SystemComponent.SERVER_RESOURCE);
+    cedarValidationEnabled.add(SystemComponent.SERVER_ARTIFACT);
 
     Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_SUBMISSION_TEMPLATE_ID_1);

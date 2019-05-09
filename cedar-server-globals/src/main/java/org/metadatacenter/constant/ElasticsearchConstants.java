@@ -16,7 +16,7 @@ public final class ElasticsearchConstants {
   public static final String SUMMARY_RAW_TEXT = "summaryText.raw";
   public static final String USERS = "users";
   public static final String INFO_SCHEMA_NAME = ES_INFO_PREFIX + ModelNodeNames.SCHEMA_NAME;
-  public static final String NODE_TYPE = ES_INFO_PREFIX + "nodeType";
+  public static final String RESOURCE_TYPE = ES_INFO_PREFIX + "resourceType";
   public static final String INFO_IS_LATEST_VERSION = ES_INFO_PREFIX + "isLatestVersion";
   public static final String INFO_IS_LATEST_PUBLISHED_VERSION = ES_INFO_PREFIX + "isLatestPublishedVersion";
   public static final String INFO_IS_LATEST_DRAFT_VERSION = ES_INFO_PREFIX + "isLatestDraftVersion";

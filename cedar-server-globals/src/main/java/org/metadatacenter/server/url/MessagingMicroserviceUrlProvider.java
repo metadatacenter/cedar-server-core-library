@@ -1,7 +1,7 @@
 package org.metadatacenter.server.url;
 
 import org.metadatacenter.config.ServerConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 public class MessagingMicroserviceUrlProvider extends MicroserviceUrlProvider {
 
@@ -10,6 +10,6 @@ public class MessagingMicroserviceUrlProvider extends MicroserviceUrlProvider {
   }
 
   public String getMessages() {
-    return base + CedarNodeType.Prefix.MESSAGES;
+    return base + CedarResourceType.Prefix.MESSAGES;
   }
 }

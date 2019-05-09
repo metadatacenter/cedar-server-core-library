@@ -11,23 +11,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ResourceTypeDetector {
   public static ResourceType detectType(String resourceType) throws CedarException {
     checkNotNull(resourceType);
-    ResourceType nodeType = null;
+    ResourceType resType = null;
     if (!Strings.isNullOrEmpty(resourceType)) {
-      nodeType = ResourceType.forValue(resourceType);
+      resType = ResourceType.forValue(resourceType);
     }
-    return checkNotUnknownType(nodeType);
+    return checkNotUnknownType(resType);
   }
 
-  private static ResourceType checkNotUnknownType(ResourceType nodeType) throws CedarException {
-    if (nodeType == null) {
-      throw unknownNodeTypeException();
+  private static ResourceType checkNotUnknownType(ResourceType resourceType) throws CedarException {
+    if (resourceType == null) {
+      throw unknownResourceTypeException();
     }
-    return nodeType;
+    return resourceType;
   }
 
-  private static CedarException unknownNodeTypeException() {
+  private static CedarException unknownResourceTypeException() {
     final CedarErrorPack errorPack = new CedarErrorPack();
-    errorPack.errorKey(CedarErrorKey.UNKNOWN_NODE_TYPE)
+    errorPack.errorKey(CedarErrorKey.UNKNOWN_RESOURCE_TYPE)
         .errorType(CedarErrorType.INVALID_ARGUMENT)
         .message("Unknown requested resource type")
         .parameter("expectedTypes", ResourceType.values());

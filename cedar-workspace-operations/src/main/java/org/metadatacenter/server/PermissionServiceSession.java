@@ -1,6 +1,6 @@
 package org.metadatacenter.server;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
@@ -21,7 +21,7 @@ public interface PermissionServiceSession {
 
   boolean userHasWriteAccessToNode(String nodeURL);
 
-  boolean userIsOwnerOfNode(FolderServerNode node);
+  boolean userIsOwnerOfNode(FileSystemResource node);
 
   boolean userHas(CedarPermission permission);
 }

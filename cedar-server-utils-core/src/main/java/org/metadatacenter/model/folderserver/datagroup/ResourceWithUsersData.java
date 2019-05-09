@@ -6,21 +6,21 @@ import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 public interface ResourceWithUsersData {
 
   @JsonProperty(NodeProperty.Label.OWNED_BY)
-  public String getOwnedBy();
+  String getOwnedBy();
 
   @JsonProperty(NodeProperty.Label.OWNED_BY)
-  public void setOwnedBy(String ownedBy);
+  void setOwnedBy(String ownedBy);
 
   @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public String getCreatedBy();
+  String getCreatedBy();
 
   @JsonProperty(NodeProperty.Label.CREATED_BY)
-  public void setCreatedBy(String createdBy);
-  
-  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public String getLastUpdatedBy();
+  void setCreatedBy(String createdBy);
 
   @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
-  public void setLastUpdatedBy(String lastUpdatedBy);
+  String getLastUpdatedBy();
+
+  @JsonProperty(NodeProperty.Label.LAST_UPDATED_BY)
+  void setLastUpdatedBy(String lastUpdatedBy);
 
 }
