@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 public enum NodeLabel {
 
@@ -84,8 +84,8 @@ public enum NodeLabel {
     return null;
   }
 
-  public static NodeLabel forCedarNodeType(CedarNodeType nodeType) {
-    switch (nodeType) {
+  public static NodeLabel forCedarResourceType(CedarResourceType resourceType) {
+    switch (resourceType) {
       case FIELD:
         return FIELD;
       case ELEMENT:

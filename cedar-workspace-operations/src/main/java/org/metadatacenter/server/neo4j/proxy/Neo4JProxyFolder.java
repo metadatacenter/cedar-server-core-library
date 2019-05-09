@@ -1,9 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNode;
+import org.metadatacenter.model.CedarResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -84,7 +83,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerFolder.class);
   }
 
-  private <T extends CedarNode> List<T> findFolderPathGenericById(String id, Class<T> klazz) {
+  private <T extends CedarResource> List<T> findFolderPathGenericById(String id, Class<T> klazz) {
     String cypher = CypherQueryBuilderFolder.getFolderLookupQueryById();
     CypherParameters params = CypherParamBuilderFolder.getFolderLookupByIDParameters(proxies.pathUtil, id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);

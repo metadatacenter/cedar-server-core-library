@@ -152,7 +152,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Filter by resource type
     if (resourceTypes != null && resourceTypes.size() > 0) {
-      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(NODE_TYPE, resourceTypes);
+      QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(RESOURCE_TYPE, resourceTypes);
       mainQuery.must(resourceTypesQuery);
     }
 

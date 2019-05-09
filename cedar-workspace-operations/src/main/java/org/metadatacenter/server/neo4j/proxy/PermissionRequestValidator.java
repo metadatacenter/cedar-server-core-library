@@ -2,7 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -23,7 +23,7 @@ public class PermissionRequestValidator {
   private final CedarNodePermissions permissions;
   private final String nodeURL;
 
-  private FolderServerNode node;
+  private FileSystemResource node;
 
   public PermissionRequestValidator(PermissionServiceSession permissionService, Neo4JProxies proxies, String nodeURL,
                                     CedarNodePermissionsRequest request) {
@@ -63,7 +63,7 @@ public class PermissionRequestValidator {
   }
 
   private void validateNodeExistence() {
-    FolderServerNode folder = proxies.node().findNodeById(nodeURL);
+    FileSystemResource folder = proxies.node().findNodeById(nodeURL);
     node = folder;
     if (folder == null) {
       callResult.addError(NOT_FOUND)

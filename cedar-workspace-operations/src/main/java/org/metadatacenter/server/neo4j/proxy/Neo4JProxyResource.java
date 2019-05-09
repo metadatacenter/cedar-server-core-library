@@ -1,13 +1,13 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNode;
+import org.metadatacenter.model.CedarResource;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
-import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerArtifactExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -27,21 +27,21 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     super(proxies, cedarConfig);
   }
 
-  FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentId) {
+  FolderServerArtifact createResourceAsChildOfId(FolderServerArtifact newResource, String parentId) {
     String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(newResource);
     CypherParameters params = CypherParamBuilderResource.createResource(newResource, parentId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
+    FileSystemResource folderServerNode = executeWriteGetOne(q, FileSystemResource.class);
+    return folderServerNode == null ? null : folderServerNode.asArtifact();
   }
 
-  FolderServerResource updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
+  FolderServerArtifact updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
       updatedBy) {
     String cypher = CypherQueryBuilderResource.updateResourceById(updateFields);
     CypherParameters params = CypherParamBuilderResource.updateResourceById(resourceURL, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
+    FileSystemResource folderServerNode = executeWriteGetOne(q, FileSystemResource.class);
+    return folderServerNode == null ? null : folderServerNode.asArtifact();
   }
 
   boolean deleteResourceById(String resourceURL) {
@@ -51,7 +51,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeWrite(q, "deleting resource");
   }
 
-  boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
+  boolean moveResource(FolderServerArtifact sourceResource, FolderServerFolder targetFolder) {
     boolean unlink = unlinkResourceFromParent(sourceResource);
     if (unlink) {
       return linkResourceUnderFolder(sourceResource, targetFolder);
@@ -59,14 +59,14 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return false;
   }
 
-  private boolean unlinkResourceFromParent(FolderServerResource resource) {
+  private boolean unlinkResourceFromParent(FolderServerArtifact resource) {
     String cypher = CypherQueryBuilderResource.unlinkResourceFromParent();
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "unlinking resource");
   }
 
-  private boolean linkResourceUnderFolder(FolderServerResource resource, FolderServerFolder parentFolder) {
+  private boolean linkResourceUnderFolder(FolderServerArtifact resource, FolderServerFolder parentFolder) {
     String cypher = CypherQueryBuilderResource.linkResourceUnderFolder();
     CypherParameters params = AbstractCypherParamBuilder.matchResourceIdAndParentFolderId(resource.getId(), parentFolder
         .getId());
@@ -74,14 +74,14 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeWrite(q, "linking resource");
   }
 
-  private boolean setOwner(FolderServerResource resource, FolderServerUser user) {
+  private boolean setOwner(FolderServerArtifact resource, FolderServerUser user) {
     String cypher = CypherQueryBuilderResource.setResourceOwner();
     CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting owner");
   }
 
-  boolean updateOwner(FolderServerResource resource, FolderServerUser user) {
+  boolean updateOwner(FolderServerArtifact resource, FolderServerUser user) {
     boolean removed = removeOwner(resource);
     if (removed) {
       return setOwner(resource, user);
@@ -89,34 +89,34 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return false;
   }
 
-  boolean removeOwner(FolderServerResource resource) {
+  boolean removeOwner(FolderServerArtifact resource) {
     String cypher = CypherQueryBuilderResource.removeResourceOwner();
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing owner");
   }
 
-  private <T extends CedarNode> T findResourceGenericById(String id, Class<T> klazz) {
+  private <T extends CedarResource> T findResourceGenericById(String id, Class<T> klazz) {
     String cypher = CypherQueryBuilderNode.getNodeById();
     CypherParameters params = CypherParamBuilderNode.getNodeById(id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, klazz);
   }
 
-  public FolderServerResourceExtract findResourceExtractById(ResourceUri id) {
-    return findResourceGenericById(id.getValue(), FolderServerResourceExtract.class);
+  public FolderServerArtifactExtract findResourceExtractById(ResourceUri id) {
+    return findResourceGenericById(id.getValue(), FolderServerArtifactExtract.class);
   }
 
-  public FolderServerResource findResourceById(String resourceURL) {
-    FolderServerNode folderServerNode = findResourceGenericById(resourceURL, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
+  public FolderServerArtifact findResourceById(String resourceURL) {
+    FileSystemResource folderServerNode = findResourceGenericById(resourceURL, FileSystemResource.class);
+    return folderServerNode == null ? null : folderServerNode.asArtifact();
   }
 
-  List<FolderServerNode> findResourcePathById(String id) {
+  List<FileSystemResource> findResourcePathById(String id) {
     String cypher = CypherQueryBuilderResource.getResourceLookupQueryById();
     CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
+    return executeReadGetList(q, FileSystemResource.class);
   }
 
   public boolean setDerivedFrom(String newId, String oldId) {
@@ -168,19 +168,19 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  public List<FolderServerResourceExtract> getVersionHistory(String resourceId) {
+  public List<FolderServerArtifactExtract> getVersionHistory(String resourceId) {
     String cypher = CypherQueryBuilderResource.getVersionHistory();
     CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerResourceExtract.class);
+    return executeReadGetList(q, FolderServerArtifactExtract.class);
   }
 
-  public List<FolderServerResourceExtract> getVersionHistoryWithPermission(String resourceId, String userURL) {
+  public List<FolderServerArtifactExtract> getVersionHistoryWithPermission(String resourceId, String userURL) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     String cypher = CypherQueryBuilderResource.getVersionHistoryWithPermission();
     CypherParameters params = CypherParamBuilderResource.matchResourceIdAndUserId(resourceId, user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerResourceExtract.class);
+    return executeReadGetList(q, FolderServerArtifactExtract.class);
   }
 
   public boolean setOpen(String resourceId) {

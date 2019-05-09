@@ -16,7 +16,7 @@ public enum NodeProperty implements CypherQueryParameter {
   FIRST_NAME(Label.FIRST_NAME),
   LAST_NAME(Label.LAST_NAME),
   EMAIL(Label.EMAIL),
-  NODE_TYPE(Label.NODE_TYPE),
+  RESOURCE_TYPE(Label.RESOURCE_TYPE),
   VERSION(Label.VERSION),
   PUBLICATION_STATUS(Label.PUBLICATION_STATUS),
   SPECIAL_GROUP(Label.SPECIAL_GROUP),
@@ -55,7 +55,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
     public static final String EMAIL = "email";
-    public static final String NODE_TYPE = "nodeType";
+    public static final String RESOURCE_TYPE = "resourceType";
     public static final String VERSION = "pav:version";
     public static final String PUBLICATION_STATUS = "bibo:status";
     public static final String SPECIAL_GROUP = "specialGroup";

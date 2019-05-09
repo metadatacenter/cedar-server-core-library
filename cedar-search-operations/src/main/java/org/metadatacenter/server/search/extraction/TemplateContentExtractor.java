@@ -2,7 +2,7 @@ package org.metadatacenter.server.search.extraction;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.search.extraction.model.TemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,11 +91,11 @@ public class TemplateContentExtractor {
             // Get instance type (@type) if it exists)
             Optional<String> instanceType = getInstanceType(jsonFieldNode);
 
-            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.FIELD, isArray));
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarResourceType.FIELD, isArray));
           }
           // Element
           else if (isTemplateElementNode(jsonFieldNode)) {
-            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarNodeType.ELEMENT, isArray));
+            results.add(new TemplateNode(id, name, prefLabel, jsonFieldPath, CedarResourceType.ELEMENT, isArray));
             getTemplateNodes(jsonFieldNode, jsonFieldPath, results);
           }
         }
@@ -115,7 +115,7 @@ public class TemplateContentExtractor {
    * @return
    */
   private boolean isTemplateFieldNode(JsonNode node) {
-    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarNodeType.FIELD.getAtType())) {
+    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarResourceType.FIELD.getAtType())) {
       return true;
     } else {
       return false;
@@ -129,7 +129,7 @@ public class TemplateContentExtractor {
    * @return
    */
   private boolean isTemplateElementNode(JsonNode node) {
-    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarNodeType.ELEMENT.getAtType())) {
+    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarResourceType.ELEMENT.getAtType())) {
       return true;
     } else {
       return false;

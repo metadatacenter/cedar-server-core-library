@@ -2,7 +2,7 @@ package org.metadatacenter.util.http;
 
 import org.metadatacenter.config.PaginationConfig;
 import org.metadatacenter.exception.CedarException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.exception.CedarAssertionException;
 
 import java.net.MalformedURLException;
@@ -128,8 +128,8 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
             .parameter("resource_types", resourceTypesInput.get())
             .badRequest();
       } else {
-        nodeTypeList = new ArrayList<>();
-        nodeTypeList.add(CedarNodeType.INSTANCE);
+        resourceTypeList = new ArrayList<>();
+        resourceTypeList.add(CedarResourceType.INSTANCE);
       }
     } else {
       validateResourceTypes();

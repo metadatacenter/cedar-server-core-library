@@ -5,7 +5,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.GraphServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -46,7 +46,7 @@ public class Neo4JUserSessionGraphService extends AbstractNeo4JUserSession imple
   }
 
   @Override
-  public FolderServerNode createNode(JsonNode node) {
+  public FileSystemResource createNode(JsonNode node) {
     return proxies.graph().createNode(node);
   }
 

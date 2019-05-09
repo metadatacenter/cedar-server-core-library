@@ -48,7 +48,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             "()-" +
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
             "(node)" +
-            " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND NOT EXISTS(node.<PROP.EVERYBODY_PERMISSION>)" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
@@ -74,7 +74,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     sb.append(
         " MATCH (node:<LABEL.FSNODE>)" +
             " WHERE EXISTS(node.<PROP.EVERYBODY_PERMISSION>) AND node.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
-            " AND node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND node.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
@@ -102,7 +102,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
             "()-" +
             "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
             "(node)" +
-            " WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND NOT EXISTS(node.<PROP.EVERYBODY_PERMISSION>)" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
@@ -125,7 +125,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
     sb.append(
         " MATCH (node:<LABEL.FSNODE>)" +
             " WHERE EXISTS(node.<PROP.EVERYBODY_PERMISSION>) AND node.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
-            " AND node.<PROP.NODE_TYPE> in {nodeTypeList}" +
+            " AND node.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND node.<PROP.OWNED_BY> <> {userId}" +
             " AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) "
     );
@@ -148,7 +148,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
@@ -173,7 +173,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     sb.append(" AND (node.<PROP.IS_USER_HOME> IS NULL OR node.<PROP.IS_USER_HOME> <> true) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
@@ -223,7 +223,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     sb.append(" AND (node.<PROP.IS_BASED_ON> = {isBasedOn}) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));
@@ -241,7 +241,7 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
       sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     }
     sb.append(" MATCH (node)");
-    sb.append(" WHERE node.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE node.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     sb.append(" AND (node.<PROP.IS_BASED_ON> = {isBasedOn}) ");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "node"));

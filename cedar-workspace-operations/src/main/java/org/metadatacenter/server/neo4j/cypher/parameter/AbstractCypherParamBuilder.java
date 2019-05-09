@@ -2,11 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerInstance;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -24,7 +20,7 @@ public abstract class AbstractCypherParamBuilder {
     return new ParameterLiteral(FOLDER_ALIAS_PREFIX + i);
   }
 
-  protected static CypherParameters createNode(FolderServerNode newNode, String parentId) {
+  protected static CypherParameters createNode(FileSystemResource newNode, String parentId) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
@@ -43,18 +39,34 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.OWNED_BY, newNode.getOwnedBy());
-    params.put(NodeProperty.NODE_TYPE, newNode.getType().getValue());
+    params.put(NodeProperty.RESOURCE_TYPE, newNode.getType().getValue());
 
-    if (newNode instanceof FolderServerResource) {
-      FolderServerResource newResource = (FolderServerResource) newNode;
+    if (newNode instanceof FolderServerFolder) {
+      FolderServerFolder newFolder = (FolderServerFolder) newNode;
+      params.put(NodeProperty.IS_ROOT, newFolder.isRoot());
+      params.put(NodeProperty.IS_SYSTEM, newFolder.isSystem());
+      params.put(NodeProperty.IS_USER_HOME, newFolder.isUserHome());
+      params.put(NodeProperty.HOME_OF, newFolder.getHomeOf());
+    }
+    if (newNode instanceof FolderServerArtifact) {
+      FolderServerArtifact newResource = (FolderServerArtifact) newNode;
+      if (newResource.getDerivedFrom() != null) {
+        params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());
+      }
+      if (newResource.getIdentifier() != null) {
+        params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
+      }
+      if (newResource.isOpen() != null) {
+        params.put(NodeProperty.IS_OPEN, newResource.isOpen());
+      }
+    }
+    if (newNode instanceof FolderServerSchemaArtifact) {
+      FolderServerSchemaArtifact newResource = (FolderServerSchemaArtifact) newNode;
       if (newResource.getVersion() != null) {
         params.put(NodeProperty.VERSION, newResource.getVersion());
       }
       if (newResource.getPublicationStatus() != null) {
         params.put(NodeProperty.PUBLICATION_STATUS, newResource.getPublicationStatus());
-      }
-      if (newResource.getDerivedFrom() != null) {
-        params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());
       }
       if (newResource.getPreviousVersion() != null) {
         params.put(NodeProperty.PREVIOUS_VERSION, newResource.getPreviousVersion());
@@ -68,24 +80,12 @@ public abstract class AbstractCypherParamBuilder {
       if (newResource.isLatestPublishedVersion() != null) {
         params.put(NodeProperty.IS_LATEST_PUBLISHED_VERSION, newResource.isLatestPublishedVersion());
       }
-      if (newResource.getIdentifier() != null) {
-        params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
+    }
+    if (newNode instanceof FolderServerInstanceArtifact) {
+      FolderServerInstance newInstance = (FolderServerInstance) newNode;
+      if (newInstance.getIsBasedOn() != null) {
+        params.put(NodeProperty.IS_BASED_ON, newInstance.getIsBasedOn());
       }
-      if (newResource.getType() == CedarNodeType.INSTANCE) {
-        FolderServerInstance newInstance = (FolderServerInstance) newResource;
-        if (newInstance.getIsBasedOn() != null) {
-          params.put(NodeProperty.IS_BASED_ON, newInstance.getIsBasedOn());
-        }
-      }
-      if (newResource.isOpen() != null) {
-        params.put(NodeProperty.IS_OPEN, newResource.isOpen());
-      }
-    } else if (newNode instanceof FolderServerFolder) {
-      FolderServerFolder newFolder = (FolderServerFolder) newNode;
-      params.put(NodeProperty.IS_ROOT, newFolder.isRoot());
-      params.put(NodeProperty.IS_SYSTEM, newFolder.isSystem());
-      params.put(NodeProperty.IS_USER_HOME, newFolder.isUserHome());
-      params.put(NodeProperty.HOME_OF, newFolder.getHomeOf());
     }
     return params;
   }

@@ -4,10 +4,10 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.request.NodeListQueryType;
 import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.model.response.FolderServerNodeListResponse;
@@ -52,9 +52,9 @@ public class IndexUtils {
    * This method retrieves all the resources from the Neo4j Server that are expected to be in the search index.
    * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
-  public List<FolderServerNode> findAllResources(CedarRequestContext context) throws CedarProcessingException {
+  public List<FileSystemResource> findAllResources(CedarRequestContext context) throws CedarProcessingException {
     log.info("Retrieving all resources.");
-    List<FolderServerNode> resources = new ArrayList<>();
+    List<FileSystemResource> resources = new ArrayList<>();
     boolean finished = false;
 
     int offset = 0;
@@ -78,8 +78,8 @@ public class IndexUtils {
         countSoFar += count;
         log.info("Retrieved " + countSoFar + "/" + totalCount + " resources");
         currentOffset = pagedNodes.getCurrentOffset();
-        for (FolderServerNodeExtract folderServerNodeExtract : pagedNodes.getResources()) {
-          FolderServerNode folderServerNode = FolderServerNode.fromNodeExtract(folderServerNodeExtract);
+        for (FolderServerResourceExtract folderServerNodeExtract : pagedNodes.getResources()) {
+          FileSystemResource folderServerNode = FileSystemResource.fromNodeExtract(folderServerNodeExtract);
           if (needsIndexing(folderServerNode)) {
             resources.add(folderServerNode);
           } else {
@@ -96,9 +96,9 @@ public class IndexUtils {
     return resources;
   }
 
-  public boolean needsIndexing(FolderServerNode folderServerNode) {
+  public boolean needsIndexing(FileSystemResource folderServerNode) {
     boolean needsIndexing = true;
-    if (folderServerNode.getType() == CedarNodeType.FOLDER) {
+    if (folderServerNode.getType() == CedarResourceType.FOLDER) {
       FolderServerFolder folderServerFolder = (FolderServerFolder) folderServerNode;
       if (folderServerFolder.isSystem() || folderServerFolder.isUserHome()) {
         needsIndexing = false;
@@ -197,7 +197,7 @@ public class IndexUtils {
     FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(c);
 
     // Retrieve all resources
-    List<FolderServerNodeExtract> resources = folderSession.findAllNodes(limit, offset, sortList);
+    List<FolderServerResourceExtract> resources = folderSession.findAllNodes(limit, offset, sortList);
 
     // Build response
     FolderServerNodeListResponse r = new FolderServerNodeListResponse();

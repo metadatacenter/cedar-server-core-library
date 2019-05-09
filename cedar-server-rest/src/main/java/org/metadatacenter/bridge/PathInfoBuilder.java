@@ -1,8 +1,8 @@
 package org.metadatacenter.bridge;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.extract.FolderServerFolderExtract;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -15,19 +15,19 @@ public final class PathInfoBuilder {
   private PathInfoBuilder() {
   }
 
-  public static List<FolderServerNodeExtract> getNodePathExtract(CedarRequestContext context,
-                                                                 FolderServiceSession folderSession,
-                                                                 PermissionServiceSession permissionSession,
-                                                                 FolderServerNode node) {
-    List<FolderServerNodeExtract> pathInfo = folderSession.findNodePathExtract(node);
-    for (FolderServerNodeExtract extract : pathInfo) {
+  public static List<FolderServerResourceExtract> getNodePathExtract(CedarRequestContext context,
+                                                                     FolderServiceSession folderSession,
+                                                                     PermissionServiceSession permissionSession,
+                                                                     FileSystemResource node) {
+    List<FolderServerResourceExtract> pathInfo = folderSession.findNodePathExtract(node);
+    for (FolderServerResourceExtract extract : pathInfo) {
       extract.setActiveUserCanRead(activeUserCanRead(context, permissionSession, extract));
     }
     return pathInfo;
   }
 
   private static boolean activeUserCanRead(CedarRequestContext context, PermissionServiceSession permissionSession,
-                                           FolderServerNodeExtract nodeExtract) {
+                                           FolderServerResourceExtract nodeExtract) {
     if (context.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       return true;
     }

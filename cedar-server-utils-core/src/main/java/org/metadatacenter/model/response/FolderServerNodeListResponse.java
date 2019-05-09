@@ -2,7 +2,7 @@ package org.metadatacenter.model.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.folderserver.extract.FolderServerNodeExtract;
+import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.request.NodeListQueryType;
 import org.metadatacenter.util.FolderServerNodeContext;
 
@@ -12,23 +12,23 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerNodeListResponse extends AbstractNodeListResponse {
 
-  private List<? extends FolderServerNodeExtract> resources;
-  private List<? extends FolderServerNodeExtract> pathInfo;
+  private List<? extends FolderServerResourceExtract> resources;
+  private List<? extends FolderServerResourceExtract> pathInfo;
   private NodeListQueryType nodeListQueryType;
 
-  public List<? extends FolderServerNodeExtract> getResources() {
+  public List<? extends FolderServerResourceExtract> getResources() {
     return resources;
   }
 
-  public void setResources(List<? extends FolderServerNodeExtract> resources) {
+  public void setResources(List<? extends FolderServerResourceExtract> resources) {
     this.resources = resources;
   }
 
-  public List<? extends FolderServerNodeExtract> getPathInfo() {
+  public List<? extends FolderServerResourceExtract> getPathInfo() {
     return pathInfo;
   }
 
-  public void setPathInfo(List<FolderServerNodeExtract> pathInfo) {
+  public void setPathInfo(List<FolderServerResourceExtract> pathInfo) {
     this.pathInfo = pathInfo;
   }
 

@@ -1,15 +1,16 @@
 package org.metadatacenter.server.permissions;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
-import org.metadatacenter.server.security.model.NodeWithIsBasedOn;
+import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
@@ -67,11 +68,11 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
         currentUserPermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
       }
     }
-    if (resource.getType() == CedarNodeType.TEMPLATE) {
+    if (resource.getType() == CedarResourceType.TEMPLATE) {
       currentUserPermissions.setCanPopulate(true);
     }
-    if (resource.getType() == CedarNodeType.INSTANCE) {
-      NodeWithIsBasedOn instance = (NodeWithIsBasedOn) resource;
+    if (resource.getType() == CedarResourceType.INSTANCE) {
+      InstanceArtifactWithIsBasedOn instance = (InstanceArtifactWithIsBasedOn) resource;
       ResourceUri basedOnTemplate = instance.getIsBasedOn();
       if (basedOnTemplate != null) {
         String basedOnTemplateId = basedOnTemplate.getValue();
@@ -81,8 +82,15 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
       }
     }
     currentUserPermissions.setCanCopy(true);
-    currentUserPermissions.setCanMakeOpen(resource.isOpen() == null || !resource.isOpen());
-    currentUserPermissions.setCanMakeNotOpen(resource.isOpen() != null && resource.isOpen());
+    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
+      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
+          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+      currentUserPermissions.setCanMakeOpen(res.isOpen() == null || !res.isOpen());
+      currentUserPermissions.setCanMakeNotOpen(res.isOpen() != null && res.isOpen());
+    } else {
+      currentUserPermissions.setCanMakeOpen(false);
+      currentUserPermissions.setCanMakeNotOpen(false);
+    }
   }
 
   private boolean isSubmittable(String basedOnTemplateId) {

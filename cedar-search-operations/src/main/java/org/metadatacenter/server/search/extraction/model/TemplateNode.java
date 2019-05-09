@@ -1,7 +1,7 @@
 package org.metadatacenter.server.search.extraction.model;
 
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class TemplateNode {
   /**
    * Artifact type, that is, 'FIELD' or 'ELEMENT'.
    */
-  private CedarNodeType type; // Node type (e.g. field)
+  private CedarResourceType type; // Node type (e.g. field)
   
   /**
    * Specifies if the JSON node contains just one artifact or an array of artifacts.
@@ -46,9 +46,9 @@ public class TemplateNode {
   private boolean isArray;
 
   public TemplateNode(String id, String name, String prefLabel, List<String> path,
-                           CedarNodeType type, boolean isArray) throws CedarProcessingException {
+                      CedarResourceType type, boolean isArray) throws CedarProcessingException {
 
-    if (type.equals(CedarNodeType.ELEMENT) || type.equals(CedarNodeType.FIELD)) {
+    if (type.equals(CedarResourceType.ELEMENT) || type.equals(CedarResourceType.FIELD)) {
       this.id = id;
       this.name = name;
       this.prefLabel = prefLabel;
@@ -77,7 +77,7 @@ public class TemplateNode {
     return path;
   }
 
-  public CedarNodeType getType() {
+  public CedarResourceType getType() {
     return type;
   }
 
@@ -90,7 +90,7 @@ public class TemplateNode {
   }
 
   public boolean isTemplateFieldNode() {
-    if (type.equals(CedarNodeType.FIELD)) {
+    if (type.equals(CedarResourceType.FIELD)) {
       return true;
     } else {
       return false;
@@ -98,7 +98,7 @@ public class TemplateNode {
   }
 
   public boolean isTemplateElementNode() {
-    if (type.equals(CedarNodeType.ELEMENT)) {
+    if (type.equals(CedarResourceType.ELEMENT)) {
       return true;
     } else {
       return false;

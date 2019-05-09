@@ -1,28 +1,26 @@
 package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
-import org.metadatacenter.model.folderserver.datagroup.NodeWithEverybodyPermission;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.NodeWithIdAndType;
+import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithFolderData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithHomeOf;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolder extends FolderServerNode implements NodeWithIdAndType, NodeWithEverybodyPermission {
+public class FolderServerFolder extends FileSystemResource implements ResourceWithFolderData, ResourceWithHomeOf {
 
-  private boolean userHome;
-  private boolean system;
-  private boolean root;
+  private FolderDataGroup folderDataGroup;
   private String homeOf;
-  protected NodeSharePermission everybodyPermission;
+  private NodeSharePermission everybodyPermission;
 
   public FolderServerFolder() {
-    super(CedarNodeType.FOLDER);
+    super(CedarResourceType.FOLDER);
+    this.folderDataGroup = new FolderDataGroup();
   }
 
   public static FolderServerFolder fromFolderServerFolderCurrentUserReport(FolderServerFolderCurrentUserReport folder) {
@@ -35,42 +33,42 @@ public class FolderServerFolder extends FolderServerNode implements NodeWithIdAn
     return null;
   }
 
-  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  @Override
   public boolean isUserHome() {
-    return userHome;
+    return folderDataGroup.isUserHome();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  @Override
   public void setUserHome(boolean userHome) {
-    this.userHome = userHome;
+    this.folderDataGroup.setUserHome(userHome);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  @Override
   public boolean isSystem() {
-    return system;
+    return folderDataGroup.isSystem();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  @Override
   public void setSystem(boolean system) {
-    this.system = system;
+    this.folderDataGroup.setSystem(system);
   }
 
-  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  @Override
   public boolean isRoot() {
-    return root;
+    return folderDataGroup.isRoot();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  @Override
   public void setRoot(boolean root) {
-    this.root = root;
+    this.folderDataGroup.setRoot(root);
   }
 
-  @JsonProperty(NodeProperty.Label.HOME_OF)
+  @Override
   public String getHomeOf() {
     return homeOf;
   }
 
-  @JsonProperty(NodeProperty.Label.HOME_OF)
+  @Override
   public void setHomeOf(String homeOf) {
     this.homeOf = homeOf;
   }

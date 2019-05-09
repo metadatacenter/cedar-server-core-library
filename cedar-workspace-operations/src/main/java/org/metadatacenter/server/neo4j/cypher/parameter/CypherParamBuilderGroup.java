@@ -1,7 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
@@ -26,7 +26,7 @@ public class CypherParamBuilderGroup extends AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_BY, ownerURL);
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
-    params.put(NodeProperty.NODE_TYPE, CedarNodeType.GROUP.getValue());
+    params.put(NodeProperty.RESOURCE_TYPE, CedarResourceType.GROUP.getValue());
     params.put(NodeProperty.SPECIAL_GROUP, specialGroup);
     params.put(ParameterPlaceholder.USER_ID, ownerURL);
     return params;

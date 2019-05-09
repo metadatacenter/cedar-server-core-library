@@ -3,8 +3,8 @@ package org.metadatacenter.server.search.extraction;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.InfoField;
 import org.metadatacenter.server.search.extraction.model.FieldValue;
@@ -12,9 +12,9 @@ import org.metadatacenter.server.search.extraction.model.TemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.metadatacenter.model.ModelNodeNames.*;
-
 import java.util.*;
+
+import static org.metadatacenter.model.ModelNodeNames.*;
 
 /**
  * Utilities to extract information from CEDAR Template Instances
@@ -45,11 +45,11 @@ public class TemplateInstanceContentExtractor {
    * @return
    * @throws CedarProcessingException
    */
-  public List<InfoField> generateInfoFields(FolderServerNode folderServerNode,
+  public List<InfoField> generateInfoFields(FileSystemResource folderServerNode,
                                             CedarRequestContext requestContext, boolean isIndexRegenerationTask)
       throws CedarProcessingException {
 
-    if (folderServerNode.getType().equals(CedarNodeType.INSTANCE)) {
+    if (folderServerNode.getType().equals(CedarResourceType.INSTANCE)) {
 
       List<InfoField> infoFields = new ArrayList<>();
       JsonNode templateInstance = extractionUtils.getArtifactById(folderServerNode.getId(),
@@ -64,7 +64,7 @@ public class TemplateInstanceContentExtractor {
       }
       // Otherwise, retrieve the template and parse it
       else {
-        JsonNode template = extractionUtils.getArtifactById(templateId, CedarNodeType.TEMPLATE, requestContext);
+        JsonNode template = extractionUtils.getArtifactById(templateId, CedarResourceType.TEMPLATE, requestContext);
         List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
         nodesMap = new HashMap<>();
         for (TemplateNode node : templateNodes) {
@@ -146,7 +146,7 @@ public class TemplateInstanceContentExtractor {
             results.add(generateFieldValue(currentNodeMap.getValue(), tmpPath));
           } else {
             throw new CedarProcessingException("Unrecognized node type. The template node must be either a " +
-                "Template Field or a Template Element. Node type: " + templateNode.getType().name());
+                "Template Field or a Template Element. Node type: " + templateNode.getName());
           }
         }
         // Array
@@ -165,7 +165,7 @@ public class TemplateInstanceContentExtractor {
             }
           } else {
             throw new CedarProcessingException("Unrecognized node type. The template node must be either a " +
-                "Template Field or a Template Element. Node type: " + templateNode.getType().name());
+                "Template Field or a Template Element. Node type: " + templateNode.getName());
           }
         }
       } else {

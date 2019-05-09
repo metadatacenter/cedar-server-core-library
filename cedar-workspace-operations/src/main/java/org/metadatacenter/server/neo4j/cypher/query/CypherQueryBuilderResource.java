@@ -1,13 +1,13 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.Map;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(FolderServerResource newResource) {
+  public static String createResourceAsChildOfId(FolderServerArtifact newResource) {
     return createFSResourceAsChildOfId(newResource);
   }
 
@@ -74,7 +74,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN path";
   }
 
-  public static String createResourceWithoutParent(FolderServerResource newResource) {
+  public static String createResourceWithoutParent(FolderServerArtifact newResource) {
     return "" +
         createFSResource(ALIAS_FOO, newResource) +
         " RETURN " + ALIAS_FOO;

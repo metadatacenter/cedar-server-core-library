@@ -3,7 +3,7 @@ package org.metadatacenter.server.search.util;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -57,7 +57,7 @@ public class RegenerateSearchIndexTask {
       PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
       // Get all resources
       log.info("Reading all resources from the existing search index.");
-      List<FolderServerNode> resources = indexUtils.findAllResources(requestContext);
+      List<FileSystemResource> resources = indexUtils.findAllResources(requestContext);
       // Checks if is necessary to regenerate the index or not
       if (!force) {
         log.info("Force is false. Checking if it is necessary to regenerate the search index from Neo4j.");
@@ -103,7 +103,7 @@ public class RegenerateSearchIndexTask {
         int count = 1;
         int batchCount = 1;
         List<IndexingDocumentDocument> currentBatch = new ArrayList<>();
-        for (FolderServerNode node : resources) {
+        for (FileSystemResource node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
             currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext, true));
@@ -148,9 +148,9 @@ public class RegenerateSearchIndexTask {
     }
   }
 
-  private List<String> getResourceIds(List<FolderServerNode> resources) {
+  private List<String> getResourceIds(List<FileSystemResource> resources) {
     List<String> ids = new ArrayList<>();
-    for (FolderServerNode resource : resources) {
+    for (FileSystemResource resource : resources) {
       ids.add(resource.getId());
     }
     return ids;

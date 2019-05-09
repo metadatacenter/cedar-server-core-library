@@ -2,7 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.*;
 import org.metadatacenter.model.folderserver.basic.*;
@@ -51,22 +51,22 @@ public class Neo4JProxyGraph extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerGroup.class);
   }
 
-  public FolderServerNode createNode(JsonNode node) {
-    FolderServerNode folderServerNode = buildNode(node);
-    CedarNodeType type = folderServerNode.getType();
+  public FileSystemResource createNode(JsonNode node) {
+    FileSystemResource folderServerNode = buildNode(node);
+    CedarResourceType type = folderServerNode.getType();
     String cypher = null;
 
-    if (type == CedarNodeType.FOLDER) {
+    if (type == CedarResourceType.FOLDER) {
       FolderServerFolder fsFolder = buildFolder(node);
       cypher = CypherQueryBuilderFolder.createFolderWithoutParent(fsFolder);
     } else {
-      FolderServerResource fsResource = buildResource(node);
+      FolderServerArtifact fsResource = buildResource(node);
       cypher = CypherQueryBuilderResource.createResourceWithoutParent(fsResource);
     }
     CypherParameters params = CypherParamBuilderGraph.mapAllProperties(node);
     CypherParamBuilderGraph.tweakNodeProperties(node, params);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWriteGetOne(q, FolderServerNode.class);
+    return executeWriteGetOne(q, FileSystemResource.class);
   }
 
   public boolean createArc(String sourceId, RelationLabel relationLabel, String targetId) {

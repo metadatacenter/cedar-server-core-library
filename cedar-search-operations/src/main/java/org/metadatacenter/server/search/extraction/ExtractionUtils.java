@@ -7,9 +7,8 @@ import org.apache.http.util.EntityUtils;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.HttpConstants;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.server.search.util.GenerateEmptyRulesIndexTask;
 import org.metadatacenter.util.http.CedarUrlUtil;
 import org.metadatacenter.util.http.ProxyUtil;
 import org.metadatacenter.util.json.JsonMapper;
@@ -31,10 +30,10 @@ public class ExtractionUtils {
     this.cedarConfig = cedarConfig;
   }
 
-  public JsonNode getArtifactById(String artifactId, CedarNodeType nodeType,
+  public JsonNode getArtifactById(String artifactId, CedarResourceType nodeType,
                                   CedarRequestContext requestContext) throws CedarProcessingException {
     String url =
-        cedarConfig.getMicroserviceUrlUtil().getArtifact().getNodeType(nodeType) + "/"
+        cedarConfig.getMicroserviceUrlUtil().getArtifact().getResourceType(nodeType) + "/"
             + CedarUrlUtil.urlEncode(artifactId);
     HttpResponse proxyResponse = ProxyUtil.proxyGet(url, requestContext);
     HttpEntity entity = proxyResponse.getEntity();
