@@ -22,7 +22,10 @@ import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.*;
 
@@ -127,10 +130,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       mainQuery.must(permissionQuery);
     }
 
-    // Filter by summary information (Note that the current implementation does not support queries addressed to
-    // summaryText and infoFields at the same time (e.g., cancer AND disease:crc).
+    // Search by either title and description (summaryText) or field names and/or values (infoFields). Note that the
+    // current implementation does not support queries addressed to summaryText and infoFields at the same time
+    // (e.g., cancer AND disease:crc).
     if (query != null && query.length() > 0) {
-      if (!query.contains(":")) { // We assume that it is a query on the summaryText field
+      // Query summaryText
+      if (!query.contains(":")) {
         if (enclosedByQuotes(query)) {
           query = query.substring(1, query.length() - 1);
           QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
@@ -139,16 +144,17 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
           mainQuery.must(summaryTextQuery);
         }
-      } else { // We assume that it is a query on the infoFields field
+      // Query infoFields
+      } else {
+
+        query = translateToInternalFieldsQuerySyntax(query);
+
         QueryBuilder infoFieldsQuery = QueryBuilders.queryStringQuery(query);
         QueryBuilder nestedInfoFieldsQuery =
             QueryBuilders.nestedQuery("infoFields", infoFieldsQuery, ScoreMode.None);
         mainQuery.must(nestedInfoFieldsQuery);
       }
     }
-
-    // Filter by field name (and field values, in the case of template instances)
-
 
     // Filter by resource type
     if (resourceTypes != null && resourceTypes.size() > 0) {
@@ -225,20 +231,50 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     return keyword.startsWith("\"") && keyword.endsWith("\"");
   }
 
-  // TODO
-
   /**
-   * Extract from the original query the fragment addressed to query the summaryText field
-   *
+   * Translates a query in the format aaa:bbb to infoFields.fieldName:aaa AND infoFields.fieldValue:bbb
+   * Sample queries for testing: aaa:bbb vvv: :bbb \"bla ble\":ccc ddd:\"bli blo\""
    * @param query
    * @return
    */
-  private String extractSummaryTextQuery(String query) {
-    String summaryTextQuery = null;
-    return null;
-  }
+  private String translateToInternalFieldsQuerySyntax(String query) {
 
-  // TODO
+    // Match disease:
+    Pattern fieldNamePattern1 = Pattern.compile("[a-zA-Z0-9_]*(?=\\:)");
+    // Match "study title":
+    Pattern fieldNamePattern2 = Pattern.compile("\"(.*?)\"(?=\\:)");
+
+    List<Pattern> fieldNamePatterns = new ArrayList<>();
+    fieldNamePatterns.add(fieldNamePattern1);
+    fieldNamePatterns.add(fieldNamePattern2);
+
+    // Match :cancer
+    Pattern fieldValuePattern1 = Pattern.compile("(?<=\\:)[a-zA-Z0-9_]*");
+    // Match :"colorectal cancer"
+    Pattern fieldValuePattern2 = Pattern.compile("(?<=\\:)\"(.*?)\"");
+
+    List<Pattern> fieldValuePatterns = new ArrayList<>();
+    fieldValuePatterns.add(fieldValuePattern1);
+    fieldValuePatterns.add(fieldValuePattern2);
+
+
+    // Field names
+    String toBeReplaced = "[[tobereplaced]]";
+    String prefix = "infoFields.fieldName" + "[[tobereplaced]]";
+    for (Pattern pattern : fieldNamePatterns) {
+      Matcher matcher = pattern.matcher(query);
+      while (matcher.find()) {
+        if (matcher.start() - matcher.end() > 1) {
+          query = query.substring(0, matcher.start())
+              + prefix + query.substring(matcher.start(), matcher.end() - 1)
+              + query.substring(matcher.end());
+        }
+        matcher = pattern.matcher(query);
+
+      }
+    }
+    return query;
+  }
 
   /**
    * Extract from the original query the fragment addressed to query the infoFields field
