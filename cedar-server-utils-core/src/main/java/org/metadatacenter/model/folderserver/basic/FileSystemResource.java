@@ -168,6 +168,11 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates
   }
 
   @Override
+  public String getLastUpdatedByUserName() {
+    return userNamesData.getLastUpdatedByUserName();
+  }
+
+  @Override
   public NodeSharePermission getEverybodyPermission() {
     return everybodyPermission;
   }
@@ -175,11 +180,6 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates
   @Override
   public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
     this.everybodyPermission = everybodyPermission;
-  }
-
-  @Override
-  public String getLastUpdatedByUserName() {
-    return userNamesData.getLastUpdatedByUserName();
   }
 
   public void setCreatedByTotal(String createdBy) {

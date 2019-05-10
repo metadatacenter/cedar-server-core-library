@@ -248,6 +248,11 @@ artifactRESTAPI:
         - "_ui.title"
         - "_ui.description"
 
+categoryRESTAPI:
+  pagination:
+    defaultPageSize: 20
+    maxPageSize: 500
+
 cache:
   persistent:
     connection:
