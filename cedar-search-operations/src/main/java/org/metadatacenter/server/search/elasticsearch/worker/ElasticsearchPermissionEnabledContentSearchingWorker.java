@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,7 +80,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     searchRequest.setScroll(timeout);
     searchRequest.setSize(offset + limit);
 
-    log.debug("Search query in Query DSL: " + searchRequest);
+    //log.debug("Search query in Query DSL: " + searchRequest);
 
     // Execute request
     SearchResponse response = searchRequest.execute().actionGet();
@@ -147,12 +148,15 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       // Query infoFields
       } else {
 
-        query = translateToInternalFieldsQuerySyntax(query);
+        List<String> translatedQueryTokens = translateToInternalFieldsQueryTokens(query);
 
-        QueryBuilder infoFieldsQuery = QueryBuilders.queryStringQuery(query);
-        QueryBuilder nestedInfoFieldsQuery =
-            QueryBuilders.nestedQuery("infoFields", infoFieldsQuery, ScoreMode.None);
-        mainQuery.must(nestedInfoFieldsQuery);
+        for (String token : translatedQueryTokens) {
+          QueryBuilder infoFieldsQuery = QueryBuilders.queryStringQuery(token);
+          QueryBuilder nestedInfoFieldsQuery =
+              QueryBuilders.nestedQuery("infoFields", infoFieldsQuery, ScoreMode.None);
+          mainQuery.must(nestedInfoFieldsQuery);
+        }
+
       }
     }
 
@@ -204,7 +208,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Set main query
     searchRequestBuilder.setQuery(mainQuery);
-    //log.info("Search query in Query DSL:\n" + mainQuery);
+    log.info("Search query in Query DSL:\n" + mainQuery);
 
     // Sort by field
     // The name is stored on the node, so we can sort by that
@@ -237,43 +241,41 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
    * @param query
    * @return
    */
-  private String translateToInternalFieldsQuerySyntax(String query) {
+  private List<String> translateToInternalFieldsQueryTokens(String query) {
 
-    // Match disease:
-    Pattern fieldNamePattern1 = Pattern.compile("[a-zA-Z0-9_]*(?=\\:)");
-    // Match "study title":
-    Pattern fieldNamePattern2 = Pattern.compile("\"(.*?)\"(?=\\:)");
+    String fieldValueSeparator = ":";
 
-    List<Pattern> fieldNamePatterns = new ArrayList<>();
-    fieldNamePatterns.add(fieldNamePattern1);
-    fieldNamePatterns.add(fieldNamePattern2);
+    List<String> translatedQueryTokens = new ArrayList<>();
 
-    // Match :cancer
-    Pattern fieldValuePattern1 = Pattern.compile("(?<=\\:)[a-zA-Z0-9_]*");
-    // Match :"colorectal cancer"
-    Pattern fieldValuePattern2 = Pattern.compile("(?<=\\:)\"(.*?)\"");
+    List<String> queryTokens = Arrays.asList(query.split("\\s+"));
 
-    List<Pattern> fieldValuePatterns = new ArrayList<>();
-    fieldValuePatterns.add(fieldValuePattern1);
-    fieldValuePatterns.add(fieldValuePattern2);
-
-
-    // Field names
-    String toBeReplaced = "[[tobereplaced]]";
-    String prefix = "infoFields.fieldName" + "[[tobereplaced]]";
-    for (Pattern pattern : fieldNamePatterns) {
-      Matcher matcher = pattern.matcher(query);
-      while (matcher.find()) {
-        if (matcher.start() - matcher.end() > 1) {
-          query = query.substring(0, matcher.start())
-              + prefix + query.substring(matcher.start(), matcher.end() - 1)
-              + query.substring(matcher.end());
-        }
-        matcher = pattern.matcher(query);
-
+    for (String token : queryTokens) {
+      if (token.contains(fieldValueSeparator)) {
+        translatedQueryTokens.add(translateQueryToken(token, fieldValueSeparator));
       }
     }
-    return query;
+
+    return translatedQueryTokens;
+  }
+
+  private String translateQueryToken(String queryToken, String fieldValueSeparator) {
+    String result = "";
+    if (queryToken.contains(fieldValueSeparator)) {
+      List<String> fieldValueTokens = Arrays.asList(queryToken.split(":"));
+      if (fieldValueTokens.size() >= 1) {
+        result = result.concat("infoFields.fieldName:").concat(fieldValueTokens.get(0));
+      }
+      if (fieldValueTokens.size() == 2) {
+        result = result.concat(" AND ").concat("infoFields.fieldValue:").concat(fieldValueTokens.get(1));
+      }
+      else {
+        return queryToken;
+      }
+      return result;
+    }
+    else {
+      return queryToken;
+    }
   }
 
   /**
