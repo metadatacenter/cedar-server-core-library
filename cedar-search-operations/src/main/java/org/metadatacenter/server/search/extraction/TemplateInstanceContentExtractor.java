@@ -12,6 +12,9 @@ import org.metadatacenter.server.search.extraction.model.TemplateNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.metadatacenter.model.ModelNodeNames.*;
@@ -89,8 +92,17 @@ public class TemplateInstanceContentExtractor {
               fieldValue.generatePathDotNotation());
         }
         // Add to the list if it's not already there
-        InfoField infoField = new InfoField(fieldName, fieldPrefLabel, fieldValue.generatePathBracketNotation(),
-            fieldValue.getFieldValue(), fieldValue.getFieldValueUri());
+        InfoField infoField = null;
+        try {
+          String fieldValueUri = fieldValue.getFieldValueUri();
+          if (fieldValueUri != null) {
+            fieldValueUri = URLEncoder.encode(fieldValueUri, StandardCharsets.UTF_8.toString());
+          }
+          infoField = new InfoField(fieldName, fieldPrefLabel, fieldValue.generatePathBracketNotation(),
+              fieldValue.getFieldValue(), fieldValueUri);
+        } catch (UnsupportedEncodingException e) {
+          throw new CedarProcessingException("Encoding error", e);
+        }
         if (!infoFields.contains(infoField)) {
           infoFields.add(infoField);
         }
