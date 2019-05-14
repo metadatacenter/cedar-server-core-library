@@ -25,6 +25,9 @@ public final class ElasticsearchConstants {
   public static final String INFO_PAV_CREATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_CREATED_ON;
   public static final String INFO_IS_BASED_ON = ES_INFO_PREFIX + ModelNodeNames.SCHEMA_IS_BASED_ON;
   public static final String INFO_EVERYBODY_PERMISSION = ES_INFO_PREFIX + "everybodyPermission";
+  public static final String INFO_FIELDS = "infoFields";
+  public static final String INFO_FIELDS_FIELD_NAME = INFO_FIELDS + "." + "fieldName";
+  public static final String INFO_FIELDS_FIELD_VALUE = INFO_FIELDS + "." + "fieldValue";
 
   // Sortable fields
   public static final String SORT_BY_NAME = "name";
@@ -34,5 +37,6 @@ public final class ElasticsearchConstants {
   // Other
   public static final String ES_SORT_DESC_PREFIX = "-";
   public static final String TEMPLATE_ID = "templateId";
+  public static final String ANY_STRING = "_any_";
 
 }

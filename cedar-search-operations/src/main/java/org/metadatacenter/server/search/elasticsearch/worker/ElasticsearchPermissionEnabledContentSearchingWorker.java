@@ -1,5 +1,10 @@
 package org.metadatacenter.server.search.elasticsearch.worker;
 
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.*;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -11,6 +16,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
@@ -22,11 +28,7 @@ import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.*;
 
@@ -44,7 +46,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                         publicationStatus, List<String> sortList, int limit, int offset) {
+                                         publicationStatus, List<String> sortList, int limit, int offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
         publicationStatus, sortList);
@@ -70,7 +72,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                          ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                             publicationStatus, List<String> sortList, int limit, int offset) {
+                                             publicationStatus, List<String> sortList, int limit, int offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
         publicationStatus, sortList);
@@ -105,15 +107,38 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query,
                                                        List<String> resourceTypes, ResourceVersionFilter version,
                                                        ResourcePublicationStatusFilter publicationStatus,
-                                                       List<String> sortList) {
+                                                       List<String> sortList) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.DOC.getValue());
 
     BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 
-    String userId = rctx.getCedarUser().getId();
+    // Query artifact id and description (summaryText). Sample query: 'cancer'
+    if (!query.contains(":")) {
+      if (enclosedByQuotes(query)) {
+        query = query.substring(1, query.length() - 1);
+        QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
+        mainQuery.must(summaryTextQuery);
+      } else {
+        QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+        mainQuery.must(summaryTextQuery);
+      }
+    }
+    // Query field name/value (infoFields), optionally combined with artifact id and description (summaryText).
+    // Sample query: 'disease:cancer AND Template3'
+    else {
+      // Parse the query using the query parser and rewrite it to query the right index fields. The whitespace
+      // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
+      QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
+      try {
+        mainQuery.must(rewriteQuery(parser.parse(query)));
+      } catch (ParseException e) {
+        e.printStackTrace();
+      }
+    }
 
+    String userId = rctx.getCedarUser().getId();
     if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       // Filter by user
       QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId,
@@ -129,35 +154,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       permissionQuery.should(everybodyReadQuery);
       permissionQuery.should(everybodyWriteQuery);
       mainQuery.must(permissionQuery);
-    }
-
-    // Search by either title and description (summaryText) or field names and/or values (infoFields). Note that the
-    // current implementation does not support queries addressed to summaryText and infoFields at the same time
-    // (e.g., cancer AND disease:crc).
-    if (query != null && query.length() > 0) {
-      // Query summaryText
-      if (!query.contains(":")) {
-        if (enclosedByQuotes(query)) {
-          query = query.substring(1, query.length() - 1);
-          QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
-          mainQuery.must(summaryTextQuery);
-        } else {
-          QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-          mainQuery.must(summaryTextQuery);
-        }
-      // Query infoFields
-      } else {
-
-        List<String> translatedQueryTokens = translateToInternalFieldsQueryTokens(query);
-
-        for (String token : translatedQueryTokens) {
-          QueryBuilder infoFieldsQuery = QueryBuilders.queryStringQuery(token);
-          QueryBuilder nestedInfoFieldsQuery =
-              QueryBuilders.nestedQuery("infoFields", infoFieldsQuery, ScoreMode.None);
-          mainQuery.must(nestedInfoFieldsQuery);
-        }
-
-      }
     }
 
     // Filter by resource type
@@ -208,7 +204,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Set main query
     searchRequestBuilder.setQuery(mainQuery);
-    log.info("Search query in Query DSL:\n" + mainQuery);
+    // log.info("Search query in Query DSL:\n" + mainQuery);
 
     // Sort by field
     // The name is stored on the node, so we can sort by that
@@ -236,57 +232,105 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
   /**
-   * Translates a query in the format aaa:bbb to infoFields.fieldName:aaa AND infoFields.fieldValue:bbb
-   * Sample queries for testing: aaa:bbb vvv: :bbb \"bla ble\":ccc ddd:\"bli blo\""
-   * @param query
-   * @return
-   */
-  private List<String> translateToInternalFieldsQueryTokens(String query) {
-
-    String fieldValueSeparator = ":";
-
-    List<String> translatedQueryTokens = new ArrayList<>();
-
-    List<String> queryTokens = Arrays.asList(query.split("\\s+"));
-
-    for (String token : queryTokens) {
-      if (token.contains(fieldValueSeparator)) {
-        translatedQueryTokens.add(translateQueryToken(token, fieldValueSeparator));
-      }
-    }
-
-    return translatedQueryTokens;
-  }
-
-  private String translateQueryToken(String queryToken, String fieldValueSeparator) {
-    String result = "";
-    if (queryToken.contains(fieldValueSeparator)) {
-      List<String> fieldValueTokens = Arrays.asList(queryToken.split(":"));
-      if (fieldValueTokens.size() >= 1) {
-        result = result.concat("infoFields.fieldName:").concat(fieldValueTokens.get(0));
-      }
-      if (fieldValueTokens.size() == 2) {
-        result = result.concat(" AND ").concat("infoFields.fieldValue:").concat(fieldValueTokens.get(1));
-      }
-      else {
-        return queryToken;
-      }
-      return result;
-    }
-    else {
-      return queryToken;
-    }
-  }
-
-  /**
-   * Extract from the original query the fragment addressed to query the infoFields field
+   * Rewrites the query generated by the QueryParser to work with our index. This is a recursive method that iterates
+   * over all the query clauses and rewrites them
    *
-   * @param query
+   * @param inputQuery
    * @return
    */
-  private String extractInfoFieldsQuery(String query) {
-    String infoFieldsQuery = null;
-    return null;
+  private QueryBuilder rewriteQuery(Query inputQuery) throws CedarProcessingException {
+
+    // Example: 't1 AND (disease:crc OR tissue:kidney)' -> This query has two main clauses
+    if (inputQuery instanceof BooleanQuery) {
+      BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+
+      for (BooleanClause clause : ((BooleanQuery) inputQuery).clauses()) {
+        if (clause.getOccur().equals(BooleanClause.Occur.SHOULD)) {
+          boolQueryBuilder = boolQueryBuilder.should(rewriteQuery(clause.getQuery()));
+        } else if (clause.getOccur().equals(BooleanClause.Occur.MUST)) {
+          boolQueryBuilder = boolQueryBuilder.must(rewriteQuery(clause.getQuery()));
+        } else if (clause.getOccur().equals(BooleanClause.Occur.MUST_NOT)) {
+          boolQueryBuilder = boolQueryBuilder.mustNot(rewriteQuery(clause.getQuery()));
+        }
+      }
+      return boolQueryBuilder;
+    }
+    // Examples: 'kidney', 'tissue:kidney'
+    else if (inputQuery instanceof TermQuery) {
+      Term term = ((TermQuery) inputQuery).getTerm();
+      return rewriteTermQuery(term.field(), term.bytes().utf8ToString());
+    }
+    // Examples: 'colorectal cancer', 'disease:"colorectal cancer"'
+    else if (inputQuery instanceof PhraseQuery) {
+      return rewritePhraseQuery((PhraseQuery) inputQuery);
+    }
+    // Example: 'disease:influ*'
+    else if (inputQuery instanceof MultiTermQuery) {
+      Term prefix = ((PrefixQuery) inputQuery).getPrefix();
+      return rewriteTermQuery(prefix.field(), prefix.bytes().utf8ToString(), true);
+    } else {
+      throw new CedarProcessingException("Query type not supported: " + inputQuery.getClass());
+    }
+  }
+
+  private QueryBuilder rewritePhraseQuery(PhraseQuery inputQuery) {
+    String fieldName = inputQuery.getTerms()[0].field();
+
+    if (fieldName.isEmpty()) { // Example: "colorectal carcinoma"
+      return rewriteTermQuery(fieldName, inputQuery.toString());
+    } else { // Example: disease:"colorectal carcinoma"
+      String[] phraseQueryTokens = inputQuery.toString().split(":");
+      if (phraseQueryTokens.length >= 2) {
+        String fieldValue = phraseQueryTokens[1];
+        return rewriteTermQuery(fieldName, fieldValue);
+      } else {
+        throw new IllegalArgumentException("Could not parse query");
+      }
+    }
+  }
+
+  private QueryBuilder rewriteTermQuery(String fieldName, String fieldValue) {
+    return rewriteTermQuery(fieldName, fieldValue, false);
+  }
+
+  private QueryBuilder rewriteTermQuery(String fieldName, String fieldValue, boolean withPrefix) {
+    if (fieldName == null || fieldName.isEmpty()) {
+
+      // SummaryText query
+      QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, fieldValue);
+      return summaryTextQuery;
+
+    } else { // Field name/value query
+
+      QueryBuilder infoFieldsQueryString =
+          QueryBuilders.queryStringQuery(generateInfoFieldsQueryString(fieldName, fieldValue, withPrefix));
+
+      QueryBuilder nestedInfoFieldsQuery =
+          QueryBuilders.nestedQuery(INFO_FIELDS, infoFieldsQueryString, ScoreMode.None);
+
+      return nestedInfoFieldsQuery;
+    }
+  }
+
+  private String generateInfoFieldsQueryString(String fieldName, String fieldValue, boolean withPrefix) {
+    String result = "";
+    String fieldNameQueryFragment = INFO_FIELDS_FIELD_NAME.concat(":").concat(fieldName);
+    String fieldValueQueryFragment = INFO_FIELDS_FIELD_VALUE.concat(":").concat(fieldValue);
+    String andQueryFragment = " AND ";
+    if ((fieldName.compareTo(ANY_STRING) != 0) && (fieldValue.compareTo(ANY_STRING) != 0)) {
+      result = fieldNameQueryFragment.concat(andQueryFragment).concat(fieldValueQueryFragment);
+    }
+    else if ((fieldName.compareTo(ANY_STRING) != 0) && (fieldValue.compareTo(ANY_STRING) == 0)) {
+      result = fieldNameQueryFragment;
+    }
+    else if ((fieldName.compareTo(ANY_STRING) == 0) && (fieldValue.compareTo(ANY_STRING) != 0)) {
+      result = fieldValueQueryFragment;
+    }
+
+    if (withPrefix) {
+      result = result.concat("*");
+    }
+    return result;
   }
 
 }
