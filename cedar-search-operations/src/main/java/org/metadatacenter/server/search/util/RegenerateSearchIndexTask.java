@@ -50,6 +50,7 @@ public class RegenerateSearchIndexTask {
     NodeSearchingService nodeSearchingService = indexUtils.getNodeSearchingService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    NodeIndexingService nodeIndexingService = null;
 
     boolean regenerate = true;
     try {
@@ -96,7 +97,7 @@ public class RegenerateSearchIndexTask {
         esManagementService.createSearchIndex(newIndexName);
         log.info("Search index created:" + newIndexName);
 
-        NodeIndexingService nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
+        nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;
@@ -105,7 +106,7 @@ public class RegenerateSearchIndexTask {
         for (FileSystemResource node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm));
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext, true));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();
@@ -140,6 +141,10 @@ public class RegenerateSearchIndexTask {
     } catch (Exception e) {
       log.error("Error while regenerating index", e);
       throw new CedarProcessingException(e);
+    }
+    finally {
+      // Clear template nodes cache
+      nodeIndexingService.instanceContentExtractor.clearNodesCache();
     }
   }
 

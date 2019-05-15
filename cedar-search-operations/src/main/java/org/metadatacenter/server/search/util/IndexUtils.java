@@ -116,7 +116,6 @@ public class IndexUtils {
     return prefix + "-" + nowString;
   }
 
-
   public void deleteOldIndices(ElasticsearchManagementService esManagementService, String aliasName,
                                String newIndexName) throws CedarProcessingException {
     log.info("Listing existing indices.");
@@ -216,4 +215,5 @@ public class IndexUtils {
 
     return r;
   }
+
 }

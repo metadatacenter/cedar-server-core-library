@@ -89,8 +89,8 @@ public class RegenerateRulesIndexTask {
 //        for (FolderServerNode resource : resources) {
 //          try {
 //            CedarNodeMaterializedPermissions perm = null;
-//            if (resource.getType() == CedarNodeType.FOLDER) {
-//              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.FOLDER);
+//            if (node.getType() == CedarResourceType.FOLDER) {
+//              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
 //            } else {
 //              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
 //            }

@@ -108,6 +108,36 @@
               "type": "keyword"
             }
           }
+        },
+        "infoFields": {
+          "type": "nested",
+          "properties": {
+            "fieldName": {
+              "type": "text"
+            },
+            "fieldPrefLabel": {
+              "type": "text"
+            },
+            "fieldPath": {
+              "type": "keyword"
+            },
+            "fieldValueUri": {
+              "type": "keyword"
+            },
+            "fieldValue": {
+              "type": "text",
+              "fields": {
+                "numeric": {
+                  "type": "double",
+                  "ignore_malformed": true
+                },
+                "date": {
+                  "type": "date",
+                  "ignore_malformed": true
+                }
+              }
+            }
+          }
         }
       }
     }
