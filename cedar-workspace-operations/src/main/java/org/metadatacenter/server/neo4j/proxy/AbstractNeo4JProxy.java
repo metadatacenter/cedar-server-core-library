@@ -7,9 +7,9 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarResource;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
+import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.filter.LoggingContext;
 import org.metadatacenter.server.logging.filter.ThreadLocalRequestIdHolder;
@@ -374,7 +374,7 @@ public abstract class AbstractNeo4JProxy {
         JsonNode unescaped = Neo4JUtil.unescapeTopLevelPropertyNames(node);
         cn = JsonMapper.MAPPER.treeToValue(unescaped, type);
       } catch (JsonProcessingException e) {
-        log.error("Error deserializing node into " + type.getSimpleName(), e);
+        log.error("Error deserializing resource into " + type.getSimpleName(), e);
       }
     }
     return cn;
@@ -385,8 +385,7 @@ public abstract class AbstractNeo4JProxy {
   }
 
   public FolderServerArtifact buildResource(JsonNode r) {
-    FileSystemResource folderServerNode = buildClass(r, FileSystemResource.class);
-    return folderServerNode == null ? null : folderServerNode.asArtifact();
+    return buildClass(r, FolderServerArtifact.class);
   }
 
   protected FileSystemResource buildNode(JsonNode n) {

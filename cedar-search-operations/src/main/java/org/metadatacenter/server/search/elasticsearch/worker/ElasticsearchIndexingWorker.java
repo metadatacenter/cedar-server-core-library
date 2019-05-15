@@ -74,7 +74,7 @@ public class ElasticsearchIndexingWorker {
   }
 
   /**
-   * Removes from the index all documents that match a given CEDAR resource id
+   * Removes from the index all documents that match a given CEDAR artifact id
    *
    * @param resourceId
    * @return
@@ -83,7 +83,7 @@ public class ElasticsearchIndexingWorker {
   public long removeAllFromIndex(String resourceId) throws CedarProcessingException {
     log.debug("Removing " + documentType + " cid:" + resourceId + " from the " + indexName + " index");
     try {
-      // Get resources by resource id
+      // Get resources by artifact id
       // TODO: note that this search query will retrieve only 10 results by default, so the maximum number
       // of documents that will be removed will be 10. Consider using the "delete by query" API
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)

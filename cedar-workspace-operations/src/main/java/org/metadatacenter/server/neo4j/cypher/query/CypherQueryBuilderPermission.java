@@ -8,35 +8,35 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   public static String addPermissionToNodeForUser(NodePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
-        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " CREATE (user)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " RETURN user";
   }
 
   public static String addPermissionToNodeForGroup(NodePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
-        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " CREATE (group)-[:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " RETURN group";
   }
 
   public static String removePermissionForNodeFromUser(NodePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
-        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
-        " RETURN node";
+        " RETURN resource";
   }
 
   public static String removePermissionForNodeFromGroup(NodePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId} })" +
-        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId} })" +
+        " MATCH (group)-[relation:" + RelationLabel.forNodePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
-        " RETURN node";
+        " RETURN resource";
   }
 
   public static String userCanReadNode() {
@@ -50,17 +50,17 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   private static String userHasPermissionOnNode(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
+    sb.append(" MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
     if (relationLabel == RelationLabel.CANREAD) {
       sb.append(" OR ");
-      sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
+      sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
     }
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "node"));
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();
@@ -69,29 +69,29 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   public static String getUsersWithDirectPermissionOnNode(RelationLabel relationLabel) {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
-        " MATCH (user)-[:" + relationLabel + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user)-[:" + relationLabel + "]->(resource)" +
         " RETURN user";
   }
 
   public static String getGroupsWithDirectPermissionOnNode(RelationLabel relationLabel) {
     return "" +
         " MATCH (group:<LABEL.GROUP>)" +
-        " MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
-        " MATCH (group)-[:" + relationLabel + "]->(node)" +
+        " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
+        " MATCH (group)-[:" + relationLabel + "]->(resource)" +
         " RETURN group";
   }
 
   public static String getUsersWithTransitiveReadOnNode() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
+    sb.append(" MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "node"));
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();
@@ -100,20 +100,20 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   public static String getUsersWithTransitiveWriteOnNode() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
+    sb.append(" MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})");
     sb.append(" WHERE");
 
     sb.append(" (");
-    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "node"));
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
     sb.append(" OR ");
-    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "node"));
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
     sb.append(" )");
     sb.append(" RETURN user");
     return sb.toString();
   }
 
   public static String getGroupsWithTransitiveReadOnNode() {
-    String node = "(node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
+    String node = "(resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");
@@ -125,7 +125,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
   }
 
   public static String getGroupsWithTransitiveWriteOnNode() {
-    String node = "(node:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
+    String node = "(resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");

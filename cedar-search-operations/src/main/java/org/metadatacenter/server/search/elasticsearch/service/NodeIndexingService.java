@@ -54,14 +54,14 @@ public class NodeIndexingService extends AbstractIndexingService {
     return ir;
   }
 
+
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
                                          CedarRequestContext requestContext) throws CedarProcessingException {
     return indexDocument(node, permissions, requestContext, false);
   }
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarRequestContext requestContext) throws CedarProcessingException {
-
-    log.debug("Indexing node (id = " + node.getId() + ")");
+    log.debug("Indexing resource (id = " + node.getId() + ")");
     PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
     CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
     return indexDocument(node, permissions, requestContext);
@@ -69,7 +69,7 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
                                          CedarRequestContext requestContext, boolean isIndexRegenerationTask) throws CedarProcessingException {
-    log.debug("Indexing node (id = " + node.getId() + ")");
+    log.debug("Indexing resource (id = " + node.getId() + ")");
     IndexingDocumentDocument ir = createIndexDocument(node, permissions, requestContext, isIndexRegenerationTask);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource);
@@ -116,7 +116,7 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   public long removeDocumentFromIndex(String nodeId) throws CedarProcessingException {
     if (nodeId != null) {
-      log.debug("Removing node from index (id = " + nodeId);
+      log.debug("Removing resource from index (id = " + nodeId);
       return indexWorker.removeAllFromIndex(nodeId);
     } else {
       return -1;

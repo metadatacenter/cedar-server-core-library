@@ -72,9 +72,9 @@ public class SearchPermissionExecutorService {
   }
 
   private void updateOneResource(String id) {
-    FolderServerArtifact resource = folderSession.findResourceById(id);
+    FolderServerArtifact resource = folderSession.findArtifactById(id);
     if (resource != null) {
-      log.debug("Update one resource:" + resource.getName());
+      log.debug("Update one artifact:" + resource.getName());
       upsertOnePermissions(Upsert.UPDATE, id);
     } else {
       log.error("Resource was not found:" + id);
@@ -96,7 +96,7 @@ public class SearchPermissionExecutorService {
       if (indexUtils.needsIndexing(n)) {
         upsertOnePermissions(Upsert.UPDATE, n.getId());
       } else {
-        log.info("The node was skipped from indexing:" + n.getId());
+        log.info("The resource was skipped from indexing:" + n.getId());
       }
     }
   }
@@ -120,7 +120,7 @@ public class SearchPermissionExecutorService {
   private void upsertOnePermissions(Upsert upsert, String id) {
     log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + id);
     try {
-      FileSystemResource node = folderSession.findNodeById(id);
+      FileSystemResource node = folderSession.findResourceById(id);
       CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id);
       if (upsert == Upsert.UPDATE) {
         nodeIndexingService.removeDocumentFromIndex(id);

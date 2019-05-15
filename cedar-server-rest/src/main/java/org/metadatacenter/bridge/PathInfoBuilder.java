@@ -15,10 +15,10 @@ public final class PathInfoBuilder {
   private PathInfoBuilder() {
   }
 
-  public static List<FolderServerResourceExtract> getNodePathExtract(CedarRequestContext context,
-                                                                     FolderServiceSession folderSession,
-                                                                     PermissionServiceSession permissionSession,
-                                                                     FileSystemResource node) {
+  public static List<FolderServerResourceExtract> getResourcePathExtract(CedarRequestContext context,
+                                                                         FolderServiceSession folderSession,
+                                                                         PermissionServiceSession permissionSession,
+                                                                         FileSystemResource node) {
     List<FolderServerResourceExtract> pathInfo = folderSession.findNodePathExtract(node);
     for (FolderServerResourceExtract extract : pathInfo) {
       extract.setActiveUserCanRead(activeUserCanRead(context, permissionSession, extract));

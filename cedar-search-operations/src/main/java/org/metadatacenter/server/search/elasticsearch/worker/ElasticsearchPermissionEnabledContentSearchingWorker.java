@@ -119,31 +119,34 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 
-    // Preprocess query to avoid syntax errors when using the query String syntax
-    query = preprocessQuery(query);
+    if (query != null && query.length() > 0) {
 
-    // Query artifact id and description (summaryText). Sample query: 'cancer'
-    if (!query.contains(":")) {
-      if (enclosedByQuotes(query)) {
-        query = query.substring(1, query.length() - 1);
-        QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
-        mainQuery.must(summaryTextQuery);
-      } else {
-        QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-        mainQuery.must(summaryTextQuery);
+      // Preprocess query to avoid syntax errors when using the query String syntax
+      query = preprocessQuery(query);
+
+      // Query artifact id and description (summaryText). Sample query: 'cancer'
+      if (!query.contains(":")) {
+        if (enclosedByQuotes(query)) {
+          query = query.substring(1, query.length() - 1);
+          QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
+          mainQuery.must(summaryTextQuery);
+        } else {
+          QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+          mainQuery.must(summaryTextQuery);
+        }
       }
-    }
-    // Query field name/value (infoFields), optionally combined with artifact id and description (summaryText).
-    // Sample query: 'disease:cancer AND Template3'
-    else {
-      // Parse the query using the query parser and rewrite it to query the right index fields. The whitespace
-      // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
-      QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
-      try {
-        Query queryParsed = parser.parse(query);
-        mainQuery.must(rewriteQuery(queryParsed));
-      } catch (ParseException e) {
-        throw new CedarProcessingException("Error processing query: " + query, e);
+      // Query field name/value (infoFields), optionally combined with artifact id and description (summaryText).
+      // Sample query: 'disease:cancer AND Template3'
+      else {
+        // Parse the query using the query parser and rewrite it to query the right index fields. The whitespace
+        // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
+        QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
+        try {
+          Query queryParsed = parser.parse(query);
+          mainQuery.must(rewriteQuery(queryParsed));
+        } catch (ParseException e) {
+          throw new CedarProcessingException("Error processing query: " + query, e);
+        }
       }
     }
 
@@ -216,7 +219,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     //log.info("Search query in Query DSL:\n" + mainQuery);
 
     // Sort by field
-    // The name is stored on the node, so we can sort by that
+    // The name is stored on the resource, so we can sort by that
     if (sortList != null && sortList.size() > 0) {
       for (String s : sortList) {
         SortOrder sortOrder = SortOrder.ASC;

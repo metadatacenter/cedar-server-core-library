@@ -50,7 +50,7 @@ public class GroupUsersRequestValidator {
         callResult.addError(CedarErrorType.INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)
             .parameter("paramName", "userNode")
-            .message("The user node is missing from the request");
+            .message("The user resource is missing from the request");
       } else {
         users.addUser(new CedarGroupUser(
                 new CedarUserExtract(groupUser.getId(), null, null, null), u.isAdministrator(), u.isMember())
