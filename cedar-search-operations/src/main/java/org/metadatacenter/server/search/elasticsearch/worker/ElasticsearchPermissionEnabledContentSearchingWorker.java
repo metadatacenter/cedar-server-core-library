@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -120,9 +119,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 
-
-    // Encode URIs to avoid syntax errors when using the query String syntax
-    query = encodeUris(query);
+    // Preprocess query to avoid syntax errors when using the query String syntax
+    query = preprocessQuery(query);
 
     // Query artifact id and description (summaryText). Sample query: 'cancer'
     if (!query.contains(":")) {
@@ -333,7 +331,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
   private String generateInfoFieldsQueryString(String fieldName, String fieldValue, boolean withPrefix) throws CedarProcessingException {
-    String result = "";
+    String result;
     String fieldNameQueryFragment = INFO_FIELDS_FIELD_NAME.concat(":").concat(fieldName);
     String infoFieldsFieldValue = INFO_FIELDS_FIELD_VALUE;
     if (fieldValue.contains("http")) {
@@ -348,6 +346,9 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     } else if ((fieldName.compareTo(ANY_STRING) == 0) && (fieldValue.compareTo(ANY_STRING) != 0)) {
       result = fieldValueQueryFragment;
     }
+    else { //fieldName:_any_ AND fieldValue:_any -> Return everything
+      return "*";
+    }
 
     if (withPrefix) {
       result = result.concat("*");
@@ -355,7 +356,50 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     return result;
   }
 
-  private String encodeUris(String query) throws CedarProcessingException {
+  private String preprocessQuery(String query) throws CedarProcessingException {
+    query = encodeWildcards(query);
+    query = encodeQueryStringUris(query);
+    return query;
+  }
+
+  private String encodeWildcards(String query) {
+
+    /**
+     * Encode the stars for the cases *:v1, f1:*, and *:*
+     */
+
+    Matcher matcherLeftSide = Pattern.compile("(^|\\s|\\()\\*:").matcher(query);
+    while (matcherLeftSide.find()) {
+      String matchString = query.substring(matcherLeftSide.start(), matcherLeftSide.end());
+      String replacement = matchString.replace("*", ANY_STRING);
+      query = query.substring(0, matcherLeftSide.start()) + replacement + query.substring(matcherLeftSide.end());
+    }
+
+    Matcher matcherRightSide = Pattern.compile("(:\\*($|\\s|\\())").matcher(query);
+    while (matcherRightSide.find()) {
+      String matchString = query.substring(matcherRightSide.start(), matcherRightSide.end());
+      String replacement = matchString.replace("*", ANY_STRING);
+      query = query.substring(0, matcherRightSide.start()) + replacement + query.substring(matcherRightSide.end());
+    }
+
+    /**
+     * Encode stars and question marks embedded into fieldName and/or fieldValue
+     * Elasticsearch does not accept unencoded wildcards in the field name (e.g. disea*:crc), so
+     * we will encode them all, including those that are part of the field value for simplicity
+     */
+
+    /* Encode stars. Example: aaa*aaa:b\*bb as aaa\*aaa:b\*bb */
+    query = query.replace("\\*", "*");
+    query = query.replace("*", "\\*");
+
+    /* Encode question marks. Example: aaa?aaa:b\?bb as aaa\?aaa:b\?bb */
+    query = query.replace("\\?", "?");
+    query = query.replace("?", "\\?");
+
+    return query;
+  }
+
+  private String encodeQueryStringUris(String query) throws CedarProcessingException {
 
     final String URL_REGEX = "(((https?)://)" +
         "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)" +
@@ -374,5 +418,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     }
     return query;
   }
+
+
 
 }
