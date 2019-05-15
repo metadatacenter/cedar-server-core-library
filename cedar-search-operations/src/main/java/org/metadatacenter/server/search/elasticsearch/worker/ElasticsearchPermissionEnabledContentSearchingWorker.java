@@ -138,7 +138,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       }
     }
 
-    // Filter by resource type
+    // Filter by artifact type
     if (resourceTypes != null && resourceTypes.size() > 0) {
       QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(RESOURCE_TYPE, resourceTypes);
       mainQuery.must(resourceTypesQuery);
@@ -188,7 +188,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     searchRequestBuilder.setQuery(mainQuery);
 
     // Sort by field
-    // The name is stored on the node, so we can sort by that
+    // The name is stored on the resource, so we can sort by that
     if (sortList != null && sortList.size() > 0) {
       for (String s : sortList) {
         SortOrder sortOrder = SortOrder.ASC;

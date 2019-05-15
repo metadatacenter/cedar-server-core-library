@@ -63,7 +63,7 @@ public class RegenerateSearchIndexTask {
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
         if (esManagementService.indexExists(aliasName)) {
           log.warn("The search index/alias '" + aliasName + "' is present!");
-          // Use the resource ids to check if the resources in the DBs and in the index are different
+          // Use the artifact ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
           log.info("No. of nodes in Neo4j that are expected to be indexed: " + dbResourceIds.size());
           List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);

@@ -24,30 +24,30 @@ public class GraphDbPermissionReader {
   private GraphDbPermissionReader() {
   }
 
-  public static FolderServerArtifactCurrentUserReport getResourceCurrentUserReport(CedarRequestContext context,
+  public static FolderServerArtifactCurrentUserReport getArtifactCurrentUserReport(CedarRequestContext context,
                                                                                    FolderServiceSession folderSession,
                                                                                    PermissionServiceSession permissionSession,
                                                                                    CedarConfig cedarConfig,
-                                                                                   String resourceId)
+                                                                                   String artifactId)
       throws CedarException {
-    if (resourceId != null) {
-      FolderServerArtifact resource = folderSession.findResourceById(resourceId);
-      if (resource == null) {
-        throw new CedarObjectNotFoundException("The resource can not be found by id")
-            .errorKey(CedarErrorKey.RESOURCE_NOT_FOUND)
-            .parameter("id", resourceId);
+    if (artifactId != null) {
+      FolderServerArtifact artifact = folderSession.findArtifactById(artifactId);
+      if (artifact == null) {
+        throw new CedarObjectNotFoundException("The artifact can not be found by id")
+            .errorKey(CedarErrorKey.ARTIFACT_NOT_FOUND)
+            .parameter("id", artifactId);
       }
 
-      folderSession.addPathAndParentId(resource);
+      folderSession.addPathAndParentId(artifact);
 
-      resource.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, resource));
+      artifact.setPathInfo(PathInfoBuilder.getResourcePathExtract(context, folderSession, permissionSession, artifact));
 
-      FolderServerArtifactCurrentUserReport resourceReport =
-          (FolderServerArtifactCurrentUserReport) FolderServerResourceCurrentUserReport.fromNode(resource);
+      FolderServerArtifactCurrentUserReport artifactReport =
+          (FolderServerArtifactCurrentUserReport) FolderServerResourceCurrentUserReport.fromResource(artifact);
 
-      decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, resourceReport);
+      decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, artifactReport);
 
-      return resourceReport;
+      return artifactReport;
     }
     return null;
   }
@@ -77,10 +77,10 @@ public class GraphDbPermissionReader {
 
       folderSession.addPathAndParentId(folder);
 
-      folder.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, folder));
+      folder.setPathInfo(PathInfoBuilder.getResourcePathExtract(context, folderSession, permissionSession, folder));
 
       FolderServerFolderCurrentUserReport folderReport =
-          (FolderServerFolderCurrentUserReport) FolderServerResourceCurrentUserReport.fromNode(folder);
+          (FolderServerFolderCurrentUserReport) FolderServerResourceCurrentUserReport.fromResource(folder);
 
       decorateFolderWithCurrentUserPermissions(context, permissionSession, folderReport);
 

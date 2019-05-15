@@ -83,7 +83,7 @@ public class IndexUtils {
           if (needsIndexing(folderServerNode)) {
             resources.add(folderServerNode);
           } else {
-            log.info("The node '" + folderServerNode.getName() + "' has been ignored");
+            log.info("The resource '" + folderServerNode.getName() + "' has been ignored");
           }
         }
       }

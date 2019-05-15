@@ -53,7 +53,7 @@ public enum CedarErrorKey {
 
   FOLDER_NOT_FOUND("folderNotFound"),
 
-  RESOURCE_NOT_FOUND("resourceNotFound"),
+  ARTIFACT_NOT_FOUND("artifactNotFound"),
 
   NODE_NOT_FOUND("nodeNotFound"),
 
@@ -100,6 +100,7 @@ public enum CedarErrorKey {
   RESOURCE_NOT_DELETED("resourceNotDeleted"),
   RESOURCE_NOT_CREATED("resourceNotCreated"),
   INVALID_RESOURCE_TYPE("invalidResourceType"),
+  INVALID_ARTIFACT_TYPE("invalidArtifactType"),
   READ_OTHER_PROFILE_FORBIDDEN("readOtherProfileForbidden"),
   UPDATE_OTHER_PROFILE_FORBIDDEN("updateOtherProfileForbidden"),
   FOLDER_CAN_NOT_BE_DELETED("folderCanNotBeDeleted"),

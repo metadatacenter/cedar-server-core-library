@@ -1,5 +1,6 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
@@ -24,6 +25,7 @@ import java.util.List;
     @JsonSubTypes.Type(value = FolderServerTemplate.class, name = CedarResourceType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarResourceType.Types.INSTANCE)
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class FileSystemResource extends AbstractCedarResourceWithDates
     implements ResourceWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData,
     ResourceWithEverybodyPermission, ResourceWithParentPathInfoData {
@@ -188,7 +190,4 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates
     setLastUpdatedBy(createdBy);
   }
 
-  public FolderServerArtifact asArtifact() {
-    return (FolderServerArtifact) this;
-  }
 }

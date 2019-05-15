@@ -58,7 +58,7 @@ public class NodeSearchingService extends AbstractSearchingService {
 
   public IndexedDocumentDocument getDocumentByCedarId(String resourceId) throws CedarProcessingException {
     try {
-      // Get resources by resource id
+      // Get resources by artifact id
       SearchResponse responseSearch =
           client.prepareSearch(config.getIndexes().getSearchIndex().getName())
               .setTypes(IndexedDocumentType.DOC.getValue())
