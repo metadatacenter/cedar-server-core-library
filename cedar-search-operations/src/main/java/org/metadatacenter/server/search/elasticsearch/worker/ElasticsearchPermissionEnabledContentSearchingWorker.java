@@ -140,7 +140,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
       QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
       try {
-        mainQuery.must(rewriteQuery(parser.parse(query)));
+        Query queryParsed = parser.parse(query);
+        mainQuery.must(rewriteQuery(queryParsed));
       } catch (ParseException e) {
         throw new CedarProcessingException("Error processing query: " + query, e);
       }
@@ -212,7 +213,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     // Set main query
     searchRequestBuilder.setQuery(mainQuery);
-    log.info("Search query in Query DSL:\n" + mainQuery);
+    //log.info("Search query in Query DSL:\n" + mainQuery);
 
     // Sort by field
     // The name is stored on the node, so we can sort by that
@@ -278,12 +279,10 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       if (inputQuery instanceof PrefixQuery) {
         Term prefix = ((PrefixQuery) inputQuery).getPrefix();
         return rewriteTermQuery(prefix.field(), prefix.bytes().utf8ToString(), true);
-      }
-      else if (inputQuery instanceof WildcardQuery) {
+      } else if (inputQuery instanceof WildcardQuery) {
         Term term = ((WildcardQuery) inputQuery).getTerm();
         return rewriteTermQuery(term.field(), term.bytes().utf8ToString());
-      }
-      else {
+      } else {
         throw new CedarProcessingException("Query type not supported: " + inputQuery.getClass());
       }
     } else {
@@ -332,11 +331,14 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private String generateInfoFieldsQueryString(String fieldName, String fieldValue, boolean withPrefix) throws CedarProcessingException {
     String result;
-    String fieldNameQueryFragment = INFO_FIELDS_FIELD_NAME.concat(":").concat(fieldName);
+    // Generate field name query. Example: '(infoFields.fieldName:title1 OR infoFields.fieldName:title2)'
+    String fieldNameQueryFragment = "(".concat(INFO_FIELDS_FIELD_NAME).concat(":").concat(fieldName)
+        .concat(" OR ").concat(INFO_FIELDS_FIELD_PREFERRED_LABEL).concat(":").concat(fieldName).concat(")");
     String infoFieldsFieldValue = INFO_FIELDS_FIELD_VALUE;
     if (fieldValue.contains("http")) {
       infoFieldsFieldValue = INFO_FIELDS_FIELD_VALUE_URI;
     }
+    // Generate field value query. Example: 'infoFields.fieldValue:value1'
     String fieldValueQueryFragment = infoFieldsFieldValue.concat(":").concat(fieldValue);
     String andQueryFragment = " AND ";
     if ((fieldName.compareTo(ANY_STRING) != 0) && (fieldValue.compareTo(ANY_STRING) != 0)) {
@@ -345,8 +347,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       result = fieldNameQueryFragment;
     } else if ((fieldName.compareTo(ANY_STRING) == 0) && (fieldValue.compareTo(ANY_STRING) != 0)) {
       result = fieldValueQueryFragment;
-    }
-    else { //fieldName:_any_ AND fieldValue:_any -> Return everything
+    } else { //fieldName:_any_ AND fieldValue:_any -> Return everything
       return "*";
     }
 
@@ -359,6 +360,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private String preprocessQuery(String query) throws CedarProcessingException {
     query = encodeWildcards(query);
     query = encodeQueryStringUris(query);
+    //query = encodeOther(query);
     return query;
   }
 
@@ -407,7 +409,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     Matcher matcher = Pattern.compile(URL_REGEX).matcher(query);
 
-    while(matcher.find()){
+    while (matcher.find()) {
       String url = query.substring(matcher.start(), matcher.end());
       try {
         String encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString());
@@ -418,7 +420,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     }
     return query;
   }
-
 
 
 }

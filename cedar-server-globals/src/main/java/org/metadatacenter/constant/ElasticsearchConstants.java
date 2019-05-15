@@ -27,6 +27,7 @@ public final class ElasticsearchConstants {
   public static final String INFO_EVERYBODY_PERMISSION = ES_INFO_PREFIX + "everybodyPermission";
   public static final String INFO_FIELDS = "infoFields";
   public static final String INFO_FIELDS_FIELD_NAME = INFO_FIELDS + "." + "fieldName";
+  public static final String INFO_FIELDS_FIELD_PREFERRED_LABEL = INFO_FIELDS + "." + "fieldPrefLabel";
   public static final String INFO_FIELDS_FIELD_VALUE = INFO_FIELDS + "." + "fieldValue";
   public static final String INFO_FIELDS_FIELD_VALUE_URI = INFO_FIELDS + "." + "fieldValueUri";
 
