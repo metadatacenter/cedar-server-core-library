@@ -5,10 +5,10 @@ import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarObjectNotFoundException;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
-import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerNodeCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
@@ -24,30 +24,30 @@ public class GraphDbPermissionReader {
   private GraphDbPermissionReader() {
   }
 
-  public static FolderServerResourceCurrentUserReport getResourceCurrentUserReport(CedarRequestContext context,
+  public static FolderServerArtifactCurrentUserReport getArtifactCurrentUserReport(CedarRequestContext context,
                                                                                    FolderServiceSession folderSession,
                                                                                    PermissionServiceSession permissionSession,
                                                                                    CedarConfig cedarConfig,
-                                                                                   String resourceId)
+                                                                                   String artifactId)
       throws CedarException {
-    if (resourceId != null) {
-      FolderServerResource resource = folderSession.findResourceById(resourceId);
-      if (resource == null) {
-        throw new CedarObjectNotFoundException("The resource can not be found by id")
-            .errorKey(CedarErrorKey.RESOURCE_NOT_FOUND)
-            .parameter("id", resourceId);
+    if (artifactId != null) {
+      FolderServerArtifact artifact = folderSession.findArtifactById(artifactId);
+      if (artifact == null) {
+        throw new CedarObjectNotFoundException("The artifact can not be found by id")
+            .errorKey(CedarErrorKey.ARTIFACT_NOT_FOUND)
+            .parameter("id", artifactId);
       }
 
-      folderSession.addPathAndParentId(resource);
+      folderSession.addPathAndParentId(artifact);
 
-      resource.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, resource));
+      artifact.setPathInfo(PathInfoBuilder.getResourcePathExtract(context, folderSession, permissionSession, artifact));
 
-      FolderServerResourceCurrentUserReport resourceReport =
-          (FolderServerResourceCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(resource);
+      FolderServerArtifactCurrentUserReport artifactReport =
+          (FolderServerArtifactCurrentUserReport) FolderServerResourceCurrentUserReport.fromResource(artifact);
 
-      decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, resourceReport);
+      decorateResourceWithCurrentUserPermissions(context, permissionSession, cedarConfig, artifactReport);
 
-      return resourceReport;
+      return artifactReport;
     }
     return null;
   }
@@ -77,10 +77,10 @@ public class GraphDbPermissionReader {
 
       folderSession.addPathAndParentId(folder);
 
-      folder.setPathInfo(PathInfoBuilder.getNodePathExtract(context, folderSession, permissionSession, folder));
+      folder.setPathInfo(PathInfoBuilder.getResourcePathExtract(context, folderSession, permissionSession, folder));
 
       FolderServerFolderCurrentUserReport folderReport =
-          (FolderServerFolderCurrentUserReport) FolderServerNodeCurrentUserReport.fromNode(folder);
+          (FolderServerFolderCurrentUserReport) FolderServerResourceCurrentUserReport.fromResource(folder);
 
       decorateFolderWithCurrentUserPermissions(context, permissionSession, folderReport);
 

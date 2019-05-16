@@ -3,14 +3,11 @@ package org.metadatacenter.model.folderserver.info;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
-import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.datagroup.*;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
@@ -21,39 +18,31 @@ import java.io.IOException;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWithUsersData {
 
-  protected String id;
-  protected CedarNodeType nodeType;
-  protected ProvenanceTime createdOn;
-  protected ProvenanceTime lastUpdatedOn;
-
-  protected String name;
-  protected String description;
-  protected String identifier;
-  protected String path;
-
-  protected ResourceUri previousVersion;
-  protected BiboStatus publicationStatus;
-  protected ResourceUri derivedFrom;
-
+  protected BaseDataGroup baseData;
+  protected NameDescriptionIdentifierGroup nameDescriptionIdentifierData;
   protected VersionDataGroup versionData;
+  protected PreviousVersionGroup previousVersionData;
+  protected DerivedFromGroup derivedFromData;
+  protected IsBasedOnGroup isBasedOnData;
   protected UsersDataGroup usersData;
+  protected FolderDataGroup folderData;
 
-  private ResourceUri isBasedOn;
-
-  protected boolean isRoot;
-  protected boolean isSystem;
-  protected boolean isUserHome;
-
+  protected String path;
   protected boolean isOpen;
-
   protected NodeSharePermission everybodyPermission;
 
   private FolderServerNodeInfo() {
+    this.baseData = new BaseDataGroup();
+    this.nameDescriptionIdentifierData = new NameDescriptionIdentifierGroup();
     this.versionData = new VersionDataGroup();
+    this.previousVersionData = new PreviousVersionGroup();
+    this.derivedFromData = new DerivedFromGroup();
+    this.isBasedOnData = new IsBasedOnGroup();
     this.usersData = new UsersDataGroup();
+    this.folderData = new FolderDataGroup();
   }
 
-  public static FolderServerNodeInfo fromNode(FolderServerNode node) {
+  public static FolderServerNodeInfo fromNode(FileSystemResource node) {
     try {
       FolderServerNodeInfo info =
           JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
@@ -67,142 +56,142 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
 
   @JsonProperty(NodeProperty.Label.ID)
   public String getId() {
-    return id;
+    return baseData.getId();
   }
 
   @JsonProperty(NodeProperty.Label.ID)
   public void setId(String id) {
-    this.id = id;
+    baseData.setId(id);
   }
 
-  @JsonProperty(NodeProperty.Label.NODE_TYPE)
-  public CedarNodeType getType() {
-    return nodeType;
+  @JsonProperty(NodeProperty.Label.RESOURCE_TYPE)
+  public CedarResourceType getType() {
+    return baseData.getResourceType();
   }
 
-  @JsonProperty(NodeProperty.Label.NODE_TYPE)
-  public void setType(CedarNodeType nodeType) {
-    this.nodeType = nodeType;
-  }
-
-  @JsonProperty(NodeProperty.Label.NAME)
-  public String getName() {
-    return name;
-  }
-
-  @JsonProperty(NodeProperty.Label.NAME)
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  @JsonProperty(NodeProperty.Label.DESCRIPTION)
-  public String getDescription() {
-    return description;
-  }
-
-  @JsonProperty(NodeProperty.Label.DESCRIPTION)
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  @JsonProperty(NodeProperty.Label.IDENTIFIER)
-  public String getIdentifier() {
-    return identifier;
-  }
-
-  @JsonProperty(NodeProperty.Label.IDENTIFIER)
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
+  @JsonProperty(NodeProperty.Label.RESOURCE_TYPE)
+  public void setType(CedarResourceType resourceType) {
+    baseData.setResourceType(resourceType);
   }
 
   @JsonProperty(NodeProperty.Label.CREATED_ON)
   public ProvenanceTime getCreatedOn() {
-    return createdOn;
+    return baseData.getCreatedOn();
   }
 
   @JsonProperty(NodeProperty.Label.CREATED_ON)
   public void setCreatedOn(ProvenanceTime createdOn) {
-    this.createdOn = createdOn;
+    baseData.setCreatedOn(createdOn);
   }
 
   @JsonProperty(NodeProperty.Label.LAST_UPDATED_ON)
   public ProvenanceTime getLastUpdatedOn() {
-    return lastUpdatedOn;
+    return baseData.getLastUpdatedOn();
   }
 
   @JsonProperty(NodeProperty.Label.LAST_UPDATED_ON)
   public void setLastUpdatedOn(ProvenanceTime lastUpdatedOn) {
-    this.lastUpdatedOn = lastUpdatedOn;
+    baseData.setLastUpdatedOn(lastUpdatedOn);
+  }
+
+  @JsonProperty(NodeProperty.Label.NAME)
+  public String getName() {
+    return nameDescriptionIdentifierData.getName();
+  }
+
+  @JsonProperty(NodeProperty.Label.NAME)
+  public void setName(String name) {
+    nameDescriptionIdentifierData.setName(name);
+  }
+
+  @JsonProperty(NodeProperty.Label.DESCRIPTION)
+  public String getDescription() {
+    return nameDescriptionIdentifierData.getDescription();
+  }
+
+  @JsonProperty(NodeProperty.Label.DESCRIPTION)
+  public void setDescription(String description) {
+    nameDescriptionIdentifierData.setDescription(description);
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public String getIdentifier() {
+    return nameDescriptionIdentifierData.getIdentifier();
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public void setIdentifier(String identifier) {
+    nameDescriptionIdentifierData.setIdentifier(identifier);
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
   public ResourceUri getPreviousVersion() {
-    return previousVersion;
+    return previousVersionData.getPreviousVersion();
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
   public void setPreviousVersion(String pv) {
-    this.previousVersion = ResourceUri.forValue(pv);
+    previousVersionData.setPreviousVersion(ResourceUri.forValue(pv));
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public BiboStatus getPublicationStatus() {
-    return publicationStatus;
+    return versionData.getPublicationStatus();
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public void setPublicationStatus(String s) {
-    this.publicationStatus = BiboStatus.forValue(s);
+    versionData.setPublicationStatus(BiboStatus.forValue(s));
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
   public ResourceUri getDerivedFrom() {
-    return derivedFrom;
+    return derivedFromData.getDerivedFrom();
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
   public void setDerivedFrom(String df) {
-    this.derivedFrom = ResourceUri.forValue(df);
+    derivedFromData.setDerivedFrom(ResourceUri.forValue(df));
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public ResourceUri getIsBasedOn() {
-    return isBasedOn;
+    return isBasedOnData.getIsBasedOn();
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public void setIsBasedOn(String isBasedOn) {
-    this.isBasedOn = ResourceUri.forValue(isBasedOn);
+    isBasedOnData.setIsBasedOn(ResourceUri.forValue(isBasedOn));
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)
   public boolean getIsRoot() {
-    return isRoot;
+    return folderData.isRoot();
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)
   public void setIsRoot(boolean isRoot) {
-    this.isRoot = isRoot;
+    folderData.setRoot(isRoot);
   }
 
   @JsonProperty(NodeProperty.Label.IS_SYSTEM)
   public boolean getIsSystem() {
-    return isSystem;
+    return folderData.isSystem();
   }
 
   @JsonProperty(NodeProperty.Label.IS_SYSTEM)
   public void setIsSystem(boolean isSystem) {
-    this.isSystem = isSystem;
+    folderData.setSystem(isSystem);
   }
 
   @JsonProperty(NodeProperty.Label.IS_USER_HOME)
   public boolean getIsUserHome() {
-    return isUserHome;
+    return folderData.isUserHome();
   }
 
   @JsonProperty(NodeProperty.Label.IS_USER_HOME)
   public void setIsUserHome(boolean isUserHome) {
-    this.isUserHome = isUserHome;
+    folderData.setUserHome(isUserHome);
   }
 
   @JsonProperty(NodeProperty.Label.IS_OPEN)

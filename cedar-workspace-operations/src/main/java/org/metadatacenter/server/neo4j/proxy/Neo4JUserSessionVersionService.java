@@ -3,11 +3,12 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.model.BiboStatus;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession implements VersionServiceSession {
@@ -35,27 +36,36 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public OutcomeWithReason resourceCanBePublished(ResourceWithCurrentUserPermissions resource) {
-    if (resource.getPublicationStatus() != BiboStatus.DRAFT) {
-      return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
-    } else {
-      FolderServerNode nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
-      if (nextVersion != null) {
-        return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
+      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
+          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+      if (res.getPublicationStatus() != BiboStatus.DRAFT) {
+        return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
       }
+    }
+
+    FileSystemResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
+    if (nextVersion != null) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
     }
     return OutcomeWithReason.positive();
   }
 
   @Override
   public OutcomeWithReason resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource) {
-    if (resource.getPublicationStatus() != BiboStatus.PUBLISHED) {
-      return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
-    } else {
-      FolderServerNode nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
-      if (nextVersion != null) {
-        return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
+      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
+          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+      if (res.getPublicationStatus() != BiboStatus.PUBLISHED) {
+        return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
       }
     }
+
+    FileSystemResource nextVersion = proxies.version().resourceWithPreviousVersion(resource.getId());
+    if (nextVersion != null) {
+      return OutcomeWithReason.negative(CedarErrorKey.VERSIONING_ONLY_ON_LATEST);
+    }
+
     return OutcomeWithReason.positive();
   }
 

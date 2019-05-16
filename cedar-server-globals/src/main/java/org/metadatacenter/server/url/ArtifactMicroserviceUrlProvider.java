@@ -1,7 +1,7 @@
 package org.metadatacenter.server.url;
 
 import org.metadatacenter.config.ServerConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.util.http.UrlUtil;
 
 import java.util.Optional;
@@ -17,20 +17,20 @@ public class ArtifactMicroserviceUrlProvider extends MicroserviceUrlProvider {
     super(server.getBase());
   }
 
-  public String getNodeType(CedarNodeType nodeType) {
-    return base + nodeType.getPrefix();
+  public String getResourceType(CedarResourceType resourceType) {
+    return base + resourceType.getPrefix();
   }
 
-  public String getNodeTypeWithId(CedarNodeType nodeType, String id, Optional<String> format) {
+  public String getResourceTypeWithId(CedarResourceType resourceType, String id, Optional<String> format) {
     String f = "";
     if (format.isPresent()) {
       f = "?" + QP_FORMAT + "=" + format.get();
     }
-    return base + nodeType.getPrefix() + "/" + UrlUtil.urlEncode(id) + f;
+    return base + resourceType.getPrefix() + "/" + UrlUtil.urlEncode(id) + f;
   }
 
-  public String getNodeTypeWithId(CedarNodeType nodeType, String id) {
-    return getNodeTypeWithId(nodeType, id, Optional.empty());
+  public String getResourceTypeWithId(CedarResourceType resourceType, String id) {
+    return getResourceTypeWithId(resourceType, id, Optional.empty());
   }
 
   public String getValidateCommand(String resourceType) {

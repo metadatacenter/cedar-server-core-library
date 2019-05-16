@@ -2,18 +2,19 @@ package org.metadatacenter.model.folderserver.extract;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.NodeWithIsBasedOn;
+import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerInstanceExtract extends FolderServerResourceExtract implements NodeWithIsBasedOn {
+public abstract class FolderServerInstanceArtifactExtract extends FolderServerArtifactExtract
+    implements InstanceArtifactWithIsBasedOn {
 
   private ResourceUri isBasedOn;
 
-  public FolderServerInstanceExtract() {
-    super(CedarNodeType.INSTANCE);
+  public FolderServerInstanceArtifactExtract(CedarResourceType resourceType) {
+    super(resourceType);
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)

@@ -24,7 +24,8 @@ public class ProxyUtil {
   private static final List<String> CEDAR_RESPONSE_HEADERS = Lists.newArrayList(
       HttpHeaders.CONTENT_TYPE,
       CustomHttpConstants.HEADER_CEDAR_VALIDATION_STATUS,
-      CustomHttpConstants.HEADER_CEDAR_VALIDATION_REPORT);
+      CustomHttpConstants.HEADER_CEDAR_VALIDATION_REPORT,
+      CustomHttpConstants.HEADER_ACCESS_CONTROL_EXPOSE_HEADERS);
 
   public static HttpResponse proxyGet(String url, CedarRequestContext context) throws CedarProcessingException {
     Request proxyRequest = Request.Get(url)

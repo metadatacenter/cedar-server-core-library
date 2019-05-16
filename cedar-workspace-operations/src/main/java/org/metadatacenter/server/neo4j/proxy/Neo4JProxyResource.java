@@ -1,25 +1,30 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNode;
-import org.metadatacenter.model.ResourceUri;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.CedarResource;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
+import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolderContent;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolderContent;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
+import org.metadatacenter.server.security.model.user.CedarUser;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+
+import static org.metadatacenter.server.security.model.auth.CedarPermission.READ_NOT_READABLE_NODE;
 
 public class Neo4JProxyResource extends AbstractNeo4JProxy {
 
@@ -27,174 +32,277 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     super(proxies, cedarConfig);
   }
 
-  FolderServerResource createResourceAsChildOfId(FolderServerResource newResource, String parentId) {
-    String cypher = CypherQueryBuilderResource.createResourceAsChildOfId(newResource);
-    CypherParameters params = CypherParamBuilderResource.createResource(newResource, parentId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
-  }
-
-  FolderServerResource updateResourceById(String resourceURL, Map<NodeProperty, String> updateFields, String
-      updatedBy) {
-    String cypher = CypherQueryBuilderResource.updateResourceById(updateFields);
-    CypherParameters params = CypherParamBuilderResource.updateResourceById(resourceURL, updateFields, updatedBy);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerNode folderServerNode = executeWriteGetOne(q, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
-  }
-
-  boolean deleteResourceById(String resourceURL) {
-    String cypher = CypherQueryBuilderResource.deleteResourceById();
-    CypherParameters params = CypherParamBuilderResource.deleteResourceById(resourceURL);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "deleting resource");
-  }
-
-  boolean moveResource(FolderServerResource sourceResource, FolderServerFolder targetFolder) {
-    boolean unlink = unlinkResourceFromParent(sourceResource);
-    if (unlink) {
-      return linkResourceUnderFolder(sourceResource, targetFolder);
+  long findFolderContentsFilteredCount(String folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
     }
-    return false;
-  }
-
-  private boolean unlinkResourceFromParent(FolderServerResource resource) {
-    String cypher = CypherQueryBuilderResource.unlinkResourceFromParent();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "unlinking resource");
-  }
-
-  private boolean linkResourceUnderFolder(FolderServerResource resource, FolderServerFolder parentFolder) {
-    String cypher = CypherQueryBuilderResource.linkResourceUnderFolder();
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceIdAndParentFolderId(resource.getId(), parentFolder
-        .getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "linking resource");
-  }
-
-  private boolean setOwner(FolderServerResource resource, FolderServerUser user) {
-    String cypher = CypherQueryBuilderResource.setResourceOwner();
-    CypherParameters params = AbstractCypherParamBuilder.matchResourceAndUser(resource.getId(), user.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting owner");
-  }
-
-  boolean updateOwner(FolderServerResource resource, FolderServerUser user) {
-    boolean removed = removeOwner(resource);
-    if (removed) {
-      return setOwner(resource, user);
-    }
-    return false;
-  }
-
-  boolean removeOwner(FolderServerResource resource) {
-    String cypher = CypherQueryBuilderResource.removeResourceOwner();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resource.getId());
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "removing owner");
-  }
-
-  private <T extends CedarNode> T findResourceGenericById(String id, Class<T> klazz) {
-    String cypher = CypherQueryBuilderNode.getNodeById();
-    CypherParameters params = CypherParamBuilderNode.getNodeById(id);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetOne(q, klazz);
-  }
-
-  public FolderServerResourceExtract findResourceExtractById(ResourceUri id) {
-    return findResourceGenericById(id.getValue(), FolderServerResourceExtract.class);
-  }
-
-  public FolderServerResource findResourceById(String resourceURL) {
-    FolderServerNode folderServerNode = findResourceGenericById(resourceURL, FolderServerNode.class);
-    return folderServerNode == null ? null : folderServerNode.asResource();
-  }
-
-  List<FolderServerNode> findResourcePathById(String id) {
-    String cypher = CypherQueryBuilderResource.getResourceLookupQueryById();
-    CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerNode.class);
-  }
-
-  public boolean setDerivedFrom(String newId, String oldId) {
-    String cypher = CypherQueryBuilderResource.setDerivedFrom();
-    CypherParameters params = CypherParamBuilderResource.matchSourceAndTarget(newId, oldId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting derivedFrom");
-  }
-
-  public boolean unsetLatestVersion(String resourceId) {
-    String cypher = CypherQueryBuilderResource.unsetLatestVersion();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "unsetting isLatestVersion");
-  }
-
-  public boolean setLatestVersion(String resourceId) {
-    String cypher = CypherQueryBuilderResource.setLatestVersion();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting isLatestVersion");
-  }
-
-  public boolean unsetLatestDraftVersion(String resourceId) {
-    String cypher = CypherQueryBuilderResource.unsetLatestDraftVersion();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "unsetting isLatestDraftVersion");
-  }
-
-  public boolean setLatestPublishedVersion(String resourceId) {
-    String cypher = CypherQueryBuilderResource.setLatestPublishedVersion();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting isLatestPublishedVersion");
-  }
-
-  public boolean unsetLatestPublishedVersion(String resourceId) {
-    String cypher = CypherQueryBuilderResource.unsetLatestPublishedVersion();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "unsetting isLatestPublishedVersion");
-  }
-
-  public long getIsBasedOnCount(String templateId) {
-    String cypher = CypherQueryBuilderResource.getIsBasedOnCount();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(templateId);
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery(version, publicationStatus,
+        addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredCountParameters(folderId,
+        resourceTypeList, version, publicationStatus, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetCount(q);
   }
 
-  public List<FolderServerResourceExtract> getVersionHistory(String resourceId) {
-    String cypher = CypherQueryBuilderResource.getVersionHistory();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+  long findFolderContentsCount(String folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter
+      version, ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    boolean addPermissionConditions = false;
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredCountQuery(version, publicationStatus,
+        addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredCountParameters(folderId,
+        resourceTypeList, version, publicationStatus, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  long findFolderContentsUnfilteredCount(String folderId) {
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsUnfilteredCountQuery();
+    CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  List<FolderServerResourceExtract> findAllNodes(int limit, int offset, List<String> sortList) {
+    String cypher = CypherQueryBuilderNode.getAllNodesLookupQuery(sortList);
+    CypherParameters params = CypherParamBuilderNode.getAllNodesLookupParameters(limit, offset);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerResourceExtract.class);
   }
 
-  public List<FolderServerResourceExtract> getVersionHistoryWithPermission(String resourceId, String userURL) {
+  long findAllNodesCount() {
+    String cypher = CypherQueryBuilderNode.getAllNodesCountQuery();
+    CypherQuery q = new CypherQueryLiteral(cypher);
+    return executeReadGetCount(q);
+  }
+
+  private <T extends CedarResource> List<T> findFolderContentsFilteredGeneric(String folderId,
+                                                                              Collection<CedarResourceType>
+                                                                                  resourceTypes,
+                                                                              ResourceVersionFilter version,
+                                                                              ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                                  offset, List<String> sortList,
+                                                                              CedarUser cu, Class<T> klazz) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version,
+        publicationStatus, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId,
+        resourceTypes, version, publicationStatus, limit, offset, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, klazz);
+  }
+
+  List<FileSystemResource> findFolderContentsFiltered(String folderId, Collection<CedarResourceType> resourceTypes,
+                                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
+                                                          publicationStatus, int limit, int offset, List<String>
+                                                          sortList, CedarUser cu) {
+    return findFolderContentsFilteredGeneric(folderId, resourceTypes, version, publicationStatus, limit, offset,
+        sortList, cu, FileSystemResource.class);
+  }
+
+  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(String folderId, Collection<CedarResourceType>
+      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                          offset, List<String> sortList, CedarUser cu) {
+    return findFolderContentsFilteredGeneric(folderId, resourceTypes, version, publicationStatus, limit, offset,
+        sortList, cu, FolderServerResourceExtract.class);
+  }
+
+  List<FolderServerResourceExtract> findFolderContentsExtract(String folderId, Collection<CedarResourceType>
+      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, int limit, int
+                                                                  offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = false;
+    String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version,
+        publicationStatus, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId,
+        resourceTypes, version, publicationStatus, limit, offset, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
+  }
+
+  FileSystemResource findNodeByParentIdAndName(String parentId, String name) {
+    String cypher = CypherQueryBuilderNode.getNodeByParentIdAndName();
+    CypherParameters params = CypherParamBuilderNode.getNodeByParentIdAndName(parentId, name);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FileSystemResource.class);
+  }
+
+  void updateNodeOwner(String nodeURL, String userURL) {
     FolderServerUser user = proxies.user().findUserById(userURL);
-    String cypher = CypherQueryBuilderResource.getVersionHistoryWithPermission();
-    CypherParameters params = CypherParamBuilderResource.matchResourceIdAndUserId(resourceId, user.getId());
+    if (user != null) {
+      FileSystemResource node = proxies.resource().findNodeById(nodeURL);
+      if (node != null) {
+        proxies.resource().updateOwner(node, user);
+      }
+    }
+  }
+
+  public FolderServerUser getNodeOwner(String nodeURL) {
+    String cypher = CypherQueryBuilderNode.getNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(nodeURL);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerUser.class);
+  }
+
+  public List<FolderServerResourceExtract> viewSharedWithMeFiltered(List<CedarResourceType> resourceTypes,
+                                                                    ResourceVersionFilter version,
+                                                                    ResourcePublicationStatusFilter publicationStatus
+      , int limit, int offset, List<String> sortList, CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithMeLookupQuery(version, publicationStatus, sortList);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeLookupParameters(resourceTypes, version,
+        publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerResourceExtract.class);
   }
 
-  public boolean setOpen(String resourceId) {
-    String cypher = CypherQueryBuilderResource.setOpen();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+  public List<FolderServerResourceExtract> viewSharedWithEverybodyFiltered(List<CedarResourceType> resourceTypes,
+                                                                           ResourceVersionFilter version,
+                                                                           ResourcePublicationStatusFilter publicationStatus,
+                                                                           int limit, int offset, List<String> sortList,
+                                                                           CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithEverybodyLookupQuery(version, publicationStatus, sortList);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithEverybodyLookupParameters(resourceTypes, version,
+        publicationStatus, limit, offset, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting isOpen");
+    return executeReadGetList(q, FolderServerResourceExtract.class);
   }
 
-  public boolean setNotOpen(String resourceId) {
-    String cypher = CypherQueryBuilderResource.setNotOpen();
-    CypherParameters params = CypherParamBuilderResource.matchResourceId(resourceId);
+  public long viewSharedWithMeFilteredCount(List<CedarResourceType> resourceTypes, ResourceVersionFilter version,
+                                            ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithMeCountQuery(version, publicationStatus);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithMeCountParameters(resourceTypes, version,
+        publicationStatus, cu.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeWrite(q, "setting isOpen");
+    return executeReadGetCount(q);
+  }
+
+  public long viewSharedWithEverybodyFilteredCount(List<CedarResourceType> resourceTypes, ResourceVersionFilter version,
+                                                   ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    String cypher = CypherQueryBuilderNode.getSharedWithEverybodyCountQuery(version, publicationStatus);
+    CypherParameters params = CypherParamBuilderNode.getSharedWithEverybodyCountParameters(resourceTypes, version,
+        publicationStatus, cu.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  public List<FolderServerResourceExtract> viewAllFiltered(List<CedarResourceType> resourceTypes,
+                                                           ResourceVersionFilter version,
+                                                           ResourcePublicationStatusFilter publicationStatus,
+                                                           int limit, int
+                                                               offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getAllLookupQuery(version, publicationStatus, sortList,
+        addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllLookupParameters(resourceTypes, version, publicationStatus,
+        limit, offset, cu.getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
+  }
+
+  public long viewAllFilteredCount(List<CedarResourceType> resourceTypes, ResourceVersionFilter version,
+                                   ResourcePublicationStatusFilter publicationStatus, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getAllCountQuery(version, publicationStatus, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getAllCountParameters(resourceTypes, version, publicationStatus, cu
+        .getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  public List<FileSystemResource> findAllDescendantNodesById(String id) {
+    String cypher = CypherQueryBuilderNode.getAllDescendantNodes();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FileSystemResource.class);
+  }
+
+  public List<FileSystemResource> findAllNodesVisibleByGroupId(String id) {
+    String cypher = CypherQueryBuilderNode.getAllVisibleByGroupQuery();
+    CypherParameters params = CypherParamBuilderGroup.matchGroupId(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FileSystemResource.class);
+  }
+
+  private <T extends CedarResource> List<T> findNodePathGenericById(String id, Class<T> klazz) {
+    String cypher = CypherQueryBuilderNode.getNodeLookupQueryById();
+    CypherParameters params = CypherParamBuilderNode.getNodeLookupByIDParameters(proxies.pathUtil, id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, klazz);
+  }
+
+  List<FolderServerResourceExtract> findNodePathExtractById(String id) {
+    return findNodePathGenericById(id, FolderServerResourceExtract.class);
+  }
+
+  public List<FolderServerResourceExtract> searchIsBasedOn(List<CedarResourceType> resourceTypes, String isBasedOn,
+                                                           int limit,
+                                                           int offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getSearchIsBasedOnLookupQuery(sortList, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getSearchIsBasedOnLookupParameters(resourceTypes, isBasedOn, limit,
+        offset, cu.getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
+  }
+
+  public long searchIsBasedOnCount(List<CedarResourceType> resourceTypes, String isBasedOn, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderNode.getSearchIsBasedOnCountQuery(addPermissionConditions);
+    CypherParameters params = CypherParamBuilderNode.getSearchIsBasedOnCountParameters(resourceTypes, isBasedOn,
+        cu.getId(), addPermissionConditions);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
+  }
+
+  public boolean setEverybodyPermission(String nodeId, NodeSharePermission everybodyPermission) {
+    String cypher = CypherQueryBuilderNode.setEverybodyPermission();
+    CypherParameters params = CypherParamBuilderNode.matchNodeIdAndEverybodyPermission(nodeId, everybodyPermission);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting everybodyPermission");
+  }
+
+  public FileSystemResource findNodeById(String nodeUUID) {
+    String cypher = CypherQueryBuilderNode.getNodeById();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(nodeUUID);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FileSystemResource.class);
+  }
+
+  private boolean setOwner(FileSystemResource node, FolderServerUser user) {
+    String cypher = CypherQueryBuilderNode.setNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeAndUser(node.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting owner");
+  }
+
+  private boolean removeOwner(FileSystemResource node) {
+    String cypher = CypherQueryBuilderNode.removeNodeOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(node.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "removing owner");
+  }
+
+  boolean updateOwner(FileSystemResource node, FolderServerUser user) {
+    boolean removed = removeOwner(node);
+    if (removed) {
+      return setOwner(node, user);
+    }
+    return false;
   }
 
 }

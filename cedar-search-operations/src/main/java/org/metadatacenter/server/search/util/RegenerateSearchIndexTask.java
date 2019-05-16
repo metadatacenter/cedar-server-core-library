@@ -3,7 +3,7 @@ package org.metadatacenter.server.search.util;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -50,20 +50,21 @@ public class RegenerateSearchIndexTask {
     NodeSearchingService nodeSearchingService = indexUtils.getNodeSearchingService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    NodeIndexingService nodeIndexingService = null;
 
     boolean regenerate = true;
     try {
       PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
       // Get all resources
       log.info("Reading all resources from the existing search index.");
-      List<FolderServerNode> resources = indexUtils.findAllResources(requestContext);
+      List<FileSystemResource> resources = indexUtils.findAllResources(requestContext);
       // Checks if is necessary to regenerate the index or not
       if (!force) {
         log.info("Force is false. Checking if it is necessary to regenerate the search index from Neo4j.");
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
         if (esManagementService.indexExists(aliasName)) {
           log.warn("The search index/alias '" + aliasName + "' is present!");
-          // Use the resource ids to check if the resources in the DBs and in the index are different
+          // Use the artifact ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
           log.info("No. of nodes in Neo4j that are expected to be indexed: " + dbResourceIds.size());
           List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
@@ -96,16 +97,16 @@ public class RegenerateSearchIndexTask {
         esManagementService.createSearchIndex(newIndexName);
         log.info("Search index created:" + newIndexName);
 
-        NodeIndexingService nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
+        nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;
         int batchCount = 1;
         List<IndexingDocumentDocument> currentBatch = new ArrayList<>();
-        for (FolderServerNode node : resources) {
+        for (FileSystemResource node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm));
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext, true));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();
@@ -141,11 +142,15 @@ public class RegenerateSearchIndexTask {
       log.error("Error while regenerating index", e);
       throw new CedarProcessingException(e);
     }
+    finally {
+      // Clear template nodes cache
+      nodeIndexingService.instanceContentExtractor.clearNodesCache();
+    }
   }
 
-  private List<String> getResourceIds(List<FolderServerNode> resources) {
+  private List<String> getResourceIds(List<FileSystemResource> resources) {
     List<String> ids = new ArrayList<>();
-    for (FolderServerNode resource : resources) {
+    for (FileSystemResource resource : resources) {
       ids.add(resource.getId());
     }
     return ids;

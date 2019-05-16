@@ -12,13 +12,13 @@ public abstract class GraphDbObjectBuilder {
 
   private static final Logger log = LoggerFactory.getLogger(GraphDbObjectBuilder.class);
 
-  public static FolderServerResource artifact(InputStream stream) throws IOException {
-    FolderServerNode folderServerNode = JsonMapper.MAPPER.readValue(stream, FolderServerNode.class);
-    return (FolderServerResource)folderServerNode;
+  public static FolderServerArtifact artifact(InputStream stream) throws IOException {
+    FileSystemResource folderServerNode = JsonMapper.MAPPER.readValue(stream, FileSystemResource.class);
+    return (FolderServerArtifact)folderServerNode;
   }
 
-  public static FolderServerResource forNodeType(CedarNodeType nodeType) {
-    switch (nodeType) {
+  public static FolderServerArtifact forResourceType(CedarResourceType resourceType) {
+    switch (resourceType) {
       case TEMPLATE:
         return new FolderServerTemplate();
       case ELEMENT:
@@ -32,18 +32,19 @@ public abstract class GraphDbObjectBuilder {
     }
   }
 
-  public static FolderServerResource forNodeType(CedarNodeType nodeType, String newId, String name,
-                                                 String description, String identifier, ResourceVersion version,
-                                                 BiboStatus publicationStatus) {
-    FolderServerResource r = forNodeType(nodeType);
+  public static FolderServerArtifact forResourceType(CedarResourceType resourceType, String newId, String name,
+                                                     String description, String identifier, ResourceVersion version,
+                                                     BiboStatus publicationStatus) {
+    FolderServerArtifact r = forResourceType(resourceType);
     r.setId(newId);
-    r.setType(nodeType);
+    r.setType(resourceType);
     r.setName(name);
     r.setDescription(description);
     r.setIdentifier(identifier);
-    if (nodeType.isVersioned()) {
-      r.setVersion(version.getValue());
-      r.setPublicationStatus(publicationStatus.getValue());
+    if (resourceType.isVersioned()) {
+      FolderServerSchemaArtifact a = (FolderServerSchemaArtifact)r;
+      a.setVersion(version.getValue());
+      a.setPublicationStatus(publicationStatus.getValue());
     }
     return r;
   }

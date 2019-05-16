@@ -1,7 +1,7 @@
 package org.metadatacenter.server.search.elasticsearch.permission;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
@@ -38,7 +38,7 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
 
     currentUserPermissions.setCanCopy(true);
 
-    if (indexedDocument.getInfo().getType() == CedarNodeType.TEMPLATE) {
+    if (indexedDocument.getInfo().getType() == CedarResourceType.TEMPLATE) {
       currentUserPermissions.setCanPopulate(true);
     }
 
@@ -61,7 +61,7 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
       }
     }
 
-    if (indexedDocument.getInfo().getType() == CedarNodeType.INSTANCE) {
+    if (indexedDocument.getInfo().getType() == CedarResourceType.INSTANCE) {
       if (isSubmittable()) {
         currentUserPermissions.setCanSubmit(true);
       }

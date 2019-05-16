@@ -25,7 +25,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
     sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
-    sb.append(" WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE child.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "parent"));
       sb.append(getResourcePermissionConditions(" AND ", "child"));
@@ -50,7 +50,7 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
     sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
-    sb.append(" WHERE child.<PROP.NODE_TYPE> in {nodeTypeList}");
+    sb.append(" WHERE child.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
     if (addPermissionConditions) {
       sb.append(getResourcePermissionConditions(" AND ", "parent"));
       sb.append(getResourcePermissionConditions(" AND ", "child"));

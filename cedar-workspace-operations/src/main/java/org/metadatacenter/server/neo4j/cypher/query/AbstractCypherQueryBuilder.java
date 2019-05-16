@@ -1,10 +1,10 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.*;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerInstance;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.IsRoot;
+import org.metadatacenter.model.IsSystem;
+import org.metadatacenter.model.IsUserHome;
+import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.sort.QuerySortOptions;
@@ -33,7 +33,7 @@ public abstract class AbstractCypherQueryBuilder {
     return " SET " + nodeAlias + "." + buildUpdateAssignment(property);
   }
 
-  protected static String createFSResource(String nodeAlias, FolderServerResource newResource) {
+  protected static String createFSResource(String nodeAlias, FolderServerArtifact newResource) {
     return createFSNode(nodeAlias, newResource);
   }
 
@@ -51,9 +51,9 @@ public abstract class AbstractCypherQueryBuilder {
     }
   }
 
-  private static String createFSNode(String nodeAlias, FolderServerNode newNode) {
+  private static String createFSNode(String nodeAlias, FileSystemResource newNode) {
 
-    NodeLabel label = NodeLabel.forCedarNodeType(newNode.getType());
+    NodeLabel label = NodeLabel.forCedarResourceType(newNode.getType());
     if (label == null) {
       FolderServerFolder f = (FolderServerFolder) newNode;
       label = getFolderLabel(IsRoot.forValue(f.isRoot()),
@@ -74,8 +74,30 @@ public abstract class AbstractCypherQueryBuilder {
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_ON_TS)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.OWNED_BY)).append(",");
-    if (newNode instanceof FolderServerResource) {
-      FolderServerResource newResource = (FolderServerResource) newNode;
+    if (newNode instanceof FolderServerFolder) {
+      FolderServerFolder newFolder = (FolderServerFolder) newNode;
+      if (newFolder.isRoot()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_ROOT)).append(",");
+      }
+      if (newFolder.isSystem()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_SYSTEM)).append(",");
+      }
+      if (newFolder.isUserHome()) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_USER_HOME)).append(",");
+        sb.append(buildCreateAssignment(NodeProperty.HOME_OF)).append(",");
+      }
+    }
+    if (newNode instanceof FolderServerArtifact) {
+      FolderServerArtifact newResource = (FolderServerArtifact) newNode;
+      if (newResource.getIdentifier() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
+      }
+      if (newResource.isOpen() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_OPEN)).append(",");
+      }
+    }
+    if (newNode instanceof FolderServerSchemaArtifact) {
+      FolderServerSchemaArtifact newResource = (FolderServerSchemaArtifact) newNode;
       if (newResource.getVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.VERSION)).append(",");
       }
@@ -97,36 +119,18 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.isLatestPublishedVersion() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_LATEST_PUBLISHED_VERSION)).append(",");
       }
-      if (newResource.getIdentifier() != null) {
-        sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
-      }
-      if (newResource.getType() == CedarNodeType.INSTANCE) {
-        FolderServerInstance newInstance = (FolderServerInstance) newResource;
-        if (newInstance.getIsBasedOn() != null) {
-          sb.append(buildCreateAssignment(NodeProperty.IS_BASED_ON)).append(",");
-        }
-      }
-      if (newResource.isOpen() != null) {
-        sb.append(buildCreateAssignment(NodeProperty.IS_OPEN)).append(",");
-      }
-    } else if (newNode instanceof FolderServerFolder) {
-      FolderServerFolder newFolder = (FolderServerFolder) newNode;
-      if (newFolder.isRoot()) {
-        sb.append(buildCreateAssignment(NodeProperty.IS_ROOT)).append(",");
-      }
-      if (newFolder.isSystem()) {
-        sb.append(buildCreateAssignment(NodeProperty.IS_SYSTEM)).append(",");
-      }
-      if (newFolder.isUserHome()) {
-        sb.append(buildCreateAssignment(NodeProperty.IS_USER_HOME)).append(",");
-        sb.append(buildCreateAssignment(NodeProperty.HOME_OF)).append(",");
+    }
+    if (newNode instanceof FolderServerInstanceArtifact) {
+      FolderServerInstanceArtifact newInstance = (FolderServerInstanceArtifact) newNode;
+      if (newInstance.getIsBasedOn() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.IS_BASED_ON)).append(",");
       }
     }
 
     sb.append(NodeProperty.NODE_SORT_ORDER).append(":")
         .append(label.isFolder() ? ORDER_FOLDER : ORDER_NON_FOLDER).append(",");
 
-    sb.append(buildCreateAssignment(NodeProperty.NODE_TYPE));
+    sb.append(buildCreateAssignment(NodeProperty.RESOURCE_TYPE));
     sb.append("})");
     return sb.toString();
   }
@@ -168,33 +172,39 @@ public abstract class AbstractCypherQueryBuilder {
 
   public static String addRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
     return "" +
-        " MATCH (fromNode:" + fromLabel + " {<PROP.ID>:{fromId} })" +
+        " MATCH (fromResource:" + fromLabel + " {<PROP.ID>:{fromId} })" +
         " MATCH (toNode:" + toLabel + " {<PROP.ID>:{toId} })" +
-        " CREATE (fromNode)-[:" + relation + "]->(toNode)" +
-        " RETURN fromNode";
+        " CREATE (fromResource)-[:" + relation + "]->(toNode)" +
+        " RETURN fromResource";
   }
 
   public static String removeRelation(NodeLabel fromLabel, NodeLabel toLabel, RelationLabel relation) {
     return "" +
-        " MATCH (fromNode:" + fromLabel + " {<PROP.ID>:{fromId} })" +
+        " MATCH (fromResource:" + fromLabel + " {<PROP.ID>:{fromId} })" +
         " MATCH (toNode:" + toLabel + " {<PROP.ID>:{toId} })" +
-        " MATCH (fromNode)-[relation:" + relation + "]->(toNode)" +
+        " MATCH (fromResource)-[relation:" + relation + "]->(toNode)" +
         " DELETE relation" +
-        " RETURN fromNode";
+        " RETURN fromResource";
   }
 
-  protected static String createFSResourceAsChildOfId(FolderServerResource newResource) {
+  protected static String createFSResourceAsChildOfId(FolderServerArtifact newResource) {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
     sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentId}})");
-    if (newResource.getPreviousVersion() != null) {
-      sb.append(" MATCH (pvNode:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.PREVIOUS_VERSION>}})");
+    if (newResource instanceof FolderServerSchemaArtifact) {
+      FolderServerSchemaArtifact schemaArtifact = (FolderServerSchemaArtifact) newResource;
+      if (schemaArtifact.getPreviousVersion() != null) {
+        sb.append(" MATCH (pvNode:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.PREVIOUS_VERSION>}})");
+      }
     }
     sb.append(createFSResource("child", newResource));
     sb.append(" CREATE (user)-[:<REL.OWNS>]->(child)");
     sb.append(" CREATE (parent)-[:<REL.CONTAINS>]->(child)");
-    if (newResource.getPreviousVersion() != null) {
-      sb.append("CREATE (child)-[:<REL.PREVIOUSVERSION>]->(pvNode)");
+    if (newResource instanceof FolderServerSchemaArtifact) {
+      FolderServerSchemaArtifact schemaArtifact = (FolderServerSchemaArtifact) newResource;
+      if (schemaArtifact.getPreviousVersion() != null) {
+        sb.append("CREATE (child)-[:<REL.PREVIOUSVERSION>]->(pvNode)");
+      }
     }
     sb.append(" RETURN child");
     return sb.toString();

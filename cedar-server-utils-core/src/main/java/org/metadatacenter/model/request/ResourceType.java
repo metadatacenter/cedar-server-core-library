@@ -2,14 +2,14 @@ package org.metadatacenter.model.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.metadatacenter.model.CedarNodeType;
+import org.metadatacenter.model.CedarResourceType;
 
 public enum ResourceType {
 
-  TEMPLATE(CedarNodeType.Types.TEMPLATE),
-  ELEMENT(CedarNodeType.Types.ELEMENT),
-  FIELD(CedarNodeType.Types.FIELD),
-  INSTANCE(CedarNodeType.Types.INSTANCE);
+  TEMPLATE(CedarResourceType.Types.TEMPLATE),
+  ELEMENT(CedarResourceType.Types.ELEMENT),
+  FIELD(CedarResourceType.Types.FIELD),
+  INSTANCE(CedarResourceType.Types.INSTANCE);
 
   private final String value;
 

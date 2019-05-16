@@ -4,8 +4,8 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.Upsert;
-import org.metadatacenter.model.folderserver.basic.FolderServerNode;
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
 import org.metadatacenter.server.FolderServiceSession;
@@ -30,6 +30,7 @@ public class SearchPermissionExecutorService {
   private final NodeSearchingService nodeSearchingService;
   private final NodeIndexingService nodeIndexingService;
   private final IndexUtils indexUtils;
+  private final CedarRequestContext cedarRequestContext;
 
   public SearchPermissionExecutorService(CedarConfig cedarConfig,
                                          IndexUtils indexUtils,
@@ -40,7 +41,7 @@ public class SearchPermissionExecutorService {
     this.nodeIndexingService = nodeIndexingService;
     this.indexUtils = indexUtils;
 
-    CedarRequestContext cedarRequestContext = CedarRequestContextFactory.fromAdminUser(cedarConfig, userService);
+    this.cedarRequestContext = CedarRequestContextFactory.fromAdminUser(cedarConfig, userService);
 
     folderSession = CedarDataServices.getFolderServiceSession(cedarRequestContext);
     permissionSession = CedarDataServices.getPermissionServiceSession(cedarRequestContext);
@@ -71,9 +72,9 @@ public class SearchPermissionExecutorService {
   }
 
   private void updateOneResource(String id) {
-    FolderServerResource resource = folderSession.findResourceById(id);
+    FolderServerArtifact resource = folderSession.findArtifactById(id);
     if (resource != null) {
-      log.debug("Update one resource:" + resource.getName());
+      log.debug("Update one artifact:" + resource.getName());
       upsertOnePermissions(Upsert.UPDATE, id);
     } else {
       log.error("Resource was not found:" + id);
@@ -82,20 +83,20 @@ public class SearchPermissionExecutorService {
 
   private void updateFolderRecursively(String id) {
     log.debug("Update recursive folder:");
-    List<FolderServerNode> subtree = folderSession.findAllDescendantNodesById(id);
-    for (FolderServerNode n : subtree) {
+    List<FileSystemResource> subtree = folderSession.findAllDescendantNodesById(id);
+    for (FileSystemResource n : subtree) {
       upsertOnePermissions(Upsert.UPDATE, n.getId());
     }
   }
 
   private void updateAllByUpdatedGroup(String id) {
     log.debug("Update all visible by group:");
-    List<FolderServerNode> collection = folderSession.findAllNodesVisibleByGroupId(id);
-    for (FolderServerNode n : collection) {
+    List<FileSystemResource> collection = folderSession.findAllNodesVisibleByGroupId(id);
+    for (FileSystemResource n : collection) {
       if (indexUtils.needsIndexing(n)) {
         upsertOnePermissions(Upsert.UPDATE, n.getId());
       } else {
-        log.info("The node was skipped from indexing:" + n.getId());
+        log.info("The resource was skipped from indexing:" + n.getId());
       }
     }
   }
@@ -119,12 +120,12 @@ public class SearchPermissionExecutorService {
   private void upsertOnePermissions(Upsert upsert, String id) {
     log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + id);
     try {
-      FolderServerNode node = folderSession.findNodeById(id);
+      FileSystemResource node = folderSession.findResourceById(id);
       CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id);
       if (upsert == Upsert.UPDATE) {
         nodeIndexingService.removeDocumentFromIndex(id);
       }
-      nodeIndexingService.indexDocument(node, perm);
+      nodeIndexingService.indexDocument(node, perm, cedarRequestContext);
     } catch (Exception e) {
       log.error("Error while upserting permissions", e);
     }

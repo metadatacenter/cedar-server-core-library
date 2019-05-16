@@ -13,7 +13,7 @@ public enum ParameterPlaceholder implements CypherQueryParameter {
   USER_ID("userId"),
   FROM_ID("fromId"),
   TO_ID("toId"),
-  NODE_TYPE_LIST("nodeTypeList"),
+  RESOURCE_TYPE_LIST("resourceTypeList"),
   LIMIT("limit"),
   OFFSET("offset"),
   SOURCE_ID("sourceId"),

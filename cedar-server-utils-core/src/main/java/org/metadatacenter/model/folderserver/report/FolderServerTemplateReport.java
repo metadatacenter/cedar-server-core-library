@@ -1,25 +1,25 @@
 package org.metadatacenter.model.folderserver.report;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithNumberOfInstances;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerTemplateReport extends FolderServerResourceReport {
+public class FolderServerTemplateReport extends FolderServerSchemaArtifactReport implements ResourceWithNumberOfInstances {
 
   private long numberOfInstances;
 
   public FolderServerTemplateReport() {
-    super(CedarNodeType.TEMPLATE);
+    super(CedarResourceType.TEMPLATE);
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.NUMBER_OF_INSTANCES)
+  @Override
   public long getNumberOfInstances() {
     return numberOfInstances;
   }
 
-  @JsonProperty(NodeProperty.OnTheFly.NUMBER_OF_INSTANCES)
+  @Override
   public void setNumberOfInstances(long numberOfInstances) {
     this.numberOfInstances = numberOfInstances;
   }

@@ -1,6 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class CypherParamBuilderResource extends AbstractCypherParamBuilder {
 
-  public static CypherParameters createResource(FolderServerResource newResource, String parentId) {
+  public static CypherParameters createResource(FolderServerArtifact newResource, String parentId) {
     return createNode(newResource, parentId);
   }
 

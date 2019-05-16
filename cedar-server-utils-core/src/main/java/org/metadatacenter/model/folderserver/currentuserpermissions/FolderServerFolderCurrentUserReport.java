@@ -1,51 +1,50 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.model.CedarNodeType;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithFolderData;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolderCurrentUserReport extends FolderServerNodeCurrentUserReport
-    implements FolderWithCurrentUserPermissions {
+public class FolderServerFolderCurrentUserReport extends FolderServerResourceCurrentUserReport
+    implements ResourceWithFolderData, FolderWithCurrentUserPermissions {
+
+  private FolderDataGroup folderDataGroup;
 
   public FolderServerFolderCurrentUserReport() {
-    super(CedarNodeType.FOLDER);
+    super(CedarResourceType.FOLDER);
+    folderDataGroup = new FolderDataGroup();
   }
 
-  private boolean userHome;
-  private boolean system;
-  private boolean root;
-
-  @JsonIgnore
+  @Override
   public boolean isUserHome() {
-    return userHome;
+    return folderDataGroup.isUserHome();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_USER_HOME)
+  @Override
   public void setUserHome(boolean userHome) {
-    this.userHome = userHome;
+    this.folderDataGroup.setUserHome(userHome);
   }
 
-  @JsonIgnore
+  @Override
   public boolean isSystem() {
-    return system;
+    return folderDataGroup.isSystem();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_SYSTEM)
+  @Override
   public void setSystem(boolean system) {
-    this.system = system;
+    this.folderDataGroup.setSystem(system);
   }
 
-  @JsonIgnore
+  @Override
   public boolean isRoot() {
-    return root;
+    return folderDataGroup.isRoot();
   }
 
-  @JsonProperty(NodeProperty.Label.IS_ROOT)
+  @Override
   public void setRoot(boolean root) {
-    this.root = root;
+    this.folderDataGroup.setRoot(root);
   }
+
 }

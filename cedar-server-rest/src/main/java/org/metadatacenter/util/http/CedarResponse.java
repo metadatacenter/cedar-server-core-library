@@ -1,6 +1,7 @@
 package org.metadatacenter.util.http;
 
 import com.google.common.collect.Maps;
+import org.metadatacenter.constant.CustomHttpConstants;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.error.CedarErrorPack;
 import org.metadatacenter.error.CedarErrorReasonKey;
@@ -65,6 +66,8 @@ public abstract class CedarResponse {
           responseBuilder.header(property, headers.get(property));
         }
       }
+      responseBuilder.header(CustomHttpConstants.HEADER_ACCESS_CONTROL_EXPOSE_HEADERS,
+          CustomHttpConstants.HEADER_CEDAR_VALIDATION_STATUS);
       if (createdResourceUri != null) {
         responseBuilder.status(Response.Status.CREATED).location(createdResourceUri);
       }
