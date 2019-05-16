@@ -17,8 +17,8 @@ public class Neo4JProxies {
   private final Neo4JProxyGroup groupProxy;
   private final Neo4JProxyUser userProxy;
   private final Neo4JProxyPermission permissionProxy;
+  private final Neo4JProxyArtifact artifactProxy;
   private final Neo4JProxyResource resourceProxy;
-  private final Neo4JProxyNode nodeProxy;
   private final Neo4JProxyGraph graphProxy;
   private final Neo4JProxyVersion versionProxy;
 
@@ -33,8 +33,8 @@ public class Neo4JProxies {
     this.groupProxy = new Neo4JProxyGroup(this, cedarConfig);
     this.userProxy = new Neo4JProxyUser(this, cedarConfig);
     this.permissionProxy = new Neo4JProxyPermission(this, cedarConfig);
+    this.artifactProxy = new Neo4JProxyArtifact(this, cedarConfig);
     this.resourceProxy = new Neo4JProxyResource(this, cedarConfig);
-    this.nodeProxy = new Neo4JProxyNode(this, cedarConfig);
     this.graphProxy = new Neo4JProxyGraph(this, cedarConfig);
     this.versionProxy = new Neo4JProxyVersion(this, cedarConfig);
   }
@@ -59,12 +59,12 @@ public class Neo4JProxies {
     return permissionProxy;
   }
 
-  public Neo4JProxyResource resource() {
-    return resourceProxy;
+  public Neo4JProxyArtifact artifact() {
+    return artifactProxy;
   }
 
-  public Neo4JProxyNode node() {
-    return nodeProxy;
+  public Neo4JProxyResource resource() {
+    return resourceProxy;
   }
 
   public Neo4JProxyGraph graph() {

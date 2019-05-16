@@ -49,7 +49,7 @@ public class RegenerateRulesIndexTask {
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
         if (esManagementService.indexExists(aliasName)) {
           log.warn("The search index/alias '" + aliasName + "' is present!");
-//          // Use the resource ids to check if the resources in the DBs and in the index are different
+//          // Use the artifact ids to check if the resources in the DBs and in the index are different
 //          List<String> dbResourceIds = getResourceIds(resources);
 //          log.info("No. of nodes in DB that are expected to be indexed: " + dbResourceIds.size());
 //          List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
@@ -86,22 +86,22 @@ public class RegenerateRulesIndexTask {
 
         // Get resources content and index it
 //        int count = 1;
-//        for (FolderServerNode node : resources) {
+//        for (FolderServerNode resource : resources) {
 //          try {
 //            CedarNodeMaterializedPermissions perm = null;
-//            if (node.getType() == CedarNodeType.FOLDER) {
+//            if (node.getType() == CedarResourceType.FOLDER) {
 //              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.FOLDER);
 //            } else {
-//              perm = permissionSession.getNodeMaterializedPermission(node.getId(), FolderOrResource.RESOURCE);
+//              perm = permissionSession.getNodeMaterializedPermission(resource.getId(), FolderOrResource.RESOURCE);
 //            }
-//            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(node, perm);
+//            IndexedDocumentId indexedNodeId = nodeIndexingService.indexDocument(resource, perm);
 //
 //            if (count % 100 == 0) {
 //              float progress = (100 * count++) / resources.size();
 //              log.info(String.format("Progress: %.0f%%", progress));
 //            }
 //          } catch (Exception e) {
-//            log.error("Error while indexing document: " + node.getId(), e);
+//            log.error("Error while indexing document: " + resource.getId(), e);
 //          }
 //        }
         // Point alias to new index

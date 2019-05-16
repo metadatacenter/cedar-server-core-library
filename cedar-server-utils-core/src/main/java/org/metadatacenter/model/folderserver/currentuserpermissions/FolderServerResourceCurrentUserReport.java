@@ -32,9 +32,9 @@ public abstract class FolderServerResourceCurrentUserReport extends FileSystemRe
     super(resourceType);
   }
 
-  public static FolderServerResourceCurrentUserReport fromNode(FileSystemResource node) {
+  public static FolderServerResourceCurrentUserReport fromResource(FileSystemResource resource) {
     try {
-      String s = JsonMapper.MAPPER.writeValueAsString(node);
+      String s = JsonMapper.MAPPER.writeValueAsString(resource);
       return JsonMapper.MAPPER.readValue(s, FolderServerResourceCurrentUserReport.class);
     } catch (IOException e) {
       e.printStackTrace();

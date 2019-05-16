@@ -27,7 +27,7 @@ public abstract class AbstractNeo4JUserSession {
   }
 
   protected FolderServerUser getNodeOwner(String nodeURL) {
-    return proxies.node().getNodeOwner(nodeURL);
+    return proxies.resource().getNodeOwner(nodeURL);
   }
 
   public boolean userIsOwnerOfNode(FileSystemResource node) {

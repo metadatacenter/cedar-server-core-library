@@ -63,7 +63,7 @@ public class PermissionRequestValidator {
   }
 
   private void validateNodeExistence() {
-    FileSystemResource folder = proxies.node().findNodeById(nodeURL);
+    FileSystemResource folder = proxies.resource().findNodeById(nodeURL);
     node = folder;
     if (folder == null) {
       callResult.addError(NOT_FOUND)
@@ -77,7 +77,7 @@ public class PermissionRequestValidator {
     if (!permissionService.userHasWriteAccessToNode(nodeURL)) {
       callResult.addError(AUTHORIZATION)
           .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_NODE)
-          .message("The current user has no write access to the node")
+          .message("The current user has no write access to the resource")
           .parameter("nodeId", nodeURL);
     }
   }
@@ -111,7 +111,7 @@ public class PermissionRequestValidator {
         callResult.addError(INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)
             .parameter("paramName", "user")
-            .message("The user node is missing from the request");
+            .message("The user resource is missing from the request");
       } else {
         NodePermission permission = pair.getPermission();
         if (permission == null) {
@@ -144,7 +144,7 @@ public class PermissionRequestValidator {
         callResult.addError(INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)
             .parameter("paramName", "group")
-            .message("The group node is missing from the request");
+            .message("The group resource is missing from the request");
       } else {
         NodePermission permission = pair.getPermission();
         if (permission == null) {
@@ -224,7 +224,7 @@ public class PermissionRequestValidator {
       if (!permissionService.userIsOwnerOfNode(node)) {
         callResult.addError(AUTHORIZATION)
             .errorKey(CedarErrorKey.NOT_AUTHORIZED)
-            .message("Only the owner of a node can change the ownership")
+            .message("Only the owner of a resource can change the ownership")
             .parameter("nodeId", nodeURL);
       }
     }

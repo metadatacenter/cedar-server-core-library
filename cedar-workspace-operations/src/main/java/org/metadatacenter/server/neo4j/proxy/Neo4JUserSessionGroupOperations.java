@@ -90,7 +90,7 @@ public final class Neo4JUserSessionGroupOperations {
     }
   }
 
-  static void updateNodeOwner(Neo4JProxyNode neo4JProxy, String nodeURL, String ownerURL) {
+  static void updateNodeOwner(Neo4JProxyResource neo4JProxy, String nodeURL, String ownerURL) {
     neo4JProxy.updateNodeOwner(nodeURL, ownerURL);
   }
 

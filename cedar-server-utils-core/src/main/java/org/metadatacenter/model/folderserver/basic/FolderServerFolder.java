@@ -1,6 +1,8 @@
 package org.metadatacenter.model.folderserver.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
 import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
