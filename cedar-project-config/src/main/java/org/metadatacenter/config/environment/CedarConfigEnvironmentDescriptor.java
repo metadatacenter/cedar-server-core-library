@@ -215,6 +215,11 @@ public class CedarConfigEnvironmentDescriptor {
     submissionTemplateId1.add(SystemComponent.SERVER_WORKER);
     submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
 
+    Set<SystemComponent> submissionTemplateId2 = variableToComponent.get(CedarEnvironmentVariable
+        .CEDAR_SUBMISSION_TEMPLATE_ID_2);
+    submissionTemplateId2.add(SystemComponent.SERVER_WORKER);
+    submissionTemplateId2.add(SystemComponent.SERVER_RESOURCE);
+
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener
