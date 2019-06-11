@@ -123,18 +123,24 @@ public class ModelNodeNames
     Stream.of(LD_ID, LD_VALUE, RDFS_LABEL, SKOS_NOTATION, SKOS_PREFLABEL, SKOS_ALTLABEL))
     .collect(Collectors.toUnmodifiableSet());
 
-  // CEDAR keywords that can occur in a schema artifact's _UI object;
-  public static final String INPUT_TYPE = "inputType";
+  // CEDAR keywords that can occur in a template and element schema artifact's _UI object;
+  public static final String PAGES = "pages";
   public static final String PROPERTY_LABELS = "propertyLabels";
   public static final String PROPERTY_DESCRIPTIONS = "propertyDescriptions";
-  public static final String PAGES = "pages";
   public static final String ORDER = "order";
+
+  public static final Set<String> TEMPLATE_SCHEMA_UI_KEYWORDS = Stream
+    .of(PAGES, ORDER, PROPERTY_LABELS, PROPERTY_DESCRIPTIONS).collect(Collectors.toUnmodifiableSet());
+
+  public static final Set<String> ELEMENT_SCHEMA_UI_KEYWORDS = Stream.of(ORDER, PROPERTY_LABELS, PROPERTY_DESCRIPTIONS)
+    .collect(Collectors.toUnmodifiableSet());
+
   public static final String VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
+  public static final String INPUT_TYPE = "inputType";
   public static final String HIDDEN = "hidden";
 
-  public static final Set<String> UI_KEYWORDS = Stream
-    .of(INPUT_TYPE, PROPERTY_LABELS, PROPERTY_DESCRIPTIONS, PAGES, ORDER, VALUE_RECOMMENDATION_ENABLED, INPUT_TYPE,
-      HIDDEN).collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream.of(VALUE_RECOMMENDATION_ENABLED, INPUT_TYPE, HIDDEN)
+    .collect(Collectors.toUnmodifiableSet());
 
   // CEDAR field input types
   public static final String TEXTFIELD_INPUT_TYPE = "textfield";
@@ -197,5 +203,13 @@ public class ModelNodeNames
   public static final String SKOS = "skos";
 
   public static final Set<String> ARTIFACT_CONTEXT_PREFIXES = Stream.of(XSD, PAV, SCHEMA, OSLC, BIBO, SKOS)
+    .collect(Collectors.toUnmodifiableSet());
+
+  public static final String TEMPLATE_SCHEMA_ARTIFACT_TYPE_IRI = "https://schema.metadatacenter.org/core/Template";
+  public static final String ELEMENT_SCHEMA_ARTIFACT_TYPE_IRI = "https://schema.metadatacenter.org/core/TemplateElement";
+  public static final String FIELD_SCHEMA_ARTIFACT_TYPE_IRI = "https://schema.metadatacenter.org/core/TemplateField";
+
+  public static final Set<String> SCHEMA_ARTIFACT_TYPE_IRIS = Stream
+    .of(TEMPLATE_SCHEMA_ARTIFACT_TYPE_IRI, ELEMENT_SCHEMA_ARTIFACT_TYPE_IRI, FIELD_SCHEMA_ARTIFACT_TYPE_IRI)
     .collect(Collectors.toUnmodifiableSet());
 }
