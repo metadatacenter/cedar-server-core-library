@@ -27,7 +27,7 @@ public abstract class AbstractCedarResource implements CedarResource {
     this.baseDataGroup.setId(id);
   }
 
-  @JsonIgnore
+  @JsonProperty(NodeProperty.Label.RESOURCE_TYPE)
   public CedarResourceType getType() {
     return baseDataGroup.getResourceType();
   }
