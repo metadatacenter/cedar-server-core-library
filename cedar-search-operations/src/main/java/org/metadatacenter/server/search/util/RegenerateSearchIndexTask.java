@@ -50,6 +50,7 @@ public class RegenerateSearchIndexTask {
     NodeSearchingService nodeSearchingService = indexUtils.getNodeSearchingService();
 
     String aliasName = cedarConfig.getElasticsearchConfig().getIndexes().getSearchIndex().getName();
+    NodeIndexingService nodeIndexingService = null;
 
     boolean regenerate = true;
     try {
@@ -63,7 +64,7 @@ public class RegenerateSearchIndexTask {
         // Check if the index exists (using the alias). If it exists, check if it contains all resources
         if (esManagementService.indexExists(aliasName)) {
           log.warn("The search index/alias '" + aliasName + "' is present!");
-          // Use the resource ids to check if the resources in the DBs and in the index are different
+          // Use the artifact ids to check if the resources in the DBs and in the index are different
           List<String> dbResourceIds = getResourceIds(resources);
           log.info("No. of nodes in Neo4j that are expected to be indexed: " + dbResourceIds.size());
           List<String> indexResourceIds = nodeSearchingService.findAllValuesForField(DOCUMENT_CEDAR_ID);
@@ -96,7 +97,7 @@ public class RegenerateSearchIndexTask {
         esManagementService.createSearchIndex(newIndexName);
         log.info("Search index created:" + newIndexName);
 
-        NodeIndexingService nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
+        nodeIndexingService = indexUtils.getNodeIndexingService(newIndexName);
 
         // Get resources content and index it
         int count = 1;
@@ -105,7 +106,7 @@ public class RegenerateSearchIndexTask {
         for (FileSystemResource node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm));
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext, true));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();
@@ -140,6 +141,10 @@ public class RegenerateSearchIndexTask {
     } catch (Exception e) {
       log.error("Error while regenerating index", e);
       throw new CedarProcessingException(e);
+    }
+    finally {
+      // Clear template nodes cache
+      nodeIndexingService.instanceContentExtractor.clearNodesCache();
     }
   }
 

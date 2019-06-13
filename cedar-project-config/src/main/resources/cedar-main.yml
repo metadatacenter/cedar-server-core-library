@@ -307,6 +307,7 @@ submission:
       url: https://api.dev.immport.org/data/upload/registration
   submittableTemplateIds:
     - "${CEDAR_SUBMISSION_TEMPLATE_ID_1}"
+    - "${CEDAR_SUBMISSION_TEMPLATE_ID_2}"
 
 testUsers:
   testUser1:

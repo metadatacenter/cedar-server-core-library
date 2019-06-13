@@ -76,13 +76,13 @@ public enum CedarPermission {
     return permissionName;
   }
 
-  public static CedarPermission getUpdateForVersionedResourceType(CedarResourceType resourceType) {
-    if (resourceType.isVersioned()) {
-      if (resourceType == CedarResourceType.FIELD) {
+  public static CedarPermission getUpdateForVersionedArtifactType(CedarResourceType artifacyType) {
+    if (artifacyType.isVersioned()) {
+      if (artifacyType == CedarResourceType.FIELD) {
         return TEMPLATE_FIELD_UPDATE;
-      } else if (resourceType == CedarResourceType.ELEMENT) {
+      } else if (artifacyType == CedarResourceType.ELEMENT) {
         return TEMPLATE_ELEMENT_UPDATE;
-      } else if (resourceType == CedarResourceType.TEMPLATE) {
+      } else if (artifacyType == CedarResourceType.TEMPLATE) {
         return TEMPLATE_UPDATE;
       }
     }

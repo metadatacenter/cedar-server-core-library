@@ -28,9 +28,9 @@ public interface FolderServiceSession {
 
   long findAllNodesCount();
 
-  FolderServerArtifact findResourceById(String resourceURL);
+  FolderServerArtifact findArtifactById(String resourceURL);
 
-  FileSystemResource findNodeById(String nodeURL);
+  FileSystemResource findResourceById(String nodeURL);
 
   FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL);
 

@@ -14,7 +14,7 @@ public class AbstractSearchingService {
   protected IndexedDocumentId getByCedarId(Client client, String resourceId, String indexName, String documentType)
       throws CedarProcessingException {
     try {
-      // Get resources by resource id
+      // Get resources by artifact id
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
           .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
           .execute().actionGet();

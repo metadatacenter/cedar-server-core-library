@@ -16,10 +16,11 @@ public class IndexedDocumentDocument {
 
   protected FolderServerNodeInfo info;
 
+  protected List<InfoField> infoFields;
+
   protected List<String> users;
 
-  public IndexedDocumentDocument() {
-  }
+  public IndexedDocumentDocument() { }
 
   public IndexedDocumentDocument(String cid) {
     this.cid = cid;
@@ -50,7 +51,12 @@ public class IndexedDocumentDocument {
     this.info = info;
   }
 
+  public List<InfoField> getInfoFields() { return infoFields; }
+
+  public void setInfoFields(List<InfoField> infoFields) { this.infoFields = infoFields; }
+
   public List<String> getUsers() {
     return users;
   }
+
 }

@@ -83,7 +83,7 @@ public class IndexUtils {
           if (needsIndexing(folderServerNode)) {
             resources.add(folderServerNode);
           } else {
-            log.info("The node '" + folderServerNode.getName() + "' has been ignored");
+            log.info("The resource '" + folderServerNode.getName() + "' has been ignored");
           }
         }
       }
@@ -115,7 +115,6 @@ public class IndexUtils {
     String nowString = dateTimeFormatter.format(now);
     return prefix + "-" + nowString;
   }
-
 
   public void deleteOldIndices(ElasticsearchManagementService esManagementService, String aliasName,
                                String newIndexName) throws CedarProcessingException {
@@ -216,4 +215,5 @@ public class IndexUtils {
 
     return r;
   }
+
 }
