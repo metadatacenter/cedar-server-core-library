@@ -46,13 +46,13 @@ public class TemplateContentExtractor {
         JsonNode jsonFieldNode;
         boolean isArray;
         // Single-instance node
-        if (!jsonField.getValue().has(ITEMS)) {
+        if (!jsonField.getValue().has(JSON_SCHEMA_ITEMS)) {
           jsonFieldNode = jsonField.getValue();
           isArray = false;
         }
         // Multi-instance node
         else {
-          jsonFieldNode = jsonField.getValue().get(ITEMS);
+          jsonFieldNode = jsonField.getValue().get(JSON_SCHEMA_ITEMS);
           isArray = true;
         }
         // Field or Element
@@ -144,15 +144,15 @@ public class TemplateContentExtractor {
    */
   private Optional<String> getInstanceType(JsonNode fieldNode) {
     if (isTemplateFieldNode(fieldNode)) {
-      if (fieldNode.get(PROPERTIES) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).size() > 0 &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).size() > 0) {
+      if (fieldNode.get(JSON_SCHEMA_PROPERTIES) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(LD_TYPE) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(LD_TYPE).get(JSON_SCHEMA_ONE_OF) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(LD_TYPE).get(JSON_SCHEMA_ONE_OF).size() > 0 &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM).size() > 0) {
 
-        return Optional.of(fieldNode.get(PROPERTIES).
-            get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).get(0).asText());
+        return Optional.of(fieldNode.get(JSON_SCHEMA_PROPERTIES).
+            get(LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM).get(0).asText());
       }
     }
     return Optional.empty();
