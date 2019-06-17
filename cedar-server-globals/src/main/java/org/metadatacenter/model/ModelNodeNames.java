@@ -38,30 +38,33 @@ public class ModelNodeNames
   /*
    * JSON Schema Keywords
    */
-  public static final String _SCHEMA = "$schema";
-  public static final String _REF = "$ref";
-  public static final String TYPE = "type";
-  public static final String TITLE = "title";
-  public static final String DESCRIPTION = "description";
-  public static final String PROPERTIES = "properties";
-  public static final String FORMAT = "format";
-  public static final String ENUM = "enum";
-  public static final String ONE_OF = "oneOf";
-  public static final String ITEMS = "items";
-  public static final String UNIQUE_ITEMS = "uniqueItems";
-  public static final String MIN_ITEMS = "minItems";
-  public static final String MAX_ITEMS = "maxItems";
-  public static final String MIN_LENGTH = "minLength";
-  public static final String MAX_LENGTH = "maxLength";
-  public static final String MINIMUM = "minimum";
-  public static final String REQUIRED = "required";
-  public static final String PATTERN_PROPERTIES = "patternProperties";
-  public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
+  public static final String JSON_SCHEMA_SCHEMA = "$schema";
+  public static final String JSON_SCHEMA_REF = "$ref";
+  public static final String JSON_SCHEMA_TYPE = "type";
+  public static final String JSON_SCHEMA_TITLE = "title";
+  public static final String JSON_SCHEMA_DESCRIPTION = "description";
+  public static final String JSON_SCHEMA_PROPERTIES = "properties";
+  public static final String JSON_SCHEMA_FORMAT = "format";
+  public static final String JSON_SCHEMA_ENUM = "enum";
+  public static final String JSON_SCHEMA_ONE_OF = "oneOf";
+  public static final String JSON_SCHEMA_ITEMS = "items";
+  public static final String JSON_SCHEMA_ARRAY = "array";
+  public static final String JSON_SCHEMA_UNIQUE_ITEMS = "uniqueItems";
+  public static final String JSON_SCHEMA_MIN_ITEMS = "minItems";
+  public static final String JSON_SCHEMA_MAX_ITEMS = "maxItems";
+  public static final String JSON_SCHEMA_MIN_LENGTH = "minLength";
+  public static final String JSON_SCHEMA_MAX_LENGTH = "maxLength";
+  public static final String JSON_SCHEMA_MINIMUM = "minimum";
+  public static final String JSON_SCHEMA_REQUIRED = "required";
+  public static final String JSON_SCHEMA_PATTERN_PROPERTIES = "patternProperties";
+  public static final String JSON_SCHEMA_ADDITIONAL_PROPERTIES = "additionalProperties";
 
   public static final Set<String> JSON_SCHEMA_KEYWORDS = Stream
-    .of(_SCHEMA, _REF, TYPE, TITLE, DESCRIPTION, PROPERTIES, FORMAT, ENUM, ONE_OF, ITEMS, UNIQUE_ITEMS, MIN_ITEMS,
-      MAX_ITEMS, MIN_LENGTH, MAX_LENGTH, MINIMUM, REQUIRED, PATTERN_PROPERTIES, ADDITIONAL_PROPERTIES)
-    .collect(Collectors.toUnmodifiableSet());
+    .of(JSON_SCHEMA_SCHEMA, JSON_SCHEMA_REF, JSON_SCHEMA_TYPE, JSON_SCHEMA_TITLE, JSON_SCHEMA_DESCRIPTION,
+      JSON_SCHEMA_PROPERTIES, JSON_SCHEMA_FORMAT, JSON_SCHEMA_ENUM, JSON_SCHEMA_ONE_OF, JSON_SCHEMA_ITEMS,
+      JSON_SCHEMA_ARRAY, JSON_SCHEMA_UNIQUE_ITEMS, JSON_SCHEMA_MIN_ITEMS, JSON_SCHEMA_MAX_ITEMS, JSON_SCHEMA_MIN_LENGTH,
+      JSON_SCHEMA_MAX_LENGTH, JSON_SCHEMA_MINIMUM, JSON_SCHEMA_REQUIRED, JSON_SCHEMA_PATTERN_PROPERTIES,
+      JSON_SCHEMA_ADDITIONAL_PROPERTIES).collect(Collectors.toUnmodifiableSet());
 
   /*
    * CEDAR Artifact Keywords
