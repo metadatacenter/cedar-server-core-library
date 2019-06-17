@@ -15,10 +15,6 @@
   <name>CEDAR Project Config</name>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <assembly.targetDir>${project.basedir}/target</assembly.targetDir>
   </properties>
 
