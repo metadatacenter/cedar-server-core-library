@@ -108,13 +108,11 @@ public class ModelNodeNames
   public static final Set<String> FIELD_SCHEMA_ARTIFACT_KEYWORDS = Stream
     .concat(SCHEMA_ARTIFACT_KEYWORDS.stream(), Stream.of(VALUE_CONSTRAINTS)).collect(Collectors.toUnmodifiableSet());
 
-  public static final Set<String> INSTANCE_ARTIFACT_KEYWORDS = ARTIFACT_KEYWORDS;
-
   // CEDAR model keywords that can occur at the top level of template instance artifacts
   public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
 
-  public static final Set<String> TEMPLATE_INSTANCE_ARTIFACT_KEYWORDS = Stream
-    .concat(INSTANCE_ARTIFACT_KEYWORDS.stream(), Stream.of(SCHEMA_IS_BASED_ON)).collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> INSTANCE_ARTIFACT_KEYWORDS = Stream
+    .concat(ARTIFACT_KEYWORDS.stream(), Stream.of(SCHEMA_IS_BASED_ON)).collect(Collectors.toUnmodifiableSet());
 
   public static final Set<String> ELEMENT_INSTANCE_ARTIFACT_KEYWORDS = INSTANCE_ARTIFACT_KEYWORDS;
 
