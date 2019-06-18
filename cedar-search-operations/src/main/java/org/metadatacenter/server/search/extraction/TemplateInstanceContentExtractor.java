@@ -197,16 +197,16 @@ public class TemplateInstanceContentExtractor {
     fieldValue.setFieldPath(fieldPath);
 
     // Regular value
-    if (fieldNode.hasNonNull(LD_VALUE) && !fieldNode.get(LD_VALUE).asText().isEmpty()) {
-      fieldValue.setFieldValue(fieldNode.get(LD_VALUE).asText());
+    if (fieldNode.hasNonNull(JSON_LD_VALUE) && !fieldNode.get(JSON_LD_VALUE).asText().isEmpty()) {
+      fieldValue.setFieldValue(fieldNode.get(JSON_LD_VALUE).asText());
     }
     // Ontology term
     else {
       if (fieldNode.hasNonNull(RDFS_LABEL) && !fieldNode.get(RDFS_LABEL).asText().isEmpty()) {
         fieldValue.setFieldValue(fieldNode.get(RDFS_LABEL).asText());
       }
-      if (fieldNode.hasNonNull(LD_ID) && !fieldNode.get(LD_ID).asText().isEmpty()) {
-        fieldValue.setFieldValueUri(fieldNode.get(LD_ID).asText());
+      if (fieldNode.hasNonNull(JSON_LD_ID) && !fieldNode.get(JSON_LD_ID).asText().isEmpty()) {
+        fieldValue.setFieldValueUri(fieldNode.get(JSON_LD_ID).asText());
       }
     }
     return fieldValue;
