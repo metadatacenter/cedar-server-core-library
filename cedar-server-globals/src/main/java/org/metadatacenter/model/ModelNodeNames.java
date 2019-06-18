@@ -84,10 +84,10 @@ public class ModelNodeNames
 
   public static final Set<String> ARTIFACT_KEYWORDS = Stream.concat(JSON_LD_KEYWORDS.stream(), Stream
     .of(SCHEMA_ORG_NAME, SCHEMA_ORG_DESCRIPTION, SCHEMA_ORG_IDENTIFIER, PAV_CREATED_ON, PAV_CREATED_BY,
-      PAV_LAST_UPDATED_ON, OSLC_MODIFIED_BY)).collect(Collectors.toUnmodifiableSet());
+      PAV_LAST_UPDATED_ON, PAV_DERIVED_FROM, OSLC_MODIFIED_BY)).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR model keywords that can occur at the top level of all schema artifacts
-  public static final String SCHEMA_SCHEMA_VERSION = "schema:schemaVersion";
+  public static final String SCHEMA_ORG_SCHEMA_VERSION = "schema:schemaVersion";
   public static final String PAV_VERSION = "pav:version";
   public static final String PAV_PREVIOUS_VERSION = "pav:previousVersion";
   public static final String BIBO_STATUS = "bibo:status";
@@ -95,7 +95,7 @@ public class ModelNodeNames
 
   public static final Set<String> SCHEMA_ARTIFACT_KEYWORDS = Stream
     .concat(Stream.concat(ARTIFACT_KEYWORDS.stream(), JSON_SCHEMA_KEYWORDS.stream()),
-      Stream.of(SCHEMA_SCHEMA_VERSION, PAV_VERSION, PAV_PREVIOUS_VERSION, BIBO_STATUS, UI))
+      Stream.of(SCHEMA_ORG_SCHEMA_VERSION, PAV_VERSION, PAV_PREVIOUS_VERSION, BIBO_STATUS, UI))
     .collect(Collectors.toUnmodifiableSet());
 
   public static final Set<String> TEMPLATE_SCHEMA_ARTIFACT_KEYWORDS = SCHEMA_ARTIFACT_KEYWORDS;
@@ -111,8 +111,10 @@ public class ModelNodeNames
   // CEDAR model keywords that can occur at the top level of template instance artifacts
   public static final String SCHEMA_IS_BASED_ON = "schema:isBasedOn";
 
-  public static final Set<String> INSTANCE_ARTIFACT_KEYWORDS = Stream
-    .concat(ARTIFACT_KEYWORDS.stream(), Stream.of(SCHEMA_IS_BASED_ON)).collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> INSTANCE_ARTIFACT_KEYWORDS = ARTIFACT_KEYWORDS;
+
+  public static final Set<String> TEMPLATE_INSTANCE_ARTIFACT_KEYWORDS = Stream
+    .concat(INSTANCE_ARTIFACT_KEYWORDS.stream(), Stream.of(SCHEMA_IS_BASED_ON)).collect(Collectors.toUnmodifiableSet());
 
   public static final Set<String> ELEMENT_INSTANCE_ARTIFACT_KEYWORDS = INSTANCE_ARTIFACT_KEYWORDS;
 
