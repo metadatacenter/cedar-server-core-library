@@ -46,13 +46,13 @@ public class TemplateContentExtractor {
         JsonNode jsonFieldNode;
         boolean isArray;
         // Single-instance node
-        if (!jsonField.getValue().has(ITEMS)) {
+        if (!jsonField.getValue().has(JSON_SCHEMA_ITEMS)) {
           jsonFieldNode = jsonField.getValue();
           isArray = false;
         }
         // Multi-instance node
         else {
-          jsonFieldNode = jsonField.getValue().get(ITEMS);
+          jsonFieldNode = jsonField.getValue().get(JSON_SCHEMA_ITEMS);
           isArray = true;
         }
         // Field or Element
@@ -60,16 +60,16 @@ public class TemplateContentExtractor {
 
           // Get field/element identifier
           String id = null;
-          if ((jsonFieldNode.get(LD_ID) != null) && (jsonFieldNode.get(LD_ID).asText().length() > 0)) {
-            id = jsonFieldNode.get(LD_ID).asText();
+          if ((jsonFieldNode.get(JSON_LD_ID) != null) && (jsonFieldNode.get(JSON_LD_ID).asText().length() > 0)) {
+            id = jsonFieldNode.get(JSON_LD_ID).asText();
           } else {
-            throw (new CedarProcessingException(LD_ID + " not found for template field"));
+            throw (new CedarProcessingException(JSON_LD_ID + " not found for template field"));
           }
 
           // Get name
           String name = null;
-          if ((jsonFieldNode.get(SCHEMA_NAME) != null) && (jsonFieldNode.get(SCHEMA_NAME).asText().length() > 0)) {
-            name = jsonFieldNode.get(SCHEMA_NAME).asText();
+          if ((jsonFieldNode.get(SCHEMA_ORG_NAME) != null) && (jsonFieldNode.get(SCHEMA_ORG_NAME).asText().length() > 0)) {
+            name = jsonFieldNode.get(SCHEMA_ORG_NAME).asText();
           } else {
             // Do nothing. This field is not required.
           }
@@ -115,7 +115,7 @@ public class TemplateContentExtractor {
    * @return
    */
   private boolean isTemplateFieldNode(JsonNode node) {
-    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarResourceType.FIELD.getAtType())) {
+    if (node.get(JSON_LD_TYPE) != null && node.get(JSON_LD_TYPE).asText().equals(CedarResourceType.FIELD.getAtType())) {
       return true;
     } else {
       return false;
@@ -129,7 +129,7 @@ public class TemplateContentExtractor {
    * @return
    */
   private boolean isTemplateElementNode(JsonNode node) {
-    if (node.get(LD_TYPE) != null && node.get(LD_TYPE).asText().equals(CedarResourceType.ELEMENT.getAtType())) {
+    if (node.get(JSON_LD_TYPE) != null && node.get(JSON_LD_TYPE).asText().equals(CedarResourceType.ELEMENT.getAtType())) {
       return true;
     } else {
       return false;
@@ -144,15 +144,15 @@ public class TemplateContentExtractor {
    */
   private Optional<String> getInstanceType(JsonNode fieldNode) {
     if (isTemplateFieldNode(fieldNode)) {
-      if (fieldNode.get(PROPERTIES) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).size() > 0 &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM) != null &&
-          fieldNode.get(PROPERTIES).get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).size() > 0) {
+      if (fieldNode.get(JSON_SCHEMA_PROPERTIES) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(JSON_LD_TYPE) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(JSON_LD_TYPE).get(JSON_SCHEMA_ONE_OF) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(JSON_LD_TYPE).get(JSON_SCHEMA_ONE_OF).size() > 0 &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(JSON_LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM) != null &&
+          fieldNode.get(JSON_SCHEMA_PROPERTIES).get(JSON_LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM).size() > 0) {
 
-        return Optional.of(fieldNode.get(PROPERTIES).
-            get(LD_TYPE).get(ONE_OF).get(0).get(ENUM).get(0).asText());
+        return Optional.of(fieldNode.get(JSON_SCHEMA_PROPERTIES).
+            get(JSON_LD_TYPE).get(JSON_SCHEMA_ONE_OF).get(0).get(JSON_SCHEMA_ENUM).get(0).asText());
       }
     }
     return Optional.empty();

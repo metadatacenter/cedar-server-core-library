@@ -14,63 +14,68 @@ public class ModelNodeNames
   /*
    * JSON-LD Keywords
    */
-  public static final String LD_CONTEXT = "@context";
-  public static final String LD_ID = "@id";
-  public static final String LD_TYPE = "@type";
-  public static final String LD_VALUE = "@value";
-  public static final String LD_GRAPH = "@graph";
-  public static final String LD_BASE = "@base";
-  public static final String LD_CONTAINER = "@container";
-  public static final String LD_INDEX = "@index";
-  public static final String LD_LANGUAGE = "@language";
-  public static final String LD_LIST = "@list";
-  public static final String LD_NEST = "@nest";
-  public static final String LD_NONE = "@none";
-  public static final String LD_PREFIX = "@prefix";
-  public static final String LD_REVERSE = "@reverse";
-  public static final String LD_VERSION = "@version";
-  public static final String LD_VOCAB = "@vocab";
+  public static final String JSON_LD_CONTEXT = "@context";
+  public static final String JSON_LD_ID = "@id";
+  public static final String JSON_LD_TYPE = "@type";
+  public static final String JSON_LD_VALUE = "@value";
+  public static final String JSON_LD_GRAPH = "@graph";
+  public static final String JSON_LD_BASE = "@base";
+  public static final String JSON_LD_CONTAINER = "@container";
+  public static final String JSON_LD_INDEX = "@index";
+  public static final String JSON_LD_LANGUAGE = "@language";
+  public static final String JSON_LD_LIST = "@list";
+  public static final String JSON_LD_NEST = "@nest";
+  public static final String JSON_LD_NONE = "@none";
+  public static final String JSON_LD_PREFIX = "@prefix";
+  public static final String JSON_LD_REVERSE = "@reverse";
+  public static final String JSON_LD_VERSION = "@version";
+  public static final String JSON_LD_VOCAB = "@vocab";
 
   public static final Set<String> JSON_LD_KEYWORDS = Stream
-    .of(LD_CONTEXT, LD_ID, LD_TYPE, LD_VALUE, LD_GRAPH, LD_BASE, LD_CONTAINER, LD_INDEX, LD_LANGUAGE, LD_LIST, LD_NEST,
-      LD_NONE, LD_PREFIX, LD_REVERSE, LD_VERSION, LD_VOCAB).collect(Collectors.toUnmodifiableSet());
+    .of(JSON_LD_CONTEXT, JSON_LD_ID, JSON_LD_TYPE, JSON_LD_VALUE, JSON_LD_GRAPH, JSON_LD_BASE, JSON_LD_CONTAINER,
+      JSON_LD_INDEX, JSON_LD_LANGUAGE, JSON_LD_LIST, JSON_LD_NEST, JSON_LD_NONE, JSON_LD_PREFIX, JSON_LD_REVERSE,
+      JSON_LD_VERSION, JSON_LD_VOCAB).collect(Collectors.toUnmodifiableSet());
 
   /*
    * JSON Schema Keywords
    */
-  public static final String _SCHEMA = "$schema";
-  public static final String _REF = "$ref";
-  public static final String TYPE = "type";
-  public static final String TITLE = "title";
-  public static final String DESCRIPTION = "description";
-  public static final String PROPERTIES = "properties";
-  public static final String FORMAT = "format";
-  public static final String ENUM = "enum";
-  public static final String ONE_OF = "oneOf";
-  public static final String ITEMS = "items";
-  public static final String UNIQUE_ITEMS = "uniqueItems";
-  public static final String MIN_ITEMS = "minItems";
-  public static final String MAX_ITEMS = "maxItems";
-  public static final String MIN_LENGTH = "minLength";
-  public static final String MAX_LENGTH = "maxLength";
-  public static final String MINIMUM = "minimum";
-  public static final String REQUIRED = "required";
-  public static final String PATTERN_PROPERTIES = "patternProperties";
-  public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
+  public static final String JSON_SCHEMA_SCHEMA = "$schema";
+  public static final String JSON_SCHEMA_REF = "$ref";
+  public static final String JSON_SCHEMA_TYPE = "type";
+  public static final String JSON_SCHEMA_ARRAY = "array";
+  public static final String JSON_SCHEMA_OBJECT = "object";
+  public static final String JSON_SCHEMA_TITLE = "title";
+  public static final String JSON_SCHEMA_DESCRIPTION = "description";
+  public static final String JSON_SCHEMA_PROPERTIES = "properties";
+  public static final String JSON_SCHEMA_FORMAT = "format";
+  public static final String JSON_SCHEMA_ENUM = "enum";
+  public static final String JSON_SCHEMA_ONE_OF = "oneOf";
+  public static final String JSON_SCHEMA_ITEMS = "items";
+  public static final String JSON_SCHEMA_UNIQUE_ITEMS = "uniqueItems";
+  public static final String JSON_SCHEMA_MIN_ITEMS = "minItems";
+  public static final String JSON_SCHEMA_MAX_ITEMS = "maxItems";
+  public static final String JSON_SCHEMA_MIN_LENGTH = "minLength";
+  public static final String JSON_SCHEMA_MAX_LENGTH = "maxLength";
+  public static final String JSON_SCHEMA_MINIMUM = "minimum";
+  public static final String JSON_SCHEMA_REQUIRED = "required";
+  public static final String JSON_SCHEMA_PATTERN_PROPERTIES = "patternProperties";
+  public static final String JSON_SCHEMA_ADDITIONAL_PROPERTIES = "additionalProperties";
 
   public static final Set<String> JSON_SCHEMA_KEYWORDS = Stream
-    .of(_SCHEMA, _REF, TYPE, TITLE, DESCRIPTION, PROPERTIES, FORMAT, ENUM, ONE_OF, ITEMS, UNIQUE_ITEMS, MIN_ITEMS,
-      MAX_ITEMS, MIN_LENGTH, MAX_LENGTH, MINIMUM, REQUIRED, PATTERN_PROPERTIES, ADDITIONAL_PROPERTIES)
-    .collect(Collectors.toUnmodifiableSet());
+    .of(JSON_SCHEMA_SCHEMA, JSON_SCHEMA_REF, JSON_SCHEMA_TYPE, JSON_SCHEMA_ARRAY, JSON_SCHEMA_OBJECT, JSON_SCHEMA_TITLE,
+      JSON_SCHEMA_DESCRIPTION, JSON_SCHEMA_PROPERTIES, JSON_SCHEMA_FORMAT, JSON_SCHEMA_ENUM, JSON_SCHEMA_ONE_OF,
+      JSON_SCHEMA_ITEMS, JSON_SCHEMA_UNIQUE_ITEMS, JSON_SCHEMA_MIN_ITEMS, JSON_SCHEMA_MAX_ITEMS, JSON_SCHEMA_MIN_LENGTH,
+      JSON_SCHEMA_MAX_LENGTH, JSON_SCHEMA_MINIMUM, JSON_SCHEMA_REQUIRED, JSON_SCHEMA_PATTERN_PROPERTIES,
+      JSON_SCHEMA_ADDITIONAL_PROPERTIES).collect(Collectors.toUnmodifiableSet());
 
   /*
    * CEDAR Artifact Keywords
    */
 
   // CEDAR model keywords that can occur at the top level of all (schema and instance) artifacts
-  public static final String SCHEMA_NAME = "schema:name";
-  public static final String SCHEMA_DESCRIPTION = "schema:description";
-  public static final String SCHEMA_IDENTIFIER = "schema:identifier";
+  public static final String SCHEMA_ORG_NAME = "schema:name";
+  public static final String SCHEMA_ORG_DESCRIPTION = "schema:description";
+  public static final String SCHEMA_ORG_IDENTIFIER = "schema:identifier";
   public static final String PAV_CREATED_ON = "pav:createdOn";
   public static final String PAV_CREATED_BY = "pav:createdBy";
   public static final String PAV_LAST_UPDATED_ON = "pav:lastUpdatedOn";
@@ -78,8 +83,8 @@ public class ModelNodeNames
   public static final String OSLC_MODIFIED_BY = "oslc:modifiedBy";
 
   public static final Set<String> ARTIFACT_KEYWORDS = Stream.concat(JSON_LD_KEYWORDS.stream(), Stream
-    .of(SCHEMA_NAME, SCHEMA_DESCRIPTION, SCHEMA_IDENTIFIER, PAV_CREATED_ON, PAV_CREATED_BY, PAV_LAST_UPDATED_ON,
-      OSLC_MODIFIED_BY)).collect(Collectors.toUnmodifiableSet());
+    .of(SCHEMA_ORG_NAME, SCHEMA_ORG_DESCRIPTION, SCHEMA_ORG_IDENTIFIER, PAV_CREATED_ON, PAV_CREATED_BY,
+      PAV_LAST_UPDATED_ON, OSLC_MODIFIED_BY)).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR model keywords that can occur at the top level of all schema artifacts
   public static final String SCHEMA_SCHEMA_VERSION = "schema:schemaVersion";
@@ -120,80 +125,85 @@ public class ModelNodeNames
   public static final String SKOS_ALTLABEL = "skos:altLabel";
 
   public static final Set<String> FIELD_INSTANCE_ARTIFACT_KEYWORDS = Stream.concat(INSTANCE_ARTIFACT_KEYWORDS.stream(),
-    Stream.of(LD_ID, LD_VALUE, RDFS_LABEL, SKOS_NOTATION, SKOS_PREFLABEL, SKOS_ALTLABEL))
+    Stream.of(JSON_LD_ID, JSON_LD_VALUE, RDFS_LABEL, SKOS_NOTATION, SKOS_PREFLABEL, SKOS_ALTLABEL))
     .collect(Collectors.toUnmodifiableSet());
 
   // CEDAR keywords that can occur in a template and element schema artifact's _UI object;
-  public static final String PAGES = "pages";
-  public static final String PROPERTY_LABELS = "propertyLabels";
-  public static final String PROPERTY_DESCRIPTIONS = "propertyDescriptions";
-  public static final String ORDER = "order";
+  public static final String UI_PAGES = "pages";
+  public static final String UI_PROPERTY_LABELS = "propertyLabels";
+  public static final String UI_PROPERTY_DESCRIPTIONS = "propertyDescriptions";
+  public static final String UI_ORDER = "order";
 
   public static final Set<String> TEMPLATE_SCHEMA_UI_KEYWORDS = Stream
-    .of(PAGES, ORDER, PROPERTY_LABELS, PROPERTY_DESCRIPTIONS).collect(Collectors.toUnmodifiableSet());
+    .of(UI_PAGES, UI_ORDER, UI_PROPERTY_LABELS, UI_PROPERTY_DESCRIPTIONS).collect(Collectors.toUnmodifiableSet());
 
-  public static final Set<String> ELEMENT_SCHEMA_UI_KEYWORDS = Stream.of(ORDER, PROPERTY_LABELS, PROPERTY_DESCRIPTIONS)
-    .collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> ELEMENT_SCHEMA_UI_KEYWORDS = Stream
+    .of(UI_ORDER, UI_PROPERTY_LABELS, UI_PROPERTY_DESCRIPTIONS).collect(Collectors.toUnmodifiableSet());
 
-  public static final String VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
-  public static final String INPUT_TYPE = "inputType";
-  public static final String HIDDEN = "hidden";
+  // CEDAR keywords that can occur in a field schema artifact's _UI object;
+  public static final String UI_VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
+  public static final String UI_FIELD_INPUT_TYPE = "inputType";
+  public static final String UI_HIDDEN = "hidden";
 
-  public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream.of(VALUE_RECOMMENDATION_ENABLED, INPUT_TYPE, HIDDEN)
-    .collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream
+    .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR field input types
-  public static final String TEXTFIELD_INPUT_TYPE = "textfield";
-  public static final String TEXTAREA_INPUT_TYPE = "textarea";
-  public static final String RADIO_INPUT_TYPE = "radio";
-  public static final String CHECKBOX_INPUT_TYPE = "checkbox";
-  public static final String DATE_INPUT_TYPE = "date";
-  public static final String EMAIL_INPUT_TYPE = "email";
-  public static final String LIST_INPUT_TYPE = "list";
-  public static final String NUMERIC_INPUT_TYPE = "numeric";
-  public static final String PHONE_NUMBER_INPUT_TYPE = "phone-number";
-  public static final String SECTION_BREAK_INPUT_TYPE = "section-break";
-  public static final String RICH_TEXT_INPUT_TYPE = "richtext";
-  public static final String IMAGE_INPUT_TYPE = "image";
-  public static final String LINK_INPUT_TYPE = "link";
-  public static final String YOUTUBE_INPUT_TYPE = "youtube";
+  public static final String FIELD_INPUT_TYPE_TEXTFIELD = "textfield";
+  public static final String FIELD_INPUT_TYPE_TEXTAREA = "textarea";
+  public static final String FIELD_INPUT_TYPE_RADIO = "radio";
+  public static final String FIELD_INPUT_TYPE_CHECKBOX = "checkbox";
+  public static final String FIELD_INPUT_TYPE_DATE = "date";
+  public static final String FIELD_INPUT_TYPE_EMAIL = "email";
+  public static final String FIELD_INPUT_TYPE_LIST = "list";
+  public static final String FIELD_INPUT_TYPE_NUMERIC = "numeric";
+  public static final String FIELD_INPUT_TYPE_PHONE_NUMBER = "phone-number";
+  public static final String FIELD_INPUT_TYPE_SECTION_BREAK = "section-break";
+  public static final String FIELD_INPUT_TYPE_RICH_TEXT = "richtext";
+  public static final String FIELD_INPUT_TYPE_IMAGE = "image";
+  public static final String FIELD_INPUT_TYPE_LINK = "link";
+  public static final String FIELD_INPUT_TYPE_YOUTUBE = "youtube";
 
   public static final Set<String> INPUT_TYPES = Stream
-    .of(TEXTFIELD_INPUT_TYPE, TEXTAREA_INPUT_TYPE, RADIO_INPUT_TYPE, CHECKBOX_INPUT_TYPE, DATE_INPUT_TYPE,
-      EMAIL_INPUT_TYPE, LIST_INPUT_TYPE, NUMERIC_INPUT_TYPE, PHONE_NUMBER_INPUT_TYPE, SECTION_BREAK_INPUT_TYPE,
-      RICH_TEXT_INPUT_TYPE, IMAGE_INPUT_TYPE, LINK_INPUT_TYPE, YOUTUBE_INPUT_TYPE)
-    .collect(Collectors.toUnmodifiableSet());
+    .of(FIELD_INPUT_TYPE_TEXTFIELD, FIELD_INPUT_TYPE_TEXTAREA, FIELD_INPUT_TYPE_RADIO, FIELD_INPUT_TYPE_CHECKBOX,
+      FIELD_INPUT_TYPE_DATE, FIELD_INPUT_TYPE_EMAIL, FIELD_INPUT_TYPE_LIST, FIELD_INPUT_TYPE_NUMERIC,
+      FIELD_INPUT_TYPE_PHONE_NUMBER, FIELD_INPUT_TYPE_SECTION_BREAK, FIELD_INPUT_TYPE_RICH_TEXT, FIELD_INPUT_TYPE_IMAGE,
+      FIELD_INPUT_TYPE_LINK, FIELD_INPUT_TYPE_YOUTUBE).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR keywords that can occur in a field schema artifact's _valueConstraints object
-  public static final String DATE_TYPE = "dateType";
-  public static final String ONTOLOGIES = "ontologies";
-  public static final String VALUE_SETS = "valueSets";
-  public static final String CLASSES = "classes";
-  public static final String BRANCHES = "branches";
-  public static final String LITERALS = "literals";
-  public static final String MULTIPLE_CHOICE = "multipleChoice";
-  public static final String DEFAULT_VALUE = "defaultValue";
-  public static final String URI = "uri";
-  public static final String NUM_TERMS = "numTerms";
-  public static final String MAX_DEPTH = "maxDepth";
-  public static final String VS_COLLECTION = "vsCollection";
-  public static final String SOURCE = "source";
-  public static final String EXCLUSIONS = "exclusions";
-  public static final String REQUIRED_VALUE = "requiredValue";
-  public static final String SELECTED_BY_DEFAULT = "selectedByDefault";
-  public static final String MIN_STRING_LENGTH = "minLength";
-  public static final String MAX_STRING_LENGTH = "maxLength";
-  public static final String MIN_NUMBER_VALUE = "minValue";
-  public static final String MAX_NUMBER_VALUE = "maxValue";
-  public static final String DECIMAL_PLACE = "decimalPlace";
-  public static final String NUMBER_TYPE = "numberType";
-  public static final String UNIT_OF_MEASURE = "unitOfMeasure";
+  public static final String VALUE_CONSTRAINTS_DATE_TYPE = "dateType";
+  public static final String VALUE_CONSTRAINTS_ONTOLOGIES = "ontologies";
+  public static final String VALUE_CONSTRAINTS_VALUE_SETS = "valueSets";
+  public static final String VALUE_CONSTRAINTS_CLASSES = "classes";
+  public static final String VALUE_CONSTRAINTS_BRANCHES = "branches";
+  public static final String VALUE_CONSTRAINTS_LITERALS = "literals";
+  public static final String VALUE_CONSTRAINTS_MULTIPLE_CHOICE = "multipleChoice";
+  public static final String VALUE_CONSTRAINTS_DEFAULT_VALUE = "defaultValue";
+  public static final String VALUE_CONSTRAINTS_URI = "uri";
+  public static final String VALUE_CONSTRAINTS_NUM_TERMS = "numTerms";
+  public static final String VALUE_CONSTRAINTS_MAX_DEPTH = "maxDepth";
+  public static final String VALUE_CONSTRAINTS_VS_COLLECTION = "vsCollection";
+  public static final String VALUE_CONSTRAINTS_SOURCE = "source";
+  public static final String VALUE_CONSTRAINTS_EXCLUSIONS = "exclusions";
+  public static final String VALUE_CONSTRAINTS_REQUIRED_VALUE = "requiredValue";
+  public static final String VALUE_CONSTRAINTS_SELECTED_BY_DEFAULT = "selectedByDefault";
+  public static final String VALUE_CONSTRAINTS_MIN_STRING_LENGTH = "minLength";
+  public static final String VALUE_CONSTRAINTS_MAX_STRING_LENGTH = "maxLength";
+  public static final String VALUE_CONSTRAINTS_MIN_NUMBER_VALUE = "minValue";
+  public static final String VALUE_CONSTRAINTS_MAX_NUMBER_VALUE = "maxValue";
+  public static final String VALUE_CONSTRAINTS_DECIMAL_PLACE = "decimalPlace";
+  public static final String VALUE_CONSTRAINTS_NUMBER_TYPE = "numberType";
+  public static final String VALUE_CONSTRAINTS_UNIT_OF_MEASURE = "unitOfMeasure";
 
   public static final Set<String> VALUE_CONSTRAINTS_KEYWORDS = Stream
-    .of(DATE_TYPE, ONTOLOGIES, VALUE_SETS, CLASSES, BRANCHES, LITERALS, MULTIPLE_CHOICE, DEFAULT_VALUE, URI, NUM_TERMS,
-      MAX_DEPTH, VS_COLLECTION, SOURCE, EXCLUSIONS, REQUIRED_VALUE, SELECTED_BY_DEFAULT, MIN_STRING_LENGTH,
-      MAX_STRING_LENGTH, MIN_NUMBER_VALUE, MAX_NUMBER_VALUE, DECIMAL_PLACE, NUMBER_TYPE, UNIT_OF_MEASURE)
-    .collect(Collectors.toUnmodifiableSet());
+    .of(VALUE_CONSTRAINTS_DATE_TYPE, VALUE_CONSTRAINTS_ONTOLOGIES, VALUE_CONSTRAINTS_VALUE_SETS,
+      VALUE_CONSTRAINTS_CLASSES, VALUE_CONSTRAINTS_BRANCHES, VALUE_CONSTRAINTS_LITERALS,
+      VALUE_CONSTRAINTS_MULTIPLE_CHOICE, VALUE_CONSTRAINTS_DEFAULT_VALUE, VALUE_CONSTRAINTS_URI,
+      VALUE_CONSTRAINTS_NUM_TERMS, VALUE_CONSTRAINTS_MAX_DEPTH, VALUE_CONSTRAINTS_VS_COLLECTION,
+      VALUE_CONSTRAINTS_SOURCE, VALUE_CONSTRAINTS_EXCLUSIONS, VALUE_CONSTRAINTS_REQUIRED_VALUE,
+      VALUE_CONSTRAINTS_SELECTED_BY_DEFAULT, VALUE_CONSTRAINTS_MIN_STRING_LENGTH, VALUE_CONSTRAINTS_MAX_STRING_LENGTH,
+      VALUE_CONSTRAINTS_MIN_NUMBER_VALUE, VALUE_CONSTRAINTS_MAX_NUMBER_VALUE, VALUE_CONSTRAINTS_DECIMAL_PLACE,
+      VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE).collect(Collectors.toUnmodifiableSet());
 
   public static final String XSD = "xsd";
   public static final String PAV = "pav";
