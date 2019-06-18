@@ -41,6 +41,8 @@ public class ModelNodeNames
   public static final String JSON_SCHEMA_SCHEMA = "$schema";
   public static final String JSON_SCHEMA_REF = "$ref";
   public static final String JSON_SCHEMA_TYPE = "type";
+  public static final String JSON_SCHEMA_ARRAY = "array";
+  public static final String JSON_SCHEMA_OBJECT = "object";
   public static final String JSON_SCHEMA_TITLE = "title";
   public static final String JSON_SCHEMA_DESCRIPTION = "description";
   public static final String JSON_SCHEMA_PROPERTIES = "properties";
@@ -48,7 +50,6 @@ public class ModelNodeNames
   public static final String JSON_SCHEMA_ENUM = "enum";
   public static final String JSON_SCHEMA_ONE_OF = "oneOf";
   public static final String JSON_SCHEMA_ITEMS = "items";
-  public static final String JSON_SCHEMA_ARRAY = "array";
   public static final String JSON_SCHEMA_UNIQUE_ITEMS = "uniqueItems";
   public static final String JSON_SCHEMA_MIN_ITEMS = "minItems";
   public static final String JSON_SCHEMA_MAX_ITEMS = "maxItems";
