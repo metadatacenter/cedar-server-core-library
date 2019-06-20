@@ -26,9 +26,8 @@ import java.util.List;
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarResourceType.Types.INSTANCE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class FileSystemResource extends AbstractCedarResourceWithDates
-    implements ResourceWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData,
-    ResourceWithEverybodyPermission, ResourceWithParentPathInfoData {
+public abstract class FileSystemResource extends AbstractCedarResourceWithDates implements ResourceWithIdAndType,
+    ResourceWithUsersAndUserNamesData, ResourceWithEverybodyPermission, ResourceWithParentPathInfoData {
 
   protected NameDescriptionIdentifierGroup nameDescriptionIdentifierGroup;
   protected ParentPathInfoGroup parentPathInfoGroup;

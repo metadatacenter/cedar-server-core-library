@@ -32,7 +32,12 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public FolderServerCategory getCategoryById(String categoryId) {
-    return null;
+    return proxies.category().getCategoryById(categoryId);
+  }
+
+  @Override
+  public long getCategoryCount() {
+    return proxies.category().getCategoryCount();
   }
 
   @Override
@@ -57,7 +62,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public List<FolderServerCategory> getAllCategories(int limit, int offset) {
-    return null;
+    return proxies.category().getAllCategories(limit, offset);
   }
 
   @Override

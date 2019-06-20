@@ -5,8 +5,11 @@ import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderCategory;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderCategory;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+
+import java.util.List;
 
 public class Neo4JProxyCategory extends AbstractNeo4JProxy {
 
@@ -31,7 +34,30 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
   }
 
   public FolderServerCategory getCategoryByNameAndParent(String name, String parentId) {
-    //TODO: implement this
-    return null;
+    String cypher = CypherQueryBuilderCategory.getCategoryByNameAndParent();
+    CypherParameters params = CypherParamBuilderCategory.getCategoryByNameAndParent(name, parentId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerCategory.class);
+  }
+
+  public FolderServerCategory getCategoryById(String categoryId) {
+    String cypher = CypherQueryBuilderCategory.getCategoryById();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerCategory.class);
+  }
+
+  public List<FolderServerCategory> getAllCategories(int limit, int offset) {
+    String cypher = CypherQueryBuilderCategory.getAllCategories();
+    CypherParameters params = CypherParamBuilderCategory.getAllCategories(limit, offset);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerCategory.class);
+  }
+
+  public long getCategoryCount() {
+    String cypher = CypherQueryBuilderCategory.getTotalCount();
+    CypherParameters params = new CypherParameters();
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetCount(q);
   }
 }

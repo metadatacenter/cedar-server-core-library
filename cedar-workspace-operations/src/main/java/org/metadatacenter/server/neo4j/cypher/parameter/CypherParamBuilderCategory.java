@@ -36,4 +36,18 @@ public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
     params.put(ParameterPlaceholder.USER_ID, userId);
     return params;
   }
+
+  public static CypherParameters getCategoryByNameAndParent(String name, String parentId) {
+    CypherParameters params = new CypherParameters();
+    params.put(NodeProperty.NAME, name);
+    params.put(NodeProperty.PARENT_CATEGORY_ID, parentId);
+    return params;
+  }
+
+  public static CypherParameters getAllCategories(int limit, int offset) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.LIMIT, limit);
+    params.put(ParameterPlaceholder.OFFSET, offset);
+    return params;
+  }
 }

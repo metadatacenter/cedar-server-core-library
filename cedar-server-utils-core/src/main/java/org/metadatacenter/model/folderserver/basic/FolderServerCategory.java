@@ -3,14 +3,12 @@ package org.metadatacenter.model.folderserver.basic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUserNamesData;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersData;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersAndUserNamesData;
 import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerCategory extends AbstractCedarResourceWithDates implements ResourceWithUsersData,
-    ResourceWithUserNamesData {
+public class FolderServerCategory extends AbstractCedarResourceWithDates implements ResourceWithUsersAndUserNamesData {
 
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;

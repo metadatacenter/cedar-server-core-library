@@ -13,6 +13,14 @@ public interface CategoryServiceSession {
 
   FolderServerCategory getCategoryById(String categoryId);
 
+  FolderServerCategory getCategoryByNameAndParent(String name, String parentId);
+
+  List<FolderServerCategory> getAllCategories(int limit, int offset);
+
+  long getCategoryCount();
+
+  //
+
   FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields);
 
   boolean deleteCategoryById(String categoryId);
@@ -20,8 +28,6 @@ public interface CategoryServiceSession {
   FolderServerCategory getRootCategory();
 
   List<FolderServerCategory> getChildrenOf(String parentCategoryId, int limit, int offset);
-
-  List<FolderServerCategory> getAllCategories(int limit, int offset);
 
   FolderServerCategoryWithChildren getCategoryTree();
 
@@ -35,5 +41,4 @@ public interface CategoryServiceSession {
 
   boolean detachCategoryFromArtifact(String categoryId, String artifactId);
 
-  FolderServerCategory getCategoryByNameAndParent(String name, String parentId);
 }

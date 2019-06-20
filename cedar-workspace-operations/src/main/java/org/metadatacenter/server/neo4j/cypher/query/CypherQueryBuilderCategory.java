@@ -48,4 +48,30 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getCategoryById() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN category";
+  }
+
+  public static String getCategoryByNameAndParent() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.NAME>:{<PROP.NAME>}, <PROP.PARENT_CATEGORY_ID>:{parentCategoryId}})" +
+        " RETURN category";
+  }
+
+  public static String getAllCategories() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (category:<LABEL.CATEGORY>)");
+    sb.append(" RETURN category");
+    sb.append(" ORDER BY category.<PROP.NAME>");
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getTotalCount() {
+    return " MATCH (category:<LABEL.CATEGORY>)" +
+        " RETURN count(category)";
+  }
 }
