@@ -3,6 +3,7 @@ package org.metadatacenter.server.permissions;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -10,7 +11,6 @@ import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
@@ -82,9 +82,8 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
       }
     }
     currentUserPermissions.setCanCopy(true);
-    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
-      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
-          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+    if (resource instanceof ResourceWithOpenFlag) {
+      ResourceWithOpenFlag res = (ResourceWithOpenFlag) resource;
       currentUserPermissions.setCanMakeOpen(res.isOpen() == null || !res.isOpen());
       currentUserPermissions.setCanMakeNotOpen(res.isOpen() != null && res.isOpen());
     } else {

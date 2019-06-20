@@ -3,12 +3,13 @@ package org.metadatacenter.model.folderserver.report;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatus;
 
 public abstract class FolderServerSchemaArtifactReport extends FolderServerArtifactReport
-    implements ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen {
+    implements ResourceWithCurrentUserPermissionsAndPublicationStatus, ResourceWithOpenFlag {
 
   private VersionDataGroup versionData;
 

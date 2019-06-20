@@ -35,4 +35,5 @@ public interface CategoryServiceSession {
 
   boolean detachCategoryFromArtifact(String categoryId, String artifactId);
 
+  FolderServerCategory getCategoryByNameAndParent(String name, String parentId);
 }

@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -99,6 +100,19 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       newUsersFolder.setUserHome(false);
 
       proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
+    }
+
+    log.info("Looking for Root Category in Neo4j");
+    FolderServerCategory rootCategory = proxies.category().getRootCategory();
+    if (rootCategory == null) {
+      log.info("Root Category not found, trying to create it");
+      String rootURL = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
+      log.info("Root Category URL just generated:" + rootURL);
+      rootCategory = proxies.category().createCategory(rootURL, null, config.getRootCategoryName(),
+          config.getRootCategoryDescription(), userId);
+      log.info("Root Category created, returned:" + rootCategory);
+    } else {
+      log.info("Root Category found");
     }
   }
 

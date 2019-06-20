@@ -114,6 +114,7 @@ public enum CedarErrorKey {
   METHOD_NOT_IMPLEMENTED("methodNotImplemented"),
   UPSTREAM_SERVER_ERROR("upstreamServerError"),
   NOTHING_TO_DO("nothingToDo"),
+  CATEGORY_ALREADY_PRESENT("categoryAlreadyPresent"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),

@@ -21,6 +21,7 @@ public class Neo4JProxies {
   private final Neo4JProxyResource resourceProxy;
   private final Neo4JProxyGraph graphProxy;
   private final Neo4JProxyVersion versionProxy;
+  private final Neo4JProxyCategory categoryProxy;
 
   public Neo4JProxies(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
@@ -37,6 +38,7 @@ public class Neo4JProxies {
     this.resourceProxy = new Neo4JProxyResource(this, cedarConfig);
     this.graphProxy = new Neo4JProxyGraph(this, cedarConfig);
     this.versionProxy = new Neo4JProxyVersion(this, cedarConfig);
+    this.categoryProxy = new Neo4JProxyCategory(this, cedarConfig);
   }
 
   public Neo4JProxyAdmin admin() {
@@ -73,6 +75,10 @@ public class Neo4JProxies {
 
   public Neo4JProxyVersion version() {
     return versionProxy;
+  }
+
+  public Neo4JProxyCategory category() {
+    return categoryProxy;
   }
 
   public LinkedDataUtil getLinkedDataUtil() {

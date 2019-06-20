@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.recursive.FolderServerCategoryWithChildren;
 import org.metadatacenter.server.CategoryServiceSession;
@@ -25,7 +26,8 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public FolderServerCategory createCategory(String name, String description, String parentId) {
-    return null;
+    String categoryId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
+    return proxies.category().createCategory(categoryId, parentId, name, description, cu.getId());
   }
 
   @Override
@@ -86,5 +88,10 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   @Override
   public boolean detachCategoryFromArtifact(String categoryId, String artifactId) {
     return false;
+  }
+
+  @Override
+  public FolderServerCategory getCategoryByNameAndParent(String name, String parentId) {
+    return proxies.category().getCategoryByNameAndParent(name, parentId);
   }
 }

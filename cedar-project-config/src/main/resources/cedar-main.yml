@@ -105,6 +105,9 @@ folderStructure:
     name: "Everybody"
     displayName: "Everybody"
     description: "Group holding all the users"
+  rootCategory:
+    name: "ROOT-CATEGORY"
+    description: "CEDAR Root Category"
 
 #Server bases
 #for inter-service REST calls

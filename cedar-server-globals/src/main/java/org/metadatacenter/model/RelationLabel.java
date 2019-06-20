@@ -11,7 +11,8 @@ public enum RelationLabel {
   CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE),
   ADMINISTERS(PlainLabels.ADMINISTERS, null),
   PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null),
-  DERIVEDFROM(PlainLabels.DERIVEDFROM, null);
+  DERIVEDFROM(PlainLabels.DERIVEDFROM, null),
+  CONTAINSCATEGORY(PlainLabels.CONTAINSCATEGORY, null);
 
   public static class PlainLabels {
     public static final String OWNS = "OWNS";
@@ -22,6 +23,7 @@ public enum RelationLabel {
     public static final String ADMINISTERS = "ADMINISTERS";
     public static final String PREVIOUSVERSION = "PREVIOUSVERSION";
     public static final String DERIVEDFROM = "DERIVEDFROM";
+    public static final String CONTAINSCATEGORY = "CONTAINSCATEGORY";
   }
 
   private final String value;

@@ -9,16 +9,18 @@ import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerCategory extends AbstractCedarResourceWithDates
-    implements ResourceWithUsersData, ResourceWithUserNamesData {
+public class FolderServerCategory extends AbstractCedarResourceWithDates implements ResourceWithUsersData,
+    ResourceWithUserNamesData {
 
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;
+  protected String parentCategoryId;
 
   public FolderServerCategory() {
     super();
     this.usersData = new UsersDataGroup();
     this.userNamesData = new UserNamesDataGroup();
+    this.parentCategoryId = null;
     this.setType(CedarResourceType.CATEGORY);
   }
 
@@ -80,5 +82,13 @@ public class FolderServerCategory extends AbstractCedarResourceWithDates
   @Override
   public String getLastUpdatedByUserName() {
     return userNamesData.getLastUpdatedByUserName();
+  }
+
+  public String getParentCategoryId() {
+    return parentCategoryId;
+  }
+
+  public void setParentCategoryId(String parentCategoryId) {
+    this.parentCategoryId = parentCategoryId;
   }
 }
