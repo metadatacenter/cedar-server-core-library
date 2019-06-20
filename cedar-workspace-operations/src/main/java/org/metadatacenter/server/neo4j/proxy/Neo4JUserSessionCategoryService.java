@@ -42,7 +42,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields) {
-    return null;
+    return proxies.category().updateCategoryById(categoryId, updateFields, cu.getId());
   }
 
   @Override

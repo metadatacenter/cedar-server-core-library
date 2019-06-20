@@ -2,14 +2,19 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderCategory;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderCategory;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGroup;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 
 import java.util.List;
+import java.util.Map;
 
 public class Neo4JProxyCategory extends AbstractNeo4JProxy {
 
@@ -59,5 +64,13 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     CypherParameters params = new CypherParameters();
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetCount(q);
+  }
+
+  public FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields,
+                                                 String updatedBy) {
+    String cypher = CypherQueryBuilderGroup.updateCategoryById(updateFields);
+    CypherParameters params = CypherParamBuilderGroup.updateCategoryById(categoryId, updateFields, updatedBy);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWriteGetOne(q, FolderServerCategory.class);
   }
 }
