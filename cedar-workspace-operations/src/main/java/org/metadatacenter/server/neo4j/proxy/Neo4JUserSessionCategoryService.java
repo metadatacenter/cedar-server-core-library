@@ -47,7 +47,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public boolean deleteCategoryById(String categoryId) {
-    return false;
+    return proxies.category().deleteCategoryById(categoryId);
   }
 
   @Override

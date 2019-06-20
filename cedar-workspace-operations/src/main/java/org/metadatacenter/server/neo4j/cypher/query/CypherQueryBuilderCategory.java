@@ -74,4 +74,10 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     return " MATCH (category:<LABEL.CATEGORY>)" +
         " RETURN count(category)";
   }
+
+  public static String deleteCategoryById() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
+        " DETACH DELETE category";
+  }
 }

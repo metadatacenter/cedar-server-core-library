@@ -2,7 +2,6 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -72,5 +71,12 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderGroup.updateCategoryById(categoryId, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerCategory.class);
+  }
+
+  public boolean deleteCategoryById(String categoryId) {
+    String cypher = CypherQueryBuilderCategory.deleteCategoryById();
+    CypherParameters params = CypherParamBuilderCategory.deleteCategoryById(categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "deleting category");
   }
 }

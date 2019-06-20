@@ -21,9 +21,9 @@ public interface CategoryServiceSession {
 
   FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields);
 
-  //
-
   boolean deleteCategoryById(String categoryId);
+
+  //
 
   FolderServerCategory getRootCategory();
 

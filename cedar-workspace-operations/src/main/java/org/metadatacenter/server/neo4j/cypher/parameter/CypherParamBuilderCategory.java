@@ -50,4 +50,8 @@ public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
     params.put(ParameterPlaceholder.OFFSET, offset);
     return params;
   }
+
+  public static CypherParameters deleteCategoryById(String categoryId) {
+    return getNodeByIdentity(categoryId);
+  }
 }
