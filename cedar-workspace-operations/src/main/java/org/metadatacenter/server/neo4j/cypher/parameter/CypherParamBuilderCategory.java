@@ -11,7 +11,7 @@ import java.time.Instant;
 
 public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
 
-  public static CypherParameters createCategory(CedarCategoryId parentCategoryId, String newCategoryId,
+  public static CypherParameters createCategory(CedarCategoryId parentCategoryId, CedarCategoryId newCategoryId,
                                                 String categoryName, String categoryDescription,
                                                 String categoryIdentifier, String userId) {
     Instant now = Instant.now();

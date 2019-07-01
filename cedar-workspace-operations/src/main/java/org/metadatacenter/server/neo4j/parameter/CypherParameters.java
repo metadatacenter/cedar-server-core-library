@@ -63,7 +63,11 @@ public class CypherParameters {
   public Map<String, Object> asMap() {
     Map<String, Object> r = new HashMap<>();
     for (CypherQueryParameter k : map.keySet()) {
-      r.put(Neo4JUtil.escapePropertyName(k.getValue()), map.get(k));
+      Object value = map.get(k);
+      if (value instanceof CedarResourceId) {
+        value = ((CedarResourceId)value).getId();
+      }
+      r.put(Neo4JUtil.escapePropertyName(k.getValue()), value);
     }
     return r;
   }

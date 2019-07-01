@@ -28,7 +28,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public FolderServerCategory createCategory(CedarCategoryId parentId, String name, String description, String identifier) {
-    String categoryId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
+    CedarCategoryId categoryId = linkedDataUtil.buildNewLinkedDataCategoryId();
     return proxies.category().createCategory(parentId, categoryId, name, description, identifier, cu.getId());
   }
 

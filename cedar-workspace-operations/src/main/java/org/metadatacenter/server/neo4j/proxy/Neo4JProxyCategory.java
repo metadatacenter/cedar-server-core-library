@@ -30,7 +30,7 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerCategory.class);
   }
 
-  public FolderServerCategory createCategory(CedarCategoryId parentCategoryId, String newCategoryId,
+  public FolderServerCategory createCategory(CedarCategoryId parentCategoryId, CedarCategoryId newCategoryId,
                                              String categoryName,
                                              String categoryDescription, String categoryIdentifier, String userId) {
     String cypher = CypherQueryBuilderCategory.createCategory(parentCategoryId, userId);
