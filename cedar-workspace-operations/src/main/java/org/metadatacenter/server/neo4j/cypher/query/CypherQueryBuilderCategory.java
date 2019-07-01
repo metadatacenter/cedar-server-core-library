@@ -1,5 +1,6 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
@@ -10,7 +11,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category";
   }
 
-  public static String createCategory(String parentCategoryId, String userId) {
+  public static String createCategory(CedarCategoryId parentCategoryId, String userId) {
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (category:<COMPOSEDLABEL.CATEGORY> {");
     // BaseDataGroup
@@ -24,6 +25,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     // NameDescriptionIdentifierGroup
     sb.append(buildCreateAssignment(NodeProperty.NAME)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.DESCRIPTION)).append(",");
+    sb.append(buildCreateAssignment(NodeProperty.IDENTIFIER)).append(",");
     // UsersDataGroup
     sb.append(buildCreateAssignment(NodeProperty.CREATED_BY)).append(",");
     sb.append(buildCreateAssignment(NodeProperty.LAST_UPDATED_BY)).append(",");
@@ -41,7 +43,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     if (userId != null) {
       sb.append(" WITH category");
       sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-      sb.append(" MERGE (user)-[:<REL.OWNS>]->(category)");
+      sb.append(" MERGE (user)-[:<REL.OWNSCATEGORY>]->(category)");
     }
 
     sb.append(" RETURN category");
@@ -54,7 +56,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category";
   }
 
-  public static String getCategoryByNameAndParent() {
+  public static String getCategoryByParentAndName() {
     return "" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.NAME>:{<PROP.NAME>}, <PROP.PARENT_CATEGORY_ID>:{parentCategoryId}})" +
         " RETURN category";
@@ -79,5 +81,13 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
         " DETACH DELETE category";
+  }
+
+  public static String getCategoryOwner() {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId} })" +
+        " MATCH (user)-[:<REL.OWNSCATEGORY>]->(category)" +
+        " RETURN user";
   }
 }

@@ -1,6 +1,5 @@
 package org.metadatacenter.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.folderserver.datagroup.BaseDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.NameDescriptionIdentifierGroup;

@@ -1,7 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -28,23 +30,24 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerCategory.class);
   }
 
-  public FolderServerCategory createCategory(String newCategoryId, String parentCategoryId, String categoryName,
-                                             String categoryDescription, String userId) {
+  public FolderServerCategory createCategory(CedarCategoryId parentCategoryId, String newCategoryId,
+                                             String categoryName,
+                                             String categoryDescription, String categoryIdentifier, String userId) {
     String cypher = CypherQueryBuilderCategory.createCategory(parentCategoryId, userId);
-    CypherParameters params = CypherParamBuilderCategory.createCategory(newCategoryId, parentCategoryId, categoryName,
-        categoryDescription, userId);
+    CypherParameters params = CypherParamBuilderCategory.createCategory(parentCategoryId, newCategoryId, categoryName,
+        categoryDescription, categoryIdentifier, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerCategory.class);
   }
 
-  public FolderServerCategory getCategoryByNameAndParent(String name, String parentId) {
-    String cypher = CypherQueryBuilderCategory.getCategoryByNameAndParent();
-    CypherParameters params = CypherParamBuilderCategory.getCategoryByNameAndParent(name, parentId);
+  public FolderServerCategory getCategoryByParentAndName(CedarCategoryId parentId, String name) {
+    String cypher = CypherQueryBuilderCategory.getCategoryByParentAndName();
+    CypherParameters params = CypherParamBuilderCategory.getCategoryByParentAndName(parentId, name);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerCategory.class);
   }
 
-  public FolderServerCategory getCategoryById(String categoryId) {
+  public FolderServerCategory getCategoryById(CedarCategoryId categoryId) {
     String cypher = CypherQueryBuilderCategory.getCategoryById();
     CypherParameters params = CypherParamBuilderNode.getNodeById(categoryId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
@@ -65,7 +68,7 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeReadGetCount(q);
   }
 
-  public FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields,
+  public FolderServerCategory updateCategoryById(CedarCategoryId categoryId, Map<NodeProperty, String> updateFields,
                                                  String updatedBy) {
     String cypher = CypherQueryBuilderGroup.updateCategoryById(updateFields);
     CypherParameters params = CypherParamBuilderGroup.updateCategoryById(categoryId, updateFields, updatedBy);
@@ -73,10 +76,18 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerCategory.class);
   }
 
-  public boolean deleteCategoryById(String categoryId) {
+  public boolean deleteCategoryById(CedarCategoryId categoryId) {
     String cypher = CypherQueryBuilderCategory.deleteCategoryById();
     CypherParameters params = CypherParamBuilderCategory.deleteCategoryById(categoryId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "deleting category");
   }
+
+  public FolderServerUser getCategoryOwner(CedarCategoryId categoryId) {
+    String cypher = CypherQueryBuilderCategory.getCategoryOwner();
+    CypherParameters params = CypherParamBuilderNode.matchId(categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerUser.class);
+  }
+
 }

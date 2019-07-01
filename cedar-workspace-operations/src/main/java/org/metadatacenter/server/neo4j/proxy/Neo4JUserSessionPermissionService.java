@@ -1,8 +1,10 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithEverybodyPermission;
 import org.metadatacenter.server.PermissionServiceSession;
@@ -284,5 +286,34 @@ public class Neo4JUserSessionPermissionService extends AbstractNeo4JUserSession 
   private List<FolderServerGroup> getGroupsWithTransitivePermission(String nodeURL, NodePermission permission) {
     return proxies.permission().getGroupsWithTransitivePermissionOnNode(nodeURL, permission);
   }
+
+  @Override
+  public boolean userHasWriteAccessToCategory(CedarCategoryId categoryId) {
+    if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_CATEGORY)) {
+      return true;
+    } else {
+      return proxies.permission().userHasWriteAccessToCategory(cu.getResourceId(), categoryId);
+    }
+  }
+
+  @Override
+  public boolean userHasAttachAccessToCategory(CedarCategoryId categoryId) {
+    if (cu.has(CedarPermission.WRITE_NOT_WRITABLE_CATEGORY)) {
+      return true;
+    } else {
+      return proxies.permission().userHasAttachAccessToCategory(cu.getResourceId(), categoryId);
+    }
+  }
+
+  @Override
+  public boolean userCanChangeOwnerOfCategory(CedarCategoryId categoryId) {
+    if (cu.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_CATEGORY)) {
+      return true;
+    } else {
+      FolderServerUser owner = getCategoryOwner(categoryId);
+      return owner != null && owner.getId().equals(cu.getId());
+    }
+  }
+
 
 }

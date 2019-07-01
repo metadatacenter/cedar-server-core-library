@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
@@ -65,7 +66,7 @@ public class CypherParamBuilderGroup extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields,
+  public static CypherParameters updateCategoryById(CedarCategoryId categoryId, Map<NodeProperty, String> updateFields,
                                                     String updatedBy) {
     return updateNodeById(categoryId, updateFields, updatedBy);
   }

@@ -6,7 +6,7 @@ import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IndexedDocumentDocument;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurrentUserPermissionUpdaterForSearch {
@@ -22,53 +22,53 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
   }
 
   @Override
-  public void update(CurrentUserPermissions currentUserPermissions) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
     if (userCanWrite()) {
-      currentUserPermissions.setCanWrite(true);
-      currentUserPermissions.setCanDelete(true);
-      currentUserPermissions.setCanRead(true);
-      currentUserPermissions.setCanShare(true);
+      currentUserResourcePermissions.setCanWrite(true);
+      currentUserResourcePermissions.setCanDelete(true);
+      currentUserResourcePermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanShare(true);
     } else if (userCanRead()) {
-      currentUserPermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanRead(true);
     }
 
     if (userCanChangeOwnerOfFolder()) {
-      currentUserPermissions.setCanChangeOwner(true);
+      currentUserResourcePermissions.setCanChangeOwner(true);
     }
 
-    currentUserPermissions.setCanCopy(true);
+    currentUserResourcePermissions.setCanCopy(true);
 
     if (indexedDocument.getInfo().getType() == CedarResourceType.TEMPLATE) {
-      currentUserPermissions.setCanPopulate(true);
+      currentUserResourcePermissions.setCanPopulate(true);
     }
 
     OutcomeWithReason versioningOutcome = userCanPerformVersioning();
     if (versioningOutcome.isNegative()) {
-      currentUserPermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
-      currentUserPermissions.setPublishErrorKey(versioningOutcome.getReason());
+      currentUserResourcePermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
+      currentUserResourcePermissions.setPublishErrorKey(versioningOutcome.getReason());
     } else {
       OutcomeWithReason publishOutcome = resourceCanBePublished();
       if (publishOutcome.isPositive()) {
-        currentUserPermissions.setCanPublish(true);
+        currentUserResourcePermissions.setCanPublish(true);
       } else {
-        currentUserPermissions.setPublishErrorKey(publishOutcome.getReason());
+        currentUserResourcePermissions.setPublishErrorKey(publishOutcome.getReason());
       }
       OutcomeWithReason createDraftOutcome = resourceCanBeDrafted();
       if (createDraftOutcome.isPositive()) {
-        currentUserPermissions.setCanCreateDraft(true);
+        currentUserResourcePermissions.setCanCreateDraft(true);
       } else {
-        currentUserPermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
+        currentUserResourcePermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
       }
     }
 
     if (indexedDocument.getInfo().getType() == CedarResourceType.INSTANCE) {
       if (isSubmittable()) {
-        currentUserPermissions.setCanSubmit(true);
+        currentUserResourcePermissions.setCanSubmit(true);
       }
     }
 
-    currentUserPermissions.setCanMakeOpen(userCanWrite() && !indexedDocument.getInfo().getIsOpen());
-    currentUserPermissions.setCanMakeNotOpen(userCanWrite() && indexedDocument.getInfo().getIsOpen());
+    currentUserResourcePermissions.setCanMakeOpen(userCanWrite() && !indexedDocument.getInfo().getIsOpen());
+    currentUserResourcePermissions.setCanMakeNotOpen(userCanWrite() && indexedDocument.getInfo().getIsOpen());
   }
 
   private boolean isSubmittable() {

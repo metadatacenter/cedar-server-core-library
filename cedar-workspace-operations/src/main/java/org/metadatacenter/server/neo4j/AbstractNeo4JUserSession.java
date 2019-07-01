@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
@@ -37,6 +38,10 @@ public abstract class AbstractNeo4JUserSession {
   public boolean userIsOwnerOfNode(String nodeURL) {
     FolderServerUser owner = getNodeOwner(nodeURL);
     return owner != null && owner.getId().equals(cu.getId());
+  }
+
+  protected FolderServerUser getCategoryOwner(CedarCategoryId categoryId) {
+    return proxies.category().getCategoryOwner(categoryId);
   }
 
 }

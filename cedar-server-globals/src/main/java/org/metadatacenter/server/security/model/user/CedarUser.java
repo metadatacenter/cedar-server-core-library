@@ -3,6 +3,8 @@ package org.metadatacenter.server.security.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarResourceId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 import java.util.ArrayList;
@@ -148,4 +150,9 @@ public class CedarUser implements CedarUserRepresentation {
     return permission != null && permissions != null && permissions.contains(permission.getPermissionName());
   }
 
+  @JsonIgnore
+  @Override
+  public CedarUserId getResourceId() {
+    return CedarUserId.buildSafe(this.id);
+  }
 }

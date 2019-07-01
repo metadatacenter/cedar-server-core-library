@@ -5,7 +5,7 @@ import org.metadatacenter.server.security.model.auth.CedarGroupUser;
 import org.metadatacenter.server.security.model.auth.CedarGroupUsers;
 import org.metadatacenter.server.security.model.auth.NodePermissionGroupPermissionPair;
 import org.metadatacenter.server.security.model.auth.NodePermissionUserPermissionPair;
-import org.metadatacenter.server.security.model.user.CedarUserId;
+import org.metadatacenter.id.CedarUserId;
 
 import java.util.HashSet;
 import java.util.Set;

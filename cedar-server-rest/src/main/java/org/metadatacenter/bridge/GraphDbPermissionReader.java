@@ -4,16 +4,22 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarObjectNotFoundException;
-import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
+import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
+import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerCategoryCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerResourceCurrentUserReport;
-import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
+import org.metadatacenter.permission.currentuserpermission.CurrentUserCategoryPermissionUpdater;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
+import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
+import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbCategory;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbFolder;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
@@ -94,6 +100,35 @@ public class GraphDbPermissionReader {
                                                                FolderWithCurrentUserPermissions folder) {
     CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbFolder.get(permissionSession, folder);
     cupu.update(folder.getCurrentUserPermissions());
+  }
+
+  public static FolderServerCategoryCurrentUserReport getCategoryCurrentUserReport(CedarRequestContext context,
+                                                                                   CategoryServiceSession categorySession, PermissionServiceSession permissionSession, CedarCategoryId categoryId) throws CedarException {
+    if (categoryId != null) {
+
+      FolderServerCategory category = categorySession.getCategoryById(categoryId);
+      if (category == null) {
+        throw new CedarObjectNotFoundException("The category can not be found by id")
+            .errorKey(CedarErrorKey.CATEGORY_NOT_FOUND)
+            .parameter("id", categoryId);
+      }
+
+      FolderServerCategoryCurrentUserReport categoryReport =
+          FolderServerCategoryCurrentUserReport.fromCategory(category);
+
+      decorateCategoryWithCurrentUserPermissions(context, permissionSession, categoryReport);
+
+      return categoryReport;
+    }
+    return null;
+  }
+
+  private static void decorateCategoryWithCurrentUserPermissions(CedarRequestContext context,
+                                                                 PermissionServiceSession permissionSession,
+                                                                 FolderServerCategoryCurrentUserReport categoryReport) {
+    CurrentUserCategoryPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbCategory.get(permissionSession,
+        categoryReport);
+    cupu.update(categoryReport.getCurrentUserPermissions());
   }
 
 }

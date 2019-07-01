@@ -4,6 +4,8 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.recursive.FolderServerCategoryWithChildren;
+import org.metadatacenter.id.CedarArtifactId;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -25,13 +27,13 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public FolderServerCategory createCategory(String name, String description, String parentId) {
+  public FolderServerCategory createCategory(CedarCategoryId parentId, String name, String description, String identifier) {
     String categoryId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
-    return proxies.category().createCategory(categoryId, parentId, name, description, cu.getId());
+    return proxies.category().createCategory(parentId, categoryId, name, description, identifier, cu.getId());
   }
 
   @Override
-  public FolderServerCategory getCategoryById(String categoryId) {
+  public FolderServerCategory getCategoryById(CedarCategoryId categoryId) {
     return proxies.category().getCategoryById(categoryId);
   }
 
@@ -41,12 +43,12 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public FolderServerCategory updateCategoryById(String categoryId, Map<NodeProperty, String> updateFields) {
+  public FolderServerCategory updateCategoryById(CedarCategoryId categoryId, Map<NodeProperty, String> updateFields) {
     return proxies.category().updateCategoryById(categoryId, updateFields, cu.getId());
   }
 
   @Override
-  public boolean deleteCategoryById(String categoryId) {
+  public boolean deleteCategoryById(CedarCategoryId categoryId) {
     return proxies.category().deleteCategoryById(categoryId);
   }
 
@@ -56,7 +58,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public List<FolderServerCategory> getChildrenOf(String parentCategoryId, int limit, int offset) {
+  public List<FolderServerCategory> getChildrenOf(CedarCategoryId parentCategoryId, int limit, int offset) {
     return null;
   }
 
@@ -71,32 +73,32 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public Object getCategoryPermissions(String categoryId) {
+  public Object getCategoryPermissions(CedarCategoryId categoryId) {
     return null;
   }
 
   @Override
-  public Object updateCategoryPermissions(String categoryId, Object permissions) {
+  public Object updateCategoryPermissions(CedarCategoryId categoryId, Object permissions) {
     return null;
   }
 
   @Override
-  public Object getCategoryDetails(String categoryId) {
+  public Object getCategoryDetails(CedarCategoryId categoryId) {
     return null;
   }
 
   @Override
-  public boolean attachCategoryToArtifact(String categoryId, String artifactId) {
+  public boolean attachCategoryToArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId) {
     return false;
   }
 
   @Override
-  public boolean detachCategoryFromArtifact(String categoryId, String artifactId) {
+  public boolean detachCategoryFromArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId) {
     return false;
   }
 
   @Override
-  public FolderServerCategory getCategoryByNameAndParent(String name, String parentId) {
-    return proxies.category().getCategoryByNameAndParent(name, parentId);
+  public FolderServerCategory getCategoryByParentAndName(CedarCategoryId parentId, String name) {
+    return proxies.category().getCategoryByParentAndName(parentId, name);
   }
 }

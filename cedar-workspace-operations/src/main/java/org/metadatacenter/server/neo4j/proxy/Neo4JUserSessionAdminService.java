@@ -1,6 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
@@ -106,11 +108,17 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
     FolderServerCategory rootCategory = proxies.category().getRootCategory();
     if (rootCategory == null) {
       log.info("Root Category not found, trying to create it");
-      String rootURL = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
-      log.info("Root Category URL just generated:" + rootURL);
-      rootCategory = proxies.category().createCategory(rootURL, null, config.getRootCategoryName(),
-          config.getRootCategoryDescription(), userId);
-      log.info("Root Category created, returned:" + rootCategory);
+      String rootCategoryId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
+      CedarCategoryId ccRootId = null;
+      try {
+        ccRootId = CedarCategoryId.build(rootCategoryId);
+        log.info("Root Category URL just generated:" + ccRootId.getId());
+        rootCategory = proxies.category().createCategory(ccRootId, null, config.getRootCategoryName(),
+            config.getRootCategoryDescription(), config.getRootCategoryIdentifier(), userId);
+        log.info("Root Category created, returned:" + rootCategory);
+      } catch (CedarProcessingException e) {
+        log.error("Error while creating root category", e);
+      }
     } else {
       log.info("Root Category found");
     }

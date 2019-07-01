@@ -5,6 +5,7 @@ import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
@@ -40,6 +41,10 @@ public class CypherParameters {
   }
 
   public void put(CypherQueryParameter parameter, Boolean value) {
+    map.put(parameter, value);
+  }
+
+  public void put(CypherQueryParameter parameter, CedarResourceId value) {
     map.put(parameter, value);
   }
 

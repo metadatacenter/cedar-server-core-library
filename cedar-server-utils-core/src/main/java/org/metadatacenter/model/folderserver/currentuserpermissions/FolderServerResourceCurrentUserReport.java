@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
 import org.metadatacenter.server.security.model.auth.NodeWithCurrentUserPermissions;
 import org.metadatacenter.util.json.JsonMapper;
 
@@ -26,7 +26,7 @@ import java.io.IOException;
 public abstract class FolderServerResourceCurrentUserReport extends FileSystemResource
     implements NodeWithCurrentUserPermissions {
 
-  private CurrentUserPermissions currentUserPermissions = new CurrentUserPermissions();
+  private CurrentUserResourcePermissions currentUserPermissions = new CurrentUserResourcePermissions();
 
   public FolderServerResourceCurrentUserReport(CedarResourceType resourceType) {
     super(resourceType);
@@ -43,7 +43,7 @@ public abstract class FolderServerResourceCurrentUserReport extends FileSystemRe
   }
 
   @JsonProperty(NodeProperty.OnTheFly.CURRENT_USER_PERMISSIONS)
-  public CurrentUserPermissions getCurrentUserPermissions() {
+  public CurrentUserResourcePermissions getCurrentUserPermissions() {
     return currentUserPermissions;
   }
 

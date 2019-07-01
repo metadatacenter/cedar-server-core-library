@@ -51,6 +51,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
   NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
 
+  NO_WRITE_ACCESS_TO_CATEGORY("noWriteAccessToCategory"),
+
   FOLDER_NOT_FOUND("folderNotFound"),
 
   ARTIFACT_NOT_FOUND("artifactNotFound"),
@@ -116,6 +118,7 @@ public enum CedarErrorKey {
   NOTHING_TO_DO("nothingToDo"),
   PARENT_CATEGORY_NOT_FOUND("parentCategoryNotFound"),
   CATEGORY_ALREADY_PRESENT("categoryAlreadyPresent"),
+  CATEGORY_NOT_FOUND("categoryNotFound"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),

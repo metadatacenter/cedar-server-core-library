@@ -13,6 +13,7 @@ public class Neo4jConfig {
   private final String everybodyGroupDescription;
   private final String rootCategoryName;
   private final String rootCategoryDescription;
+  private final String rootCategoryIdentifier;
   private final String uri;
   private final String userName;
   private final String userPassword;
@@ -28,6 +29,7 @@ public class Neo4jConfig {
     this.everybodyGroupDescription = cedarConfig.getFolderStructureConfig().getEverybodyGroup().getDescription();
     this.rootCategoryName = cedarConfig.getFolderStructureConfig().getRootCategory().getName();
     this.rootCategoryDescription = cedarConfig.getFolderStructureConfig().getRootCategory().getDescription();
+    this.rootCategoryIdentifier = cedarConfig.getFolderStructureConfig().getRootCategory().getIdentifier();
     this.uri = cedarConfig.getNeo4jConfig().getBolt().getUri();
     this.userName = cedarConfig.getNeo4jConfig().getBolt().getUserName();
     this.userPassword = cedarConfig.getNeo4jConfig().getBolt().getUserPassword();
@@ -67,6 +69,10 @@ public class Neo4jConfig {
 
   public String getRootCategoryDescription() {
     return rootCategoryDescription;
+  }
+
+  public String getRootCategoryIdentifier() {
+    return rootCategoryIdentifier;
   }
 
   public static Neo4jConfig fromCedarConfig(CedarConfig cedarConfig) {
