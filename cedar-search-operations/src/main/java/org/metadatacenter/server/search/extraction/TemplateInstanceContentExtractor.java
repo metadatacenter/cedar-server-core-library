@@ -40,15 +40,40 @@ public class TemplateInstanceContentExtractor {
   }
 
   /**
-   * Retrieves the content of a template instance, as well as the corresponding template, and returns a list of
-   * InfoField objects, which contain relevant information for each field and its value
+   * Generates a list of InfoField objects with information for fields and (when appropriate) their values.
+   * @param folderServerNode
+   * @param requestContext
+   * @param isIndexRegenerationTask
+   * @return
+   * @throws CedarProcessingException
+   */
+  public List<InfoField> generateInfoFields(FileSystemResource folderServerNode,
+                                            CedarRequestContext requestContext, boolean isIndexRegenerationTask)
+      throws CedarProcessingException {
+
+    if (folderServerNode.getType().equals(CedarResourceType.INSTANCE)) {
+      return generateInfoFieldsFromInstance(folderServerNode, requestContext, isIndexRegenerationTask);
+    }
+    else if (folderServerNode.getType().equals(CedarResourceType.TEMPLATE) ||
+        folderServerNode.getType().equals(CedarResourceType.ELEMENT)) {
+      return generateInfoFieldsFromSchema(folderServerNode, requestContext);
+    }
+    else {
+      throw new CedarProcessingException("The artifact must be an Instance, a Template, or an Element, but it is a "
+          + folderServerNode.getType().name());
+    }
+  }
+
+  /**
+   * Generates a list of InfoField objects from a template instance. These InfoFields objects contain information
+   * about the template fields and the values entered for the template instance
    *
    * @param folderServerNode
    * @param requestContext
    * @return
    * @throws CedarProcessingException
    */
-  public List<InfoField> generateInfoFields(FileSystemResource folderServerNode,
+  private List<InfoField> generateInfoFieldsFromInstance(FileSystemResource folderServerNode,
                                             CedarRequestContext requestContext, boolean isIndexRegenerationTask)
       throws CedarProcessingException {
 
@@ -61,7 +86,7 @@ public class TemplateInstanceContentExtractor {
 
       HashMap<String, TemplateNode> nodesMap = null;
       // If it's an index regeneration task the cache will be needed to avoid retrieving and parsing the same
-      // template multiple times. If the cache contains the nodes for the current template, return them
+      // template multiple times (once per template instance). If the cache contains the template nodes, return them
       if (isIndexRegenerationTask && templateNodesCache.containsKey(templateId)) {
         nodesMap = templateNodesCache.get(templateId);
       }
@@ -110,6 +135,36 @@ public class TemplateInstanceContentExtractor {
       return infoFields;
     } else {
       throw new CedarProcessingException("The artifact must be an Instance but it is a "
+          + folderServerNode.getType().name());
+    }
+  }
+
+  /**
+   * Generates a list of InfoField objects from a template or an element.
+   *
+   * @param folderServerNode
+   * @param requestContext
+   * @return
+   */
+  private List<InfoField> generateInfoFieldsFromSchema(FileSystemResource folderServerNode,
+                                                       CedarRequestContext requestContext) throws CedarProcessingException {
+
+    if (folderServerNode.getType().equals(CedarResourceType.TEMPLATE) || folderServerNode.getType().equals(CedarResourceType.ELEMENT)) {
+
+      List<InfoField> infoFields = new ArrayList<>();
+      // Retrieve the template/element and parse it to extract its nodes
+      JsonNode schema = extractionUtils.getArtifactById(folderServerNode.getId(), folderServerNode.getType(), requestContext);
+      List<TemplateNode> schemaNodes = templateContentExtractor.getTemplateNodes(schema);
+
+      for (TemplateNode node : schemaNodes) {
+        if (node.getType().equals(CedarResourceType.FIELD)) {
+          infoFields.add(new InfoField(node.getName(), node.getPrefLabel(), node.generatePathBracketNotation(), null, null));
+        }
+      }
+      return infoFields;
+
+    } else {
+      throw new CedarProcessingException("The artifact must be a Template or an Element but it is a "
           + folderServerNode.getType().name());
     }
   }

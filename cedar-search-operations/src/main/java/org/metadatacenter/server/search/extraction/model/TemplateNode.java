@@ -89,6 +89,10 @@ public class TemplateNode {
     return String.join(".", path);
   }
 
+  public String generatePathBracketNotation() {
+    return "['" + String.join("']['", path) + "']";
+  }
+
   public boolean isTemplateFieldNode() {
     if (type.equals(CedarResourceType.FIELD)) {
       return true;
