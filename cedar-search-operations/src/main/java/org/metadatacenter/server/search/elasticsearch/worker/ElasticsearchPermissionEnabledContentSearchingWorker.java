@@ -401,6 +401,24 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     query = query.replace("\\?", "?");
     query = query.replace("?", "\\?");
 
+    /**
+     * If the field name is enclosed in double quotes, remove them to avoid a parsing error. Also, if the field name
+     * contains white spaces, they need to be encoded. Double quotes in the field value are not an issue.
+     *
+     * Example 1: "title":"A  nice study" -> title:"A nice study"
+     * Example 2: "study title":"A nice study" -> study\ title:"A nice study"
+     */
+
+    Matcher matcherQuotesLeftSide = Pattern.compile("\"(.*?)\":").matcher(query);
+    while (matcherQuotesLeftSide.find()) {
+      String matchString = query.substring(matcherQuotesLeftSide.start(), matcherQuotesLeftSide.end());
+      // Remove leading and trailing quotes and trailing colon
+      String replacement = matchString.substring(1, matchString.length() - 2);
+      // Encode white spaces. Example: "study id": -> "study\ id"
+      replacement = replacement.replaceAll("\\s+", "\\\\ ");
+      query = replacement +  query.substring(matcherQuotesLeftSide.end() - 1);
+    }
+
     return query;
   }
 
