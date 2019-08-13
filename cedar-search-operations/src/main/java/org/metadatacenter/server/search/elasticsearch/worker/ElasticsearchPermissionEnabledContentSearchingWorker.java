@@ -362,7 +362,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private String preprocessQuery(String query) throws CedarProcessingException {
     query = encodeWildcards(query);
-    query = encodeQueryStringUris(query);
+    query = encodeUrls(query);
     query = encodeDoubleQuotesInFieldName(query);
     return query;
   }
@@ -407,24 +407,25 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   /**
    * Encode URLs
    */
-  private String encodeQueryStringUris(String query) throws CedarProcessingException {
+  private String encodeUrls(String query) throws CedarProcessingException {
 
     final String URL_REGEX = "(((https?)://)" +
         "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)" +
         "([).!';/?:,][[:blank:]])?";
 
     Matcher matcher = Pattern.compile(URL_REGEX).matcher(query);
-
+    String processedQuery = query;
     while (matcher.find()) {
-      String url = query.substring(matcher.start(), matcher.end());
+      String matchString = query.substring(matcher.start(), matcher.end());
       try {
-        String encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString());
-        query = query.substring(0, matcher.start()) + encodedUrl + query.substring(matcher.end());
+        // Encode Url
+        String replacement = URLEncoder.encode(matchString, StandardCharsets.UTF_8.toString());
+        processedQuery = processedQuery.replace(matchString, replacement);
       } catch (UnsupportedEncodingException e) {
         throw new CedarProcessingException(e);
       }
     }
-    return query;
+    return processedQuery;
   }
 
   /**
@@ -434,7 +435,6 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
    * Example 2: "study title":"A nice study" -> \"study\ title\":"A nice study"
    */
   private String encodeDoubleQuotesInFieldName(String query) {
-    String processedQuery = query;
     // The following regex will find all field names between double quotes, assuming that the field name itself does
     // not contain any quotes. Example:
     //    Input query: "studyidA":"aaa aaa" "studyid B":"bbb bbb" "study id C":"ccc ccc"
@@ -442,6 +442,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     //    Match 2: "studyid B":
     //    Match 3: "study id C":
     Matcher matcherQuotesFieldName = Pattern.compile("\"([^\"]*)\":").matcher(query);
+    String processedQuery = query;
     while (matcherQuotesFieldName.find()) {
       String matchString = query.substring(matcherQuotesFieldName.start(), matcherQuotesFieldName.end());
       // Encode quotes
