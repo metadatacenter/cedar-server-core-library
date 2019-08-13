@@ -368,24 +368,13 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
   private String encodeWildcards(String query) {
+    String processedQuery = query;
 
     /**
-     * Encode the stars for the cases *:v1, f1:*, and *:*
+     * Replace stars by '_any_' for the cases *:v1, f1:*, and *:*
      */
-
-    Matcher matcherLeftSide = Pattern.compile("(^|\\s|\\()\\*:").matcher(query);
-    while (matcherLeftSide.find()) {
-      String matchString = query.substring(matcherLeftSide.start(), matcherLeftSide.end());
-      String replacement = matchString.replace("*", ANY_STRING);
-      query = query.substring(0, matcherLeftSide.start()) + replacement + query.substring(matcherLeftSide.end());
-    }
-
-    Matcher matcherRightSide = Pattern.compile("(:\\*($|\\s|\\())").matcher(query);
-    while (matcherRightSide.find()) {
-      String matchString = query.substring(matcherRightSide.start(), matcherRightSide.end());
-      String replacement = matchString.replace("*", ANY_STRING);
-      query = query.substring(0, matcherRightSide.start()) + replacement + query.substring(matcherRightSide.end());
-    }
+    processedQuery = processedQuery.replaceAll("\\*:", ANY_STRING + ":");
+    processedQuery = processedQuery.replaceAll(":\\*", ":" + ANY_STRING);
 
     /**
      * Encode stars and question marks embedded into fieldName and/or fieldValue
@@ -394,14 +383,14 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
      */
 
     /* Encode stars. Example: aaa*aaa:b\*bb as aaa\*aaa:b\*bb */
-    query = query.replace("\\*", "*");
-    query = query.replace("*", "\\*");
+    processedQuery = processedQuery.replace("\\*", "*");
+    processedQuery = processedQuery.replace("*", "\\*");
 
     /* Encode question marks. Example: aaa?aaa:b\?bb as aaa\?aaa:b\?bb */
-    query = query.replace("\\?", "?");
-    query = query.replace("?", "\\?");
+    processedQuery = processedQuery.replace("\\?", "?");
+    processedQuery = processedQuery.replace("?", "\\?");
 
-    return query;
+    return processedQuery;
   }
 
   /**
