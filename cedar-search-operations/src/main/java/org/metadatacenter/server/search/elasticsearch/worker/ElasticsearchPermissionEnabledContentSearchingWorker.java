@@ -371,6 +371,15 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     String processedQuery = query;
 
     /**
+     * Insert a star if missing for the cases t1: and :t1
+     */
+    processedQuery = processedQuery.replaceAll("^:", "*:");
+    processedQuery = processedQuery.replaceAll("\\s+:", " *:");
+    processedQuery = processedQuery.replaceAll(":$", ":*");
+    processedQuery = processedQuery.replaceAll(":\\s+", ":* ");
+
+
+    /**
      * Replace stars by '_any_' for the cases *:v1, f1:*, and *:*
      */
     processedQuery = processedQuery.replaceAll("\\*:", ANY_STRING + ":");
