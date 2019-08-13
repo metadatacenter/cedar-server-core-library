@@ -363,7 +363,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private String preprocessQuery(String query) throws CedarProcessingException {
     query = encodeWildcards(query);
     query = encodeQueryStringUris(query);
-    //query = encodeOther(query);
+    query = encodeDoubleQuotesInFieldName(query);
     return query;
   }
 
@@ -401,27 +401,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     query = query.replace("\\?", "?");
     query = query.replace("?", "\\?");
 
-    /**
-     * If the field name is enclosed in double quotes, remove them to avoid a parsing error. Also, if the field name
-     * contains white spaces, they need to be encoded. Double quotes in the field value are not an issue.
-     *
-     * Example 1: "title":"A  nice study" -> title:"A nice study"
-     * Example 2: "study title":"A nice study" -> study\ title:"A nice study"
-     */
-
-    Matcher matcherQuotesLeftSide = Pattern.compile("\"(.*?)\":").matcher(query);
-    while (matcherQuotesLeftSide.find()) {
-      String matchString = query.substring(matcherQuotesLeftSide.start(), matcherQuotesLeftSide.end());
-      // Remove leading and trailing quotes and trailing colon
-      String replacement = matchString.substring(1, matchString.length() - 2);
-      // Encode white spaces. Example: "study id": -> "study\ id"
-      replacement = replacement.replaceAll("\\s+", "\\\\ ");
-      query = replacement +  query.substring(matcherQuotesLeftSide.end() - 1);
-    }
-
     return query;
   }
 
+  /**
+   * Encode URLs
+   */
   private String encodeQueryStringUris(String query) throws CedarProcessingException {
 
     final String URL_REGEX = "(((https?)://)" +
@@ -440,6 +425,32 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       }
     }
     return query;
+  }
+
+  /**
+   * If the field name is enclosed in double quotes and (optionally) white spaces, encode them
+   *
+   * Example 1: "title":"A nice study" -> \"title\":"A nice study"
+   * Example 2: "study title":"A nice study" -> \"study\ title\":"A nice study"
+   */
+  private String encodeDoubleQuotesInFieldName(String query) {
+    String processedQuery = query;
+    // The following regex will find all field names between double quotes, assuming that the field name itself does
+    // not contain any quotes. Example:
+    //    Input query: "studyidA":"aaa aaa" "studyid B":"bbb bbb" "study id C":"ccc ccc"
+    //    Match 1: "studyidA":
+    //    Match 2: "studyid B":
+    //    Match 3: "study id C":
+    Matcher matcherQuotesFieldName = Pattern.compile("\"([^\"]*)\":").matcher(query);
+    while (matcherQuotesFieldName.find()) {
+      String matchString = query.substring(matcherQuotesFieldName.start(), matcherQuotesFieldName.end());
+      // Encode quotes
+      String replacement = matchString.replace("\"", "\\\"");
+      // Encode white spaces (if there are any). Example: \"study id\": -> \"study\ id\"
+      replacement = replacement.replaceAll("\\s+", "\\\\ ");
+      processedQuery = processedQuery.replace(matchString, replacement);
+    }
+    return processedQuery;
   }
 
 
