@@ -49,7 +49,7 @@ public class NodeIndexingService extends AbstractIndexingService {
     ir.setSummaryText(getSummaryText(node));
     // Index field names and (when appropriate) their values
     if (node.getType().equals(CedarResourceType.INSTANCE) || node.getType().equals(CedarResourceType.TEMPLATE)
-        || node.getType().equals(CedarResourceType.ELEMENT)) {
+        || node.getType().equals(CedarResourceType.ELEMENT) || node.getType().equals(CedarResourceType.FIELD)) {
       ir.setInfoFields(instanceContentExtractor.generateInfoFields(node, requestContext, isIndexRegenerationTask));
     }
     return ir;

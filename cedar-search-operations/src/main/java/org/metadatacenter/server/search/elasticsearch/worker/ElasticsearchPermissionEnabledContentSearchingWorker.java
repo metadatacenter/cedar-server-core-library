@@ -382,8 +382,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     /**
      * Replace stars by '_any_' for the cases *:v1, f1:*, and *:*
      */
-    processedQuery = processedQuery.replaceAll("\\*:", ANY_STRING + ":");
-    processedQuery = processedQuery.replaceAll(":\\*", ":" + ANY_STRING);
+    processedQuery = processedQuery.replaceAll("(^|\\s|\\()\\*:", ANY_STRING + ":");
+    processedQuery = processedQuery.replaceAll("(:\\*($|\\s|\\())", ":" + ANY_STRING);
 
     /**
      * Encode stars and question marks embedded into fieldName and/or fieldValue

@@ -55,11 +55,12 @@ public class TemplateInstanceContentExtractor {
       return generateInfoFieldsFromInstance(folderServerNode, requestContext, isIndexRegenerationTask);
     }
     else if (folderServerNode.getType().equals(CedarResourceType.TEMPLATE) ||
-        folderServerNode.getType().equals(CedarResourceType.ELEMENT)) {
+        folderServerNode.getType().equals(CedarResourceType.ELEMENT) ||
+        folderServerNode.getType().equals(CedarResourceType.FIELD)) {
       return generateInfoFieldsFromSchema(folderServerNode, requestContext);
     }
     else {
-      throw new CedarProcessingException("The artifact must be an Instance, a Template, or an Element, but it is a "
+      throw new CedarProcessingException("The artifact must be an Instance, a Template, an Element, or a Field, but it is a "
           + folderServerNode.getType().name());
     }
   }
@@ -93,7 +94,7 @@ public class TemplateInstanceContentExtractor {
       // Otherwise, retrieve the template and parse it
       else {
         JsonNode template = extractionUtils.getArtifactById(templateId, CedarResourceType.TEMPLATE, requestContext);
-        List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template);
+        List<TemplateNode> templateNodes = templateContentExtractor.getTemplateNodes(template, CedarResourceType.TEMPLATE);
         nodesMap = new HashMap<>();
         for (TemplateNode node : templateNodes) {
           nodesMap.put(node.generatePathDotNotation(), node);
@@ -149,12 +150,14 @@ public class TemplateInstanceContentExtractor {
   private List<InfoField> generateInfoFieldsFromSchema(FileSystemResource folderServerNode,
                                                        CedarRequestContext requestContext) throws CedarProcessingException {
 
-    if (folderServerNode.getType().equals(CedarResourceType.TEMPLATE) || folderServerNode.getType().equals(CedarResourceType.ELEMENT)) {
+    if (folderServerNode.getType().equals(CedarResourceType.TEMPLATE) ||
+        folderServerNode.getType().equals(CedarResourceType.ELEMENT) ||
+        folderServerNode.getType().equals(CedarResourceType.FIELD)) {
 
       List<InfoField> infoFields = new ArrayList<>();
-      // Retrieve the template/element and parse it to extract its nodes
+      // Retrieve the template/element/field and parse it to extract its nodes
       JsonNode schema = extractionUtils.getArtifactById(folderServerNode.getId(), folderServerNode.getType(), requestContext);
-      List<TemplateNode> schemaNodes = templateContentExtractor.getTemplateNodes(schema);
+      List<TemplateNode> schemaNodes = templateContentExtractor.getTemplateNodes(schema, folderServerNode.getType());
 
       for (TemplateNode node : schemaNodes) {
         if (node.getType().equals(CedarResourceType.FIELD)) {
@@ -164,7 +167,7 @@ public class TemplateInstanceContentExtractor {
       return infoFields;
 
     } else {
-      throw new CedarProcessingException("The artifact must be a Template or an Element but it is a "
+      throw new CedarProcessingException("The artifact must be a Template, an Element, or a Field, but it is a "
           + folderServerNode.getType().name());
     }
   }
