@@ -180,10 +180,14 @@ public class ModelNodeNames
   public static final String VALUE_CONSTRAINTS_MULTIPLE_CHOICE = "multipleChoice";
   public static final String VALUE_CONSTRAINTS_DEFAULT_VALUE = "defaultValue";
   public static final String VALUE_CONSTRAINTS_URI = "uri";
+  public static final String VALUE_CONSTRAINTS_LABEL = "label";
+  public static final String VALUE_CONSTRAINTS_PREFLABEL = "prefLabel";
+  public static final String VALUE_CONSTRAINTS_TYPE = "type";
+  public static final String VALUE_CONSTRAINTS_NAME = "name";
+  public static final String VALUE_CONSTRAINTS_SOURCE = "source";
   public static final String VALUE_CONSTRAINTS_NUM_TERMS = "numTerms";
   public static final String VALUE_CONSTRAINTS_MAX_DEPTH = "maxDepth";
   public static final String VALUE_CONSTRAINTS_VS_COLLECTION = "vsCollection";
-  public static final String VALUE_CONSTRAINTS_SOURCE = "source";
   public static final String VALUE_CONSTRAINTS_EXCLUSIONS = "exclusions";
   public static final String VALUE_CONSTRAINTS_REQUIRED_VALUE = "requiredValue";
   public static final String VALUE_CONSTRAINTS_SELECTED_BY_DEFAULT = "selectedByDefault";
