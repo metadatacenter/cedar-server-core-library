@@ -4,6 +4,8 @@ import org.metadatacenter.exception.CedarProcessingException;
 
 public class CedarCategoryId extends CedarResourceId {
 
+  public final static String CATEGORY_ID_ROOT = "root";
+
   private CedarCategoryId() {
   }
 

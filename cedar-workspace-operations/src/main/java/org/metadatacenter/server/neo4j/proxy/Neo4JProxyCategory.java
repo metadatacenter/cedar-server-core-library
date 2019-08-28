@@ -89,5 +89,4 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerUser.class);
   }
-
 }

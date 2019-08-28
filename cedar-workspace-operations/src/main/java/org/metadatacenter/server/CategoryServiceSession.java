@@ -1,7 +1,7 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
-import org.metadatacenter.model.folderserver.recursive.FolderServerCategoryWithChildren;
+import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtractWithChildren;
 import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -31,7 +31,7 @@ public interface CategoryServiceSession {
 
   List<FolderServerCategory> getChildrenOf(CedarCategoryId parentCategoryId, int limit, int offset);
 
-  FolderServerCategoryWithChildren getCategoryTree();
+  FolderServerCategoryExtractWithChildren getCategoryTree();
 
   Object getCategoryPermissions(CedarCategoryId categoryId);
 

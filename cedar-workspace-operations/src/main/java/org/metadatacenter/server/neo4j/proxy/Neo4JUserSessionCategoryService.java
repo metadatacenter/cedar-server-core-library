@@ -1,16 +1,17 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
-import org.metadatacenter.model.folderserver.recursive.FolderServerCategoryWithChildren;
 import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtractWithChildren;
 import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,8 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public FolderServerCategory createCategory(CedarCategoryId parentId, String name, String description, String identifier) {
+  public FolderServerCategory createCategory(CedarCategoryId parentId, String name, String description,
+                                             String identifier) {
     CedarCategoryId categoryId = linkedDataUtil.buildNewLinkedDataCategoryId();
     return proxies.category().createCategory(parentId, categoryId, name, description, identifier, cu.getId());
   }
@@ -54,7 +56,7 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   @Override
   public FolderServerCategory getRootCategory() {
-    return null;
+    return proxies.category().getRootCategory();
   }
 
   @Override
@@ -68,8 +70,42 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public FolderServerCategoryWithChildren getCategoryTree() {
-    return null;
+  public FolderServerCategoryExtractWithChildren getCategoryTree() {
+    List<FolderServerCategory> allCategories = getAllCategories(10000, 0);
+    FolderServerCategory rootCategory = getRootCategory();
+
+    //Map<String, FolderServerCategoryExtractWithChildren> categoryMap = new HashMap<>();
+    Map<String, List<FolderServerCategoryExtractWithChildren>> categoryChildMap = new HashMap<>();
+    for (FolderServerCategory category : allCategories) {
+      FolderServerCategoryExtractWithChildren extract = FolderServerCategoryExtractWithChildren.fromCategory(category);
+      //categoryMap.put(extract.getId(), extract);
+
+      String parentId = extract.getParentCategoryId();
+      if (categoryChildMap.get(parentId) == null) {
+        categoryChildMap.put(parentId, new ArrayList<>());
+      }
+      categoryChildMap.get(parentId).add(extract);
+    }
+
+    FolderServerCategoryExtractWithChildren rootExtract =
+        FolderServerCategoryExtractWithChildren.fromCategory(rootCategory);
+
+    injectChildrenRecursively(rootExtract, categoryChildMap);
+
+    return rootExtract;
+  }
+
+  private void injectChildrenRecursively(FolderServerCategoryExtractWithChildren extract, Map<String,
+      List<FolderServerCategoryExtractWithChildren>> categoryChildMap) {
+    String id = extract.getId();
+    List<FolderServerCategoryExtractWithChildren> children = categoryChildMap.get(id);
+    if (children != null) {
+      List<FolderServerCategoryExtractWithChildren> extractChildren = extract.getChildren();
+      extractChildren.addAll(children);
+      for (FolderServerCategoryExtractWithChildren extractChild : extractChildren) {
+        injectChildrenRecursively(extractChild, categoryChildMap);
+      }
+    }
   }
 
   @Override

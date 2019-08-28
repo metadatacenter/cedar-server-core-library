@@ -86,7 +86,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String getCategoryOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId} })" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>} })" +
         " MATCH (user)-[:<REL.OWNSCATEGORY>]->(category)" +
         " RETURN user";
   }
