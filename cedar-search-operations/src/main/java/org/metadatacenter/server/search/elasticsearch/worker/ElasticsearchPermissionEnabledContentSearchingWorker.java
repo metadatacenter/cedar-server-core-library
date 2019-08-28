@@ -362,30 +362,30 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   private String preprocessQuery(String query) throws CedarProcessingException {
     query = encodeWildcards(query);
-    query = encodeQueryStringUris(query);
-    //query = encodeOther(query);
+    query = encodeUrls(query);
+    query = encodeDoubleQuotesInFieldName(query);
     return query;
   }
 
   private String encodeWildcards(String query) {
+    String processedQuery = query;
 
     /**
-     * Encode the stars for the cases *:v1, f1:*, and *:*
+     * Insert a star if missing for the cases t1: and :t1
      */
+    processedQuery = processedQuery.replaceAll("^:", "*:");
+    processedQuery = processedQuery.replaceAll("\\s+:", " *:");
+    processedQuery = processedQuery.replaceAll(":$", ":*");
+    processedQuery = processedQuery.replaceAll(":\\s+", ":* ");
 
-    Matcher matcherLeftSide = Pattern.compile("(^|\\s|\\()\\*:").matcher(query);
-    while (matcherLeftSide.find()) {
-      String matchString = query.substring(matcherLeftSide.start(), matcherLeftSide.end());
-      String replacement = matchString.replace("*", ANY_STRING);
-      query = query.substring(0, matcherLeftSide.start()) + replacement + query.substring(matcherLeftSide.end());
-    }
 
-    Matcher matcherRightSide = Pattern.compile("(:\\*($|\\s|\\())").matcher(query);
-    while (matcherRightSide.find()) {
-      String matchString = query.substring(matcherRightSide.start(), matcherRightSide.end());
-      String replacement = matchString.replace("*", ANY_STRING);
-      query = query.substring(0, matcherRightSide.start()) + replacement + query.substring(matcherRightSide.end());
-    }
+    /**
+     * Replace stars by '_any_' for the cases *:v1, f1:*, and *:*
+     */
+    processedQuery = processedQuery.replaceAll("(^|\\()\\*:", ANY_STRING + ":");
+    processedQuery = processedQuery.replaceAll("\\s\\*:", ANY_STRING + " :");
+    processedQuery = processedQuery.replaceAll(":\\*($|\\()", ":" + ANY_STRING);
+    processedQuery = processedQuery.replaceAll(":\\*\\s", ":" + ANY_STRING + " ");
 
     /**
      * Encode stars and question marks embedded into fieldName and/or fieldValue
@@ -394,34 +394,64 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
      */
 
     /* Encode stars. Example: aaa*aaa:b\*bb as aaa\*aaa:b\*bb */
-    query = query.replace("\\*", "*");
-    query = query.replace("*", "\\*");
+    processedQuery = processedQuery.replace("\\*", "*");
+    processedQuery = processedQuery.replace("*", "\\*");
 
     /* Encode question marks. Example: aaa?aaa:b\?bb as aaa\?aaa:b\?bb */
-    query = query.replace("\\?", "?");
-    query = query.replace("?", "\\?");
+    processedQuery = processedQuery.replace("\\?", "?");
+    processedQuery = processedQuery.replace("?", "\\?");
 
-    return query;
+    return processedQuery;
   }
 
-  private String encodeQueryStringUris(String query) throws CedarProcessingException {
+  /**
+   * Encode URLs
+   */
+  private String encodeUrls(String query) throws CedarProcessingException {
 
     final String URL_REGEX = "(((https?)://)" +
         "(%[0-9A-Fa-f]{2}|[-()_.!~*';/?:@&=+$,A-Za-z0-9])+)" +
         "([).!';/?:,][[:blank:]])?";
 
     Matcher matcher = Pattern.compile(URL_REGEX).matcher(query);
-
+    String processedQuery = query;
     while (matcher.find()) {
-      String url = query.substring(matcher.start(), matcher.end());
+      String matchString = query.substring(matcher.start(), matcher.end());
       try {
-        String encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString());
-        query = query.substring(0, matcher.start()) + encodedUrl + query.substring(matcher.end());
+        // Encode Url
+        String replacement = URLEncoder.encode(matchString, StandardCharsets.UTF_8.toString());
+        processedQuery = processedQuery.replace(matchString, replacement);
       } catch (UnsupportedEncodingException e) {
         throw new CedarProcessingException(e);
       }
     }
-    return query;
+    return processedQuery;
+  }
+
+  /**
+   * If the field name is enclosed in double quotes and (optionally) white spaces, encode them
+   *
+   * Example 1: "title":"A nice study" -> \"title\":"A nice study"
+   * Example 2: "study title":"A nice study" -> \"study\ title\":"A nice study"
+   */
+  private String encodeDoubleQuotesInFieldName(String query) {
+    // The following regex will find all field names between double quotes, assuming that the field name itself does
+    // not contain any quotes. Example:
+    //    Input query: "studyidA":"aaa aaa" "studyid B":"bbb bbb" "study id C":"ccc ccc"
+    //    Match 1: "studyidA":
+    //    Match 2: "studyid B":
+    //    Match 3: "study id C":
+    Matcher matcherQuotesFieldName = Pattern.compile("\"([^\"]*)\":").matcher(query);
+    String processedQuery = query;
+    while (matcherQuotesFieldName.find()) {
+      String matchString = query.substring(matcherQuotesFieldName.start(), matcherQuotesFieldName.end());
+      // Encode quotes
+      String replacement = matchString.replace("\"", "\\\"");
+      // Encode white spaces (if there are any). Example: \"study id\": -> \"study\ id\"
+      replacement = replacement.replaceAll("\\s+", "\\\\ ");
+      processedQuery = processedQuery.replace(matchString, replacement);
+    }
+    return processedQuery;
   }
 
 

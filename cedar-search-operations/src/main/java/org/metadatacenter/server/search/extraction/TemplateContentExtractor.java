@@ -1,6 +1,7 @@
 package org.metadatacenter.server.search.extraction;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.search.extraction.model.TemplateNode;
@@ -12,25 +13,42 @@ import java.util.*;
 import static org.metadatacenter.model.ModelNodeNames.*;
 
 /**
- * Utilities to extract information from CEDAR Templates
+ * Utilities to extract information from CEDAR Templates/Elements
  */
 public class TemplateContentExtractor {
 
   private static final Logger log = LoggerFactory.getLogger(TemplateContentExtractor.class);
 
-  public List<TemplateNode> getTemplateNodes(JsonNode template) throws CedarProcessingException {
-    return getTemplateNodes(template, null, null);
+  /**
+   *
+   * @param node
+   * @param resourceType
+   * @return
+   * @throws CedarProcessingException
+   */
+  public List<TemplateNode> getTemplateNodes(JsonNode node, CedarResourceType resourceType) throws CedarProcessingException {
+    // If it's a field, we nest it in a JsonNode to make the getSchemaNodes method work
+    if (resourceType.equals(CedarResourceType.FIELD)) {
+      node = new ObjectMapper().createObjectNode().set("field", node);
+    }
+    return getTemplateNodes(node, null, null);
+  }
+
+  // If the resource type is not specified, it assumes that it will be a Template/Element. There is no need to nest
+  // the JsonNode inside another node
+  public List<TemplateNode> getTemplateNodes(JsonNode schema) throws CedarProcessingException {
+    return getTemplateNodes(schema, null, null);
   }
 
   /**
    * Returns summary information of all template nodes in the template.
    *
-   * @param template Template in JSON
+   * @param node Template/Element/Field in JSON
    * @param currentPath Used internally to store the current node path
    * @param results     Used internally to store the results
    * @return A list of the template elements and fields in the template, represented using the TemplateNode class
    */
-  private List<TemplateNode> getTemplateNodes(JsonNode template, List<String> currentPath, List results) throws
+  private List<TemplateNode> getTemplateNodes(JsonNode node, List<String> currentPath, List results) throws
       CedarProcessingException {
     if (currentPath == null) {
       currentPath = new ArrayList<>();
@@ -38,7 +56,7 @@ public class TemplateContentExtractor {
     if (results == null) {
       results = new ArrayList();
     }
-    Iterator<Map.Entry<String, JsonNode>> jsonFieldsIterator = template.fields();
+    Iterator<Map.Entry<String, JsonNode>> jsonFieldsIterator = node.fields();
     while (jsonFieldsIterator.hasNext()) {
       Map.Entry<String, JsonNode> jsonField = jsonFieldsIterator.next();
       final String jsonFieldKey = jsonField.getKey();

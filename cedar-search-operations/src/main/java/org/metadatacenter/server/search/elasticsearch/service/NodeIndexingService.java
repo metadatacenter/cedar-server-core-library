@@ -47,13 +47,13 @@ public class NodeIndexingService extends AbstractIndexingService {
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
     ir.setSummaryText(getSummaryText(node));
-    // In the case of template instances, index their field names and values
-    if (node.getType().equals(CedarResourceType.INSTANCE)) {
+    // Index field names and (when appropriate) their values
+    if (node.getType().equals(CedarResourceType.INSTANCE) || node.getType().equals(CedarResourceType.TEMPLATE)
+        || node.getType().equals(CedarResourceType.ELEMENT) || node.getType().equals(CedarResourceType.FIELD)) {
       ir.setInfoFields(instanceContentExtractor.generateInfoFields(node, requestContext, isIndexRegenerationTask));
     }
     return ir;
   }
-
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
                                          CedarRequestContext requestContext) throws CedarProcessingException {
