@@ -8,12 +8,14 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.rest.context.CedarRequestContextFactory;
+import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
 import org.metadatacenter.server.search.util.IndexUtils;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.service.UserService;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ public class SearchPermissionExecutorService {
 
   private final FolderServiceSession folderSession;
   private final PermissionServiceSession permissionSession;
+  private final CategoryServiceSession categorySession;
   private final NodeSearchingService nodeSearchingService;
   private final NodeIndexingService nodeIndexingService;
   private final IndexUtils indexUtils;
@@ -45,6 +48,7 @@ public class SearchPermissionExecutorService {
 
     folderSession = CedarDataServices.getFolderServiceSession(cedarRequestContext);
     permissionSession = CedarDataServices.getPermissionServiceSession(cedarRequestContext);
+    categorySession = CedarDataServices.getCategoryServiceSession(cedarRequestContext);
   }
 
   // Main entry point
@@ -122,10 +126,11 @@ public class SearchPermissionExecutorService {
     try {
       FileSystemResource node = folderSession.findResourceById(id);
       CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id);
+      CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(id);
       if (upsert == Upsert.UPDATE) {
         nodeIndexingService.removeDocumentFromIndex(id);
       }
-      nodeIndexingService.indexDocument(node, perm, cedarRequestContext);
+      nodeIndexingService.indexDocument(node, perm, categories, cedarRequestContext);
     } catch (Exception e) {
       log.error("Error while upserting permissions", e);
     }

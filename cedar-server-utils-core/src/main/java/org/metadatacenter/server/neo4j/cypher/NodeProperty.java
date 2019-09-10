@@ -39,6 +39,8 @@ public enum NodeProperty implements CypherQueryParameter {
   ROLES(Label.ROLES),
   PERMISSIONS(Label.PERMISSIONS),
   PARENT_CATEGORY_ID(Label.PARENT_CATEGORY_ID),
+  CATEGORY_ID(Label.CATEGORY_ID),
+  ARTIFACT_ID(Label.ARTIFACT_ID),
   UI_PREFERENCES(Label.UI_PREFERENCES);
 
   public static class Label {
@@ -79,6 +81,8 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String ROLES = "roles";
     public static final String PERMISSIONS = "permissions";
     public static final String PARENT_CATEGORY_ID = "parentCategoryId";
+    public static final String CATEGORY_ID = "categoryId";
+    public static final String ARTIFACT_ID = "artifactId";
     public static final String UI_PREFERENCES = "uiPreferences";
   }
 

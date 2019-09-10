@@ -90,4 +90,28 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " MATCH (user)-[:<REL.OWNSCATEGORY>]->(category)" +
         " RETURN user";
   }
+
+  public static String attachCategoryToArtifact() {
+    return "" +
+    " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ARTIFACT_ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.CATEGORY_ID>} })" +
+        " MERGE (category)-[:<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " RETURN category";
+  }
+
+  public static String detachCategoryFromArtifact() {
+    return "" +
+        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ARTIFACT_ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.CATEGORY_ID>} })" +
+        " MATCH (category)-[relation:<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " DELETE (relation)" +
+        " RETURN category";
+  }
+
+  public static String getCategoryPathsByArtifactId() {
+    return "" +
+        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " RETURN category";
+  }
 }

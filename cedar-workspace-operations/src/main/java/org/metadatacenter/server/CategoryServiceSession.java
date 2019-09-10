@@ -1,10 +1,10 @@
 package org.metadatacenter.server;
 
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtractWithChildren;
-import org.metadatacenter.id.CedarArtifactId;
-import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 
 import java.util.List;
 import java.util.Map;
@@ -39,8 +39,9 @@ public interface CategoryServiceSession {
 
   Object getCategoryDetails(CedarCategoryId categoryId);
 
-  boolean attachCategoryToArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId);
+  boolean attachCategoryToArtifact(CedarCategoryId categoryId, String artifactId);
 
-  boolean detachCategoryFromArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId);
+  boolean detachCategoryFromArtifact(CedarCategoryId categoryId, String artifactId);
 
+  CedarNodeMaterializedCategories getNodeMaterializedCategories(String id);
 }

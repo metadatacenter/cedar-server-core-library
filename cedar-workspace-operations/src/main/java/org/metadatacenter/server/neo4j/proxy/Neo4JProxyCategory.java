@@ -89,4 +89,27 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerUser.class);
   }
+
+  public boolean attachCategoryToArtifact(CedarCategoryId categoryId, String artifactId) {
+    String cypher = CypherQueryBuilderCategory.attachCategoryToArtifact();
+    CypherParameters params = CypherParamBuilderGroup.categoryIdAndArtifactId(categoryId, artifactId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    FolderServerCategory category = executeWriteGetOne(q, FolderServerCategory.class);
+    return category != null;
+  }
+
+  public boolean detachCategoryFromArtifact(CedarCategoryId categoryId, String artifactId) {
+    String cypher = CypherQueryBuilderCategory.detachCategoryFromArtifact();
+    CypherParameters params = CypherParamBuilderGroup.categoryIdAndArtifactId(categoryId, artifactId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    FolderServerCategory category = executeWriteGetOne(q, FolderServerCategory.class);
+    return category != null;
+  }
+
+  public List<FolderServerCategory> getCategoryPaths(String artifactId) {
+    String cypher = CypherQueryBuilderCategory.getCategoryPathsByArtifactId();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(artifactId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerCategory.class);
+  }
 }

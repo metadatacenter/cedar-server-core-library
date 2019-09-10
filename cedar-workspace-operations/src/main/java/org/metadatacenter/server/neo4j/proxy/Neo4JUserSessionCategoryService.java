@@ -1,13 +1,18 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtractWithChildren;
 import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
+import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.util.ArrayList;
@@ -124,17 +129,37 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
-  public boolean attachCategoryToArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId) {
-    return false;
+  public boolean attachCategoryToArtifact(CedarCategoryId categoryId, String artifactId) {
+    return proxies.category().attachCategoryToArtifact(categoryId, artifactId);
   }
 
   @Override
-  public boolean detachCategoryFromArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId) {
-    return false;
+  public boolean detachCategoryFromArtifact(CedarCategoryId categoryId, String artifactId) {
+    return proxies.category().detachCategoryFromArtifact(categoryId, artifactId);
   }
 
   @Override
   public FolderServerCategory getCategoryByParentAndName(CedarCategoryId parentId, String name) {
     return proxies.category().getCategoryByParentAndName(parentId, name);
   }
+
+  @Override
+  public CedarNodeMaterializedCategories getNodeMaterializedCategories(String artifactId) {
+    FileSystemResource artifact = proxies.resource().findNodeById(artifactId);
+    if (artifact != null) {
+      List<FolderServerCategory> attachedCategories = getCategoryPaths(artifactId);
+      CedarNodeMaterializedCategories categories = new CedarNodeMaterializedCategories(artifactId);
+      for(FolderServerCategory category: attachedCategories) {
+        categories.addCategory(category.getId());
+      }
+      return categories;
+    } else {
+      return null;
+    }
+  }
+
+  private List<FolderServerCategory> getCategoryPaths(String artifactId) {
+    return proxies.category().getCategoryPaths(artifactId);
+  }
+
 }

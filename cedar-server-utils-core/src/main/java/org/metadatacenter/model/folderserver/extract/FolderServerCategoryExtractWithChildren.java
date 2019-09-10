@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.datagroup.NameDescriptionIdentifierGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 import java.util.ArrayList;
@@ -14,13 +15,13 @@ public class FolderServerCategoryExtractWithChildren {
 
   protected String id;
   protected CedarResourceType resourceType;
-  private String name;
-  private String description;
+  protected NameDescriptionIdentifierGroup nameDescriptionIdentifierGroup;
   protected String parentCategoryId;
   protected List<FolderServerCategoryExtractWithChildren> children;
 
   public FolderServerCategoryExtractWithChildren() {
-    children = new ArrayList<>();
+    this.nameDescriptionIdentifierGroup = new NameDescriptionIdentifierGroup();
+    this.children = new ArrayList<>();
   }
 
   public static FolderServerCategoryExtractWithChildren fromCategory(FolderServerCategory category) {
@@ -29,14 +30,10 @@ public class FolderServerCategoryExtractWithChildren {
     c.setType(category.getType());
     c.setName(category.getName());
     c.setDescription(category.getDescription());
+    c.setIdentifier(category.getIdentifier());
     c.setParentCategoryId(category.getParentCategoryId());
     return c;
   }
-
-  /*@JsonProperty(NodeProperty.OnTheFly.CONTEXT)
-  public Map<String, String> getContext() {
-    return FolderServerNodeContext.getContext();
-  }*/
 
   public String getParentCategoryId() {
     return parentCategoryId;
@@ -68,22 +65,32 @@ public class FolderServerCategoryExtractWithChildren {
 
   @JsonProperty(NodeProperty.Label.NAME)
   public String getName() {
-    return name;
+    return this.nameDescriptionIdentifierGroup.getName();
   }
 
   @JsonProperty(NodeProperty.Label.NAME)
   public void setName(String name) {
-    this.name = name;
+    this.nameDescriptionIdentifierGroup.setName(name);
   }
 
   @JsonProperty(NodeProperty.Label.DESCRIPTION)
   public String getDescription() {
-    return description;
+    return this.nameDescriptionIdentifierGroup.getDescription();
   }
 
   @JsonProperty(NodeProperty.Label.DESCRIPTION)
   public void setDescription(String description) {
-    this.description = description;
+    this.nameDescriptionIdentifierGroup.setDescription(description);
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public String getIdentifier() {
+    return this.nameDescriptionIdentifierGroup.getIdentifier();
+  }
+
+  @JsonProperty(NodeProperty.Label.IDENTIFIER)
+  public void setIdentifier(String identifier) {
+    this.nameDescriptionIdentifierGroup.setIdentifier(identifier);
   }
 
   public List<FolderServerCategoryExtractWithChildren> getChildren() {

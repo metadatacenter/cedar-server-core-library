@@ -16,7 +16,8 @@ public enum RelationLabel {
   CONTAINSCATEGORY(PlainLabels.CONTAINSCATEGORY, null),
   CANATTACHCATEGORY(PlainLabels.CANATTACHCATEGORY, NodePermission.WRITE),
   CANWRITECATEGORY(PlainLabels.CANWRITECATEGORY, NodePermission.WRITE),
-  OWNSCATEGORY(PlainLabels.OWNSCATEGORY, null);
+  OWNSCATEGORY(PlainLabels.OWNSCATEGORY, null),
+  CONTAINSARTIFACT(PlainLabels.CONTAINSARTIFACT, null);
 
   public static class PlainLabels {
     public static final String OWNS = "OWNS";
@@ -32,6 +33,7 @@ public enum RelationLabel {
     public static final String CONTAINSCATEGORY = "CONTAINSCATEGORY";
     public static final String CANWRITECATEGORY = "CANWRITECATEGORY";
     public static final String OWNSCATEGORY = "OWNSCATEGORY";
+    public static final String CONTAINSARTIFACT = "CONTAINSARTIFACT";
   }
 
   private final String value;

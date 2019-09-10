@@ -120,6 +120,8 @@ public enum CedarErrorKey {
   CATEGORY_ALREADY_PRESENT("categoryAlreadyPresent"),
   CATEGORY_NOT_FOUND("categoryNotFound"),
   ROOT_CATEGORY_CAN_NOT_BE_DELETED("rootCategoryCanNotBeDeleted"),
+  UNABLE_TO_ATTACH_CATEGORY("unableToAttachCategory"),
+  UNABLE_TO_DETACH_CATEGORY("unableToDetachCategory"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),
