@@ -18,6 +18,7 @@ public class NodeListRequest {
   private List<String> sort;
   private String q;
   private String id;
+  private String categoryId;
   @JsonProperty("is_based_on")
   private String isBasedOn;
 
@@ -91,5 +92,13 @@ public class NodeListRequest {
 
   public void setIsBasedOn(String isBasedOn) {
     this.isBasedOn = isBasedOn;
+  }
+
+  public String getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(String categoryId) {
+    this.categoryId = categoryId;
   }
 }

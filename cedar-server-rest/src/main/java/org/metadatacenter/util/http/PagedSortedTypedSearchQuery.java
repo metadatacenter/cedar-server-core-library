@@ -15,8 +15,10 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
   private Optional<String> qInput;
   private Optional<String> isBasedOnInput;
   private Optional<String> idInput;
+  private Optional<String> categoryIdInput;
   private String q;
   private String isBasedOn;
+  private String categoryId;
   private String id;
 
   public PagedSortedTypedSearchQuery(PaginationConfig config) {
@@ -35,6 +37,11 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   public PagedSortedTypedSearchQuery id(Optional<String> idInput) {
     this.idInput = idInput;
+    return this;
+  }
+
+  public PagedSortedTypedSearchQuery categoryId(Optional<String> categoryIdInput) {
+    this.categoryIdInput = categoryIdInput;
     return this;
   }
 
@@ -79,11 +86,16 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     super.validate();
     validateQ();
     validateId();
+    validateCategoryId();
     validateResourceTypesWithTemplateId();
   }
 
   public String getIsBasedOn() {
     return isBasedOn;
+  }
+
+  public String getCategoryId() {
+    return categoryId;
   }
 
   public String getQ() {
@@ -164,5 +176,18 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     }
   }
 
+  public void validateCategoryId() throws CedarException {
+    if (categoryIdInput.isPresent()) {
+      if (categoryIdInput.get() == null || categoryIdInput.get().trim().isEmpty()) {
+        throw new CedarAssertionException("You must pass in a valid 'categoryId'!")
+            .badRequest()
+            .parameter("categoryId", idInput.get());
+      } else {
+        categoryId = categoryIdInput.get();
+      }
+    } else {
+      categoryId = null;
+    }
+  }
 
 }

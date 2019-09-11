@@ -11,6 +11,7 @@ public enum NodeListQueryType {
   SEARCH_TERM("search-term"),
   SEARCH_IS_BASED_ON("search-is-based-on"),
   SEARCH_ID("search-id"),
+  SEARCH_CATEGORY_ID("search-category_id"),
   FOLDER_CONTENT("folder-content"),
   ALL_NODES("all-nodes"),
   ALL_VERSIONS("all-versions"),

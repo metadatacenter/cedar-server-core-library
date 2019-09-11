@@ -51,10 +51,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                         publicationStatus, List<String> sortList, int limit, int offset) throws CedarProcessingException {
+                                         publicationStatus, String categoryId, List<String> sortList, int limit,
+                                     int offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList);
+        publicationStatus, categoryId, sortList);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -77,10 +78,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
   public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
                                          ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                             publicationStatus, List<String> sortList, int limit, int offset) throws CedarProcessingException {
+                                             publicationStatus, String categoryId, List<String> sortList, int limit,
+                                         int offset) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, sortList);
+        publicationStatus, categoryId, sortList);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -112,7 +114,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query,
                                                        List<String> resourceTypes, ResourceVersionFilter version,
                                                        ResourcePublicationStatusFilter publicationStatus,
-                                                       List<String> sortList) throws CedarProcessingException {
+                                                       String categoryId, List<String> sortList) throws CedarProcessingException {
 
     SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
         .setTypes(IndexedDocumentType.DOC.getValue());
@@ -139,7 +141,8 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       // Sample query: 'disease:cancer AND Template3'
       else {
         // Parse the query using the query parser and rewrite it to query the right index fields. The whitespace
-        // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase terms.
+        // analyzer divides text into terms whenever it encounters any whitespace character. It does not lowercase
+        // terms.
         QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
         try {
           Query queryParsed = parser.parse(query);
@@ -212,6 +215,12 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
       publicationStatusQuery.should(inner1Query);
       publicationStatusQuery.should(inner2Query);
       mainQuery.must(publicationStatusQuery);
+    }
+
+    // Filter by category id
+    if (categoryId != null && categoryId.length() > 0) {
+      QueryBuilder categoryIdQuery = QueryBuilders.termsQuery(CATEGORIES, categoryId);
+      mainQuery.must(categoryIdQuery);
     }
 
     // Set main query
@@ -430,7 +439,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
   /**
    * If the field name is enclosed in double quotes and (optionally) white spaces, encode them
-   *
+   * <p>
    * Example 1: "title":"A nice study" -> \"title\":"A nice study"
    * Example 2: "study title":"A nice study" -> \"study\ title\":"A nice study"
    */

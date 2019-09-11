@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class NodeListQueryTypeDetector {
   public static NodeListQueryType detect(Optional<String> q, Optional<String> id, Optional<String> isBasedOn,
-                                         Optional<String> sharing) {
+                                         Optional<String> sharing, Optional<String> categoryId) {
 
     if (id != null && id.isPresent() && !id.get().isEmpty()) {
       return NodeListQueryType.SEARCH_ID;
@@ -12,7 +12,8 @@ public class NodeListQueryTypeDetector {
 
     if ((q == null || !q.isPresent() || q.get().isEmpty() || "*".equals(q.get())) &&
         (isBasedOn == null || !isBasedOn.isPresent() || isBasedOn.get().isEmpty()) &&
-        (sharing == null || !sharing.isPresent() || sharing.get().isEmpty())) {
+        (sharing == null || !sharing.isPresent() || sharing.get().isEmpty()) &&
+        (categoryId == null || !categoryId.isPresent() || categoryId.get().isEmpty())) {
       return NodeListQueryType.VIEW_ALL;
     }
 
@@ -31,6 +32,11 @@ public class NodeListQueryTypeDetector {
         return NodeListQueryType.VIEW_SHARED_WITH_EVERYBODY;
       }
     }
+
+    if (categoryId != null && categoryId.isPresent() && !categoryId.get().isEmpty()) {
+      return NodeListQueryType.SEARCH_CATEGORY_ID;
+    }
+
     return NodeListQueryType.UNKNOWN;
   }
 }
