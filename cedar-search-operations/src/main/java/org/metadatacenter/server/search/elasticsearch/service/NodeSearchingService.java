@@ -5,10 +5,13 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.request.NodeListRequest;
@@ -16,6 +19,7 @@ import org.metadatacenter.model.response.FolderServerNodeListResponse;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.search.IndexedDocumentType;
+import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
@@ -93,7 +97,8 @@ public class NodeSearchingService extends AbstractSearchingService {
     try {
       SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version,
           publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList,
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
+          sortList,
           limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
@@ -109,14 +114,16 @@ public class NodeSearchingService extends AbstractSearchingService {
     try {
       SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version,
           publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList,
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
+          sortList,
           limit, offset, absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
-  private FolderServerNodeListResponse assembleResponse(SearchResponseResult searchResult, String query, String id,
+  private FolderServerNodeListResponse assembleResponse(CedarRequestContext rctx, SearchResponseResult searchResult,
+                                                        String query, String id,
                                                         List<String> resourceTypes, ResourceVersionFilter version,
                                                         ResourcePublicationStatusFilter publicationStatus,
                                                         String categoryId, List<String> sortList, int limit, int offset,
@@ -158,6 +165,16 @@ public class NodeSearchingService extends AbstractSearchingService {
     req.setVersion(version);
     req.setPublicationStatus(publicationStatus);
     req.setCategoryId(categoryId);
+    try {
+      CedarCategoryId cid = CedarCategoryId.build(categoryId);
+      CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(rctx);
+      FolderServerCategory category = categorySession.getCategoryById(cid);
+      if (category != null) {
+        req.setCategoryName(category.getName());
+      }
+    } catch (CedarProcessingException e) {
+      e.printStackTrace();
+    }
     req.setLimit(limit);
     req.setOffset(offset);
     req.setSort(sortList);
