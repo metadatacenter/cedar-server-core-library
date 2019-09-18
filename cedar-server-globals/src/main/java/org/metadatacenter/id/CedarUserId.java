@@ -7,6 +7,10 @@ public class CedarUserId extends CedarResourceId {
   private CedarUserId() {
   }
 
+  protected CedarUserId(String id) {
+    super(id);
+  }
+
   public static CedarUserId build(String id) throws CedarProcessingException {
     return createFromString(id, CedarUserId.class);
   }
