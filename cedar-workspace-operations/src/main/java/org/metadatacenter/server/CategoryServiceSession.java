@@ -2,6 +2,7 @@ package org.metadatacenter.server;
 
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtractWithChildren;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
@@ -44,4 +45,6 @@ public interface CategoryServiceSession {
   boolean detachCategoryFromArtifact(CedarCategoryId categoryId, String artifactId);
 
   CedarNodeMaterializedCategories getNodeMaterializedCategories(String id);
+
+  List<List<FolderServerCategoryExtract>> getAttachedCategoryPaths(String artifactId);
 }

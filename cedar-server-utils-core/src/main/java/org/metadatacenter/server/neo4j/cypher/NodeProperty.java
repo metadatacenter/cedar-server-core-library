@@ -97,6 +97,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String NUMBER_OF_INSTANCES = "numberOfInstances";
     public static final String DERIVED_FROM = "derivedFrom";
     public static final String VERSIONS = "versions";
+    public static final String CATEGORIES = "categories";
     public static final String ACTIVE_USER_CAN_READ = "activeUserCanRead";
   }
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum CedarUserInfoPanelTab {
   INFO("info"),
   VERSION("version"),
+  CATEGORY("category"),
   SHARE("share");
 
   private final String value;
