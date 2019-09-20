@@ -3,14 +3,14 @@ package org.metadatacenter.server.permissions;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
 import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
@@ -37,39 +37,39 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
   }
 
   @Override
-  public void update(CurrentUserPermissions currentUserPermissions) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
     String id = resource.getId();
     if (permissionSession.userHasWriteAccessToNode(id)) {
-      currentUserPermissions.setCanWrite(true);
-      currentUserPermissions.setCanDelete(true);
-      currentUserPermissions.setCanRead(true);
-      currentUserPermissions.setCanShare(true);
+      currentUserResourcePermissions.setCanWrite(true);
+      currentUserResourcePermissions.setCanDelete(true);
+      currentUserResourcePermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanShare(true);
     } else if (permissionSession.userHasReadAccessToNode(id)) {
-      currentUserPermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanRead(true);
     }
     if (permissionSession.userCanChangeOwnerOfNode(id)) {
-      currentUserPermissions.setCanChangeOwner(true);
+      currentUserResourcePermissions.setCanChangeOwner(true);
     }
     OutcomeWithReason versioningOutcome = versionSession.userCanPerformVersioning(resource);
     if (versioningOutcome.isNegative()) {
-      currentUserPermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
-      currentUserPermissions.setPublishErrorKey(versioningOutcome.getReason());
+      currentUserResourcePermissions.setCreateDraftErrorKey(versioningOutcome.getReason());
+      currentUserResourcePermissions.setPublishErrorKey(versioningOutcome.getReason());
     } else {
       OutcomeWithReason publishOutcome = versionSession.resourceCanBePublished(resource);
       if (publishOutcome.isPositive()) {
-        currentUserPermissions.setCanPublish(true);
+        currentUserResourcePermissions.setCanPublish(true);
       } else {
-        currentUserPermissions.setPublishErrorKey(publishOutcome.getReason());
+        currentUserResourcePermissions.setPublishErrorKey(publishOutcome.getReason());
       }
       OutcomeWithReason createDraftOutcome = versionSession.resourceCanBeDrafted(resource);
       if (createDraftOutcome.isPositive()) {
-        currentUserPermissions.setCanCreateDraft(true);
+        currentUserResourcePermissions.setCanCreateDraft(true);
       } else {
-        currentUserPermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
+        currentUserResourcePermissions.setCreateDraftErrorKey(createDraftOutcome.getReason());
       }
     }
     if (resource.getType() == CedarResourceType.TEMPLATE) {
-      currentUserPermissions.setCanPopulate(true);
+      currentUserResourcePermissions.setCanPopulate(true);
     }
     if (resource.getType() == CedarResourceType.INSTANCE) {
       InstanceArtifactWithIsBasedOn instance = (InstanceArtifactWithIsBasedOn) resource;
@@ -77,19 +77,18 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
       if (basedOnTemplate != null) {
         String basedOnTemplateId = basedOnTemplate.getValue();
         if (isSubmittable(basedOnTemplateId)) {
-          currentUserPermissions.setCanSubmit(true);
+          currentUserResourcePermissions.setCanSubmit(true);
         }
       }
     }
-    currentUserPermissions.setCanCopy(true);
-    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
-      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
-          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
-      currentUserPermissions.setCanMakeOpen(res.isOpen() == null || !res.isOpen());
-      currentUserPermissions.setCanMakeNotOpen(res.isOpen() != null && res.isOpen());
+    currentUserResourcePermissions.setCanCopy(true);
+    if (resource instanceof ResourceWithOpenFlag) {
+      ResourceWithOpenFlag res = (ResourceWithOpenFlag) resource;
+      currentUserResourcePermissions.setCanMakeOpen(res.isOpen() == null || !res.isOpen());
+      currentUserResourcePermissions.setCanMakeNotOpen(res.isOpen() != null && res.isOpen());
     } else {
-      currentUserPermissions.setCanMakeOpen(false);
-      currentUserPermissions.setCanMakeNotOpen(false);
+      currentUserResourcePermissions.setCanMakeOpen(false);
+      currentUserResourcePermissions.setCanMakeNotOpen(false);
     }
   }
 

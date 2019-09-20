@@ -3,7 +3,6 @@ package org.metadatacenter.model.folderserver.report;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithNumberOfInstances;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerTemplateReport extends FolderServerSchemaArtifactReport implements ResourceWithNumberOfInstances {

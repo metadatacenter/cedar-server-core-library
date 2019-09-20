@@ -5,11 +5,12 @@ import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.IsBasedOnGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithIsBasedOn;
+import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.model.folderserver.extract.FolderServerTemplateExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public abstract class FolderServerInstanceArtifactReport extends FolderServerArtifactReport
-    implements ResourceWithIsBasedOn {
+    implements ResourceWithIsBasedOn, ResourceWithOpenFlag {
 
   private IsBasedOnGroup isBasedOnGroup;
   private FolderServerTemplateExtract isBasedOnExtract;

@@ -78,6 +78,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("artifactRESTAPI")
   private ArtifactRESTAPI artifactRESTAPI;
 
+  @JsonProperty("categoryRESTAPI")
+  private CategoryRESTAPI categoryRESTAPI;
+
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
 
@@ -248,6 +251,10 @@ public class CedarConfig extends Configuration {
 
   public ArtifactRESTAPI getArtifactRESTAPI() {
     return artifactRESTAPI;
+  }
+
+  public CategoryRESTAPI getCategoryRESTAPI() {
+    return categoryRESTAPI;
   }
 
   public SubmissionConfig getSubmissionConfig() {

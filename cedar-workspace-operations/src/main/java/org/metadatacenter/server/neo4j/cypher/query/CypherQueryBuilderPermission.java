@@ -134,4 +134,33 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     sb.append(" RETURN group");
     return sb.toString();
   }
+
+  public static String userCanWriteCategory() {
+    return userHasPermissionOnCategory(RelationLabel.CANWRITECATEGORY);
+  }
+
+  public static String userCanAttachCategory() {
+    return userHasPermissionOnCategory(RelationLabel.CANATTACHCATEGORY);
+  }
+
+  private static String userHasPermissionOnCategory(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    sb.append(" MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{categoryId}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNSCATEGORY, "category"));
+    if (relationLabel == RelationLabel.CANATTACHCATEGORY) {
+      sb.append(" OR ");
+      sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANATTACHCATEGORY, "category"));
+    }
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITECATEGORY, "category"));
+    sb.append(" )");
+    sb.append(" RETURN user");
+    return sb.toString();
+  }
+
+
 }

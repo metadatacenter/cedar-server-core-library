@@ -108,4 +108,17 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
         " RETURN group";
   }
 
+  public static String updateCategoryById(Map<NodeProperty, String> updateFields) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})");
+    sb.append(buildSetter("category", NodeProperty.LAST_UPDATED_BY));
+    sb.append(buildSetter("category", NodeProperty.LAST_UPDATED_ON));
+    sb.append(buildSetter("category", NodeProperty.LAST_UPDATED_ON_TS));
+    for (NodeProperty property : updateFields.keySet()) {
+      sb.append(buildSetter("category", property));
+    }
+    sb.append(" RETURN category");
+    return sb.toString();
+  }
+
 }

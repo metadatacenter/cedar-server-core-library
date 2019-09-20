@@ -65,11 +65,12 @@ public abstract class AssertionTargetFutureImpl<T> implements AssertionTargetFut
     }
     if (errorPack != null) {
       errorPack.status(status);
-    }
-    if (errorPack != null) {
       assertionResult.mergeErrorPack(errorPack);
+      throw new CedarAssertionException(assertionResult, errorPack.getOperation());
+    } else {
+      assertionResult.status(status);
+      throw new CedarAssertionException(assertionResult, null);
     }
-    throw new CedarAssertionException(assertionResult, errorPack.getOperation());
   }
 
 

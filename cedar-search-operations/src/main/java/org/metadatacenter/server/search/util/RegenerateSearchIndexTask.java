@@ -6,10 +6,12 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
+import org.metadatacenter.server.CategoryServiceSession;
 import org.metadatacenter.server.PermissionServiceSession;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,7 @@ public class RegenerateSearchIndexTask {
     boolean regenerate = true;
     try {
       PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
+      CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
       // Get all resources
       log.info("Reading all resources from the existing search index.");
       List<FileSystemResource> resources = indexUtils.findAllResources(requestContext);
@@ -106,7 +109,8 @@ public class RegenerateSearchIndexTask {
         for (FileSystemResource node : resources) {
           try {
             CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, requestContext, true));
+            CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(node.getId());
+            currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, categories, requestContext, true));
 
             if (count % 100 == 0) {
               float progress = (100 * count++) / resources.size();
@@ -141,8 +145,7 @@ public class RegenerateSearchIndexTask {
     } catch (Exception e) {
       log.error("Error while regenerating index", e);
       throw new CedarProcessingException(e);
-    }
-    finally {
+    } finally {
       // Clear template nodes cache
       nodeIndexingService.instanceContentExtractor.clearNodesCache();
     }

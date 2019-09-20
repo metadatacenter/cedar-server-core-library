@@ -1,5 +1,6 @@
 package org.metadatacenter.server;
 
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
@@ -24,4 +25,10 @@ public interface PermissionServiceSession {
   boolean userIsOwnerOfNode(FileSystemResource node);
 
   boolean userHas(CedarPermission permission);
+
+  boolean userHasWriteAccessToCategory(CedarCategoryId categoryId);
+
+  boolean userHasAttachAccessToCategory(CedarCategoryId categoryId);
+
+  boolean userCanChangeOwnerOfCategory(CedarCategoryId categoryId);
 }

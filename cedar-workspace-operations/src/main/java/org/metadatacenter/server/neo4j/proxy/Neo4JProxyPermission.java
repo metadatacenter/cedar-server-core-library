@@ -1,6 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
@@ -169,4 +171,19 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
+  public boolean userHasWriteAccessToCategory(CedarUserId userId, CedarCategoryId categoryId) {
+    String cypher = CypherQueryBuilderPermission.userCanWriteCategory();
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndCategoryIdId(userId, categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
+    return cedarFSUser != null;
+  }
+
+  public boolean userHasAttachAccessToCategory(CedarUserId userId, CedarCategoryId categoryId) {
+    String cypher = CypherQueryBuilderPermission.userCanAttachCategory();
+    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndCategoryIdId(userId, categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
+    return cedarFSUser != null;
+  }
 }

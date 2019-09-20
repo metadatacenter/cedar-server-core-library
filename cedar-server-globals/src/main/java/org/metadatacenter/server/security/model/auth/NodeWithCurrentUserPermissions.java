@@ -4,5 +4,5 @@ import org.metadatacenter.server.security.model.ResourceWithIdAndType;
 
 public interface NodeWithCurrentUserPermissions extends ResourceWithIdAndType {
 
-  CurrentUserPermissions getCurrentUserPermissions();
+  CurrentUserResourcePermissions getCurrentUserPermissions();
 }

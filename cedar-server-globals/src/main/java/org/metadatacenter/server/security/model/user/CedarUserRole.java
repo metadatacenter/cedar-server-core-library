@@ -9,6 +9,8 @@ public enum CedarUserRole {
   USER_ADMINISTRATOR("userAdministrator"),
   GROUP_ADMINISTRATOR("groupAdministrator"),
   FILESYSTEM_ADMINISTRATOR("filesystemAdministrator"),
+  CATEGORY_ADMINISTRATOR("categoryAdministrator"),
+  CATEGORY_PRIVILEGED_ADMINISTRATOR("categoryPrivilegedAdministrator"),
   SEARCH_REINDEXER("searchReindexer"),
   BUILT_IN_SYSTEM_ADMINISTRATOR("builtInSystemAdministrator");
 

@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.server.neo4j.PathUtil;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -16,6 +17,12 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
   public static CypherParameters matchNodeId(String nodeURL) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.NODE_ID, nodeURL);
+    return params;
+  }
+
+  public static CypherParameters matchId(CedarResourceId resourceId) {
+    CypherParameters params = new CypherParameters();
+    params.put(NodeProperty.ID, resourceId);
     return params;
   }
 
@@ -123,6 +130,10 @@ public class CypherParamBuilderNode extends AbstractCypherParamBuilder {
 
   public static CypherParameters getNodeById(String nodeURL) {
     return getNodeByIdentity(nodeURL);
+  }
+
+  public static CypherParameters getNodeById(CedarResourceId resourceId) {
+    return getNodeByIdentity(resourceId);
   }
 
   public static CypherParameters getSearchIsBasedOnLookupParameters(List<CedarResourceType> resourceTypes,

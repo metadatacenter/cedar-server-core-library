@@ -8,6 +8,8 @@ public class FolderStructureConfig {
 
   private GraphGroup everybodyGroup;
 
+  private GraphCategory rootCategory;
+
   public GraphFolder getRootFolder() {
     return rootFolder;
   }
@@ -18,5 +20,9 @@ public class FolderStructureConfig {
 
   public GraphGroup getEverybodyGroup() {
     return everybodyGroup;
+  }
+
+  public GraphCategory getRootCategory() {
+    return rootCategory;
   }
 }

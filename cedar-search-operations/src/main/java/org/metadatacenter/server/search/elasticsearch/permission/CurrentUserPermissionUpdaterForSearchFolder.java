@@ -4,7 +4,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IndexedDocumentDocument;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class CurrentUserPermissionUpdaterForSearchFolder extends AbstractCurrentUserPermissionUpdaterForSearch {
@@ -20,21 +20,21 @@ public class CurrentUserPermissionUpdaterForSearchFolder extends AbstractCurrent
   }
 
   @Override
-  public void update(CurrentUserPermissions currentUserPermissions) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
     if (userCanWrite()) {
-      currentUserPermissions.setCanWrite(true);
-      currentUserPermissions.setCanDelete(true);
-      currentUserPermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanWrite(true);
+      currentUserResourcePermissions.setCanDelete(true);
+      currentUserResourcePermissions.setCanRead(true);
 
       FolderServerNodeInfo info = indexedDocument.getInfo();
       if (!info.getIsRoot() && !info.getIsSystem() && !info.getIsUserHome()) {
-        currentUserPermissions.setCanShare(true);
+        currentUserResourcePermissions.setCanShare(true);
       }
     } else if (userCanRead()) {
-      currentUserPermissions.setCanRead(true);
+      currentUserResourcePermissions.setCanRead(true);
     }
     if (userCanChangeOwnerOfFolder()) {
-      currentUserPermissions.setCanChangeOwner(true);
+      currentUserResourcePermissions.setCanChangeOwner(true);
     }
   }
 

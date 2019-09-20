@@ -2,6 +2,9 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
+import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarResourceId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -106,11 +109,23 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
+  protected static CypherParameters updateNodeById(CedarResourceId nodeId, Map<? extends CypherQueryParameter, String>
+      updateFields, String updatedBy) {
+    return updateNodeById(nodeId.getId(), updateFields, updatedBy);
+  }
+
   protected static CypherParameters getNodeByIdentity(String nodeURL) {
     CypherParameters params = new CypherParameters();
     params.put(NodeProperty.ID, nodeURL);
     return params;
   }
+
+  protected static CypherParameters getNodeByIdentity(CedarResourceId resourceId) {
+    CypherParameters params = new CypherParameters();
+    params.put(NodeProperty.ID, resourceId);
+    return params;
+  }
+
 
   protected static CypherParameters getNodeByIdentityAndName(String nodeURL, String nodeName) {
     CypherParameters params = new CypherParameters();
@@ -207,6 +222,13 @@ public abstract class AbstractCypherParamBuilder {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.NODE_ID, nodeURL);
     params.put(ParameterPlaceholder.GROUP_ID, groupURL);
+    return params;
+  }
+
+  public static CypherParameters matchUserIdAndCategoryIdId(CedarUserId userId, CedarCategoryId categoryId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.USER_ID, userId);
+    params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);
     return params;
   }
 

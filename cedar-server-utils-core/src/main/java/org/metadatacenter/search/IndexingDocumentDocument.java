@@ -1,5 +1,6 @@
 package org.metadatacenter.search;
 
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.NodePermission;
 
@@ -48,6 +49,11 @@ public class IndexingDocumentDocument extends IndexedDocumentDocument {
 
   public List<String> getGroups() {
     return groups;
+  }
+
+  public void setMaterializedCategories(CedarNodeMaterializedCategories categories) {
+    this.categories = new ArrayList<>();
+    this.categories.addAll(categories.getCategoryIds());
   }
 
 }

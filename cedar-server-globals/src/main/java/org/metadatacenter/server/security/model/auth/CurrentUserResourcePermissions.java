@@ -2,7 +2,7 @@ package org.metadatacenter.server.security.model.auth;
 
 import org.metadatacenter.error.CedarErrorKey;
 
-public class CurrentUserPermissions {
+public class CurrentUserResourcePermissions {
   private boolean canRead;
   private boolean canWrite;
   private boolean canDelete;

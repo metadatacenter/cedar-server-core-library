@@ -12,6 +12,7 @@ public enum CedarResourceType {
   INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
   USER(Types.USER, Prefix.USERS, null),
   GROUP(Types.GROUP, Prefix.GROUPS, null),
+  CATEGORY(Types.CATEGORY, Prefix.CATEGORIES, null),
   MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null),
   USERMESSAGE(Types.USERMESSAGE, Prefix.USERMESSAGES, null),
   PROCESS(Types.PROCESS_TYPE, Prefix.PROCESS_TYPES, null);
@@ -28,6 +29,7 @@ public enum CedarResourceType {
     public static final String MESSAGE = "message";
     public static final String USERMESSAGE = "user-message";
     public static final String PROCESS_TYPE = "process-type";
+    public static final String CATEGORY = "category";
   }
 
   public static class Prefix {
@@ -42,6 +44,7 @@ public enum CedarResourceType {
     public static final String MESSAGES = "messages";
     public static final String USERMESSAGES = "user-messages";
     public static final String PROCESS_TYPES = "process-types";
+    public static final String CATEGORIES = "categories";
   }
 
   public static class AtType {

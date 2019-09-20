@@ -14,6 +14,8 @@ public abstract class CedarUserRolePermissionUtil {
   private static final Set<String> userAdministratorPermissions;
   private static final Set<String> groupAdministratorPermissions;
   private static final Set<String> filesystemAdministratorPermissions;
+  private static final Set<String> categoryAdministratorPermissions;
+  private static final Set<String> categoryPrivilegedAdministratorPermissions;
   private static final Set<String> searchReindexerPermissions;
   private static final Set<String> builtInSystemAdministratorPermissions;
 
@@ -60,6 +62,16 @@ public abstract class CedarUserRolePermissionUtil {
     filesystemAdministratorPermissions.add(CedarPermission.READ_NOT_READABLE_NODE.getPermissionName());
     filesystemAdministratorPermissions.add(CedarPermission.WRITE_NOT_WRITABLE_NODE.getPermissionName());
 
+    categoryAdministratorPermissions = new HashSet<>();
+    categoryAdministratorPermissions.add(CedarPermission.CATEGORY_CREATE.getPermissionName());
+    categoryAdministratorPermissions.add(CedarPermission.CATEGORY_READ.getPermissionName());
+    categoryAdministratorPermissions.add(CedarPermission.CATEGORY_UPDATE.getPermissionName());
+    categoryAdministratorPermissions.add(CedarPermission.CATEGORY_DELETE.getPermissionName());
+
+    categoryPrivilegedAdministratorPermissions = new HashSet<>();
+    categoryPrivilegedAdministratorPermissions.add(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_CATEGORY.getPermissionName());
+    categoryPrivilegedAdministratorPermissions.add(CedarPermission.WRITE_NOT_WRITABLE_CATEGORY.getPermissionName());
+
     searchReindexerPermissions = new HashSet<>();
     searchReindexerPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     searchReindexerPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
@@ -71,6 +83,8 @@ public abstract class CedarUserRolePermissionUtil {
     builtInSystemAdministratorPermissions.addAll(userAdministratorPermissions);
     builtInSystemAdministratorPermissions.addAll(groupAdministratorPermissions);
     builtInSystemAdministratorPermissions.addAll(filesystemAdministratorPermissions);
+    builtInSystemAdministratorPermissions.addAll(categoryAdministratorPermissions);
+    builtInSystemAdministratorPermissions.addAll(categoryPrivilegedAdministratorPermissions);
     builtInSystemAdministratorPermissions.addAll(searchReindexerPermissions);
     builtInSystemAdministratorPermissions.add(CedarPermission.SEND_PROCESS_MESSAGE.getPermissionName());
 
@@ -80,6 +94,8 @@ public abstract class CedarUserRolePermissionUtil {
     roleToPermissions.put(CedarUserRole.USER_ADMINISTRATOR, userAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.GROUP_ADMINISTRATOR, groupAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.FILESYSTEM_ADMINISTRATOR, filesystemAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.CATEGORY_ADMINISTRATOR, categoryAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.CATEGORY_PRIVILEGED_ADMINISTRATOR, categoryPrivilegedAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.SEARCH_REINDEXER, searchReindexerPermissions);
     roleToPermissions.put(CedarUserRole.BUILT_IN_SYSTEM_ADMINISTRATOR, builtInSystemAdministratorPermissions);
   }

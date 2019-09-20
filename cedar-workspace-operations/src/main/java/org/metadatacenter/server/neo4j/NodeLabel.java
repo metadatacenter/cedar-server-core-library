@@ -12,6 +12,7 @@ public enum NodeLabel {
   RESOURCE(ComposedLabel.RESOURCE, SimpleLabel.RESOURCE),
   USER(ComposedLabel.USER, SimpleLabel.USER),
   GROUP(ComposedLabel.GROUP, SimpleLabel.GROUP),
+  CATEGORY(ComposedLabel.CATEGORY, SimpleLabel.CATEGORY),
   FIELD(ComposedLabel.FIELD, SimpleLabel.FIELD),
   ELEMENT(ComposedLabel.ELEMENT, SimpleLabel.ELEMENT),
   TEMPLATE(ComposedLabel.TEMPLATE, SimpleLabel.TEMPLATE),
@@ -29,6 +30,7 @@ public enum NodeLabel {
     public static final String RESOURCE = "Resource";
     public static final String USER = "User";
     public static final String GROUP = "Group";
+    public static final String CATEGORY = "Category";
     public static final String FIELD = "Field";
     public static final String ELEMENT = "Element";
     public static final String TEMPLATE = "Template";
@@ -41,9 +43,10 @@ public enum NodeLabel {
     public static final String FOLDER = SimpleLabel.FOLDER + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
     public static final String SYSTEM_FOLDER = SimpleLabel.SYSTEM_FOLDER + S + FOLDER;
     public static final String USER_HOME_FOLDER = SimpleLabel.USER_HOME_FOLDER + S + FOLDER;
-    public static final String RESOURCE = SimpleLabel.RESOURCE + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
     public static final String USER = SimpleLabel.USER + S + SimpleLabel.SCOPE;
     public static final String GROUP = SimpleLabel.GROUP + S + SimpleLabel.SCOPE;
+    public static final String CATEGORY = SimpleLabel.CATEGORY + S + SimpleLabel.SCOPE;;
+    public static final String RESOURCE = SimpleLabel.RESOURCE + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
     public static final String FIELD = SimpleLabel.FIELD + S + RESOURCE;
     public static final String ELEMENT = SimpleLabel.ELEMENT + S + RESOURCE;
     public static final String TEMPLATE = SimpleLabel.TEMPLATE + S + RESOURCE;
