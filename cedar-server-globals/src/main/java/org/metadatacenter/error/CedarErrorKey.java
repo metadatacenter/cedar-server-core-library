@@ -133,6 +133,9 @@ public enum CedarErrorKey {
 
   DRAFT_NOT_CREATED("draftNotCreated"),
 
+  DIFFERENT_ID_IN_BODY_AND_PATH("differentIdInBodyAndPath"),
+  ID_PRESENT_IN_BODY("idPresentInBody"),
+
   CONTENT_NOT_VALID("contentNotValid");
 
   private final String value;

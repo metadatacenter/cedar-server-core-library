@@ -3,6 +3,7 @@ package org.metadatacenter.util.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 
@@ -24,7 +25,7 @@ public class JsonIdUtil {
     String atType = getKeyValueIfString(object, "@type");
     CedarResourceType resourceType = CedarResourceType.forAtType(atType);
     if (resourceType != null) {
-      localizeFieldValueAsId(object, "@id", linkedDataUtil, resourceType);
+      localizeFieldValueAsId(object, LinkedData.ID, linkedDataUtil, resourceType);
       Iterator<Map.Entry<String, JsonNode>> fields = object.fields();
       while (fields.hasNext()) {
         Map.Entry<String, JsonNode> entry = fields.next();

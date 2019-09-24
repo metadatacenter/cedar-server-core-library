@@ -3,6 +3,7 @@ package org.metadatacenter.server.security.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
@@ -40,12 +41,12 @@ public class CedarUser implements CedarUserRepresentation {
     this.uiPreferences = new CedarUserUIPreferences();
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public String getId() {
     return id;
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public void setId(String id) {
     this.id = id;
   }

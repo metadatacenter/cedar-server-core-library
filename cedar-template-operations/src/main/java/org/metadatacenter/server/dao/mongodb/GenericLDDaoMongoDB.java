@@ -10,6 +10,7 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.exception.ArtifactServerResourceNotFoundException;
 import org.metadatacenter.server.dao.GenericDao;
 import org.metadatacenter.server.service.FieldNameInEx;
@@ -122,7 +123,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     if ((id == null) || (id.length() == 0)) {
       throw new IllegalArgumentException();
     }
-    Document doc = entityCollection.find(eq("@id", id)).first();
+    Document doc = entityCollection.find(eq(LinkedData.ID, id)).first();
     if (doc == null) {
       return null;
     }
@@ -152,7 +153,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     content = jsonUtils.fixMongoDB(content, FixMongoDirection.WRITE_TO_MONGO);
     Map<String, Object> contentMap = JsonMapper.MAPPER.convertValue(content, Map.class);
     Document contentDocument = new Document(contentMap);
-    UpdateResult updateResult = entityCollection.replaceOne(eq("@id", id), contentDocument);
+    UpdateResult updateResult = entityCollection.replaceOne(eq(LinkedData.ID, id), contentDocument);
     if (updateResult.getMatchedCount() == 1) {
       return find(id);
     } else {
@@ -176,7 +177,7 @@ public class GenericLDDaoMongoDB implements GenericDao<String, JsonNode> {
     if (!exists(id)) {
       throw new ArtifactServerResourceNotFoundException();
     }
-    DeleteResult deleteResult = entityCollection.deleteOne(eq("@id", id));
+    DeleteResult deleteResult = entityCollection.deleteOne(eq(LinkedData.ID, id));
     if (deleteResult.getDeletedCount() != 1) {
       throw new InternalError();
     }

@@ -2,6 +2,7 @@ package org.metadatacenter.server.security.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.constant.LinkedData;
 import org.metadatacenter.id.CedarUserId;
 
 public class CedarUserExtract implements CedarUserRepresentation {
@@ -22,7 +23,7 @@ public class CedarUserExtract implements CedarUserRepresentation {
   }
 
   @Override
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public String getId() {
     return id;
   }
@@ -33,7 +34,7 @@ public class CedarUserExtract implements CedarUserRepresentation {
     return CedarUserId.buildSafe(id);
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public void setId(String id) {
     this.id = id;
   }

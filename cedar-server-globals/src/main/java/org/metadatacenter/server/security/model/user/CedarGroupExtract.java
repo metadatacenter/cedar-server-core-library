@@ -1,6 +1,7 @@
 package org.metadatacenter.server.security.model.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.constant.LinkedData;
 
 public class CedarGroupExtract {
 
@@ -12,12 +13,12 @@ public class CedarGroupExtract {
     this.name = name;
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public String getId() {
     return id;
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public void setId(String id) {
     this.id = id;
   }

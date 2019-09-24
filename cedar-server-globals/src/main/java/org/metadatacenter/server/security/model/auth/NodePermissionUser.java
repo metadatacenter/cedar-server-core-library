@@ -2,6 +2,7 @@ package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.constant.LinkedData;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NodePermissionUser {
@@ -15,12 +16,12 @@ public class NodePermissionUser {
     this.id = id;
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public String getId() {
     return id;
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public void setId(String id) {
     this.id = id;
   }

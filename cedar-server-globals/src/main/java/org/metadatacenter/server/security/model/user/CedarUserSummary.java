@@ -2,6 +2,7 @@ package org.metadatacenter.server.security.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.constant.LinkedData;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarUserSummary {
@@ -12,7 +13,7 @@ public class CedarUserSummary {
   public CedarUserSummary() {
   }
 
-  @JsonProperty("@id")
+  @JsonProperty(LinkedData.ID)
   public String getId() {
     return id;
   }
