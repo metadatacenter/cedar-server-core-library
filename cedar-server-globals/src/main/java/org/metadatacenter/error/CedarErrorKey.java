@@ -122,6 +122,9 @@ public enum CedarErrorKey {
   ROOT_CATEGORY_CAN_NOT_BE_DELETED("rootCategoryCanNotBeDeleted"),
   UNABLE_TO_ATTACH_CATEGORY("unableToAttachCategory"),
   UNABLE_TO_DETACH_CATEGORY("unableToDetachCategory"),
+  NO_CATEGORIES_WERE_ATTACHED("noCategoriesWereAttached"),
+
+  MALFORMED_JSON_REQUEST_BODY("malformedJsonRequestBody"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),
