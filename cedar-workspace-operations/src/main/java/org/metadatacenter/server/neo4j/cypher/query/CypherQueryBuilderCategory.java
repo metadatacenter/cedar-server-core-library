@@ -66,7 +66,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (category:<LABEL.CATEGORY>)");
     sb.append(" RETURN category");
-    sb.append(" ORDER BY category.<PROP.NAME>");
+    sb.append(" ORDER BY LOWER(category.<PROP.NAME>)");
     sb.append(" SKIP {offset}");
     sb.append(" LIMIT {limit}");
     return sb.toString();
