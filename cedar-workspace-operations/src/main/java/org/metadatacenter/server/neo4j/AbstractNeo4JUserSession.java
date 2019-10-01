@@ -6,6 +6,7 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.proxy.Neo4JProxies;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public abstract class AbstractNeo4JUserSession {
@@ -42,6 +43,10 @@ public abstract class AbstractNeo4JUserSession {
 
   protected FolderServerUser getCategoryOwner(CedarCategoryId categoryId) {
     return proxies.category().getCategoryOwner(categoryId);
+  }
+
+  public boolean userHas(CedarPermission permission) {
+    return cu.has(permission);
   }
 
 }

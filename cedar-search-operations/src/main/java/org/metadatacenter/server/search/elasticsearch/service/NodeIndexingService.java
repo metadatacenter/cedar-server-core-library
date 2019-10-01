@@ -14,7 +14,7 @@ import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.CategoryServiceSession;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
 import org.metadatacenter.server.search.extraction.TemplateInstanceContentExtractor;
@@ -67,7 +67,7 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarRequestContext requestContext) throws CedarProcessingException {
     log.debug("Indexing resource (id = " + node.getId() + ")");
-    PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
+    ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(requestContext);
     CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
     CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
     CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(node.getId());

@@ -6,20 +6,20 @@ import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
-  private final PermissionServiceSession permissionSession;
+  private final ResourcePermissionServiceSession permissionSession;
   private final VersionServiceSession versionSession;
   private final CedarConfig cedarConfig;
   private final ResourceWithCurrentUserPermissions resource;
 
-  private CurrentUserPermissionUpdaterForGraphDbResource(PermissionServiceSession permissionSession,
+  private CurrentUserPermissionUpdaterForGraphDbResource(ResourcePermissionServiceSession permissionSession,
                                                          VersionServiceSession versionSession,
                                                          CedarConfig cedarConfig,
                                                          ResourceWithCurrentUserPermissions resource) {
@@ -29,7 +29,7 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
     this.resource = resource;
   }
 
-  public static CurrentUserPermissionUpdater get(PermissionServiceSession permissionSession,
+  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession,
                                                  VersionServiceSession versionSession,
                                                  CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
     return new CurrentUserPermissionUpdaterForGraphDbResource(permissionSession, versionSession, cedarConfig,

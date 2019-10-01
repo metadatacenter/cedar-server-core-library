@@ -1,31 +1,31 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.permission.resource;
 
-public class NodePermissionGroupPermissionPair {
+public class ResourcePermissionGroupPermissionPair {
 
-  private NodePermissionGroup group;
-  private NodePermission permission;
+  private ResourcePermissionGroup group;
+  private ResourcePermission permission;
 
-  public NodePermissionGroupPermissionPair() {
+  public ResourcePermissionGroupPermissionPair() {
   }
 
-  public NodePermissionGroupPermissionPair(NodePermissionGroup group, NodePermission permission) {
+  public ResourcePermissionGroupPermissionPair(ResourcePermissionGroup group, ResourcePermission permission) {
     this.group = group;
     this.permission = permission;
   }
 
-  public NodePermissionGroup getGroup() {
+  public ResourcePermissionGroup getGroup() {
     return group;
   }
 
-  public void setGroup(NodePermissionGroup group) {
+  public void setGroup(ResourcePermissionGroup group) {
     this.group = group;
   }
 
-  public NodePermission getPermission() {
+  public ResourcePermission getPermission() {
     return permission;
   }
 
-  public void setPermission(NodePermission permission) {
+  public void setPermission(ResourcePermission permission) {
     this.permission = permission;
   }
 
@@ -38,7 +38,7 @@ public class NodePermissionGroupPermissionPair {
       return false;
     }
 
-    NodePermissionGroupPermissionPair that = (NodePermissionGroupPermissionPair) o;
+    ResourcePermissionGroupPermissionPair that = (ResourcePermissionGroupPermissionPair) o;
 
     if (getGroup() != null ? !getGroup().equals(that.getGroup()) : that.getGroup() != null) {
       return false;

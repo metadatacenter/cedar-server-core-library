@@ -3,6 +3,7 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.*;
@@ -225,11 +226,17 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchUserIdAndCategoryIdId(CedarUserId userId, CedarCategoryId categoryId) {
+  public static CypherParameters matchUserIdAndCategoryId(CedarUserId userId, CedarCategoryId categoryId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.USER_ID, userId);
     params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);
     return params;
   }
 
+  public static CypherParameters matchGroupIdAndCategoryId(CedarGroupId groupId, CedarCategoryId categoryId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.GROUP_ID, groupId);
+    params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);
+    return params;
+  }
 }

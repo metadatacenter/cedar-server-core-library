@@ -1,25 +1,27 @@
 package org.metadatacenter.server.security.model.auth;
 
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUser;
+
 public class CedarGroupUserRequest {
 
-  private NodePermissionUser user;
+  private ResourcePermissionUser user;
   private boolean administrator;
   private boolean member;
 
   public CedarGroupUserRequest() {
   }
 
-  public CedarGroupUserRequest(NodePermissionUser user, boolean administrator, boolean member) {
+  public CedarGroupUserRequest(ResourcePermissionUser user, boolean administrator, boolean member) {
     this.user = user;
     this.administrator = administrator;
     this.member = member;
   }
 
-  public NodePermissionUser getUser() {
+  public ResourcePermissionUser getUser() {
     return user;
   }
 
-  public void setUser(NodePermissionUser user) {
+  public void setUser(ResourcePermissionUser user) {
     this.user = user;
   }
 

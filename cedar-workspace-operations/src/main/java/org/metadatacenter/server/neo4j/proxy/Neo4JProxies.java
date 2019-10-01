@@ -16,12 +16,13 @@ public class Neo4JProxies {
   private final Neo4JProxyFolder folderProxy;
   private final Neo4JProxyGroup groupProxy;
   private final Neo4JProxyUser userProxy;
-  private final Neo4JProxyPermission permissionProxy;
+  private final Neo4JProxyResourcePermission permissionProxy;
   private final Neo4JProxyArtifact artifactProxy;
   private final Neo4JProxyResource resourceProxy;
   private final Neo4JProxyGraph graphProxy;
   private final Neo4JProxyVersion versionProxy;
   private final Neo4JProxyCategory categoryProxy;
+  private final Neo4JProxyCategoryPermission categoryPermissionProxy;
 
   public Neo4JProxies(CedarConfig cedarConfig) {
     this.cedarConfig = cedarConfig;
@@ -33,12 +34,13 @@ public class Neo4JProxies {
     this.folderProxy = new Neo4JProxyFolder(this, cedarConfig);
     this.groupProxy = new Neo4JProxyGroup(this, cedarConfig);
     this.userProxy = new Neo4JProxyUser(this, cedarConfig);
-    this.permissionProxy = new Neo4JProxyPermission(this, cedarConfig);
+    this.permissionProxy = new Neo4JProxyResourcePermission(this, cedarConfig);
     this.artifactProxy = new Neo4JProxyArtifact(this, cedarConfig);
     this.resourceProxy = new Neo4JProxyResource(this, cedarConfig);
     this.graphProxy = new Neo4JProxyGraph(this, cedarConfig);
     this.versionProxy = new Neo4JProxyVersion(this, cedarConfig);
     this.categoryProxy = new Neo4JProxyCategory(this, cedarConfig);
+    this.categoryPermissionProxy = new Neo4JProxyCategoryPermission(this, cedarConfig);
   }
 
   public Neo4JProxyAdmin admin() {
@@ -57,7 +59,7 @@ public class Neo4JProxies {
     return userProxy;
   }
 
-  public Neo4JProxyPermission permission() {
+  public Neo4JProxyResourcePermission permission() {
     return permissionProxy;
   }
 
@@ -79,6 +81,10 @@ public class Neo4JProxies {
 
   public Neo4JProxyCategory category() {
     return categoryProxy;
+  }
+
+  public Neo4JProxyCategoryPermission categoryPermission() {
+    return categoryPermissionProxy;
   }
 
   public LinkedDataUtil getLinkedDataUtil() {

@@ -7,7 +7,7 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.CategoryServiceSession;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.search.elasticsearch.service.ElasticsearchManagementService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeIndexingService;
 import org.metadatacenter.server.search.elasticsearch.service.NodeSearchingService;
@@ -56,7 +56,7 @@ public class RegenerateSearchIndexTask {
 
     boolean regenerate = true;
     try {
-      PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
+      ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(requestContext);
       CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
       // Get all resources
       log.info("Reading all resources from the existing search index.");

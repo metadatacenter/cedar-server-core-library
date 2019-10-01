@@ -1,11 +1,16 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.CedarGroupExtract;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerGroup extends AbstractCedarResourceWithDates {
@@ -13,6 +18,8 @@ public class FolderServerGroup extends AbstractCedarResourceWithDates {
   private String specialGroup;
   private String createdBy;
   private String lastUpdatedBy;
+
+  private static final Logger log = LoggerFactory.getLogger(FolderServerGroup.class);
 
   public FolderServerGroup() {
     super();
@@ -51,5 +58,15 @@ public class FolderServerGroup extends AbstractCedarResourceWithDates {
 
   public CedarGroupExtract buildExtract() {
     return new CedarGroupExtract(getId(), getName());
+  }
+
+  @JsonIgnore
+  public CedarGroupId getIdObject() {
+    try {
+      return CedarGroupId.build(getId());
+    } catch (CedarProcessingException e) {
+      log.error("Error creating CedarGroupId", e);
+      return null;
+    }
   }
 }

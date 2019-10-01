@@ -1,7 +1,7 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.outcome.OutcomeWithReason;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public interface VersionServiceSession {
 

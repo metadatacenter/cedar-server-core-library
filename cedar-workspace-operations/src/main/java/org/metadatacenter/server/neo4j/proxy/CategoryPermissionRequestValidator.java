@@ -1,12 +1,15 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
+import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
-import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.CategoryPermissionServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
-import org.metadatacenter.server.security.model.auth.*;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.security.model.permission.category.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -14,27 +17,30 @@ import java.util.Set;
 
 import static org.metadatacenter.error.CedarErrorType.*;
 
-public class PermissionRequestValidator {
+public class CategoryPermissionRequestValidator {
 
-  private final CedarNodePermissionsRequest request;
-  private final PermissionServiceSession permissionService;
+  private final CategoryPermissionRequest request;
+  private final CategoryPermissionServiceSession categoryPermissionService;
   private final Neo4JProxies proxies;
   private final BackendCallResult callResult;
-  private final CedarNodePermissions permissions;
-  private final String nodeURL;
+  private final CategoryPermissions permissions;
+  private final CedarCategoryId categoryId;
 
-  private FileSystemResource node;
+  private FolderServerCategory category;
 
-  public PermissionRequestValidator(PermissionServiceSession permissionService, Neo4JProxies proxies, String nodeURL,
-                                    CedarNodePermissionsRequest request) {
-    this.permissionService = permissionService;
+  public CategoryPermissionRequestValidator(CategoryPermissionServiceSession categoryPermissionService,
+                                            Neo4JProxies proxies,
+                                            CedarCategoryId categoryId,
+                                            CategoryPermissionRequest request) {
+    this.categoryPermissionService = categoryPermissionService;
     this.proxies = proxies;
     this.callResult = new BackendCallResult();
     this.request = request;
-    this.nodeURL = nodeURL;
-    this.permissions = new CedarNodePermissions();
+    this.categoryId = categoryId;
+    this.category = null;
+    this.permissions = new CategoryPermissions();
 
-    validateNodeExistence();
+    validateCategoryExistence();
 
     if (callResult.isOk()) {
       validateWritePermission();
@@ -62,28 +68,27 @@ public class PermissionRequestValidator {
     }
   }
 
-  private void validateNodeExistence() {
-    FileSystemResource folder = proxies.resource().findNodeById(nodeURL);
-    node = folder;
-    if (folder == null) {
+  private void validateCategoryExistence() {
+    this.category = proxies.category().getCategoryById(categoryId);
+    if (category == null) {
       callResult.addError(NOT_FOUND)
-          .errorKey(CedarErrorKey.NODE_NOT_FOUND)
-          .message("Node not found by id")
-          .parameter("nodeId", nodeURL);
+          .errorKey(CedarErrorKey.CATEGORY_NOT_FOUND)
+          .message("Category not found by id")
+          .parameter("categoryId", categoryId.getId());
     }
   }
 
   private void validateWritePermission() {
-    if (!permissionService.userHasWriteAccessToNode(nodeURL)) {
+    if (!categoryPermissionService.userHasWriteAccessToCategory(categoryId)) {
       callResult.addError(AUTHORIZATION)
-          .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_NODE)
-          .message("The current user has no write access to the resource")
-          .parameter("nodeId", nodeURL);
+          .errorKey(CedarErrorKey.NO_WRITE_ACCESS_TO_CATEGORY)
+          .message("The current user has no write access to the category")
+          .parameter("categoryId", categoryId.getId());
     }
   }
 
   private void validateAndSetOwner() {
-    NodePermissionUser owner = request.getOwner();
+    CategoryPermissionUser owner = request.getOwner();
     if (owner == null) {
       callResult.addError(INVALID_ARGUMENT)
           .errorKey(CedarErrorKey.MISSING_PARAMETER)
@@ -104,16 +109,16 @@ public class PermissionRequestValidator {
   }
 
   private void validateAndSetUsers() {
-    List<NodePermissionUserPermissionPair> userPermissions = request.getUserPermissions();
-    for (NodePermissionUserPermissionPair pair : userPermissions) {
-      NodePermissionUser permissionUser = pair.getUser();
+    List<CategoryPermissionUserPermissionPair> userPermissions = request.getUserPermissions();
+    for (CategoryPermissionUserPermissionPair pair : userPermissions) {
+      CategoryPermissionUser permissionUser = pair.getUser();
       if (permissionUser == null) {
         callResult.addError(INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)
             .parameter("paramName", "user")
             .message("The user resource is missing from the request");
       } else {
-        NodePermission permission = pair.getPermission();
+        CategoryPermission permission = pair.getPermission();
         if (permission == null) {
           callResult.addError(INVALID_ARGUMENT)
               .errorKey(CedarErrorKey.MISSING_PARAMETER)
@@ -129,7 +134,7 @@ public class PermissionRequestValidator {
                 .parameter("userId", userURL);
 
           } else {
-            permissions.addUserPermissions(new CedarNodeUserPermission(user.buildExtract(), permission));
+            permissions.addUserPermissions(new CategoryUserPermission(user.buildExtract(), permission));
           }
         }
       }
@@ -137,16 +142,16 @@ public class PermissionRequestValidator {
   }
 
   private void validateAndSetGroups() {
-    List<NodePermissionGroupPermissionPair> groupPermissions = request.getGroupPermissions();
-    for (NodePermissionGroupPermissionPair pair : groupPermissions) {
-      NodePermissionGroup permissionGroup = pair.getGroup();
+    List<CategoryPermissionGroupPermissionPair> groupPermissions = request.getGroupPermissions();
+    for (CategoryPermissionGroupPermissionPair pair : groupPermissions) {
+      CategoryPermissionGroup permissionGroup = pair.getGroup();
       if (permissionGroup == null) {
         callResult.addError(INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)
             .parameter("paramName", "group")
             .message("The group resource is missing from the request");
       } else {
-        NodePermission permission = pair.getPermission();
+        CategoryPermission permission = pair.getPermission();
         if (permission == null) {
           callResult.addError(INVALID_ARGUMENT)
               .errorKey(CedarErrorKey.MISSING_PARAMETER)
@@ -161,7 +166,7 @@ public class PermissionRequestValidator {
                 .message("The group from request can not be found")
                 .parameter("groupId", groupURL);
           } else {
-            permissions.addGroupPermissions(new CedarNodeGroupPermission(group.buildExtract(), permission));
+            permissions.addGroupPermissions(new CategoryGroupPermission(group.buildExtract(), permission));
           }
         }
       }
@@ -170,7 +175,7 @@ public class PermissionRequestValidator {
 
   private void validateUserUniqueness() {
     Set<String> userIds = new HashSet<>();
-    for (CedarNodeUserPermission up : permissions.getUserPermissions()) {
+    for (CategoryUserPermission up : permissions.getUserPermissions()) {
       String uid = up.getUser().getId();
       if (userIds.contains(uid)) {
         callResult.addError(INVALID_ARGUMENT)
@@ -186,7 +191,7 @@ public class PermissionRequestValidator {
 
   private void validateGroupUniqueness() {
     Set<String> groupIds = new HashSet<>();
-    for (CedarNodeGroupPermission gp : permissions.getGroupPermissions()) {
+    for (CategoryGroupPermission gp : permissions.getGroupPermissions()) {
       String gid = gp.getGroup().getId();
       if (groupIds.contains(gid)) {
         callResult.addError(INVALID_ARGUMENT)
@@ -202,7 +207,7 @@ public class PermissionRequestValidator {
 
   private void validateOwnerAndUserCollision() {
     String ownerId = permissions.getOwner().getId();
-    for (CedarNodeUserPermission up : permissions.getUserPermissions()) {
+    for (CategoryUserPermission up : permissions.getUserPermissions()) {
       if (ownerId.equals(up.getUser().getId())) {
         callResult.addError(INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.INVALID_DATA)
@@ -214,18 +219,18 @@ public class PermissionRequestValidator {
 
   private void validateOwnerSetPermission() {
     String newOwnerId = permissions.getOwner().getId();
-    CedarNodePermissions currentPermissions = permissionService.getNodePermissions(nodeURL);
+    CategoryPermissions currentPermissions = categoryPermissionService.getCategoryPermissions(categoryId);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       // if it has the role, we do not check
-      if (permissionService.userHas(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
+      if (categoryPermissionService.userHas(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_CATEGORY)) {
         return;
       }
-      if (!permissionService.userIsOwnerOfNode(node)) {
+      if (!categoryPermissionService.userIsOwnerOfCategory(categoryId)) {
         callResult.addError(AUTHORIZATION)
             .errorKey(CedarErrorKey.NOT_AUTHORIZED)
-            .message("Only the owner of a resource can change the ownership")
-            .parameter("nodeId", nodeURL);
+            .message("Only the owner of a category can change the ownership")
+            .parameter("categoryId", categoryId.getId());
       }
     }
   }
@@ -234,7 +239,7 @@ public class PermissionRequestValidator {
     return callResult;
   }
 
-  public CedarNodePermissions getPermissions() {
+  public CategoryPermissions getPermissions() {
     return permissions;
   }
 }

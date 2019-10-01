@@ -1,11 +1,9 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.id.CedarCategoryId;
-import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
@@ -13,45 +11,45 @@ import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuild
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderPermission;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
 
 import java.util.List;
 
-public class Neo4JProxyPermission extends AbstractNeo4JProxy {
+public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
 
-  Neo4JProxyPermission(Neo4JProxies proxies, CedarConfig cedarConfig) {
+  Neo4JProxyResourcePermission(Neo4JProxies proxies, CedarConfig cedarConfig) {
     super(proxies, cedarConfig);
   }
 
-  boolean addPermission(FileSystemResource node, FolderServerGroup group, NodePermission permission) {
+  boolean addPermission(FileSystemResource node, FolderServerGroup group, ResourcePermission permission) {
     String cypher = CypherQueryBuilderPermission.addPermissionToNodeForGroup(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean addPermission(FileSystemResource node, FolderServerUser user, NodePermission permission) {
+  boolean addPermission(FileSystemResource node, FolderServerUser user, ResourcePermission permission) {
     String cypher = CypherQueryBuilderPermission.addPermissionToNodeForUser(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
-  boolean removePermission(FileSystemResource node, FolderServerUser user, NodePermission permission) {
+  boolean removePermission(FileSystemResource node, FolderServerUser user, ResourcePermission permission) {
     String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromUser(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndUser(node.getId(), user.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
-  boolean removePermission(FileSystemResource node, FolderServerGroup group, NodePermission permission) {
+  boolean removePermission(FileSystemResource node, FolderServerGroup group, ResourcePermission permission) {
     String cypher = CypherQueryBuilderPermission.removePermissionForNodeFromGroup(permission);
     CypherParameters params = AbstractCypherParamBuilder.matchNodeAndGroup(node.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
-  void addPermissionToUser(String nodeURL, String userURL, NodePermission permission) {
+  void addPermissionToUser(String nodeURL, String userURL, ResourcePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
       FileSystemResource node = proxies.resource().findNodeById(nodeURL);
@@ -61,7 +59,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void removePermissionFromUser(String nodeURL, String userURL, NodePermission permission) {
+  void removePermissionFromUser(String nodeURL, String userURL, ResourcePermission permission) {
     FolderServerUser user = proxies.user().findUserById(userURL);
     if (user != null) {
       FileSystemResource node = proxies.resource().findNodeById(nodeURL);
@@ -71,7 +69,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void addPermissionToGroup(String nodeURL, String groupURL, NodePermission permission) {
+  void addPermissionToGroup(String nodeURL, String groupURL, ResourcePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
       FileSystemResource node = proxies.resource().findNodeById(nodeURL);
@@ -81,7 +79,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     }
   }
 
-  void removePermissionFromGroup(String nodeURL, String groupURL, NodePermission permission) {
+  void removePermissionFromGroup(String nodeURL, String groupURL, ResourcePermission permission) {
     FolderServerGroup group = proxies.group().findGroupById(groupURL);
     if (group != null) {
       FileSystemResource node = proxies.resource().findNodeById(nodeURL);
@@ -107,7 +105,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return cedarFSUser != null;
   }
 
-  List<FolderServerUser> getUsersWithDirectPermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerUser> getUsersWithDirectPermissionOnNode(String nodeURL, ResourcePermission permission) {
     RelationLabel relationLabel = null;
     switch (permission) {
       case READ:
@@ -123,7 +121,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  List<FolderServerGroup> getGroupsWithDirectPermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerGroup> getGroupsWithDirectPermissionOnNode(String nodeURL, ResourcePermission permission) {
     RelationLabel relationLabel = null;
     switch (permission) {
       case READ:
@@ -139,7 +137,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
-  List<FolderServerUser> getUsersWithTransitivePermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerUser> getUsersWithTransitivePermissionOnNode(String nodeURL, ResourcePermission permission) {
     String cypher = null;
     switch (permission) {
       case READ:
@@ -155,7 +153,7 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, NodePermission permission) {
+  List<FolderServerGroup> getGroupsWithTransitivePermissionOnNode(String nodeURL, ResourcePermission permission) {
     String cypher = null;
     switch (permission) {
       case READ:
@@ -171,19 +169,4 @@ public class Neo4JProxyPermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
-  public boolean userHasWriteAccessToCategory(CedarUserId userId, CedarCategoryId categoryId) {
-    String cypher = CypherQueryBuilderPermission.userCanWriteCategory();
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndCategoryIdId(userId, categoryId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
-    return cedarFSUser != null;
-  }
-
-  public boolean userHasAttachAccessToCategory(CedarUserId userId, CedarCategoryId categoryId) {
-    String cypher = CypherQueryBuilderPermission.userCanAttachCategory();
-    CypherParameters params = AbstractCypherParamBuilder.matchUserIdAndCategoryIdId(userId, categoryId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
-    return cedarFSUser != null;
-  }
 }

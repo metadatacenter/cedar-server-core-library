@@ -1,11 +1,16 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersAndUserNamesData;
 import org.metadatacenter.model.folderserver.datagroup.UserNamesDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.UsersDataGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FolderServerCategory extends AbstractCedarResourceWithDates implements ResourceWithUsersAndUserNamesData {
@@ -13,6 +18,8 @@ public class FolderServerCategory extends AbstractCedarResourceWithDates impleme
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;
   protected String parentCategoryId;
+
+  private static final Logger log = LoggerFactory.getLogger(FolderServerCategory.class);
 
   public FolderServerCategory() {
     super();
@@ -88,5 +95,15 @@ public class FolderServerCategory extends AbstractCedarResourceWithDates impleme
 
   public void setParentCategoryId(String parentCategoryId) {
     this.parentCategoryId = parentCategoryId;
+  }
+
+  @JsonIgnore
+  public CedarCategoryId getIdObject() {
+    try {
+      return CedarCategoryId.build(getId());
+    } catch (CedarProcessingException e) {
+      log.error("Error creating CedarCategoryId", e);
+      return null;
+    }
   }
 }

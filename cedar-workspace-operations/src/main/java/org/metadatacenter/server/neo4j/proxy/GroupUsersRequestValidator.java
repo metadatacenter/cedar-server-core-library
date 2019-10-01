@@ -5,6 +5,7 @@ import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.*;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class GroupUsersRequestValidator {
   private void validateAndSetUsers() {
     List<CedarGroupUserRequest> requestUsers = request.getUsers();
     for (CedarGroupUserRequest u : requestUsers) {
-      NodePermissionUser groupUser = u.getUser();
+      ResourcePermissionUser groupUser = u.getUser();
       if (groupUser == null) {
         callResult.addError(CedarErrorType.INVALID_ARGUMENT)
             .errorKey(CedarErrorKey.MISSING_PARAMETER)

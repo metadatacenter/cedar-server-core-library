@@ -93,7 +93,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
 
   public static String attachCategoryToArtifact() {
     return "" +
-    " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ARTIFACT_ID>} })" +
+        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ARTIFACT_ID>} })" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.CATEGORY_ID>} })" +
         " MERGE (category)-[:<REL.CONTAINSARTIFACT>]->(artifact)" +
         " RETURN category";
@@ -111,7 +111,28 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String getCategoryPathsByArtifactId() {
     return "" +
         " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
-        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[<REL" +
+        ".CONTAINSARTIFACT>]->(artifact)" +
         " RETURN category";
   }
+
+  public static String setCategoryOwner() {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId}})" +
+        " CREATE (user)-[:<REL.OWNSCATEGORY>]->(category)" +
+        " SET category.<PROP.OWNED_BY> = {userId}" +
+        " RETURN category";
+  }
+
+  public static String removeCategoryOwner() {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user)-[relation:<REL.OWNSCATEGORY>]->(category)" +
+        " DELETE (relation)" +
+        " SET category.<PROP.OWNED_BY> = null" +
+        " RETURN category";
+  }
+
 }

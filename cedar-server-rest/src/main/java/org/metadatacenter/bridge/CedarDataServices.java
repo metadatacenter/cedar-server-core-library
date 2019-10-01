@@ -71,13 +71,25 @@ public final class CedarDataServices {
     }
   }
 
-  public static PermissionServiceSession getPermissionServiceSession(CedarRequestContext context) {
+  public static ResourcePermissionServiceSession getResourcePermissionServiceSession(CedarRequestContext context) {
     if (instance.proxies == null) {
       log.error("You need to initialize Neo4j services:CedarDataServices.initializeNeo4jServices(cedarConfig)");
       System.exit(-2);
       return null;
     } else {
-      return Neo4JUserSessionPermissionService
+      return Neo4JUserSessionResourcePermissionService
+          .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getGlobalRequestIdHeader(),
+              context.getLocalRequestIdHeader());
+    }
+  }
+
+  public static CategoryPermissionServiceSession getCategoryPermissionServiceSession(CedarRequestContext context) {
+    if (instance.proxies == null) {
+      log.error("You need to initialize Neo4j services:CedarDataServices.initializeNeo4jServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return Neo4JUserSessionCategoryPermissionService
           .get(instance.cedarConfig, instance.proxies, context.getCedarUser(), context.getGlobalRequestIdHeader(),
               context.getLocalRequestIdHeader());
     }

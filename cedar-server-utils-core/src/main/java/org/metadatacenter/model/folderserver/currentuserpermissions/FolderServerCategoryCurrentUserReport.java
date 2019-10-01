@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.auth.CategoryWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.permission.category.CategoryWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.CurrentUserCategoryPermissions;
 import org.metadatacenter.util.json.JsonMapper;
 

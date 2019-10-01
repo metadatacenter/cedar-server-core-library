@@ -1,22 +1,22 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.permission.category;
 
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
 
-public abstract class CedarNodePermission {
+public abstract class AbstractCategoryPermission {
 
-  protected ResourcePermission permission;
+  protected CategoryPermission permission;
   protected static final String KEY_SEPARATOR = "|";
 
-  public CedarNodePermission() {
+  public AbstractCategoryPermission() {
   }
 
   protected abstract String getObjectId();
 
-  public ResourcePermission getPermission() {
+  public CategoryPermission getPermission() {
     return permission;
   }
 
-  public void setPermission(ResourcePermission permission) {
+  public void setPermission(CategoryPermission permission) {
     this.permission = permission;
   }
 
@@ -24,7 +24,7 @@ public abstract class CedarNodePermission {
     return getKey(getObjectId(), permission);
   }
 
-  public static String getKey(String objectId, ResourcePermission permission) {
+  public static String getKey(String objectId, CategoryPermission permission) {
     return objectId + KEY_SEPARATOR + permission.getValue();
   }
 

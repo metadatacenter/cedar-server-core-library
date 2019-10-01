@@ -1,17 +1,18 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.permission.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionGroup;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NodePermissionUser {
+public class CategoryPermissionGroup {
 
   private String id;
 
-  public NodePermissionUser() {
+  public CategoryPermissionGroup() {
   }
 
-  public NodePermissionUser(String id) {
+  public CategoryPermissionGroup(String id) {
     this.id = id;
   }
 
@@ -34,7 +35,7 @@ public class NodePermissionUser {
       return false;
     }
 
-    NodePermissionUser that = (NodePermissionUser) o;
+    ResourcePermissionGroup that = (ResourcePermissionGroup) o;
 
     return !(getId() != null ? !getId().equals(that.getId()) : that.getId() != null);
 

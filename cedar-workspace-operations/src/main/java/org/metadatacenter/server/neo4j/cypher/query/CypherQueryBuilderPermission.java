@@ -1,11 +1,11 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.model.RelationLabel;
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
 
 public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
 
-  public static String addPermissionToNodeForUser(NodePermission permission) {
+  public static String addPermissionToNodeForUser(ResourcePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
         " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
@@ -13,7 +13,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
         " RETURN user";
   }
 
-  public static String addPermissionToNodeForGroup(NodePermission permission) {
+  public static String addPermissionToNodeForGroup(ResourcePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
         " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
@@ -21,7 +21,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
         " RETURN group";
   }
 
-  public static String removePermissionForNodeFromUser(NodePermission permission) {
+  public static String removePermissionForNodeFromUser(ResourcePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
         " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId}})" +
@@ -30,7 +30,7 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
-  public static String removePermissionForNodeFromGroup(NodePermission permission) {
+  public static String removePermissionForNodeFromGroup(ResourcePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
         " MATCH (resource:<LABEL.FSNODE> {<PROP.ID>:{nodeId} })" +
@@ -162,5 +162,20 @@ public class CypherQueryBuilderPermission extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getUsersWithDirectPermissionOnCategory(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
+        " MATCH (user)-[:" + relationLabel + "]->(category)" +
+        " RETURN user";
+  }
+
+  public static String getGroupsWithDirectPermissionOnCategory(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (group:<LABEL.GROUP>)" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
+        " MATCH (group)-[:" + relationLabel + "]->(category)" +
+        " RETURN group";
+  }
 
 }

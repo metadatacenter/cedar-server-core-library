@@ -5,7 +5,7 @@ import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.DerivedFromGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithDerivedFromData;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public abstract class FolderServerArtifactCurrentUserReport extends FolderServerResourceCurrentUserReport
     implements ResourceWithCurrentUserPermissions, ResourceWithOpenFlag, ResourceWithDerivedFromData {

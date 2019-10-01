@@ -112,4 +112,37 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerCategory.class);
   }
+
+  public void updateCategoryOwner(CedarCategoryId categoryId, String newOwnerId) {
+    FolderServerUser user = proxies.user().findUserById(newOwnerId);
+    if (user != null) {
+      FolderServerCategory category = proxies.category().getCategoryById(categoryId);
+      if (category != null) {
+        proxies.category().updateOwner(category, user);
+      }
+    }
+  }
+
+  private boolean setOwner(FolderServerCategory category, FolderServerUser user) {
+    String cypher = CypherQueryBuilderCategory.setCategoryOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeAndUser(category.getId(), user.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "setting owner");
+  }
+
+  private boolean removeOwner(FolderServerCategory category) {
+    String cypher = CypherQueryBuilderCategory.removeCategoryOwner();
+    CypherParameters params = CypherParamBuilderNode.matchNodeId(category.getId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "removing owner");
+  }
+
+  boolean updateOwner(FolderServerCategory category, FolderServerUser user) {
+    boolean removed = removeOwner(category);
+    if (removed) {
+      return setOwner(category, user);
+    }
+    return false;
+  }
+
 }

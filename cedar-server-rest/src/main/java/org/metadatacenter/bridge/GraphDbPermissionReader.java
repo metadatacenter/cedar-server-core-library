@@ -15,15 +15,12 @@ import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServer
 import org.metadatacenter.permission.currentuserpermission.CurrentUserCategoryPermissionUpdater;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.rest.context.CedarRequestContext;
-import org.metadatacenter.server.CategoryServiceSession;
-import org.metadatacenter.server.FolderServiceSession;
-import org.metadatacenter.server.PermissionServiceSession;
-import org.metadatacenter.server.VersionServiceSession;
+import org.metadatacenter.server.*;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbCategory;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbFolder;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public class GraphDbPermissionReader {
 
@@ -32,7 +29,7 @@ public class GraphDbPermissionReader {
 
   public static FolderServerArtifactCurrentUserReport getArtifactCurrentUserReport(CedarRequestContext context,
                                                                                    FolderServiceSession folderSession,
-                                                                                   PermissionServiceSession permissionSession,
+                                                                                   ResourcePermissionServiceSession permissionSession,
                                                                                    CedarConfig cedarConfig,
                                                                                    String artifactId)
       throws CedarException {
@@ -59,7 +56,7 @@ public class GraphDbPermissionReader {
   }
 
   public static void decorateResourceWithCurrentUserPermissions(CedarRequestContext c,
-                                                                PermissionServiceSession permissionSession,
+                                                                ResourcePermissionServiceSession permissionSession,
                                                                 CedarConfig cedarConfig,
                                                                 ResourceWithCurrentUserPermissions resource) {
     VersionServiceSession versionSession = CedarDataServices.getVersionServiceSession(c);
@@ -70,7 +67,7 @@ public class GraphDbPermissionReader {
 
   public static FolderServerFolderCurrentUserReport getFolderCurrentUserReport(CedarRequestContext context,
                                                                                FolderServiceSession folderSession,
-                                                                               PermissionServiceSession permissionSession,
+                                                                               ResourcePermissionServiceSession permissionSession,
                                                                                String folderId) throws CedarException {
     if (folderId != null) {
 
@@ -96,14 +93,16 @@ public class GraphDbPermissionReader {
   }
 
   private static void decorateFolderWithCurrentUserPermissions(CedarRequestContext c,
-                                                               PermissionServiceSession permissionSession,
+                                                               ResourcePermissionServiceSession permissionSession,
                                                                FolderWithCurrentUserPermissions folder) {
     CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbFolder.get(permissionSession, folder);
     cupu.update(folder.getCurrentUserPermissions());
   }
 
   public static FolderServerCategoryCurrentUserReport getCategoryCurrentUserReport(CedarRequestContext context,
-                                                                                   CategoryServiceSession categorySession, PermissionServiceSession permissionSession, CedarCategoryId categoryId) throws CedarException {
+                                                                                   CategoryServiceSession categorySession,
+                                                                                   CategoryPermissionServiceSession categoryPermissionSession,
+                                                                                   CedarCategoryId categoryId) throws CedarException {
     if (categoryId != null) {
 
       FolderServerCategory category = categorySession.getCategoryById(categoryId);
@@ -116,7 +115,7 @@ public class GraphDbPermissionReader {
       FolderServerCategoryCurrentUserReport categoryReport =
           FolderServerCategoryCurrentUserReport.fromCategory(category);
 
-      decorateCategoryWithCurrentUserPermissions(context, permissionSession, categoryReport);
+      decorateCategoryWithCurrentUserPermissions(context, categoryPermissionSession, categoryReport);
 
       return categoryReport;
     }
@@ -124,9 +123,10 @@ public class GraphDbPermissionReader {
   }
 
   private static void decorateCategoryWithCurrentUserPermissions(CedarRequestContext context,
-                                                                 PermissionServiceSession permissionSession,
+                                                                 CategoryPermissionServiceSession categoryPermissionSession,
                                                                  FolderServerCategoryCurrentUserReport categoryReport) {
-    CurrentUserCategoryPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbCategory.get(permissionSession,
+    CurrentUserCategoryPermissionUpdater cupu =
+        CurrentUserPermissionUpdaterForGraphDbCategory.get(categoryPermissionSession,
         categoryReport);
     cupu.update(categoryReport.getCurrentUserPermissions());
   }
