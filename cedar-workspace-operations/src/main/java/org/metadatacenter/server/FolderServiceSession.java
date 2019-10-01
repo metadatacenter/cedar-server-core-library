@@ -55,15 +55,17 @@ public interface FolderServiceSession {
 
   List<FileSystemResource> findFolderContentsFiltered(String folderURL, List<CedarResourceType> resourceTypeList,
                                                       ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                        publicationStatus, int limit, int offset, List<String>
-                                                        sortList);
+                                                          publicationStatus, int limit, int offset, List<String>
+                                                          sortList);
 
-  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(String folderURL, List<CedarResourceType> resourceTypeList,
+  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(String folderURL,
+                                                                      List<CedarResourceType> resourceTypeList,
                                                                       ResourceVersionFilter version,
                                                                       ResourcePublicationStatusFilter publicationStatus,
                                                                       int limit, int offset, List<String> sortList);
 
-  List<FolderServerResourceExtract> findFolderContentsExtract(String folderURL, List<CedarResourceType> resourceTypeList,
+  List<FolderServerResourceExtract> findFolderContentsExtract(String folderURL,
+                                                              List<CedarResourceType> resourceTypeList,
                                                               ResourceVersionFilter version,
                                                               ResourcePublicationStatusFilter publicationStatus,
                                                               int limit, int offset, List<String> sortList);
@@ -86,12 +88,15 @@ public interface FolderServiceSession {
 
   FolderServerFolder ensureUserHomeExists();
 
-  List<FolderServerResourceExtract> viewSharedWithMe(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+  List<FolderServerResourceExtract> viewSharedWithMe(List<CedarResourceType> resourceTypeList,
+                                                     ResourceVersionFilter version,
                                                      ResourcePublicationStatusFilter publicationStatus, int limit,
                                                      int offset, List<String> sortList);
 
-  List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                                                            ResourcePublicationStatusFilter publicationStatus, int limit,
+  List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList,
+                                                            ResourceVersionFilter version,
+                                                            ResourcePublicationStatusFilter publicationStatus,
+                                                            int limit,
                                                             int offset, List<String> sortList);
 
   long viewSharedWithMeCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
@@ -104,10 +109,13 @@ public interface FolderServiceSession {
                                             ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
                                             List<String> sortList);
 
-  long viewAllCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter
+  long viewAllCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                    ResourcePublicationStatusFilter
       publicationStatus);
 
   List<FileSystemResource> findAllDescendantNodesById(String id);
+
+  List<FileSystemResource> findAllChildArtifactsOfFolder(String id);
 
   List<FileSystemResource> findAllNodesVisibleByGroupId(String id);
 
@@ -139,7 +147,8 @@ public interface FolderServiceSession {
 
   List<FolderServerArtifactExtract> getVersionHistoryWithPermission(String id);
 
-  List<FolderServerResourceExtract> searchIsBasedOn(List<CedarResourceType> resourceTypeList, String isBasedOn, int limit,
+  List<FolderServerResourceExtract> searchIsBasedOn(List<CedarResourceType> resourceTypeList, String isBasedOn,
+                                                    int limit,
                                                     int offset, List<String> sortList);
 
   long searchIsBasedOnCount(List<CedarResourceType> resourceTypeList, String isBasedOn);

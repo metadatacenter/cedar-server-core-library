@@ -225,6 +225,13 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     return executeReadGetList(q, FileSystemResource.class);
   }
 
+  public List<FileSystemResource> findAllChildArtifactsOfFolder(String id) {
+    String cypher = CypherQueryBuilderNode.getAllChildArtifacts();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FileSystemResource.class);
+  }
+
   public List<FileSystemResource> findAllNodesVisibleByGroupId(String id) {
     String cypher = CypherQueryBuilderNode.getAllVisibleByGroupQuery();
     CypherParameters params = CypherParamBuilderGroup.matchGroupId(id);

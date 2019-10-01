@@ -303,6 +303,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public List<FileSystemResource> findAllChildArtifactsOfFolder(String id) {
+    return proxies.resource().findAllChildArtifactsOfFolder(id);
+  }
+
+  @Override
   public List<FileSystemResource> findAllNodesVisibleByGroupId(String id) {
     return proxies.resource().findAllNodesVisibleByGroupId(id);
   }

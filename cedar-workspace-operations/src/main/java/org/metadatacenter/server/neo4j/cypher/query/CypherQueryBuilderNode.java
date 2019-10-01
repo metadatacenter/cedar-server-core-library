@@ -196,6 +196,14 @@ public class CypherQueryBuilderNode extends AbstractCypherQueryBuilder {
         " RETURN child";
   }
 
+  public static String getAllChildArtifacts() {
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (child:<LABEL.RESOURCE>)" +
+        " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
+        " RETURN child";
+  }
+
   public static String getAllVisibleByGroupQuery() {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
