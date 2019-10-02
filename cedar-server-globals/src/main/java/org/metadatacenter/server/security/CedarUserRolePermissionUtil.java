@@ -9,6 +9,7 @@ import java.util.*;
 public abstract class CedarUserRolePermissionUtil {
 
   private static final Map<CedarUserRole, Set<String>> roleToPermissions;
+  private static final Set<String> defaultUserPermissions;
   private static final Set<String> templateCreatorPermissions;
   private static final Set<String> metadataCreatorPermissions;
   private static final Set<String> userAdministratorPermissions;
@@ -17,11 +18,14 @@ public abstract class CedarUserRolePermissionUtil {
   private static final Set<String> categoryAdministratorPermissions;
   private static final Set<String> categoryPrivilegedAdministratorPermissions;
   private static final Set<String> searchReindexerPermissions;
-  private static final Set<String> builtInSystemAdministratorPermissions;
+  private static final Set<String> processMessageSenderPermission;
 
   static {
+    defaultUserPermissions = new HashSet<>();
+    defaultUserPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
+    defaultUserPermissions.add(CedarPermission.CATEGORY_READ.getPermissionName());
+
     templateCreatorPermissions = new HashSet<>();
-    templateCreatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_CREATE.getPermissionName());
     templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_READ.getPermissionName());
     templateCreatorPermissions.add(CedarPermission.TEMPLATE_FIELD_UPDATE.getPermissionName());
@@ -40,7 +44,6 @@ public abstract class CedarUserRolePermissionUtil {
     templateCreatorPermissions.add(CedarPermission.FOLDER_DELETE.getPermissionName());
 
     metadataCreatorPermissions = new HashSet<>();
-    metadataCreatorPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_CREATE.getPermissionName());
     metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_READ.getPermissionName());
     metadataCreatorPermissions.add(CedarPermission.TEMPLATE_INSTANCE_UPDATE.getPermissionName());
@@ -73,22 +76,14 @@ public abstract class CedarUserRolePermissionUtil {
     categoryPrivilegedAdministratorPermissions.add(CedarPermission.WRITE_NOT_WRITABLE_CATEGORY.getPermissionName());
 
     searchReindexerPermissions = new HashSet<>();
-    searchReindexerPermissions.add(CedarPermission.LOGGED_IN.getPermissionName());
     searchReindexerPermissions.add(CedarPermission.SEARCH_INDEX_REINDEX.getPermissionName());
     searchReindexerPermissions.add(CedarPermission.RULES_INDEX_REINDEX.getPermissionName());
 
-    builtInSystemAdministratorPermissions = new HashSet<>();
-    builtInSystemAdministratorPermissions.addAll(templateCreatorPermissions);
-    builtInSystemAdministratorPermissions.addAll(metadataCreatorPermissions);
-    builtInSystemAdministratorPermissions.addAll(userAdministratorPermissions);
-    builtInSystemAdministratorPermissions.addAll(groupAdministratorPermissions);
-    builtInSystemAdministratorPermissions.addAll(filesystemAdministratorPermissions);
-    builtInSystemAdministratorPermissions.addAll(categoryAdministratorPermissions);
-    builtInSystemAdministratorPermissions.addAll(categoryPrivilegedAdministratorPermissions);
-    builtInSystemAdministratorPermissions.addAll(searchReindexerPermissions);
-    builtInSystemAdministratorPermissions.add(CedarPermission.SEND_PROCESS_MESSAGE.getPermissionName());
+    processMessageSenderPermission = new HashSet<>();
+    processMessageSenderPermission.add(CedarPermission.SEND_PROCESS_MESSAGE.getPermissionName());
 
     roleToPermissions = new HashMap<>();
+    roleToPermissions.put(CedarUserRole.DEFAULT_USER, defaultUserPermissions);
     roleToPermissions.put(CedarUserRole.TEMPLATE_CREATOR, templateCreatorPermissions);
     roleToPermissions.put(CedarUserRole.METADATA_CREATOR, metadataCreatorPermissions);
     roleToPermissions.put(CedarUserRole.USER_ADMINISTRATOR, userAdministratorPermissions);
@@ -97,7 +92,7 @@ public abstract class CedarUserRolePermissionUtil {
     roleToPermissions.put(CedarUserRole.CATEGORY_ADMINISTRATOR, categoryAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.CATEGORY_PRIVILEGED_ADMINISTRATOR, categoryPrivilegedAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.SEARCH_REINDEXER, searchReindexerPermissions);
-    roleToPermissions.put(CedarUserRole.BUILT_IN_SYSTEM_ADMINISTRATOR, builtInSystemAdministratorPermissions);
+    roleToPermissions.put(CedarUserRole.PROCESS_MESSAGE_SENDER, processMessageSenderPermission);
   }
 
   public static void expandRolesIntoPermissions(CedarUser u) {

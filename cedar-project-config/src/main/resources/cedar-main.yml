@@ -186,14 +186,22 @@ blueprintUserProfile:
     salt: "${CEDAR_SALT_API_KEY}"
   defaultRoles:
     normal:
+      - "defaultUser"
       - "templateCreator"
       - "metadataCreator"
       - "groupAdministrator"
       - "categoryAdministrator"
     builtInAdmin:
+      - "defaultUser"
       - "templateCreator"
       - "metadataCreator"
-      - "builtInSystemAdministrator"
+      - "groupAdministrator"
+      - "categoryAdministrator"
+      - "categoryPrivilegedAdministrator"
+      - "filesystemAdministrator"
+      - "searchReindexer"
+      - "userAdministrator"
+      - "processMessageSendert"
   uiPreferences:
     folderView:
       sortBy: "name"
