@@ -195,12 +195,12 @@ blueprintUserProfile:
       - "defaultUser"
       - "templateCreator"
       - "metadataCreator"
+      - "userAdministrator"
       - "groupAdministrator"
+      - "filesystemAdministrator"
       - "categoryAdministrator"
       - "categoryPrivilegedAdministrator"
-      - "filesystemAdministrator"
       - "searchReindexer"
-      - "userAdministrator"
       - "processMessageSender"
   uiPreferences:
     folderView:
