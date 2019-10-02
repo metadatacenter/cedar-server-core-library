@@ -127,7 +127,9 @@ public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
 
     List<String> justRoles = new ArrayList<>();
     for (CedarUserRole role : user.getRoles()) {
-      justRoles.add(role.getValue());
+      if (role != null) {
+        justRoles.add(role.getValue());
+      }
     }
     params.put(NodeProperty.ROLES, justRoles);
 
