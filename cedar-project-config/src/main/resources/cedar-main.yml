@@ -201,7 +201,7 @@ blueprintUserProfile:
       - "filesystemAdministrator"
       - "searchReindexer"
       - "userAdministrator"
-      - "processMessageSendert"
+      - "processMessageSender"
   uiPreferences:
     folderView:
       sortBy: "name"
