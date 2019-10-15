@@ -3,6 +3,9 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarFolderId;
+import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
@@ -19,13 +22,12 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
   protected static final Logger log = LoggerFactory.getLogger(Neo4JUserSessionAdminService.class);
 
-  private Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
-                                       String globalRequestId, String localRequestId) {
+  private Neo4JUserSessionAdminService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId, String localRequestId) {
     super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
-                                        String globalRequestId, String localRequestId) {
+  public static AdminServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String globalRequestId,
+                                        String localRequestId) {
     return new Neo4JUserSessionAdminService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
@@ -43,7 +45,7 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     log.info("Checking/Creating Global Objects");
 
-    String userId = cu.getId();
+    CedarUserId userId = cu.getResourceId();
     log.info("Current User Id: " + userId);
 
     log.info("Looking for Admin User in Neo4j");
@@ -59,13 +61,13 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     log.info("Looking for Everybody Group in Neo4j");
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+    CedarGroupId everybodyGroupId = null;
     if (everybody == null) {
       log.info("Everybody Group not found, trying to create it");
-      String everybodyURL = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.GROUP);
-      log.info("Everybody Group URL just generated:" + everybodyURL);
-      everybody = proxies.group().createGroup(everybodyURL, config.getEverybodyGroupName(),
-          config.getEverybodyGroupDisplayName(), config.getEverybodyGroupDescription(), userId, Neo4JFieldValues
-              .SPECIAL_GROUP_EVERYBODY);
+      everybodyGroupId = linkedDataUtil.buildNewLinkedDataIdObject(CedarGroupId.class);
+      log.info("Everybody Group URL just generated:" + everybodyGroupId);
+      everybody = proxies.group().createGroup(everybodyGroupId, config.getEverybodyGroupName(), config.getEverybodyGroupDescription(), userId,
+          Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
       log.info("Everybody Group created, returned:" + everybody);
       addAdminToEverybody = true;
     } else {
@@ -74,19 +76,19 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
 
     if (addAdminToEverybody) {
       log.info("Adding Admin user to Everybody Group");
-      boolean added = proxies.user().addUserToGroup(cedarAdmin, everybody);
+      boolean added = proxies.user().addUserToGroup(cedarAdmin.getResourceId(), everybodyGroupId);
       log.info("Admin user added to Everybody Group, returned:" + added);
     } else {
       log.info("Adding Admin user to Everybody Group is not needed");
     }
 
     FolderServerFolder rootFolder = proxies.folder().findFolderByPath(config.getRootFolderPath());
-    String rootFolderURL = null;
+    CedarFolderId rootFolderId = null;
     if (rootFolder == null) {
       rootFolder = proxies.folder().createRootFolder(userId);
     }
     if (rootFolder != null) {
-      rootFolderURL = rootFolder.getId();
+      rootFolderId = rootFolder.getResourceId();
     }
 
     FolderServerFolder usersFolder = proxies.folder().findFolderByPath(config.getUsersFolderPath());
@@ -96,12 +98,12 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       FolderServerFolder newUsersFolder = new FolderServerFolder();
       newUsersFolder.setName(name);
       newUsersFolder.setDescription(config.getUsersFolderDescription());
-      newUsersFolder.setCreatedByTotal(cedarAdmin.getId());
+      newUsersFolder.setCreatedByTotal(cedarAdmin.getResourceId());
       newUsersFolder.setRoot(false);
       newUsersFolder.setSystem(true);
       newUsersFolder.setUserHome(false);
 
-      proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderURL);
+      proxies.folder().createFolderAsChildOfId(newUsersFolder, rootFolderId);
     }
 
     log.info("Looking for Root Category in Neo4j");

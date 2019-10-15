@@ -3,6 +3,8 @@ package org.metadatacenter.model.folderserver.basic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.id.CedarFilesystemResourceId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.*;
@@ -183,10 +185,14 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates 
     this.everybodyPermission = everybodyPermission;
   }
 
-  public void setCreatedByTotal(String createdBy) {
-    setCreatedBy(createdBy);
-    setOwnedBy(createdBy);
-    setLastUpdatedBy(createdBy);
+  public void setCreatedByTotal(CedarUserId createdBy) {
+    setCreatedBy(createdBy.getId());
+    setOwnedBy(createdBy.getId());
+    setLastUpdatedBy(createdBy.getId());
   }
 
+  public CedarFilesystemResourceId getResourceId() {
+    return CedarFilesystemResourceId.buildSafe(getId());
+  }
+  
 }

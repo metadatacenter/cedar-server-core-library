@@ -1,7 +1,5 @@
 package org.metadatacenter.server.security.model.permission.category;
 
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
-
 public abstract class AbstractCategoryPermission {
 
   protected CategoryPermission permission;

@@ -1,8 +1,8 @@
 package org.metadatacenter.model.folderserver.report;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.IsBasedOnGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithIsBasedOn;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
@@ -21,13 +21,13 @@ public abstract class FolderServerInstanceArtifactReport extends FolderServerArt
   }
 
   @Override
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOnGroup.getIsBasedOn();
   }
 
   @Override
-  public void setIsBasedOn(String isBasedOn) {
-    isBasedOnGroup.setIsBasedOn(ResourceUri.forValue(isBasedOn));
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    isBasedOnGroup.setIsBasedOn(isBasedOn);
   }
 
   @JsonProperty(NodeProperty.OnTheFly.IS_BASED_ON)

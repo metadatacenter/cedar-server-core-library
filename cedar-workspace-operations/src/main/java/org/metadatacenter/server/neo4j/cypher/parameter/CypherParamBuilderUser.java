@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.constant.CedarConstants;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -76,14 +77,14 @@ public class CypherParamBuilderUser extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchUserId(String userURL) {
+  public static CypherParameters matchUserId(CedarUserId userId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.USER_ID, userURL);
+    params.put(ParameterPlaceholder.USER_ID, userId);
     return params;
   }
 
-  public static CypherParameters getUserById(String userURL) {
-    return getNodeByIdentity(userURL);
+  public static CypherParameters getUserById(CedarUserId userId) {
+    return matchResourceByIdentity(userId);
   }
 
   public static CypherParameters getUserByApiKey(String apiKey) {

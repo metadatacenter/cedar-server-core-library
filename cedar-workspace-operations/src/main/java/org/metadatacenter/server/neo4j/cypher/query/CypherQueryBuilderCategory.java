@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
 public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
@@ -11,7 +12,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category";
   }
 
-  public static String createCategory(CedarCategoryId parentCategoryId, String userId) {
+  public static String createCategory(CedarCategoryId parentCategoryId, CedarUserId userId) {
     StringBuilder sb = new StringBuilder();
     sb.append(" CREATE (category:<COMPOSEDLABEL.CATEGORY> {");
     // BaseDataGroup
@@ -36,13 +37,13 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
 
     if (parentCategoryId != null) {
       sb.append(" WITH category");
-      sb.append(" MATCH (parent:<LABEL.CATEGORY> {<PROP.ID>:{parentCategoryId}})");
+      sb.append(" MATCH (parent:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.PARENT_CATEGORY_ID>}})");
       sb.append(" MERGE (parent)-[:<REL.CONTAINSCATEGORY>]->(category)");
     }
 
     if (userId != null) {
       sb.append(" WITH category");
-      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})");
       sb.append(" MERGE (user)-[:<REL.OWNSCATEGORY>]->(category)");
     }
 
@@ -58,7 +59,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
 
   public static String getCategoryByParentAndName() {
     return "" +
-        " MATCH (category:<LABEL.CATEGORY> {<PROP.NAME>:{<PROP.NAME>}, <PROP.PARENT_CATEGORY_ID>:{parentCategoryId}})" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.NAME>:{<PROP.NAME>}, <PROP.PARENT_CATEGORY_ID>:{<PROP.PARENT_CATEGORY_ID>}})" +
         " RETURN category";
   }
 
@@ -118,8 +119,8 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
 
   public static String setCategoryOwner() {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PH.CATEGORY_ID>}})" +
         " CREATE (user)-[:<REL.OWNSCATEGORY>]->(category)" +
         " SET category.<PROP.OWNED_BY> = {userId}" +
         " RETURN category";
@@ -128,11 +129,17 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String removeCategoryOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{nodeId}})" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (user)-[relation:<REL.OWNSCATEGORY>]->(category)" +
         " DELETE (relation)" +
         " SET category.<PROP.OWNED_BY> = null" +
         " RETURN category";
+  }
+
+  public static String categoryExists() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN COUNT(category) == 1";
   }
 
 }

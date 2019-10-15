@@ -1,7 +1,7 @@
 package org.metadatacenter.server;
 
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -22,82 +22,73 @@ public interface FolderServiceSession {
 
   String getRootPath();
 
-  FolderServerFolder findFolderById(String folderURL);
+  FolderServerFolder findFolderById(CedarFolderId folderId);
 
   List<FolderServerResourceExtract> findAllNodes(int limit, int offset, List<String> sortList);
 
   long findAllNodesCount();
 
-  FolderServerArtifact findArtifactById(String resourceURL);
+  FolderServerArtifact findArtifactById(CedarArtifactId artifactId);
 
-  FileSystemResource findResourceById(String nodeURL);
+  FileSystemResource findResourceById(CedarFilesystemResourceId resourceId);
 
-  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentFolderURL);
+  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, CedarFolderId parentFolderId);
 
-  FolderServerArtifact createResourceAsChildOfId(FolderServerArtifact newResource, String parentFolderURL);
+  FolderServerArtifact createResourceAsChildOfId(FolderServerArtifact newResource, CedarFolderId parentFolderId);
 
-  FolderServerFolder updateFolderById(String folderURL, Map<NodeProperty, String> updateFields);
+  FolderServerFolder updateFolderById(CedarFolderId folderId, Map<NodeProperty, String> updateFields);
 
-  FolderServerArtifact updateResourceById(String resourceURL, CedarResourceType resourceType, Map<NodeProperty,
-      String> updateFields);
+  FolderServerArtifact updateArtifactById(CedarArtifactId artifactId, CedarResourceType resourceType, Map<NodeProperty, String> updateFields);
 
-  boolean deleteFolderById(String folderURL);
+  boolean deleteFolderById(CedarFolderId folderId);
 
-  boolean deleteResourceById(String resourceURL);
+  boolean deleteResourceById(CedarArtifactId resourceId);
 
   FolderServerFolder findFolderByPath(String path);
 
-  FileSystemResource findNodeByParentIdAndName(FolderServerFolder parentFolder, String name);
+  FileSystemResource findFilesystemResourceByParentFolderIdAndName(CedarFolderId parentFolderId, String name);
 
   List<FolderServerFolder> findFolderPath(FolderServerFolder folder);
 
   List<FolderServerResourceExtract> findNodePathExtract(FileSystemResource node);
 
-  List<FileSystemResource> findFolderContentsFiltered(String folderURL, List<CedarResourceType> resourceTypeList,
-                                                      ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                                          publicationStatus, int limit, int offset, List<String>
-                                                          sortList);
+  List<FileSystemResource> findFolderContentsFiltered(CedarFolderId folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                                                      ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                      List<String> sortList);
 
-  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(String folderURL,
-                                                                      List<CedarResourceType> resourceTypeList,
+  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(CedarFolderId folderId, List<CedarResourceType> resourceTypeList,
                                                                       ResourceVersionFilter version,
-                                                                      ResourcePublicationStatusFilter publicationStatus,
-                                                                      int limit, int offset, List<String> sortList);
+                                                                      ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                                      List<String> sortList);
 
-  List<FolderServerResourceExtract> findFolderContentsExtract(String folderURL,
-                                                              List<CedarResourceType> resourceTypeList,
-                                                              ResourceVersionFilter version,
-                                                              ResourcePublicationStatusFilter publicationStatus,
+  List<FolderServerResourceExtract> findFolderContentsExtract(CedarFolderId folderId, List<CedarResourceType> resourceTypeList,
+                                                              ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
                                                               int limit, int offset, List<String> sortList);
 
-  long findFolderContentsFilteredCount(String folderURL, List<CedarResourceType> resourceTypeList, ResourceVersionFilter
-      version, ResourcePublicationStatusFilter publicationStatus);
+  long findFolderContentsFilteredCount(CedarFolderId folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                                       ResourcePublicationStatusFilter publicationStatus);
 
-  long findFolderContentsCount(String folderURL, List<CedarResourceType> resourceTypeList, ResourceVersionFilter
-      version, ResourcePublicationStatusFilter publicationStatus);
+  long findFolderContentsCount(CedarFolderId folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                               ResourcePublicationStatusFilter publicationStatus);
 
-  long findFolderContentsUnfilteredCount(String folderURL);
+  long findFolderContentsUnfilteredCount(CedarFolderId folderId);
 
   void addPathAndParentId(FolderServerFolder folder);
 
   void addPathAndParentId(FolderServerArtifact resource);
 
-  boolean moveResource(FolderServerArtifact sourceResource, FolderServerFolder targetFolder);
+  boolean moveResource(CedarArtifactId sourceArtifactId, CedarFolderId targetFolderId);
 
-  boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder);
+  boolean moveFolder(CedarFolderId sourceFolderId, CedarFolderId targetFolderId);
 
   FolderServerFolder ensureUserHomeExists();
 
-  List<FolderServerResourceExtract> viewSharedWithMe(List<CedarResourceType> resourceTypeList,
-                                                     ResourceVersionFilter version,
-                                                     ResourcePublicationStatusFilter publicationStatus, int limit,
-                                                     int offset, List<String> sortList);
+  List<FolderServerResourceExtract> viewSharedWithMe(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                                                     ResourcePublicationStatusFilter publicationStatus, int limit, int offset, List<String> sortList);
 
-  List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList,
-                                                            ResourceVersionFilter version,
-                                                            ResourcePublicationStatusFilter publicationStatus,
-                                                            int limit,
-                                                            int offset, List<String> sortList);
+  List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                                                            ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                            List<String> sortList);
 
   long viewSharedWithMeCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
                              ResourcePublicationStatusFilter publicationStatus);
@@ -106,50 +97,48 @@ public interface FolderServiceSession {
                                     ResourcePublicationStatusFilter publicationStatus);
 
   List<FolderServerResourceExtract> viewAll(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                                            ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
-                                            List<String> sortList);
+                                            ResourcePublicationStatusFilter publicationStatus, int limit, int offset, List<String> sortList);
 
-  long viewAllCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                    ResourcePublicationStatusFilter
-      publicationStatus);
+  long viewAllCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus);
 
-  List<FileSystemResource> findAllDescendantNodesById(String id);
+  List<FileSystemResource> findAllDescendantNodesById(CedarFolderId id);
 
-  List<FileSystemResource> findAllChildArtifactsOfFolder(String id);
+  List<FileSystemResource> findAllChildArtifactsOfFolder(CedarFolderId id);
 
-  List<FileSystemResource> findAllNodesVisibleByGroupId(String id);
+  List<FileSystemResource> findAllNodesVisibleByGroupId(CedarGroupId id);
 
   FolderServerFolder findHomeFolderOf();
 
   FolderServerFolder createUserHomeFolder();
 
-  boolean setDerivedFrom(String newId, String oldId);
+  boolean setDerivedFrom(CedarArtifactId newId, CedarArtifactId oldId);
 
-  boolean unsetLatestVersion(String id);
+  boolean unsetLatestVersion(CedarSchemaArtifactId id);
 
-  boolean setLatestVersion(String id);
+  boolean setLatestVersion(CedarSchemaArtifactId id);
 
-  boolean setLatestPublishedVersion(String id);
+  boolean setLatestPublishedVersion(CedarSchemaArtifactId id);
 
-  boolean unsetLatestPublishedVersion(String id);
+  boolean unsetLatestPublishedVersion(CedarSchemaArtifactId id);
 
-  boolean unsetLatestDraftVersion(String id);
+  boolean unsetLatestDraftVersion(CedarSchemaArtifactId id);
 
-  boolean setOpen(String id);
+  boolean setOpen(CedarArtifactId id);
 
-  boolean setNotOpen(String id);
+  boolean setNotOpen(CedarArtifactId id);
 
-  long getNumberOfInstances(String templateId);
+  long getNumberOfInstances(CedarTemplateId templateId);
 
-  FolderServerArtifactExtract findResourceExtractById(ResourceUri id);
+  FolderServerArtifactExtract findResourceExtractById(CedarArtifactId id);
 
-  List<FolderServerArtifactExtract> getVersionHistory(String id);
+  List<FolderServerArtifactExtract> getVersionHistory(CedarSchemaArtifactId id);
 
-  List<FolderServerArtifactExtract> getVersionHistoryWithPermission(String id);
+  List<FolderServerArtifactExtract> getVersionHistoryWithPermission(CedarSchemaArtifactId id);
 
-  List<FolderServerResourceExtract> searchIsBasedOn(List<CedarResourceType> resourceTypeList, String isBasedOn,
-                                                    int limit,
-                                                    int offset, List<String> sortList);
+  List<FolderServerResourceExtract> searchIsBasedOn(List<CedarResourceType> resourceTypeList, CedarTemplateId isBasedOn, int limit, int offset,
+                                                    List<String> sortList);
 
-  long searchIsBasedOnCount(List<CedarResourceType> resourceTypeList, String isBasedOn);
+  long searchIsBasedOnCount(List<CedarResourceType> resourceTypeList, CedarTemplateId isBasedOn);
+
+  CedarResourceType getResourceType(CedarResourceId resourceId);
 }

@@ -212,8 +212,8 @@ public abstract class AbstractCypherQueryBuilder {
 
   protected static String createFSFolderAsChildOfId(FolderServerFolder newFolder) {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_ID>}})" +
         createFSFolder("child", newFolder) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +

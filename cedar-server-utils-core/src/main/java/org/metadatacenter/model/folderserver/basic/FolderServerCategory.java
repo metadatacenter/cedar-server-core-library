@@ -1,9 +1,6 @@
 package org.metadatacenter.model.folderserver.basic;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithUsersAndUserNamesData;
@@ -97,13 +94,4 @@ public class FolderServerCategory extends AbstractCedarResourceWithDates impleme
     this.parentCategoryId = parentCategoryId;
   }
 
-  @JsonIgnore
-  public CedarCategoryId getIdObject() {
-    try {
-      return CedarCategoryId.build(getId());
-    } catch (CedarProcessingException e) {
-      log.error("Error creating CedarCategoryId", e);
-      return null;
-    }
-  }
 }

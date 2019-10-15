@@ -1,170 +1,175 @@
 package org.metadatacenter.server.neo4j.cypher.query;
 
-import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
-import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
+import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 
-import java.util.Map;
+import java.util.List;
 
 public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
 
-  public static String createResourceAsChildOfId(FolderServerArtifact newResource) {
-    return createFSResourceAsChildOfId(newResource);
-  }
-
-  public static String updateResourceById(Map<NodeProperty, String> updateFields) {
+  public static String getSharedWithMeLookupQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
+                                                  List<String> sortList) {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})");
-    sb.append(buildSetter("artifact", NodeProperty.LAST_UPDATED_BY));
-    sb.append(buildSetter("artifact", NodeProperty.LAST_UPDATED_ON));
-    sb.append(buildSetter("artifact", NodeProperty.LAST_UPDATED_ON_TS));
-    for (NodeProperty property : updateFields.keySet()) {
-      sb.append(buildSetter("artifact", property));
+    sb.append(
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})-" +
+            "[:<REL.MEMBEROF>*0..1]->" +
+            "()-" +
+            "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+            "(resource)" +
+            " WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
+            " AND NOT EXISTS(resource.<PROP.EVERYBODY_PERMISSION>)" +
+            " AND resource.<PROP.OWNED_BY> <> {userId}" +
+            " AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "resource"));
     }
-    sb.append(" RETURN artifact");
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN DISTINCT(resource)");
+    sb.append(" ORDER BY resource.<PROP.NODE_SORT_ORDER>,");
+    sb.append(getOrderByExpression("resource", sortList));
+    sb.append(", resource.<PROP.VERSION> DESC");
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
     return sb.toString();
   }
 
-  public static String deleteResourceById() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
-        " DETACH DELETE artifact";
+  public static String getSharedWithMeCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})-" +
+            "[:<REL.MEMBEROF>*0..1]->" +
+            "()-" +
+            "[:<REL.CANREAD>|:<REL.CANWRITE>]->" +
+            "(resource)" +
+            " WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
+            " AND NOT EXISTS(resource.<PROP.EVERYBODY_PERMISSION>)" +
+            " AND resource.<PROP.OWNED_BY> <> {userId}" +
+            " AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) "
+    );
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "resource"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "resource"));
+    }
+    sb.append(
+        " RETURN count(resource)"
+    );
+    return sb.toString();
   }
 
-  public static String unlinkResourceFromParent() {
-    return "" +
-        " MATCH (parent:<LABEL.FOLDER>)" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " MATCH (parent)-[relation:<REL.CONTAINS>]->(artifact)" +
-        " DELETE relation" +
-        " RETURN artifact";
+  public static String getAllLookupQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, List<String> sortList,
+                                         boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
+    sb.append(" AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "resource"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN resource");
+    sb.append(" ORDER BY resource.<PROP.NODE_SORT_ORDER>,").append(getOrderByExpression("resource", sortList));
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
   }
 
-  public static String linkResourceUnderFolder() {
+  public static String getAllCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
+                                        boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
+    sb.append(" AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    if (version != null && version != ResourceVersionFilter.ALL) {
+      sb.append(getVersionConditions(version, " AND ", "resource"));
+    }
+    if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
+      sb.append(getPublicationStatusConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN count(resource)");
+    return sb.toString();
+  }
+
+  public static String getSearchIsBasedOnLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
+    sb.append(" AND (resource.<PROP.IS_BASED_ON> = {isBasedOn}) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN resource");
+    sb.append(" ORDER BY resource.<PROP.NODE_SORT_ORDER>,").append(getOrderByExpression("resource", sortList));
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getSearchIsBasedOnCountQuery(boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
+    sb.append(" AND (resource.<PROP.IS_BASED_ON> = {isBasedOn}) ");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN count(resource)");
+    return sb.toString();
+  }
+
+  public static String getResourceById() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId}})" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " CREATE (parent)-[:<REL.CONTAINS>]->(artifact)" +
-        " RETURN artifact";
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN resource";
   }
 
   public static String setResourceOwner() {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " CREATE (user)-[:<REL.OWNS>]->(artifact)" +
-        " SET artifact.<PROP.OWNED_BY> = {userId}" +
-        " RETURN artifact";
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PH.RESOURCE_ID>}})" +
+        " CREATE (user)-[:<REL.OWNS>]->(resource)" +
+        " SET resource.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
+        " RETURN resource";
   }
 
   public static String removeResourceOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " MATCH (user)-[relation:<REL.OWNS>]->(artifact)" +
-        " DELETE relation" +
-        " SET artifact.<PROP.OWNED_BY> = null" +
-        " RETURN artifact";
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " MATCH (user)-[relation:<REL.OWNS>]->(resource)" +
+        " DELETE (relation)" +
+        " SET resource.<PROP.OWNED_BY> = null" +
+        " RETURN resource";
   }
 
-  public static String getResourceLookupQueryById() {
+  public static String resourceExists() {
     return "" +
-        " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +
-        " (current:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})," +
-        " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
-        " RETURN path";
-  }
-
-  public static String createResourceWithoutParent(FolderServerArtifact newResource) {
-    return "" +
-        createFSResource(ALIAS_FOO, newResource) +
-        " RETURN " + ALIAS_FOO;
-  }
-
-  public static String setDerivedFrom() {
-    return "" +
-        " MATCH (nr:<LABEL.RESOURCE> {<PROP.ID>:{sourceId}})" +
-        " MATCH (or:<LABEL.RESOURCE> {<PROP.ID>:{targetId}})" +
-        " CREATE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
-        " SET nr.<PROP.DERIVED_FROM> = {targetId}" +
-        " RETURN nr";
-  }
-
-  public static String unsetLatestVersion() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_LATEST_VERSION> = false" +
-        " RETURN artifact";
-  }
-
-  public static String setLatestVersion() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_LATEST_VERSION> = true" +
-        " RETURN artifact";
-  }
-
-  public static String unsetLatestDraftVersion() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_LATEST_DRAFT_VERSION> = false" +
-        " RETURN artifact";
-  }
-
-  public static String setLatestPublishedVersion() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_LATEST_PUBLISHED_VERSION> = true" +
-        " RETURN artifact";
-  }
-
-  public static String unsetLatestPublishedVersion() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_LATEST_PUBLISHED_VERSION> = false" +
-        " RETURN artifact";
-  }
-
-  public static String getIsBasedOnCount() {
-    return "" +
-        " MATCH (instance:<LABEL.INSTANCE> {<PROP.IS_BASED_ON>:{resourceId}}) " +
-        " RETURN COUNT(instance)";
-  }
-
-  public static String getVersionHistory() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})");
-    sb.append(" MATCH p=(resnew:<LABEL.RESOURCE>)-[:<REL.PREVIOUSVERSION>*0..]->");
-    sb.append("(artifact)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.RESOURCE>)");
-    sb.append(" RETURN p ORDER BY length(p) DESC LIMIT 1");
-    return sb.toString();
-  }
-
-  public static String getVersionHistoryWithPermission() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-    sb.append(" MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})");
-    sb.append(" MATCH p=(resnew:<LABEL.RESOURCE>)-[:<REL.PREVIOUSVERSION>*0..]->");
-    sb.append("(artifact)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.RESOURCE>)");
-    sb.append(" WITH nodes(p) as ns, user");
-    sb.append(" ORDER BY length(p) DESC LIMIT 1");
-    sb.append(" RETURN FILTER(resource in ns");
-    sb.append(getResourcePermissionConditions(" WHERE ", "resource"));
-    sb.append(" )");
-    return sb.toString();
-  }
-
-  public static String setOpen() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " SET artifact.<PROP.IS_OPEN> = true" +
-        " RETURN artifact";
-  }
-
-  public static String setNotOpen() {
-    return "" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{resourceId}})" +
-        " REMOVE artifact.<PROP.IS_OPEN>" +
-        " RETURN artifact";
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN COUNT(resource) == 1";
   }
 
 }

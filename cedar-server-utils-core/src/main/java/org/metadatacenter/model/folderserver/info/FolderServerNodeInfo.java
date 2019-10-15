@@ -2,9 +2,11 @@ package org.metadatacenter.model.folderserver.info;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarArtifactId;
+import org.metadatacenter.id.CedarSchemaArtifactId;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.datagroup.*;
@@ -125,13 +127,13 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public ResourceUri getPreviousVersion() {
+  public CedarSchemaArtifactId getPreviousVersion() {
     return previousVersionData.getPreviousVersion();
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public void setPreviousVersion(String pv) {
-    previousVersionData.setPreviousVersion(ResourceUri.forValue(pv));
+  public void setPreviousVersion(CedarSchemaArtifactId pv) {
+    previousVersionData.setPreviousVersion(pv);
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
@@ -145,23 +147,23 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public ResourceUri getDerivedFrom() {
+  public CedarArtifactId getDerivedFrom() {
     return derivedFromData.getDerivedFrom();
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public void setDerivedFrom(String df) {
-    derivedFromData.setDerivedFrom(ResourceUri.forValue(df));
+  public void setDerivedFrom(CedarArtifactId df) {
+    derivedFromData.setDerivedFrom(df);
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOnData.getIsBasedOn();
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public void setIsBasedOn(String isBasedOn) {
-    isBasedOnData.setIsBasedOn(ResourceUri.forValue(isBasedOn));
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    isBasedOnData.setIsBasedOn(isBasedOn);
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)

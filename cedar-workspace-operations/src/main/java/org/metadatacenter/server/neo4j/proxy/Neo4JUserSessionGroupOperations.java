@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
+import org.metadatacenter.id.CedarFilesystemResourceId;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.security.model.auth.CedarGroupUser;
@@ -19,8 +21,8 @@ public final class Neo4JUserSessionGroupOperations {
   private Neo4JUserSessionGroupOperations() {
   }
 
-  static void updateGroupUsers(Neo4JProxyGroup neo4JProxy, String groupURL, CedarGroupUsers currentGroupUsers,
-                               CedarGroupUsers newGroupUsers, RelationLabel relation, Filter filter) {
+  static void updateGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupId, CedarGroupUsers currentGroupUsers, CedarGroupUsers newGroupUsers,
+                               RelationLabel relation, Filter filter) {
     Set<CedarUserId> oldUsers = new HashSet<>();
     for (CedarGroupUser gu : currentGroupUsers.getUsers()) {
       if ((filter == Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Filter.MEMBER && gu.isMember())) {
@@ -37,61 +39,48 @@ public final class Neo4JUserSessionGroupOperations {
     Set<CedarUserId> toRemoveUsers = new HashSet<>(oldUsers);
     toRemoveUsers.removeAll(newUsers);
     if (!toRemoveUsers.isEmpty()) {
-      removeGroupUsers(neo4JProxy, groupURL, toRemoveUsers, relation);
+      removeGroupUsers(neo4JProxy, groupId, toRemoveUsers, relation);
     }
 
     Set<CedarUserId> toAddUsers = new HashSet<>();
     toAddUsers.addAll(newUsers);
     toAddUsers.removeAll(oldUsers);
     if (!toAddUsers.isEmpty()) {
-      addGroupUsers(neo4JProxy, groupURL, toAddUsers, relation);
+      addGroupUsers(neo4JProxy, groupId, toAddUsers, relation);
     }
   }
 
-  private static void addGroupUsers(Neo4JProxyGroup neo4JProxy, String groupURL, Set<CedarUserId> toAddUsers,
-                                    RelationLabel relation) {
+  private static void addGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupURL, Set<CedarUserId> toAddUsers, RelationLabel relation) {
     for (CedarUserId cuid : toAddUsers) {
-      neo4JProxy.addUserGroupRelation(cuid.getId(), groupURL, relation);
+      neo4JProxy.addUserGroupRelation(cuid, groupURL, relation);
     }
   }
 
-  private static void removeGroupUsers(Neo4JProxyGroup neo4JProxy, String groupURL, Set<CedarUserId> toRemoveUsers,
-                                       RelationLabel relation) {
+  private static void removeGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupURL, Set<CedarUserId> toRemoveUsers, RelationLabel relation) {
     for (CedarUserId cuid : toRemoveUsers) {
-      neo4JProxy.removeUserGroupRelation(cuid.getId(), groupURL, relation);
+      neo4JProxy.removeUserGroupRelation(cuid, groupURL, relation);
     }
   }
 
-  static void addGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, String nodeURL,
+  static void addGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                   Set<ResourcePermissionGroupPermissionPair> toAddGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toAddGroupPermissions) {
-      neo4JProxy.addPermissionToGroup(nodeURL, pair.getGroup().getId(), pair.getPermission());
+      neo4JProxy.addPermissionToGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
     }
   }
 
-  static void removeGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, String nodeURL,
+  static void removeGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                      Set<ResourcePermissionGroupPermissionPair> toRemoveGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
-      neo4JProxy.removePermissionFromGroup(nodeURL, pair.getGroup().getId(), pair.getPermission());
+      neo4JProxy.removePermissionFromGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
     }
   }
 
-  static void addUserPermissions(Neo4JProxyResourcePermission neo4JProxy, String nodeURL,
+  static void addUserPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                  Set<ResourcePermissionUserPermissionPair> toAddUserPermissions) {
     for (ResourcePermissionUserPermissionPair pair : toAddUserPermissions) {
-      neo4JProxy.addPermissionToUser(nodeURL, pair.getUser().getId(), pair.getPermission());
+      neo4JProxy.addPermissionToUser(resourceId, pair.getUser().getIdObject(), pair.getPermission());
     }
-  }
-
-  static void removeUserPermissions(Neo4JProxyResourcePermission neo4JProxy, String nodeURL,
-                                    Set<ResourcePermissionUserPermissionPair> toRemoveUserPermissions) {
-    for (ResourcePermissionUserPermissionPair pair : toRemoveUserPermissions) {
-      neo4JProxy.removePermissionFromUser(nodeURL, pair.getUser().getId(), pair.getPermission());
-    }
-  }
-
-  static void updateNodeOwner(Neo4JProxyResource neo4JProxy, String nodeURL, String ownerURL) {
-    neo4JProxy.updateNodeOwner(nodeURL, ownerURL);
   }
 
 }

@@ -2,7 +2,7 @@ package org.metadatacenter.search;
 
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,17 +32,17 @@ public class IndexingDocumentDocument extends IndexedDocumentDocument {
     resetUsers();
     resetGroups();
     for (String userId : permissions.getUserPermissions().keySet()) {
-      ResourcePermission nodePermission = permissions.getUserPermissions().get(userId);
-      users.add(CedarNodeMaterializedPermissions.getKey(userId, ResourcePermission.READ));
+      FilesystemResourcePermission nodePermission = permissions.getUserPermissions().get(userId);
+      users.add(CedarNodeMaterializedPermissions.getKey(userId, FilesystemResourcePermission.READ));
       if (nodePermission.equals(nodePermission.WRITE)) {
-        users.add(CedarNodeMaterializedPermissions.getKey(userId, ResourcePermission.WRITE));
+        users.add(CedarNodeMaterializedPermissions.getKey(userId, FilesystemResourcePermission.WRITE));
       }
     }
     for (String groupId : permissions.getGroupPermissions().keySet()) {
-      ResourcePermission nodePermission = permissions.getGroupPermissions().get(groupId);
-      groups.add(CedarNodeMaterializedPermissions.getKey(groupId, ResourcePermission.READ));
-      if (nodePermission.equals(ResourcePermission.WRITE)) {
-        groups.add(CedarNodeMaterializedPermissions.getKey(groupId, ResourcePermission.WRITE));
+      FilesystemResourcePermission nodePermission = permissions.getGroupPermissions().get(groupId);
+      groups.add(CedarNodeMaterializedPermissions.getKey(groupId, FilesystemResourcePermission.READ));
+      if (nodePermission.equals(FilesystemResourcePermission.WRITE)) {
+        groups.add(CedarNodeMaterializedPermissions.getKey(groupId, FilesystemResourcePermission.WRITE));
       }
     }
   }

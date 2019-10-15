@@ -2,10 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.id.CedarCategoryId;
-import org.metadatacenter.id.CedarGroupId;
-import org.metadatacenter.id.CedarResourceId;
-import org.metadatacenter.id.CedarUserId;
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.folderserver.basic.*;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -24,69 +21,67 @@ public abstract class AbstractCypherParamBuilder {
     return new ParameterLiteral(FOLDER_ALIAS_PREFIX + i);
   }
 
-  protected static CypherParameters createNode(FileSystemResource newNode, String parentId) {
+  protected static CypherParameters createFilesystemResource(FileSystemResource newResource, CedarFolderId parentFolderId) {
 
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.PARENT_ID, parentId);
-    params.put(ParameterPlaceholder.USER_ID, newNode.getOwnedBy());
+    params.put(ParameterPlaceholder.PARENT_ID, parentFolderId);
+    params.put(ParameterPlaceholder.USER_ID, newResource.getOwnedBy());
 
-    params.put(NodeProperty.ID, newNode.getId());
-    params.put(NodeProperty.NAME, newNode.getName());
-    params.put(NodeProperty.DESCRIPTION, newNode.getDescription());
-    params.put(NodeProperty.CREATED_BY, newNode.getCreatedBy());
+    params.put(NodeProperty.ID, newResource.getId());
+    params.put(NodeProperty.NAME, newResource.getName());
+    params.put(NodeProperty.DESCRIPTION, newResource.getDescription());
+    params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
+    params.put(NodeProperty.CREATED_BY, newResource.getCreatedBy());
     params.put(NodeProperty.CREATED_ON, nowString);
     params.put(NodeProperty.CREATED_ON_TS, nowTS);
-    params.put(NodeProperty.LAST_UPDATED_BY, newNode.getLastUpdatedBy());
+    params.put(NodeProperty.LAST_UPDATED_BY, newResource.getLastUpdatedBy());
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
-    params.put(NodeProperty.OWNED_BY, newNode.getOwnedBy());
-    params.put(NodeProperty.RESOURCE_TYPE, newNode.getType().getValue());
+    params.put(NodeProperty.OWNED_BY, newResource.getOwnedBy());
+    params.put(NodeProperty.RESOURCE_TYPE, newResource.getType().getValue());
 
-    if (newNode instanceof FolderServerFolder) {
-      FolderServerFolder newFolder = (FolderServerFolder) newNode;
+    if (newResource instanceof FolderServerFolder) {
+      FolderServerFolder newFolder = (FolderServerFolder) newResource;
       params.put(NodeProperty.IS_ROOT, newFolder.isRoot());
       params.put(NodeProperty.IS_SYSTEM, newFolder.isSystem());
       params.put(NodeProperty.IS_USER_HOME, newFolder.isUserHome());
       params.put(NodeProperty.HOME_OF, newFolder.getHomeOf());
     }
-    if (newNode instanceof FolderServerArtifact) {
-      FolderServerArtifact newResource = (FolderServerArtifact) newNode;
-      if (newResource.getDerivedFrom() != null) {
-        params.put(NodeProperty.DERIVED_FROM, newResource.getDerivedFrom());
+    if (newResource instanceof FolderServerArtifact) {
+      FolderServerArtifact newArtifact = (FolderServerArtifact) newResource;
+      if (newArtifact.getDerivedFrom() != null) {
+        params.put(NodeProperty.DERIVED_FROM, newArtifact.getDerivedFrom());
       }
-      if (newResource.getIdentifier() != null) {
-        params.put(NodeProperty.IDENTIFIER, newResource.getIdentifier());
-      }
-      if (newResource.isOpen() != null) {
-        params.put(NodeProperty.IS_OPEN, newResource.isOpen());
+      if (newArtifact.isOpen() != null) {
+        params.put(NodeProperty.IS_OPEN, newArtifact.isOpen());
       }
     }
-    if (newNode instanceof FolderServerSchemaArtifact) {
-      FolderServerSchemaArtifact newResource = (FolderServerSchemaArtifact) newNode;
-      if (newResource.getVersion() != null) {
-        params.put(NodeProperty.VERSION, newResource.getVersion());
+    if (newResource instanceof FolderServerSchemaArtifact) {
+      FolderServerSchemaArtifact newSchemaArtifact = (FolderServerSchemaArtifact) newResource;
+      if (newSchemaArtifact.getVersion() != null) {
+        params.put(NodeProperty.VERSION, newSchemaArtifact.getVersion());
       }
-      if (newResource.getPublicationStatus() != null) {
-        params.put(NodeProperty.PUBLICATION_STATUS, newResource.getPublicationStatus());
+      if (newSchemaArtifact.getPublicationStatus() != null) {
+        params.put(NodeProperty.PUBLICATION_STATUS, newSchemaArtifact.getPublicationStatus());
       }
-      if (newResource.getPreviousVersion() != null) {
-        params.put(NodeProperty.PREVIOUS_VERSION, newResource.getPreviousVersion());
+      if (newSchemaArtifact.getPreviousVersion() != null) {
+        params.put(NodeProperty.PREVIOUS_VERSION, newSchemaArtifact.getPreviousVersion());
       }
-      if (newResource.isLatestVersion() != null) {
-        params.put(NodeProperty.IS_LATEST_VERSION, newResource.isLatestVersion());
+      if (newSchemaArtifact.isLatestVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_VERSION, newSchemaArtifact.isLatestVersion());
       }
-      if (newResource.isLatestDraftVersion() != null) {
-        params.put(NodeProperty.IS_LATEST_DRAFT_VERSION, newResource.isLatestDraftVersion());
+      if (newSchemaArtifact.isLatestDraftVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_DRAFT_VERSION, newSchemaArtifact.isLatestDraftVersion());
       }
-      if (newResource.isLatestPublishedVersion() != null) {
-        params.put(NodeProperty.IS_LATEST_PUBLISHED_VERSION, newResource.isLatestPublishedVersion());
+      if (newSchemaArtifact.isLatestPublishedVersion() != null) {
+        params.put(NodeProperty.IS_LATEST_PUBLISHED_VERSION, newSchemaArtifact.isLatestPublishedVersion());
       }
     }
-    if (newNode instanceof FolderServerInstanceArtifact) {
-      FolderServerInstance newInstance = (FolderServerInstance) newNode;
+    if (newResource instanceof FolderServerInstanceArtifact) {
+      FolderServerInstance newInstance = (FolderServerInstance) newResource;
       if (newInstance.getIsBasedOn() != null) {
         params.put(NodeProperty.IS_BASED_ON, newInstance.getIsBasedOn());
       }
@@ -94,8 +89,8 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  protected static CypherParameters updateNodeById(String nodeId, Map<? extends CypherQueryParameter, String>
-      updateFields, String updatedBy) {
+  protected static CypherParameters updateResourceById(CedarResourceId resourceId, Map<? extends CypherQueryParameter, String> updateFields,
+                                                       CedarUserId updatedBy) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -103,42 +98,31 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_BY, updatedBy);
     params.put(NodeProperty.LAST_UPDATED_ON, nowString);
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
-    params.put(NodeProperty.ID, nodeId);
+    params.put(NodeProperty.ID, resourceId);
     for (CypherQueryParameter parameter : updateFields.keySet()) {
       params.put(parameter, updateFields.get(parameter));
     }
     return params;
   }
 
-  protected static CypherParameters updateNodeById(CedarResourceId nodeId, Map<? extends CypherQueryParameter, String>
-      updateFields, String updatedBy) {
-    return updateNodeById(nodeId.getId(), updateFields, updatedBy);
-  }
-
-  protected static CypherParameters getNodeByIdentity(String nodeURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(NodeProperty.ID, nodeURL);
-    return params;
-  }
-
-  protected static CypherParameters getNodeByIdentity(CedarResourceId resourceId) {
+  protected static CypherParameters matchResourceByIdentity(CedarResourceId resourceId) {
     CypherParameters params = new CypherParameters();
     params.put(NodeProperty.ID, resourceId);
     return params;
   }
 
 
-  protected static CypherParameters getNodeByIdentityAndName(String nodeURL, String nodeName) {
+  protected static CypherParameters getResourceByIdentityAndName(CedarFilesystemResourceId folderId, String resourceName) {
     CypherParameters params = new CypherParameters();
-    params.put(NodeProperty.ID, nodeURL);
-    params.put(NodeProperty.NAME, nodeName);
+    params.put(NodeProperty.ID, folderId);
+    params.put(NodeProperty.NAME, resourceName);
     return params;
   }
 
-  public static CypherParameters matchFolderAndUser(String folderURL, String userURL) {
+  public static CypherParameters matchFolderAndUser(CedarFolderId folderId, CedarUserId userId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
-    params.put(ParameterPlaceholder.USER_ID, userURL);
+    params.put(ParameterPlaceholder.FOLDER_ID, folderId);
+    params.put(ParameterPlaceholder.USER_ID, userId);
     return params;
   }
 
@@ -149,44 +133,23 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchUserAndGroup(String userId, String groupId) {
+  public static CypherParameters matchUserAndGroup(CedarUserId userId, CedarGroupId groupId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.USER_ID, userId);
     params.put(ParameterPlaceholder.GROUP_ID, groupId);
     return params;
   }
 
-  public static CypherParameters matchFolderAndGroup(String folderURL, String groupURL) {
+  public static CypherParameters matchFolderAndGroup(CedarFolderId folderId, CedarGroupId groupId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
-    params.put(ParameterPlaceholder.GROUP_ID, groupURL);
+    params.put(ParameterPlaceholder.FOLDER_ID, folderId);
+    params.put(ParameterPlaceholder.GROUP_ID, groupId);
     return params;
   }
 
-  public static CypherParameters matchResourceAndGroup(String resourceURL, String groupURL) {
+  public static CypherParameters matchArtifactIdAndParentFolderId(CedarArtifactId artifactId, CedarFolderId parentFolderId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceURL);
-    params.put(ParameterPlaceholder.GROUP_ID, groupURL);
-    return params;
-  }
-
-  public static CypherParameters matchResourceAndUser(String resourceURL, String userURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceURL);
-    params.put(ParameterPlaceholder.USER_ID, userURL);
-    return params;
-  }
-
-  public static CypherParameters matchUserIdAndNodeId(String userURL, String nodeURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.USER_ID, userURL);
-    params.put(ParameterPlaceholder.NODE_ID, nodeURL);
-    return params;
-  }
-
-  public static CypherParameters matchResourceIdAndParentFolderId(String resourceId, String parentFolderId) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
+    params.put(ParameterPlaceholder.ARTIFACT_ID, artifactId);
     params.put(ParameterPlaceholder.PARENT_FOLDER_ID, parentFolderId);
     return params;
   }
@@ -205,24 +168,10 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchSourceAndTarget(String sourceId, String targetId) {
+  public static CypherParameters matchSourceAndTarget(CedarResourceId sourceId, CedarResourceId targetId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.SOURCE_ID, sourceId);
     params.put(ParameterPlaceholder.TARGET_ID, targetId);
-    return params;
-  }
-
-  public static CypherParameters matchNodeAndUser(String nodeURL, String userURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.NODE_ID, nodeURL);
-    params.put(ParameterPlaceholder.USER_ID, userURL);
-    return params;
-  }
-
-  public static CypherParameters matchNodeAndGroup(String nodeURL, String groupURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.NODE_ID, nodeURL);
-    params.put(ParameterPlaceholder.GROUP_ID, groupURL);
     return params;
   }
 
@@ -237,6 +186,33 @@ public abstract class AbstractCypherParamBuilder {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.GROUP_ID, groupId);
     params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);
+    return params;
+  }
+
+  public static CypherParameters matchFilesystemResourceAndGroup(CedarFilesystemResourceId resourceId, CedarGroupId groupId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
+    params.put(ParameterPlaceholder.GROUP_ID, groupId);
+    return params;
+  }
+
+  public static CypherParameters matchResourceAndUser(CedarResourceId resourceId, CedarUserId userId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
+    params.put(ParameterPlaceholder.USER_ID, userId);
+    return params;
+  }
+
+  public static CypherParameters matchFilesystemResourceAndUser(CedarFilesystemResourceId resourceId, CedarUserId userId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
+    params.put(ParameterPlaceholder.USER_ID, userId);
+    return params;
+  }
+
+  public static CypherParameters matchFilesystemResource(CedarFilesystemResourceId resourceId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
     return params;
   }
 }

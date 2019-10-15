@@ -37,6 +37,6 @@ public final class PathInfoBuilder {
         return false;
       }
     }
-    return permissionSession.userHasReadAccessToNode(nodeExtract.getId());
+    return permissionSession.userHasReadAccessToResource(nodeExtract.getResourceId());
   }
 }

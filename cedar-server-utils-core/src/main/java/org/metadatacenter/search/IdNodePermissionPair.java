@@ -1,16 +1,16 @@
 package org.metadatacenter.search;
 
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 
 public class IdNodePermissionPair {
 
   private String id;
-  private ResourcePermission permission;
+  private FilesystemResourcePermission permission;
 
   public IdNodePermissionPair() {
   }
 
-  public IdNodePermissionPair(String id, ResourcePermission permission) {
+  public IdNodePermissionPair(String id, FilesystemResourcePermission permission) {
     this.id = id;
     this.permission = permission;
   }
@@ -19,7 +19,7 @@ public class IdNodePermissionPair {
     return id;
   }
 
-  public ResourcePermission getPermission() {
+  public FilesystemResourcePermission getPermission() {
     return permission;
   }
 }

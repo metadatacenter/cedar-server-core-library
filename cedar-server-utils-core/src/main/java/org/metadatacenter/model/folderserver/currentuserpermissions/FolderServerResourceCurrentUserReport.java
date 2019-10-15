@@ -23,8 +23,7 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerTemplateCurrentUserReport.class, name = CedarResourceType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerInstanceCurrentUserReport.class, name = CedarResourceType.Types.INSTANCE)
 })
-public abstract class FolderServerResourceCurrentUserReport extends FileSystemResource
-    implements NodeWithCurrentUserPermissions {
+public abstract class FolderServerResourceCurrentUserReport extends FileSystemResource implements NodeWithCurrentUserPermissions {
 
   private CurrentUserResourcePermissions currentUserPermissions = new CurrentUserResourcePermissions();
 

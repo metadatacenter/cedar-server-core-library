@@ -1,20 +1,19 @@
 package org.metadatacenter.model.folderserver.datagroup;
 
-import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.id.CedarSchemaArtifactId;
 
 public class PreviousVersionGroup {
 
-  protected ResourceUri previousVersion;
-
+  protected CedarSchemaArtifactId previousVersion;
 
   public PreviousVersionGroup() {
   }
 
-  public ResourceUri getPreviousVersion() {
+  public CedarSchemaArtifactId getPreviousVersion() {
     return previousVersion;
   }
 
-  public void setPreviousVersion(ResourceUri previousVersion) {
+  public void setPreviousVersion(CedarSchemaArtifactId previousVersion) {
     this.previousVersion = previousVersion;
   }
 

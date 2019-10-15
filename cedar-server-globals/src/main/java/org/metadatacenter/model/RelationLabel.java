@@ -1,15 +1,15 @@
 package org.metadatacenter.model;
 
 import org.metadatacenter.server.security.model.permission.category.CategoryPermission;
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 
 public enum RelationLabel {
 
   OWNS(PlainLabels.OWNS, null, null),
   CONTAINS(PlainLabels.CONTAINS, null, null),
   MEMBEROF(PlainLabels.MEMBEROF, null, null),
-  CANREAD(PlainLabels.CANREAD, ResourcePermission.READ, null),
-  CANWRITE(PlainLabels.CANWRITE, ResourcePermission.WRITE, null),
+  CANREAD(PlainLabels.CANREAD, FilesystemResourcePermission.READ, null),
+  CANWRITE(PlainLabels.CANWRITE, FilesystemResourcePermission.WRITE, null),
   ADMINISTERS(PlainLabels.ADMINISTERS, null, null),
   PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null, null),
   DERIVEDFROM(PlainLabels.DERIVEDFROM, null, null),
@@ -38,12 +38,12 @@ public enum RelationLabel {
   }
 
   private final String value;
-  private final ResourcePermission nodePermission;
+  private final FilesystemResourcePermission filesystemResourcePermission;
   private final CategoryPermission categoryPermission;
 
-  RelationLabel(String value, ResourcePermission nodePermission, CategoryPermission categoryPermission) {
+  RelationLabel(String value, FilesystemResourcePermission filesystemResourcePermission, CategoryPermission categoryPermission) {
     this.value = value;
-    this.nodePermission = nodePermission;
+    this.filesystemResourcePermission = filesystemResourcePermission;
     this.categoryPermission = categoryPermission;
   }
 
@@ -51,8 +51,8 @@ public enum RelationLabel {
     return value;
   }
 
-  public ResourcePermission getNodePermission() {
-    return nodePermission;
+  public FilesystemResourcePermission getFilesystemResourcePermission() {
+    return filesystemResourcePermission;
   }
 
   public CategoryPermission getCategoryPermission() {
@@ -68,10 +68,10 @@ public enum RelationLabel {
     return null;
   }
 
-  public static RelationLabel forNodePermission(ResourcePermission permission) {
+  public static RelationLabel forFilesystemResourcePermission(FilesystemResourcePermission permission) {
     if (permission != null) {
       for (RelationLabel t : values()) {
-        if (permission.equals(t.getNodePermission())) {
+        if (permission.equals(t.getFilesystemResourcePermission())) {
           return t;
         }
       }

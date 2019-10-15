@@ -1,17 +1,17 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.metadatacenter.id.CedarSchemaArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.datagroup.PreviousVersionGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithPreviousVersionData;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 
-public class FolderServerSchemaArtifactCurrentUserReport extends FolderServerArtifactCurrentUserReport
-    implements ResourceWithVersionData, ResourceWithPreviousVersionData {
+public class FolderServerSchemaArtifactCurrentUserReport extends FolderServerArtifactCurrentUserReport implements ResourceWithVersionData,
+    ResourceWithPreviousVersionData {
 
   protected VersionDataGroup versionDataGroup;
   protected PreviousVersionGroup previousVersionGroup;
@@ -73,18 +73,18 @@ public class FolderServerSchemaArtifactCurrentUserReport extends FolderServerArt
   }
 
   @Override
-  public ResourceUri getPreviousVersion() {
+  public CedarSchemaArtifactId getPreviousVersion() {
     return previousVersionGroup.getPreviousVersion();
   }
 
   @Override
-  public void setPreviousVersion(String pv) {
-    previousVersionGroup.setPreviousVersion(ResourceUri.forValue(pv));
+  public void setPreviousVersion(CedarSchemaArtifactId pv) {
+    previousVersionGroup.setPreviousVersion(pv);
   }
 
   @JsonIgnore
   public boolean hasPreviousVersion() {
-    return getPreviousVersion() != null && getPreviousVersion().getValue() != null;
+    return getPreviousVersion() != null && getPreviousVersion().getId() != null;
   }
 
 }

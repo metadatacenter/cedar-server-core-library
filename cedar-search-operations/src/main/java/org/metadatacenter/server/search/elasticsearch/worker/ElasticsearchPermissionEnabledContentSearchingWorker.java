@@ -21,7 +21,7 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -157,7 +157,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       // Filter by user
       QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId,
-          ResourcePermission.READ));
+          FilesystemResourcePermission.READ));
       BoolQueryBuilder permissionQuery = QueryBuilders.boolQuery();
 
       QueryBuilder everybodyReadQuery =

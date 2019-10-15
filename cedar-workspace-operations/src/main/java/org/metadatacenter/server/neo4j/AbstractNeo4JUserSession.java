@@ -2,7 +2,7 @@ package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.id.CedarCategoryId;
-import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.neo4j.proxy.Neo4JProxies;
@@ -18,8 +18,7 @@ public abstract class AbstractNeo4JUserSession {
   protected final String globalRequestId;
   protected final String localRequestId;
 
-  public AbstractNeo4JUserSession(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId
-      , String localRequestId) {
+  public AbstractNeo4JUserSession(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId, String localRequestId) {
     this.cedarConfig = cedarConfig;
     this.linkedDataUtil = cedarConfig.getLinkedDataUtil();
     this.proxies = proxies;
@@ -28,16 +27,12 @@ public abstract class AbstractNeo4JUserSession {
     this.localRequestId = localRequestId;
   }
 
-  protected FolderServerUser getNodeOwner(String nodeURL) {
-    return proxies.resource().getNodeOwner(nodeURL);
+  protected FolderServerUser getFilesystemResourceOwner(CedarFilesystemResourceId resourceId) {
+    return proxies.filesystemResource().getFilesystemResourceOwner(resourceId);
   }
 
-  public boolean userIsOwnerOfNode(FileSystemResource node) {
-    return userIsOwnerOfNode(node.getId());
-  }
-
-  public boolean userIsOwnerOfNode(String nodeURL) {
-    FolderServerUser owner = getNodeOwner(nodeURL);
+  public boolean userIsOwnerOfFilesystemResource(CedarFilesystemResourceId resourceId) {
+    FolderServerUser owner = getFilesystemResourceOwner(resourceId);
     return owner != null && owner.getId().equals(cu.getId());
   }
 
@@ -45,7 +40,7 @@ public abstract class AbstractNeo4JUserSession {
     return proxies.category().getCategoryOwner(categoryId);
   }
 
-  public boolean userHas(CedarPermission permission) {
+  public boolean userHasPermission(CedarPermission permission) {
     return cu.has(permission);
   }
 

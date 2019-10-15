@@ -10,6 +10,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
@@ -84,50 +85,42 @@ public class NodeSearchingService extends AbstractSearchingService {
     return searchWorker.findAllValuesForField(fieldName);
   }
 
-  public List<String> findAllCedarIdsForGroup(String groupId) throws CedarProcessingException {
-    QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId);
+  public List<String> findAllCedarIdsForGroup(CedarGroupId groupId) throws CedarProcessingException {
+    QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId.getId());
     return searchWorker.findAllValuesForField("cid", queryBuilder);
   }
 
-  public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String>
-      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                             String categoryId, List<String> sortList, int limit, int offset,
-                                             String absoluteUrl)
-      throws CedarProcessingException {
+  public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
+                                             ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String categoryId,
+                                             List<String> sortList, int limit, int offset, String absoluteUrl) throws CedarProcessingException {
     try {
-      SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version,
-          publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
-          sortList,
-          limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version, publicationStatus, categoryId,
+          sortList, limit, offset);
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList, limit, offset,
+          absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
 
-  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String>
-      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                                 String categoryId, List<String> sortList, int limit, int offset,
-                                                 String absoluteUrl)
-      throws CedarProcessingException {
+  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
+                                                 ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
+                                                 String categoryId, List<String> sortList, int limit, int offset, String absoluteUrl) throws CedarProcessingException {
     try {
-      SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version,
-          publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
-          sortList,
-          limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version, publicationStatus,
+          categoryId, sortList, limit, offset);
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList, limit, offset,
+          absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
-  private FolderServerNodeListResponse assembleResponse(CedarRequestContext rctx, SearchResponseResult searchResult,
-                                                        String query, String id,
+  private FolderServerNodeListResponse assembleResponse(CedarRequestContext rctx, SearchResponseResult searchResult, String query, String id,
                                                         List<String> resourceTypes, ResourceVersionFilter version,
-                                                        ResourcePublicationStatusFilter publicationStatus,
-                                                        String categoryId, List<String> sortList, int limit, int offset,
-                                                        String absoluteUrl) {
+                                                        ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList
+      , int limit, int offset, String absoluteUrl) {
     List<FolderServerResourceExtract> resources = new ArrayList<>();
 
     // Get the object from the result

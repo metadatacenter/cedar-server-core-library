@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j.cypher.query;
 
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.util.Map;
 
@@ -9,7 +10,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String createRootFolder(FolderServerFolder newRoot) {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         createFSFolder("root", newRoot) +
         " CREATE (user)-[:<REL.OWNS>]->(root)" +
         " RETURN root";
@@ -17,7 +18,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String getHomeFolderOf() {
     return "" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.IS_USER_HOME>:true, <PROP.HOME_OF>:{userId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.IS_USER_HOME>:true, <PROP.HOME_OF>:{<PH.USER_ID>}})" +
         " RETURN folder";
   }
 
@@ -41,7 +42,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   public static String unlinkFolderFromParent() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER>)" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (parent)-[relation:<REL.CONTAINS>]->(folder)" +
         " DELETE relation" +
         " RETURN folder";
@@ -65,8 +66,8 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String folderIsAncestorOf() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId} })" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_FOLDER_ID>}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>} })" +
         " MATCH (parent)-[:<REL.CONTAINS>*0..]->(folder)" +
         " RETURN parent";
   }
@@ -81,17 +82,17 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
 
   public static String setFolderOwner() {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>}})" +
         " CREATE (user)-[:<REL.OWNS>]->(folder)" +
-        " SET folder.<PROP.OWNED_BY> = {userId}" +
+        " SET folder.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
         " RETURN folder";
   }
 
   public static String removeFolderOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (user)-[relation:<REL.OWNS>]->(folder)" +
         " DELETE (relation)" +
         " SET folder.<PROP.OWNED_BY> = null" +
@@ -128,4 +129,13 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
         createFSFolder(ALIAS_FOO, newFolder) +
         " RETURN " + ALIAS_FOO;
   }
+
+  public static String getAllChildArtifacts() {
+    return "" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (child:<LABEL.RESOURCE>)" +
+        " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
+        " RETURN child";
+  }
+
 }

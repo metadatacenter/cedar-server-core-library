@@ -103,7 +103,6 @@ folderStructure:
     description: "CEDAR Users"
   everybodyGroup:
     name: "Everybody"
-    displayName: "Everybody"
     description: "Group holding all the users"
   rootCategory:
     name: "ROOT-CATEGORY"

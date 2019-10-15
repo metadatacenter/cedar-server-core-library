@@ -3,8 +3,8 @@ package org.metadatacenter.model.folderserver.basic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
 import org.metadatacenter.model.folderserver.datagroup.DerivedFromGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithDerivedFromData;
@@ -24,8 +24,7 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarResourceType.Types.INSTANCE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class FolderServerArtifact extends FileSystemResource
-    implements ResourceWithOpenFlag, ResourceWithDerivedFromData {
+public abstract class FolderServerArtifact extends FileSystemResource implements ResourceWithOpenFlag, ResourceWithDerivedFromData {
 
   protected DerivedFromGroup provenanceDataGroup;
   protected Boolean isOpen;
@@ -47,13 +46,13 @@ public abstract class FolderServerArtifact extends FileSystemResource
   }
 
   @Override
-  public ResourceUri getDerivedFrom() {
+  public CedarArtifactId getDerivedFrom() {
     return provenanceDataGroup.getDerivedFrom();
   }
 
   @Override
-  public void setDerivedFrom(String df) {
-    provenanceDataGroup.setDerivedFrom(ResourceUri.forValue(df));
+  public void setDerivedFrom(CedarArtifactId df) {
+    provenanceDataGroup.setDerivedFrom(df);
   }
 
   @Override

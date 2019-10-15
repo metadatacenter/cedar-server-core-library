@@ -1,7 +1,9 @@
 package org.metadatacenter.server.security.model.permission.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarUserId;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoryPermissionUser {
@@ -44,4 +46,10 @@ public class CategoryPermissionUser {
   public int hashCode() {
     return getId() != null ? getId().hashCode() : 0;
   }
+
+  @JsonIgnore
+  public CedarUserId getResourceId() {
+    return CedarUserId.buildSafe(this.id);
+  }
+
 }

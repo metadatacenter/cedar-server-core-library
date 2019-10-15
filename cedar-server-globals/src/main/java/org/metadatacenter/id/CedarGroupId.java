@@ -15,4 +15,13 @@ public class CedarGroupId extends CedarResourceId {
     return createFromString(id, CedarGroupId.class);
   }
 
+  public static CedarGroupId buildSafe(String id) {
+    try {
+      return createFromString(id, CedarGroupId.class);
+    } catch (CedarProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
 }

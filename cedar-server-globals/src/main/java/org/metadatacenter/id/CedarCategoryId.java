@@ -17,4 +17,12 @@ public class CedarCategoryId extends CedarResourceId {
     return createFromString(id, CedarCategoryId.class);
   }
 
+  public static CedarCategoryId buildSafe(String id) {
+    try {
+      return createFromString(id, CedarCategoryId.class);
+    } catch (CedarProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }

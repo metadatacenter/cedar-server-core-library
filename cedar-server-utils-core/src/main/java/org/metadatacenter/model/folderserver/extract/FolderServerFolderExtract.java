@@ -1,7 +1,9 @@
 package org.metadatacenter.model.folderserver.extract;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarFolderId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
@@ -60,4 +62,9 @@ public class FolderServerFolderExtract extends FolderServerResourceExtract imple
     this.folderDataGroup.setRoot(root);
   }
 
+  @Override
+  @JsonIgnore
+  public CedarFolderId getResourceId() {
+    return CedarFolderId.buildSafe(this.getId());
+  }
 }

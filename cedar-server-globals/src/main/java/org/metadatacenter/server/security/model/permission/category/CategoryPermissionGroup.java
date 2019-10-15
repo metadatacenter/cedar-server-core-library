@@ -1,7 +1,9 @@
 package org.metadatacenter.server.security.model.permission.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionGroup;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -45,4 +47,10 @@ public class CategoryPermissionGroup {
   public int hashCode() {
     return getId() != null ? getId().hashCode() : 0;
   }
+
+  @JsonIgnore
+  public CedarGroupId getResourceId() {
+    return CedarGroupId.buildSafe(this.id);
+  }
+
 }

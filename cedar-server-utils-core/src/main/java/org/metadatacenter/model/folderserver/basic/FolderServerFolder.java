@@ -1,8 +1,8 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.metadatacenter.id.CedarFolderId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerFolderCurrentUserReport;
 import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
@@ -23,6 +23,11 @@ public class FolderServerFolder extends FileSystemResource implements ResourceWi
   public FolderServerFolder() {
     super(CedarResourceType.FOLDER);
     this.folderDataGroup = new FolderDataGroup();
+  }
+
+  @JsonIgnore
+  public CedarFolderId getResourceId() {
+    return CedarFolderId.buildSafe(getId());
   }
 
   public static FolderServerFolder fromFolderServerFolderCurrentUserReport(FolderServerFolderCurrentUserReport folder) {
@@ -84,4 +89,5 @@ public class FolderServerFolder extends FileSystemResource implements ResourceWi
   public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
     this.everybodyPermission = everybodyPermission;
   }
+
 }

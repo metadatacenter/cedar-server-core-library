@@ -161,14 +161,4 @@ public class FolderServerUser extends AbstractCedarResourceWithDates implements 
     return u;
   }
 
-  @JsonIgnore
-  public CedarUserId getIdObject() {
-    try {
-      return CedarUserId.build(getId());
-    } catch (CedarProcessingException e) {
-      log.error("Error creating CedarUserId", e);
-      return null;
-    }
-  }
-
 }

@@ -1,0 +1,138 @@
+package org.metadatacenter.server.neo4j.cypher.query;
+
+import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
+
+public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCypherQueryBuilder {
+
+  public static String addPermissionToFilesystemResourceForUser(FilesystemResourcePermission permission) {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " CREATE (user)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " RETURN user";
+  }
+
+  public static String addPermissionToFilesystemResourceForGroup(FilesystemResourcePermission permission) {
+    return "" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " CREATE (group)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " RETURN group";
+  }
+
+  public static String removePermissionForFilesystemResourceFromUser(FilesystemResourcePermission permission) {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (user)-[relation:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " DELETE (relation)" +
+        " RETURN resource";
+  }
+
+  public static String removePermissionForFilesystemResourceFromGroup(FilesystemResourcePermission permission) {
+    return "" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>} })" +
+        " MATCH (group)-[relation:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " DELETE (relation)" +
+        " RETURN resource";
+  }
+
+  public static String userCanReadFilesystemResource() {
+    return userHasPermissionOnFilesystemResource(RelationLabel.CANREAD);
+  }
+
+  public static String userCanWriteFilesystemResource() {
+    return userHasPermissionOnFilesystemResource(RelationLabel.CANWRITE);
+  }
+
+  private static String userHasPermissionOnFilesystemResource(RelationLabel relationLabel) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
+    if (relationLabel == RelationLabel.CANREAD) {
+      sb.append(" OR ");
+      sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
+    }
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
+    sb.append(" )");
+    sb.append(" RETURN user");
+    return sb.toString();
+  }
+
+  public static String getUsersWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (user)-[:" + relationLabel + "]->(resource)" +
+        " RETURN user";
+  }
+
+  public static String getGroupsWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (group:<LABEL.GROUP>)" +
+        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (group)-[:" + relationLabel + "]->(resource)" +
+        " RETURN group";
+  }
+
+  public static String getUsersWithTransitiveReadOnFilesystemResource() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER>)");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
+    sb.append(" )");
+    sb.append(" RETURN user");
+    return sb.toString();
+  }
+
+  public static String getUsersWithTransitiveWriteOnFilesystemResource() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER>)");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
+    sb.append(" )");
+    sb.append(" RETURN user");
+    return sb.toString();
+  }
+
+  public static String getGroupsWithTransitiveReadOnFilesystemResource() {
+    String node = "(resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
+    sb.append(" RETURN group");
+
+    return sb.toString();
+  }
+
+  public static String getGroupsWithTransitiveWriteOnFilesystemResource() {
+    String node = "(resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
+    sb.append(" RETURN group");
+    return sb.toString();
+  }
+
+}

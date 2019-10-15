@@ -1,12 +1,20 @@
 package org.metadatacenter.server.security.model.permission.resource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarUserId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResourcePermissionUser {
 
   private String id;
+
+  private static final Logger log = LoggerFactory.getLogger(ResourcePermissionUser.class);
 
   public ResourcePermissionUser() {
   }
@@ -43,5 +51,15 @@ public class ResourcePermissionUser {
   @Override
   public int hashCode() {
     return getId() != null ? getId().hashCode() : 0;
+  }
+
+  @JsonIgnore
+  public CedarUserId getIdObject() {
+    try {
+      return CedarUserId.build(getId());
+    } catch (CedarProcessingException e) {
+      log.error("Error creating CedarUserId", e);
+      return null;
+    }
   }
 }
