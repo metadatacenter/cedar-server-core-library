@@ -5,7 +5,7 @@ import org.metadatacenter.model.folderserver.extract.FolderServerFolderExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.server.FolderServiceSession;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public final class PathInfoBuilder {
 
   public static List<FolderServerResourceExtract> getResourcePathExtract(CedarRequestContext context,
                                                                          FolderServiceSession folderSession,
-                                                                         PermissionServiceSession permissionSession,
+                                                                         ResourcePermissionServiceSession permissionSession,
                                                                          FileSystemResource node) {
     List<FolderServerResourceExtract> pathInfo = folderSession.findNodePathExtract(node);
     for (FolderServerResourceExtract extract : pathInfo) {
@@ -26,7 +26,7 @@ public final class PathInfoBuilder {
     return pathInfo;
   }
 
-  private static boolean activeUserCanRead(CedarRequestContext context, PermissionServiceSession permissionSession,
+  private static boolean activeUserCanRead(CedarRequestContext context, ResourcePermissionServiceSession permissionSession,
                                            FolderServerResourceExtract nodeExtract) {
     if (context.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       return true;

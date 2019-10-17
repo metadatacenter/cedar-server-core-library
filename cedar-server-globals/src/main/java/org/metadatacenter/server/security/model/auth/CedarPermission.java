@@ -38,6 +38,11 @@ public enum CedarPermission {
   USER_READ(CedarResourceType.Types.USER, CedarObjectConstants.ACCESS_READ),
   USER_UPDATE(CedarResourceType.Types.USER, CedarObjectConstants.ACCESS_UPDATE),
 
+  CATEGORY_CREATE(CedarResourceType.Types.CATEGORY, CedarObjectConstants.ACCESS_CREATE),
+  CATEGORY_READ(CedarResourceType.Types.CATEGORY, CedarObjectConstants.ACCESS_READ),
+  CATEGORY_UPDATE(CedarResourceType.Types.CATEGORY, CedarObjectConstants.ACCESS_UPDATE),
+  CATEGORY_DELETE(CedarResourceType.Types.CATEGORY, CedarObjectConstants.ACCESS_DELETE),
+
   LOGGED_IN(CedarObjectConstants.LOGGED_IN, CedarObjectConstants.ACCESS_READ),
   SEARCH_INDEX_REINDEX(CedarObjectConstants.SEARCH_INDEX, CedarObjectConstants.ACCESS_CREATE),
   RULES_INDEX_REINDEX(CedarObjectConstants.RULES_INDEX, CedarObjectConstants.ACCESS_CREATE),
@@ -46,6 +51,9 @@ public enum CedarPermission {
       .ACCESS_UPDATE),
   READ_NOT_READABLE_NODE(CedarObjectConstants.NOT_READABLE_NODE, CedarObjectConstants.ACCESS_READ),
   WRITE_NOT_WRITABLE_NODE(CedarObjectConstants.NOT_WRITABLE_NODE, CedarObjectConstants.ACCESS_WRITE),
+  WRITE_NOT_WRITABLE_CATEGORY(CedarObjectConstants.NOT_WRITABLE_CATEGORY, CedarObjectConstants.ACCESS_WRITE),
+  UPDATE_PERMISSION_NOT_WRITABLE_CATEGORY(CedarObjectConstants.NOT_WRITABLE_CATEGORY_PERMISSIONS,
+      CedarObjectConstants.ACCESS_UPDATE),
   SEND_PROCESS_MESSAGE(CedarObjectConstants.PROCESS_MESSAGE, CedarObjectConstants.ACCESS_CREATE),
   UPDATE_NOT_ADMINISTERED_GROUP(CedarObjectConstants.NOT_ADMINISTERED_GROUP, CedarObjectConstants.ACCESS_UPDATE);
 

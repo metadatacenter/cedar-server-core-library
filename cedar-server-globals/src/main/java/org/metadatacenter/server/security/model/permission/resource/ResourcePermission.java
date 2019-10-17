@@ -1,8 +1,8 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.permission.resource;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum NodePermission {
+public enum ResourcePermission {
 
   READ(Type.READ),
   WRITE(Type.WRITE),
@@ -22,7 +22,7 @@ public enum NodePermission {
 
   private final String value;
 
-  NodePermission(String value) {
+  ResourcePermission(String value) {
     this.value = value;
   }
 
@@ -31,8 +31,8 @@ public enum NodePermission {
     return value;
   }
 
-  public static NodePermission forValue(String type) {
-    for (NodePermission t : values()) {
+  public static ResourcePermission forValue(String type) {
+    for (ResourcePermission t : values()) {
       if (t.getValue().equals(type)) {
         return t;
       }
@@ -40,7 +40,7 @@ public enum NodePermission {
     return null;
   }
 
-  public boolean equals(NodePermission other) {
+  public boolean equals(ResourcePermission other) {
     return other != null &&
         (
             (this.value == null && other.value == null) || (this.value != null && this.value.equals(other.value))

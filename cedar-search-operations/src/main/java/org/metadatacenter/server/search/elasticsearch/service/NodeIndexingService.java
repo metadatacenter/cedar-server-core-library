@@ -13,10 +13,12 @@ import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
-import org.metadatacenter.server.PermissionServiceSession;
+import org.metadatacenter.server.CategoryServiceSession;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
 import org.metadatacenter.server.search.extraction.TemplateInstanceContentExtractor;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedCategories;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -40,12 +42,14 @@ public class NodeIndexingService extends AbstractIndexingService {
 
   public IndexingDocumentDocument createIndexDocument(FileSystemResource node,
                                                       CedarNodeMaterializedPermissions permissions,
+                                                      CedarNodeMaterializedCategories categories,
                                                       CedarRequestContext requestContext,
                                                       boolean isIndexRegenerationTask) throws CedarProcessingException {
 
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
+    ir.setMaterializedCategories(categories);
     ir.setSummaryText(getSummaryText(node));
     // Index field names and (when appropriate) their values
     if (node.getType().equals(CedarResourceType.INSTANCE) || node.getType().equals(CedarResourceType.TEMPLATE)
@@ -56,21 +60,26 @@ public class NodeIndexingService extends AbstractIndexingService {
   }
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
+                                         CedarNodeMaterializedCategories categories,
                                          CedarRequestContext requestContext) throws CedarProcessingException {
-    return indexDocument(node, permissions, requestContext, false);
+    return indexDocument(node, permissions, categories, requestContext, false);
   }
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarRequestContext requestContext) throws CedarProcessingException {
     log.debug("Indexing resource (id = " + node.getId() + ")");
-    PermissionServiceSession permissionSession = CedarDataServices.getPermissionServiceSession(requestContext);
+    ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(requestContext);
     CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
-    return indexDocument(node, permissions, requestContext);
+    CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
+    CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(node.getId());
+    return indexDocument(node, permissions, categories, requestContext);
   }
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
+                                         CedarNodeMaterializedCategories categories,
                                          CedarRequestContext requestContext, boolean isIndexRegenerationTask) throws CedarProcessingException {
     log.debug("Indexing resource (id = " + node.getId() + ")");
-    IndexingDocumentDocument ir = createIndexDocument(node, permissions, requestContext, isIndexRegenerationTask);
+    IndexingDocumentDocument ir = createIndexDocument(node, permissions, categories, requestContext,
+        isIndexRegenerationTask);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource);
   }

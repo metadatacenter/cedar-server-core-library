@@ -2,7 +2,7 @@ package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
-import org.metadatacenter.server.security.model.user.CedarUserId;
+import org.metadatacenter.id.CedarUserId;
 
 @JsonIgnoreProperties(value = {"userId"})
 public class CedarGroupUser {
@@ -25,7 +25,7 @@ public class CedarGroupUser {
   }
 
   public CedarUserId getUserId() {
-    return new CedarUserId(user.getId());
+    return CedarUserId.buildSafe(user.getId());
   }
 
   public void setUser(CedarUserExtract user) {

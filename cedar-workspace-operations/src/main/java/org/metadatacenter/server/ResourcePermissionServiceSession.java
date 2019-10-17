@@ -4,16 +4,16 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
-import org.metadatacenter.server.security.model.auth.CedarNodePermissionsRequest;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionsRequest;
 
-public interface PermissionServiceSession {
+public interface ResourcePermissionServiceSession {
 
   CedarNodePermissions getNodePermissions(String nodeURL);
 
   CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL);
 
-  BackendCallResult updateNodePermissions(String nodeURL, CedarNodePermissionsRequest request);
+  BackendCallResult updateNodePermissions(String nodeURL, ResourcePermissionsRequest request);
 
   boolean userCanChangeOwnerOfNode(String nodeURL);
 

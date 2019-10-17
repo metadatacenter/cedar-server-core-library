@@ -20,6 +20,8 @@ public class IndexedDocumentDocument {
 
   protected List<String> users;
 
+  protected List<String> categories;
+
   public IndexedDocumentDocument() { }
 
   public IndexedDocumentDocument(String cid) {
@@ -59,4 +61,7 @@ public class IndexedDocumentDocument {
     return users;
   }
 
+  public List<String> getCategories() {
+    return categories;
+  }
 }

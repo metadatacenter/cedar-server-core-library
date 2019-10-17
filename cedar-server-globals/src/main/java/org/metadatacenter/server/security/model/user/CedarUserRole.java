@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum CedarUserRole {
+  DEFAULT_USER("defaultUser"),
   TEMPLATE_CREATOR("templateCreator"),
   METADATA_CREATOR("metadataCreator"),
   USER_ADMINISTRATOR("userAdministrator"),
   GROUP_ADMINISTRATOR("groupAdministrator"),
   FILESYSTEM_ADMINISTRATOR("filesystemAdministrator"),
+  CATEGORY_ADMINISTRATOR("categoryAdministrator"),
+  CATEGORY_PRIVILEGED_ADMINISTRATOR("categoryPrivilegedAdministrator"),
   SEARCH_REINDEXER("searchReindexer"),
-  BUILT_IN_SYSTEM_ADMINISTRATOR("builtInSystemAdministrator");
+  PROCESS_MESSAGE_SENDER("processMessageSender");
 
   private final String value;
 

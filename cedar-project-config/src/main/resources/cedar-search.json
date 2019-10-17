@@ -57,6 +57,9 @@
         "groups": {
           "type": "keyword"
         },
+        "categories": {
+          "type": "keyword"
+        },
         "info": {
           "properties": {
             "@id": {

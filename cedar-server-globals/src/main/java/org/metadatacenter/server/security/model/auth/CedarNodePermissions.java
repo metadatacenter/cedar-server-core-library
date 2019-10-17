@@ -1,5 +1,7 @@
 package org.metadatacenter.server.security.model.auth;
 
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionsRequest;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUser;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
 
 import java.util.ArrayList;
@@ -41,10 +43,10 @@ public class CedarNodePermissions {
     groupPermissions.add(groupPermission);
   }
 
-  public CedarNodePermissionsRequest toRequest() {
-    CedarNodePermissionsRequest r = new CedarNodePermissionsRequest();
+  public ResourcePermissionsRequest toRequest() {
+    ResourcePermissionsRequest r = new ResourcePermissionsRequest();
     // copy owner
-    NodePermissionUser newOwner = new NodePermissionUser();
+    ResourcePermissionUser newOwner = new ResourcePermissionUser();
     newOwner.setId(owner.getId());
     r.setOwner(newOwner);
     // copy users

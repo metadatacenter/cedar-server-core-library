@@ -1,28 +1,28 @@
 package org.metadatacenter.server.permissions;
 
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
-import org.metadatacenter.server.PermissionServiceSession;
-import org.metadatacenter.server.security.model.auth.CurrentUserPermissions;
+import org.metadatacenter.server.ResourcePermissionServiceSession;
+import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
 
 public class CurrentUserPermissionUpdaterForGraphDbFolder extends CurrentUserPermissionUpdater {
 
-  private final PermissionServiceSession permissionSession;
+  private final ResourcePermissionServiceSession permissionSession;
   private final FolderWithCurrentUserPermissions folder;
 
-  private CurrentUserPermissionUpdaterForGraphDbFolder(PermissionServiceSession permissionSession,
+  private CurrentUserPermissionUpdaterForGraphDbFolder(ResourcePermissionServiceSession permissionSession,
                                                        FolderWithCurrentUserPermissions folder) {
     this.permissionSession = permissionSession;
     this.folder = folder;
   }
 
-  public static CurrentUserPermissionUpdater get(PermissionServiceSession permissionSession,
+  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession,
                                                  FolderWithCurrentUserPermissions folder) {
     return new CurrentUserPermissionUpdaterForGraphDbFolder(permissionSession, folder);
   }
 
   @Override
-  public void update(CurrentUserPermissions currentUserPermissions) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
     String id = folder.getId();
     if (permissionSession.userHasWriteAccessToNode(id)) {
       folder.getCurrentUserPermissions().setCanWrite(true);

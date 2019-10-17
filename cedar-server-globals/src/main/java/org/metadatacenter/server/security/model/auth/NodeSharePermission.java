@@ -2,6 +2,7 @@ package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionGroupPermissionPair;
 
 public enum NodeSharePermission {
 
@@ -9,7 +10,7 @@ public enum NodeSharePermission {
   WRITE(Type.WRITE),
   NONE(Type.NONE);
 
-  public static NodeSharePermission fromGroupPermission(NodePermissionGroupPermissionPair groupPermission) {
+  public static NodeSharePermission fromGroupPermission(ResourcePermissionGroupPermissionPair groupPermission) {
     if (groupPermission != null) {
       return forValue(groupPermission.getPermission().getValue());
     } else {

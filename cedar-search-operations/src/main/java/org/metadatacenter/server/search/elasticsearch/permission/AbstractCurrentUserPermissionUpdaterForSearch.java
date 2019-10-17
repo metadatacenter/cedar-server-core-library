@@ -8,7 +8,7 @@ import org.metadatacenter.permission.currentuserpermission.CurrentUserPermission
 import org.metadatacenter.search.IndexedDocumentDocument;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 import java.util.List;
@@ -31,17 +31,17 @@ public abstract class AbstractCurrentUserPermissionUpdaterForSearch extends Curr
     if (cedarUser.has(CedarPermission.UPDATE_PERMISSION_NOT_WRITABLE_NODE)) {
       return true;
     }
-    return containsPermissions(indexedDocument.getUsers(), NodePermission.WRITE);
+    return containsPermissions(indexedDocument.getUsers(), ResourcePermission.WRITE);
   }
 
   protected boolean userCanRead() {
     if (cedarUser.has(CedarPermission.READ_NOT_READABLE_NODE)) {
       return true;
     }
-    return containsPermissions(indexedDocument.getUsers(), NodePermission.READ);
+    return containsPermissions(indexedDocument.getUsers(), ResourcePermission.READ);
   }
 
-  protected boolean containsPermissions(List<String> users, NodePermission permission) {
+  protected boolean containsPermissions(List<String> users, ResourcePermission permission) {
     //TODO: Optimize this, use map instead
     String lookup = CedarNodeMaterializedPermissions.getKey(cedarUser.getId(), permission);
     for (String pair : users) {

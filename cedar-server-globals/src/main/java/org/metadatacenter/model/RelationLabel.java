@@ -1,17 +1,24 @@
 package org.metadatacenter.model;
 
-import org.metadatacenter.server.security.model.auth.NodePermission;
+import org.metadatacenter.server.security.model.permission.category.CategoryPermission;
+import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
 
 public enum RelationLabel {
 
-  OWNS(PlainLabels.OWNS, null),
-  CONTAINS(PlainLabels.CONTAINS, null),
-  MEMBEROF(PlainLabels.MEMBEROF, null),
-  CANREAD(PlainLabels.CANREAD, NodePermission.READ),
-  CANWRITE(PlainLabels.CANWRITE, NodePermission.WRITE),
-  ADMINISTERS(PlainLabels.ADMINISTERS, null),
-  PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null),
-  DERIVEDFROM(PlainLabels.DERIVEDFROM, null);
+  OWNS(PlainLabels.OWNS, null, null),
+  CONTAINS(PlainLabels.CONTAINS, null, null),
+  MEMBEROF(PlainLabels.MEMBEROF, null, null),
+  CANREAD(PlainLabels.CANREAD, ResourcePermission.READ, null),
+  CANWRITE(PlainLabels.CANWRITE, ResourcePermission.WRITE, null),
+  ADMINISTERS(PlainLabels.ADMINISTERS, null, null),
+  PREVIOUSVERSION(PlainLabels.PREVIOUSVERSION, null, null),
+  DERIVEDFROM(PlainLabels.DERIVEDFROM, null, null),
+  //
+  CONTAINSCATEGORY(PlainLabels.CONTAINSCATEGORY, null, null),
+  CANATTACHCATEGORY(PlainLabels.CANATTACHCATEGORY, null, CategoryPermission.ATTACH),
+  CANWRITECATEGORY(PlainLabels.CANWRITECATEGORY, null, CategoryPermission.WRITE),
+  OWNSCATEGORY(PlainLabels.OWNSCATEGORY, null, null),
+  CONTAINSARTIFACT(PlainLabels.CONTAINSARTIFACT, null, null);
 
   public static class PlainLabels {
     public static final String OWNS = "OWNS";
@@ -22,22 +29,34 @@ public enum RelationLabel {
     public static final String ADMINISTERS = "ADMINISTERS";
     public static final String PREVIOUSVERSION = "PREVIOUSVERSION";
     public static final String DERIVEDFROM = "DERIVEDFROM";
+    //
+    public static final String CANATTACHCATEGORY = "CANATTACHCATEGORY";
+    public static final String CONTAINSCATEGORY = "CONTAINSCATEGORY";
+    public static final String CANWRITECATEGORY = "CANWRITECATEGORY";
+    public static final String OWNSCATEGORY = "OWNSCATEGORY";
+    public static final String CONTAINSARTIFACT = "CONTAINSARTIFACT";
   }
 
   private final String value;
-  private final NodePermission nodePermission;
+  private final ResourcePermission nodePermission;
+  private final CategoryPermission categoryPermission;
 
-  RelationLabel(String value, NodePermission nodePermission) {
+  RelationLabel(String value, ResourcePermission nodePermission, CategoryPermission categoryPermission) {
     this.value = value;
     this.nodePermission = nodePermission;
+    this.categoryPermission = categoryPermission;
   }
 
   public String getValue() {
     return value;
   }
 
-  public NodePermission getNodePermission() {
+  public ResourcePermission getNodePermission() {
     return nodePermission;
+  }
+
+  public CategoryPermission getCategoryPermission() {
+    return categoryPermission;
   }
 
   public static RelationLabel forValue(String type) {
@@ -49,10 +68,21 @@ public enum RelationLabel {
     return null;
   }
 
-  public static RelationLabel forNodePermission(NodePermission permission) {
+  public static RelationLabel forNodePermission(ResourcePermission permission) {
     if (permission != null) {
       for (RelationLabel t : values()) {
         if (permission.equals(t.getNodePermission())) {
+          return t;
+        }
+      }
+    }
+    return null;
+  }
+
+  public static RelationLabel forCategoryPermission(CategoryPermission permission) {
+    if (permission != null) {
+      for (RelationLabel t : values()) {
+        if (permission.equals(t.getCategoryPermission())) {
           return t;
         }
       }

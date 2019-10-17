@@ -5,11 +5,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterators;
 import org.metadatacenter.config.LinkedDataConfig;
 import org.metadatacenter.constant.LinkedData;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.CedarResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class LinkedDataUtil {
+
+  private static final Logger logger = LoggerFactory.getLogger(LinkedDataUtil.class);
 
   protected static final String SEPARATOR = "/";
 
@@ -57,7 +63,8 @@ public class LinkedDataUtil {
    * Adds template element instance @id's to the instance if necessary
    */
   public void addElementInstanceIds(JsonNode nodeContent, CedarResourceType resourceType) {
-    if (resourceType.equals(CedarResourceType.INSTANCE)) { // this is just a check to avoid running it for other node types
+    if (resourceType.equals(CedarResourceType.INSTANCE)) { // this is just a check to avoid running it for other node
+      // types
       Iterator<Map.Entry<String, JsonNode>> fieldsIterator = nodeContent.fields();
       while (fieldsIterator.hasNext()) {
         Map.Entry<String, JsonNode> field = fieldsIterator.next();
@@ -104,5 +111,15 @@ public class LinkedDataUtil {
       return uuid.trim().length() > 0;
     }
     return false;
+  }
+
+  public CedarCategoryId buildNewLinkedDataCategoryId() {
+    String s = buildNewLinkedDataId(CedarResourceType.CATEGORY);
+    try {
+      return CedarCategoryId.build(s);
+    } catch (CedarProcessingException e) {
+      logger.error("Error while building Category Id", e);
+    }
+    return null;
   }
 }

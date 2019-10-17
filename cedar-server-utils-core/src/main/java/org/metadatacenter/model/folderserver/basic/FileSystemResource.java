@@ -26,9 +26,8 @@ import java.util.List;
     @JsonSubTypes.Type(value = FolderServerInstance.class, name = CedarResourceType.Types.INSTANCE)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class FileSystemResource extends AbstractCedarResourceWithDates
-    implements ResourceWithIdAndType, ResourceWithUserNamesData, ResourceWithUsersData,
-    ResourceWithEverybodyPermission, ResourceWithParentPathInfoData {
+public abstract class FileSystemResource extends AbstractCedarResourceWithDates implements ResourceWithIdAndType,
+    ResourceWithUsersAndUserNamesData, ResourceWithEverybodyPermission, ResourceWithParentPathInfoData {
 
   protected NameDescriptionIdentifierGroup nameDescriptionIdentifierGroup;
   protected ParentPathInfoGroup parentPathInfoGroup;
@@ -170,6 +169,11 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates
   }
 
   @Override
+  public String getLastUpdatedByUserName() {
+    return userNamesData.getLastUpdatedByUserName();
+  }
+
+  @Override
   public NodeSharePermission getEverybodyPermission() {
     return everybodyPermission;
   }
@@ -177,11 +181,6 @@ public abstract class FileSystemResource extends AbstractCedarResourceWithDates
   @Override
   public void setEverybodyPermission(NodeSharePermission everybodyPermission) {
     this.everybodyPermission = everybodyPermission;
-  }
-
-  @Override
-  public String getLastUpdatedByUserName() {
-    return userNamesData.getLastUpdatedByUserName();
   }
 
   public void setCreatedByTotal(String createdBy) {

@@ -7,8 +7,8 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen;
+import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.ResourceWithCurrentUserPermissionsAndPublicationStatus;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession implements VersionServiceSession {
@@ -36,9 +36,9 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public OutcomeWithReason resourceCanBePublished(ResourceWithCurrentUserPermissions resource) {
-    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
-      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
-          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatus) {
+      ResourceWithCurrentUserPermissionsAndPublicationStatus res =
+          (ResourceWithCurrentUserPermissionsAndPublicationStatus) resource;
       if (res.getPublicationStatus() != BiboStatus.DRAFT) {
         return OutcomeWithReason.negative(CedarErrorKey.PUBLISH_ONLY_DRAFT);
       }
@@ -53,9 +53,9 @@ public class Neo4JUserSessionVersionService extends AbstractNeo4JUserSession imp
 
   @Override
   public OutcomeWithReason resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource) {
-    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) {
-      ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen res =
-          (ResourceWithCurrentUserPermissionsAndPublicationStatusAndIsOpen) resource;
+    if (resource instanceof ResourceWithCurrentUserPermissionsAndPublicationStatus) {
+      ResourceWithCurrentUserPermissionsAndPublicationStatus res =
+          (ResourceWithCurrentUserPermissionsAndPublicationStatus) resource;
       if (res.getPublicationStatus() != BiboStatus.PUBLISHED) {
         return OutcomeWithReason.negative(CedarErrorKey.CREATE_DRAFT_ONLY_FROM_PUBLISHED);
       }

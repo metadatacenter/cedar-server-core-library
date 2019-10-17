@@ -1,31 +1,31 @@
-package org.metadatacenter.server.security.model.auth;
+package org.metadatacenter.server.security.model.permission.resource;
 
-public class NodePermissionUserPermissionPair {
+public class ResourcePermissionUserPermissionPair {
 
-  private NodePermissionUser user;
-  private NodePermission permission;
+  private ResourcePermissionUser user;
+  private ResourcePermission permission;
 
-  public NodePermissionUserPermissionPair() {
+  public ResourcePermissionUserPermissionPair() {
   }
 
-  public NodePermissionUserPermissionPair(NodePermissionUser user, NodePermission permission) {
+  public ResourcePermissionUserPermissionPair(ResourcePermissionUser user, ResourcePermission permission) {
     this.user = user;
     this.permission = permission;
   }
 
-  public NodePermissionUser getUser() {
+  public ResourcePermissionUser getUser() {
     return user;
   }
 
-  public void setUser(NodePermissionUser user) {
+  public void setUser(ResourcePermissionUser user) {
     this.user = user;
   }
 
-  public NodePermission getPermission() {
+  public ResourcePermission getPermission() {
     return permission;
   }
 
-  public void setPermission(NodePermission permission) {
+  public void setPermission(ResourcePermission permission) {
     this.permission = permission;
   }
 
@@ -38,7 +38,7 @@ public class NodePermissionUserPermissionPair {
       return false;
     }
 
-    NodePermissionUserPermissionPair that = (NodePermissionUserPermissionPair) o;
+    ResourcePermissionUserPermissionPair that = (ResourcePermissionUserPermissionPair) o;
 
     if (getUser() != null ? !getUser().equals(that.getUser()) : that.getUser() != null) {
       return false;

@@ -105,6 +105,10 @@ folderStructure:
     name: "Everybody"
     displayName: "Everybody"
     description: "Group holding all the users"
+  rootCategory:
+    name: "ROOT-CATEGORY"
+    description: "CEDAR Root Category"
+    identifier: "CEDAR Root Category Identifier"
 
 #Server bases
 #for inter-service REST calls
@@ -182,13 +186,22 @@ blueprintUserProfile:
     salt: "${CEDAR_SALT_API_KEY}"
   defaultRoles:
     normal:
+      - "defaultUser"
       - "templateCreator"
       - "metadataCreator"
       - "groupAdministrator"
+      - "categoryAdministrator"
     builtInAdmin:
+      - "defaultUser"
       - "templateCreator"
       - "metadataCreator"
-      - "builtInSystemAdministrator"
+      - "userAdministrator"
+      - "groupAdministrator"
+      - "filesystemAdministrator"
+      - "categoryAdministrator"
+      - "categoryPrivilegedAdministrator"
+      - "searchReindexer"
+      - "processMessageSender"
   uiPreferences:
     folderView:
       sortBy: "name"
@@ -247,6 +260,11 @@ artifactRESTAPI:
         - "@id"
         - "_ui.title"
         - "_ui.description"
+
+categoryRESTAPI:
+  pagination:
+    defaultPageSize: 20
+    maxPageSize: 500
 
 cache:
   persistent:
