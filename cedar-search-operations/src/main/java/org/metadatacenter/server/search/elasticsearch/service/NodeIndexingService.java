@@ -69,7 +69,10 @@ public class NodeIndexingService extends AbstractIndexingService {
     ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(requestContext);
     CedarNodeMaterializedPermissions permissions = permissionSession.getResourceMaterializedPermission(resource.getResourceId());
     CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
-    CedarNodeMaterializedCategories categories = categorySession.getArtifactMaterializedCategories((CedarArtifactId) resource.getResourceId());
+    CedarNodeMaterializedCategories categories = new CedarNodeMaterializedCategories(resource.getId());
+    if (resource.getType() != CedarResourceType.FOLDER) {
+      categories = categorySession.getArtifactMaterializedCategories(CedarArtifactId.build(resource.getId(), resource.getType()));
+    }
     return indexDocument(resource, permissions, categories, requestContext);
   }
 

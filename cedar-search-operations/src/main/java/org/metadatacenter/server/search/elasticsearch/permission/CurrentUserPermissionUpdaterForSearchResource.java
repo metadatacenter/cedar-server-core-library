@@ -70,7 +70,7 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
   }
 
   private boolean isSubmittable() {
-    CedarTemplateId basedOnTemplate = indexedDocument.getInfo().getIsBasedOn();
+    CedarTemplateId basedOnTemplate = indexedDocument.getInfo().getIsBasedOnId();
     if (basedOnTemplate != null) {
       String basedOnTemplateId = basedOnTemplate.getId();
       return cedarConfig.getSubmissionConfig().getSubmittableTemplateIds() != null &&

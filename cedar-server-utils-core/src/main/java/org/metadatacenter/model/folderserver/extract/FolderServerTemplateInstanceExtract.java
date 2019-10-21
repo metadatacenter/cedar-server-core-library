@@ -15,6 +15,6 @@ public class FolderServerTemplateInstanceExtract extends FolderServerInstanceArt
   @Override
   @JsonIgnore
   public CedarInstanceArtifactId getResourceId() {
-    return CedarInstanceArtifactId.buildSafe(this.getId());
+    return CedarInstanceArtifactId.build(this.getId(), this.getType());
   }
 }

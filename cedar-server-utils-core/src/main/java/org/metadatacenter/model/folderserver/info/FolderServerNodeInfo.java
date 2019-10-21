@@ -1,5 +1,6 @@
 package org.metadatacenter.model.folderserver.info;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.metadatacenter.id.CedarArtifactId;
@@ -157,7 +158,12 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public CedarTemplateId getIsBasedOn() {
+  public String getIsBasedOn() {
+    return isBasedOnData.getIsBasedOn().getId();
+  }
+
+  @JsonIgnore
+  public CedarTemplateId getIsBasedOnId() {
     return isBasedOnData.getIsBasedOn();
   }
 

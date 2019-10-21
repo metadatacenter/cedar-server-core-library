@@ -61,7 +61,7 @@ public enum CedarResourceType {
   private final String value;
   private final String prefix;
   private final String atType;
-  private final Class resourceIdClass;
+  private final Class<CedarResourceId> resourceIdClass;
 
   CedarResourceType(String value, String prefix, String atType, Class resourceIdClass) {
     this.value = value;
@@ -83,7 +83,7 @@ public enum CedarResourceType {
     return atType;
   }
 
-  public Class getResourceIdClass() {
+  public Class<CedarResourceId> getResourceIdClass() {
     return resourceIdClass;
   }
 

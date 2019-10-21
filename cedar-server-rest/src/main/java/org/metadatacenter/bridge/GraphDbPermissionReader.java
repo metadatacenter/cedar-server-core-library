@@ -21,8 +21,8 @@ import org.metadatacenter.server.*;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbCategory;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbFolder;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public class GraphDbPermissionReader {
 
@@ -55,7 +55,7 @@ public class GraphDbPermissionReader {
   }
 
   public static void decorateResourceWithCurrentUserPermissions(CedarRequestContext context, ResourcePermissionServiceSession permissionSession,
-                                                                CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
+                                                                CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
     VersionServiceSession versionSession = CedarDataServices.getVersionServiceSession(context);
     CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbResource.get(permissionSession, versionSession, cedarConfig, resource);
     cupu.update(resource.getCurrentUserPermissions());

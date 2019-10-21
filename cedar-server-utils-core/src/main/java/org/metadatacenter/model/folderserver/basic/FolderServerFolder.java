@@ -27,7 +27,7 @@ public class FolderServerFolder extends FileSystemResource implements ResourceWi
 
   @JsonIgnore
   public CedarFolderId getResourceId() {
-    return CedarFolderId.buildSafe(getId());
+    return CedarFolderId.build(getId());
   }
 
   public static FolderServerFolder fromFolderServerFolderCurrentUserReport(FolderServerFolderCurrentUserReport folder) {

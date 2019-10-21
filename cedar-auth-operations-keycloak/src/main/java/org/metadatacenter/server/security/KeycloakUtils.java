@@ -58,7 +58,7 @@ public class KeycloakUtils {
     AccessToken accessToken = checkIfTokenIsStillActiveByUserInfo(token);
     String userUuid = accessToken.getSubject();
     String userId = linkedDataUtil.getUserId(userUuid);
-    CedarUserId uid = CedarUserId.buildSafe(userId);
+    CedarUserId uid = CedarUserId.build(userId);
     CedarUser user = null;
     try {
       user = userService.findUser(uid);

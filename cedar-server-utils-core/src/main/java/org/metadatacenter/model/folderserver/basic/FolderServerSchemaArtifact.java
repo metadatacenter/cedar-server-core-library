@@ -10,8 +10,8 @@ import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 
-public abstract class FolderServerSchemaArtifact extends FolderServerArtifact
-    implements ResourceWithPreviousVersionData, NodeWithPublicationStatus, ResourceWithVersionData {
+public abstract class FolderServerSchemaArtifact extends FolderServerArtifact implements ResourceWithPreviousVersionData, NodeWithPublicationStatus
+    , ResourceWithVersionData {
 
   protected VersionDataGroup versionData;
   protected PreviousVersionGroup previousVersionGroup;

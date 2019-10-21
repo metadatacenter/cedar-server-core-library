@@ -1,6 +1,7 @@
 package org.metadatacenter.server.permissions;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
@@ -11,17 +12,17 @@ import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
   private final ResourcePermissionServiceSession permissionSession;
   private final VersionServiceSession versionSession;
   private final CedarConfig cedarConfig;
-  private final ResourceWithCurrentUserPermissions resource;
+  private final FilesystemResourceWithCurrentUserPermissions resource;
 
   private CurrentUserPermissionUpdaterForGraphDbResource(ResourcePermissionServiceSession permissionSession, VersionServiceSession versionSession,
-                                                         CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
+                                                         CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
     this.permissionSession = permissionSession;
     this.versionSession = versionSession;
     this.cedarConfig = cedarConfig;
@@ -29,12 +30,12 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
   }
 
   public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession, VersionServiceSession versionSession,
-                                                 CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
+                                                 CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
     return new CurrentUserPermissionUpdaterForGraphDbResource(permissionSession, versionSession, cedarConfig, resource);
   }
 
   @Override
-  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions){
     CedarFilesystemResourceId id = resource.getResourceId();
     if (permissionSession.userHasWriteAccessToResource(id)) {
       currentUserResourcePermissions.setCanWrite(true);

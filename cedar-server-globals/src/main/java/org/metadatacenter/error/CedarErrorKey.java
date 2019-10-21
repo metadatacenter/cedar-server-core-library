@@ -136,7 +136,9 @@ public enum CedarErrorKey {
 
   DRAFT_NOT_CREATED("draftNotCreated"),
 
-  CONTENT_NOT_VALID("contentNotValid");
+  CONTENT_NOT_VALID("contentNotValid"),
+
+  INTERNAL_ERROR("internalError");
 
   private final String value;
 

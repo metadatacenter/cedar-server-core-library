@@ -1,6 +1,5 @@
 package org.metadatacenter.server.permissions;
 
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserCategoryPermissionUpdater;
 import org.metadatacenter.server.CategoryPermissionServiceSession;
@@ -26,12 +25,7 @@ public class CurrentUserPermissionUpdaterForGraphDbCategory extends CurrentUserC
   @Override
   public void update(CurrentUserCategoryPermissions currentUserCategoryPermissions) {
     String id = category.getId();
-    CedarCategoryId ccId = null;
-    try {
-      ccId = CedarCategoryId.build(id);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
+    CedarCategoryId ccId = CedarCategoryId.build(id);
     category.getCurrentUserPermissions().setCanRead(true);
     if (categoryPermissionSession.userHasWriteAccessToCategory(ccId)) {
       category.getCurrentUserPermissions().setCanWrite(true);

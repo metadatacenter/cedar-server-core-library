@@ -1,8 +1,11 @@
 package org.metadatacenter.id;
 
-import org.metadatacenter.exception.CedarProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CedarFolderId extends CedarFilesystemResourceId {
+
+  private static final Logger log = LoggerFactory.getLogger(CedarFolderId.class);
 
   private CedarFolderId() {
   }
@@ -11,16 +14,7 @@ public class CedarFolderId extends CedarFilesystemResourceId {
     super(id);
   }
 
-  public static CedarFolderId build(String id) throws CedarProcessingException {
-    return createFromString(id, CedarFolderId.class);
-  }
-
-  public static CedarFolderId buildSafe(String id) {
-    try {
-      return createFromString(id, CedarFolderId.class);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+  public static CedarFolderId build(String id) {
+    return new CedarFolderId(id);
   }
 }

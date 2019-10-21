@@ -244,7 +244,7 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   public CedarResourceType getResourceType(CedarResourceId resourceId, CedarUserId ownerId) {
-    String cypher = CypherQueryBuilderResource.getResourceById();
+    String cypher = CypherQueryBuilderResource.getResourceTypeById();
     CypherParameters params = CypherParamBuilderResource.matchId(resourceId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     String typeString = executeReadGetString(q);

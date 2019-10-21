@@ -8,7 +8,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String addPermissionToFilesystemResourceForUser(FilesystemResourcePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " CREATE (user)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " RETURN user";
   }
@@ -16,7 +16,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String addPermissionToFilesystemResourceForGroup(FilesystemResourcePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " CREATE (group)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " RETURN group";
   }
@@ -24,7 +24,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String removePermissionForFilesystemResourceFromUser(FilesystemResourcePermission permission) {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " MATCH (user)-[relation:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
         " RETURN resource";
@@ -33,7 +33,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String removePermissionForFilesystemResourceFromGroup(FilesystemResourcePermission permission) {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>} })" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>} })" +
         " MATCH (group)-[relation:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " DELETE (relation)" +
         " RETURN resource";
@@ -50,7 +50,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   private static String userHasPermissionOnFilesystemResource(RelationLabel relationLabel) {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})");
-    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
     sb.append(" WHERE");
 
     sb.append(" (");
@@ -69,7 +69,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String getUsersWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " MATCH (user)-[:" + relationLabel + "]->(resource)" +
         " RETURN user";
   }
@@ -77,7 +77,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String getGroupsWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
     return "" +
         " MATCH (group:<LABEL.GROUP>)" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " MATCH (group)-[:" + relationLabel + "]->(resource)" +
         " RETURN group";
   }
@@ -85,7 +85,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String getUsersWithTransitiveReadOnFilesystemResource() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
     sb.append(" WHERE");
 
     sb.append(" (");
@@ -100,7 +100,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   public static String getUsersWithTransitiveWriteOnFilesystemResource() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
     sb.append(" WHERE");
 
     sb.append(" (");
@@ -113,7 +113,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   }
 
   public static String getGroupsWithTransitiveReadOnFilesystemResource() {
-    String node = "(resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");
@@ -125,7 +125,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
   }
 
   public static String getGroupsWithTransitiveWriteOnFilesystemResource() {
-    String node = "(resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
 
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (group:<LABEL.GROUP>)");

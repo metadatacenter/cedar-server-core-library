@@ -1,5 +1,9 @@
 package org.metadatacenter.model;
 
-public interface CedarResource {
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarResourceId;
 
+public interface CedarResource<T extends CedarResourceId> {
+
+  T getResourceId() throws CedarProcessingException;
 }

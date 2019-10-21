@@ -94,7 +94,7 @@ public class ResourcePermissionRequestValidator {
           .parameter("paramName", "owner")
           .message("The owner should be present in the request");
     } else {
-      CedarUserId newOwnerId = owner.getIdObject();
+      CedarUserId newOwnerId = owner.getResourceIds();
       FolderServerUser newOwner = proxies.user().findUserById(newOwnerId);
       if (newOwner == null) {
         callResult.addError(NOT_FOUND)
@@ -124,7 +124,7 @@ public class ResourcePermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          CedarUserId userId = permissionUser.getIdObject();
+          CedarUserId userId = permissionUser.getResourceIds();
           FolderServerUser user = proxies.user().findUserById(userId);
           if (user == null) {
             callResult.addError(NOT_FOUND)
@@ -157,7 +157,7 @@ public class ResourcePermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          CedarGroupId groupId = permissionGroup.getIdObject();
+          CedarGroupId groupId = permissionGroup.getResourceId();
           FolderServerGroup group = proxies.group().findGroupById(groupId);
           if (group == null) {
             callResult.addError(NOT_FOUND)

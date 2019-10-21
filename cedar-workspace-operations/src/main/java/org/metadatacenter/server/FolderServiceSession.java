@@ -5,6 +5,7 @@ import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
+import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerArtifactExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -29,6 +30,8 @@ public interface FolderServiceSession {
   long findAllNodesCount();
 
   FolderServerArtifact findArtifactById(CedarArtifactId artifactId);
+
+  FolderServerSchemaArtifact findSchemaArtifactById(CedarSchemaArtifactId artifactId);
 
   FileSystemResource findResourceById(CedarFilesystemResourceId resourceId);
 

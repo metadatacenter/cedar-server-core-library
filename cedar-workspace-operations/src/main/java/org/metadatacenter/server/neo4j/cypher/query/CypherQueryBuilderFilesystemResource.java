@@ -10,14 +10,14 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
   public static String getOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
         " MATCH (user)-[:<REL.OWNS>]->(resource)" +
         " RETURN user";
   }
 
   public static String setEverybodyPermission() {
     return "" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
         " SET resource.<PROP.EVERYBODY_PERMISSION> = {<PH.EVERYBODY_PERMISSION>}" +
         " RETURN resource";
   }
@@ -25,7 +25,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
   public static String getAllDescendantResources() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>} })" +
-        " MATCH (child:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (child:<LABEL.FILESYSTEM_RESOURCE>)" +
         " MATCH (parent)-[:<REL.CONTAINS>*0..]->(child)" +
         " RETURN child";
   }
@@ -33,7 +33,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
   public static String getResourceByParentIdAndName() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
-        " MATCH (child:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (child:<LABEL.FILESYSTEM_RESOURCE>)" +
         " MATCH (parent)-[:<REL.CONTAINS>]->(child)" +
         " WHERE child.<PROP.NAME> = {<PROP.NAME>}" +
         " RETURN child";
@@ -41,7 +41,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
 
   public static String getAllResourcesLookupQuery(List<String> sortList) {
     return "" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
         " RETURN resource" +
         " ORDER BY " + getOrderByExpression("resource", sortList) +
         " SKIP {offset}" +
@@ -50,14 +50,14 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
 
   public static String getAllResourceCountQuery() {
     return "" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
         " RETURN count(resource)";
   }
 
   public static String getResourceLookupQueryById() {
     return "" +
         " MATCH (root:<LABEL.FOLDER> {<PROP.NAME>:{<PROP.NAME>}})," +
-        " (current:<LABEL.FILESYSTEMRESOURCE> {<PROP.ID>:{<PROP.ID>} })," +
+        " (current:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PROP.ID>} })," +
         " path=shortestPath((root)-[:<REL.CONTAINS>*]->(current))" +
         " RETURN path";
   }
@@ -66,7 +66,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
                                                          List<String> sortList) {
     StringBuilder sb = new StringBuilder();
     sb.append(
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
             " WHERE EXISTS(resource.<PROP.EVERYBODY_PERMISSION>) AND resource.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
             " AND resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND resource.<PROP.OWNED_BY> <> {userId}" +
@@ -90,7 +90,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
   public static String getSharedWithEverybodyCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus) {
     StringBuilder sb = new StringBuilder();
     sb.append(
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
             " WHERE EXISTS(resource.<PROP.EVERYBODY_PERMISSION>) AND resource.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
             " AND resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
             " AND resource.<PROP.OWNED_BY> <> {userId}" +
@@ -111,7 +111,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
   public static String getAllVisibleByGroupQuery() {
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PROP.ID>}})" +
-        " MATCH (resource:<LABEL.FILESYSTEMRESOURCE>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
         " WHERE" +
         " (" +
         " (group)-[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->(resource)" +

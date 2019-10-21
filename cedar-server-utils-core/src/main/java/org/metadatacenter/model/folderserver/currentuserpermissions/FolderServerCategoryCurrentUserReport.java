@@ -1,14 +1,14 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.auth.CurrentUserCategoryPermissions;
 import org.metadatacenter.server.security.model.permission.category.CategoryWithCurrentUserPermissions;
 import org.metadatacenter.util.json.JsonMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -17,6 +17,8 @@ public class FolderServerCategoryCurrentUserReport extends FolderServerCategory 
 
   private CurrentUserCategoryPermissions currentUserPermissions = new CurrentUserCategoryPermissions();
   private boolean root;
+  private static final Logger log = LoggerFactory.getLogger(FolderServerCategoryCurrentUserReport.class);
+
 
   public FolderServerCategoryCurrentUserReport() {
     super();
@@ -44,12 +46,6 @@ public class FolderServerCategoryCurrentUserReport extends FolderServerCategory 
 
   public void setRoot(boolean root) {
     this.root = root;
-  }
-
-  @Override
-  @JsonIgnore
-  public CedarFilesystemResourceId getResourceId() {
-    return CedarFilesystemResourceId.buildSafe(this.getId());
   }
 
 }

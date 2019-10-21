@@ -1,7 +1,6 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.RelationLabel;
@@ -24,7 +23,8 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
     super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String globalRequestId, String localRequestId) {
+  public static GroupServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String globalRequestId,
+                                        String localRequestId) {
     return new Neo4JUserSessionGroupService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
@@ -47,11 +47,7 @@ public class Neo4JUserSessionGroupService extends AbstractNeo4JUserSession imple
   public FolderServerGroup createGroup(String groupName, String groupDescription) {
     String gid = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.GROUP);
     CedarGroupId groupId = null;
-    try {
-      groupId = CedarGroupId.build(gid);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
+    groupId = CedarGroupId.build(gid);
     return proxies.group().createGroup(groupId, groupName, groupDescription, cu.getResourceId(), null);
   }
 

@@ -6,6 +6,7 @@ import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.extract.FolderServerArtifactExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerFolderExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
@@ -137,6 +138,11 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   @Override
   public FolderServerArtifact findArtifactById(CedarArtifactId artifactId) {
     return proxies.artifact().findArtifactById(artifactId);
+  }
+
+  @Override
+  public FolderServerSchemaArtifact findSchemaArtifactById(CedarSchemaArtifactId artifactId) {
+    return proxies.artifact().findSchemaArtifactById(artifactId);
   }
 
   @Override

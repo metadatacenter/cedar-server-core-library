@@ -1,8 +1,11 @@
 package org.metadatacenter.id;
 
-import org.metadatacenter.exception.CedarProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CedarTemplateId extends CedarSchemaArtifactId {
+
+  private static final Logger log = LoggerFactory.getLogger(CedarTemplateId.class);
 
   private CedarTemplateId() {
   }
@@ -11,17 +14,8 @@ public class CedarTemplateId extends CedarSchemaArtifactId {
     super(id);
   }
 
-  public static CedarTemplateId build(String id) throws CedarProcessingException {
-    return createFromString(id, CedarTemplateId.class);
-  }
-
-  public static CedarTemplateId buildSafe(String id) {
-    try {
-      return createFromString(id, CedarTemplateId.class);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+  public static CedarTemplateId build(String id) {
+    return new CedarTemplateId(id);
   }
 
 }

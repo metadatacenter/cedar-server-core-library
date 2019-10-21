@@ -3,15 +3,14 @@ package org.metadatacenter.server.neo4j.proxy;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.id.*;
 import org.metadatacenter.model.CedarResource;
-import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
+import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.extract.FolderServerArtifactExtract;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderArtifact;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFilesystemResource;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderResource;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderArtifact;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
@@ -70,8 +69,8 @@ public class Neo4JProxyArtifact extends AbstractNeo4JProxy {
   }
 
   private boolean setOwner(CedarArtifactId artifactId, CedarUserId newOwnerId) {
-    String cypher = CypherQueryBuilderArtifact.setResourceOwner();
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndUser(artifactId, newOwnerId);
+    String cypher = CypherQueryBuilderArtifact.setArtifactOwner();
+    CypherParameters params = CypherParamBuilderArtifact.matchArtifactIdAndUserId(artifactId, newOwnerId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting owner");
   }
@@ -104,6 +103,10 @@ public class Neo4JProxyArtifact extends AbstractNeo4JProxy {
 
   public FolderServerArtifact findArtifactById(CedarArtifactId artifactId) {
     return findResourceGenericById(artifactId, FolderServerArtifact.class);
+  }
+
+  public FolderServerSchemaArtifact findSchemaArtifactById(CedarSchemaArtifactId artifactId) {
+    return findResourceGenericById(artifactId, FolderServerSchemaArtifact.class);
   }
 
   public boolean setDerivedFrom(CedarArtifactId newId, CedarArtifactId oldId) {

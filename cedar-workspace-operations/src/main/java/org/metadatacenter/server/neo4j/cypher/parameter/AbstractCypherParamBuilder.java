@@ -189,13 +189,6 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchFilesystemResourceAndGroup(CedarFilesystemResourceId resourceId, CedarGroupId groupId) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
-    params.put(ParameterPlaceholder.GROUP_ID, groupId);
-    return params;
-  }
-
   public static CypherParameters matchResourceAndUser(CedarResourceId resourceId, CedarUserId userId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
@@ -203,16 +196,4 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters matchFilesystemResourceAndUser(CedarFilesystemResourceId resourceId, CedarUserId userId) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
-    params.put(ParameterPlaceholder.USER_ID, userId);
-    return params;
-  }
-
-  public static CypherParameters matchFilesystemResource(CedarFilesystemResourceId resourceId) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.RESOURCE_ID, resourceId);
-    return params;
-  }
 }

@@ -24,8 +24,8 @@ public class CedarGroupUser {
     return user;
   }
 
-  public CedarUserId getUserId() {
-    return CedarUserId.buildSafe(user.getId());
+  public CedarUserId getResourceId() {
+    return CedarUserId.build(user.getId());
   }
 
   public void setUser(CedarUserExtract user) {

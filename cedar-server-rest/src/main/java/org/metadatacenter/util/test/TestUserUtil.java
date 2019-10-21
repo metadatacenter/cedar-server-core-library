@@ -17,12 +17,12 @@ public class TestUserUtil {
 
   public static String getTestUser1AuthHeader(CedarConfig cedarConfig) {
     String uuid = cedarConfig.getTestUsers().getTestUser1().getId();
-    return getTestUserAuthHeader(CedarUserId.buildSafe(uuid));
+    return getTestUserAuthHeader(CedarUserId.build(uuid));
   }
 
   public static String getTestUser2AuthHeader(CedarConfig cedarConfig) {
     String uuid = cedarConfig.getTestUsers().getTestUser2().getId();
-    return getTestUserAuthHeader(CedarUserId.buildSafe(uuid));
+    return getTestUserAuthHeader(CedarUserId.build(uuid));
   }
 
   public static String getAdminUserAuthHeader(CedarConfig cedarConfig) {

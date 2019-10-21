@@ -1,19 +1,16 @@
 package org.metadatacenter.id;
 
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.CedarResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public abstract class CedarResourceId {
 
-  private String id;
-  private static Class[] stringConstructorArguments = new Class[1];
+  protected String id;
 
-  static {
-    stringConstructorArguments[0] = String.class;
-  }
+  private static final Logger log = LoggerFactory.getLogger(CedarResourceId.class);
 
   protected CedarResourceId() {
   }
@@ -22,20 +19,8 @@ public abstract class CedarResourceId {
     this.id = id;
   }
 
-  protected static <T extends CedarResourceId> T createFromString(String id, Class<T> type) throws CedarProcessingException {
-    try {
-      return type.getDeclaredConstructor(stringConstructorArguments).newInstance(id);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-      throw new CedarProcessingException("Error while building wrapped resource id object", e);
-    }
-  }
-
-  public static CedarResourceId build(String id) throws CedarProcessingException {
-    return createFromString(id, CedarResourceId.class);
-  }
-
-  public static CedarResourceId build(String id, CedarResourceType resourceType) throws CedarProcessingException {
-    switch (resourceType) {
+  public static CedarResourceId build(String id, CedarResourceType type) {
+    switch (type) {
       case FOLDER:
         return CedarFolderId.build(id);
       case FIELD:
@@ -53,32 +38,12 @@ public abstract class CedarResourceId {
       case USER:
         return CedarUserId.build(id);
     }
+    log.error("Error creating CedarResourceId, unrecognized type:" + type);
     return null;
   }
 
   public String getId() {
     return id;
-  }
-
-  public CedarFolderId asFolderId() throws CedarProcessingException {
-    return CedarFolderId.build(this.id);
-  }
-
-  public CedarArtifactId asArtifactId() throws CedarProcessingException {
-    return CedarArtifactId.build(this.id);
-  }
-
-  public CedarResourceId asResourceId() throws CedarProcessingException {
-    return CedarResourceId.build(this.id);
-  }
-
-  public static CedarResourceId buildSafe(String id) {
-    try {
-      return createFromString(id, CedarResourceId.class);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
   }
 
   @Override

@@ -7,6 +7,7 @@ import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,8 @@ public class CedarUser implements CedarUserRepresentation {
   public CedarUser() {
     this.apiKeys = new ArrayList<>();
     this.roles = new ArrayList<>();
+    this.permissions = new ArrayList<>();
+    this.permissionSet = new HashSet<>();
     this.uiPreferences = new CedarUserUIPreferences();
   }
 
@@ -108,6 +111,7 @@ public class CedarUser implements CedarUserRepresentation {
 
   public void setPermissions(List<String> permissions) {
     this.permissions = permissions;
+    this.permissionSet = new HashSet<>();
     this.permissionSet.addAll(permissions);
   }
 
@@ -157,6 +161,6 @@ public class CedarUser implements CedarUserRepresentation {
   @JsonIgnore
   @Override
   public CedarUserId getResourceId() {
-    return CedarUserId.buildSafe(this.id);
+    return CedarUserId.build(this.id);
   }
 }

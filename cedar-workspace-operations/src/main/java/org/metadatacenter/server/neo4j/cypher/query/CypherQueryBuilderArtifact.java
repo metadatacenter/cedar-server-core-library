@@ -47,10 +47,10 @@ public class CypherQueryBuilderArtifact extends AbstractCypherQueryBuilder {
         " RETURN artifact";
   }
 
-  public static String setResourceOwner() {
+  public static String setArtifactOwner() {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
-        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PH.RESOURCE_ID>}})" +
+        " MATCH (artifact:<LABEL.ARTIFACT> {<PROP.ID>:{<PH.ARTIFACT_ID>}})" +
         " CREATE (user)-[:<REL.OWNS>]->(artifact)" +
         " SET artifact.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
         " RETURN artifact";
@@ -132,7 +132,7 @@ public class CypherQueryBuilderArtifact extends AbstractCypherQueryBuilder {
 
   public static String getVersionHistory() {
     StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (artifact:<LABEL.ARTIFACT> {<PROP.ID>:{PROP.ID>}})");
+    sb.append(" MATCH (artifact:<LABEL.ARTIFACT> {<PROP.ID>:{<PROP.ID>}})");
     sb.append(" MATCH p=(resnew:<LABEL.ARTIFACT>)-[:<REL.PREVIOUSVERSION>*0..]->");
     sb.append("(artifact)-[:<REL.PREVIOUSVERSION>*0..]->(resold:<LABEL.ARTIFACT>)");
     sb.append(" RETURN p ORDER BY length(p) DESC LIMIT 1");

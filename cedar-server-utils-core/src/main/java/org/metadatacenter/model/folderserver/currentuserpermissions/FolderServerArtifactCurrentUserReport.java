@@ -1,13 +1,14 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import org.metadatacenter.id.CedarArtifactId;
+import org.metadatacenter.id.CedarSchemaArtifactId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.DerivedFromGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithDerivedFromData;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 
-public abstract class FolderServerArtifactCurrentUserReport extends FolderServerResourceCurrentUserReport implements ResourceWithCurrentUserPermissions, ResourceWithOpenFlag, ResourceWithDerivedFromData {
+public abstract class FolderServerArtifactCurrentUserReport extends FolderServerResourceCurrentUserReport implements FilesystemResourceWithCurrentUserPermissions, ResourceWithOpenFlag, ResourceWithDerivedFromData {
 
   protected DerivedFromGroup derivedFromGroup;
   protected Boolean isOpen;
@@ -37,8 +38,8 @@ public abstract class FolderServerArtifactCurrentUserReport extends FolderServer
     this.isOpen = isOpen;
   }
 
-  public CedarArtifactId getResourceId() {
-    return CedarArtifactId.buildSafe(getId());
+  public CedarSchemaArtifactId getResourceId() {
+    return CedarSchemaArtifactId.build(getId(), getType());
   }
 
 }

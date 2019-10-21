@@ -3,10 +3,7 @@ package org.metadatacenter.server.search.permission;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.id.CedarArtifactId;
-import org.metadatacenter.id.CedarFilesystemResourceId;
-import org.metadatacenter.id.CedarFolderId;
-import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.Upsert;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -59,22 +56,22 @@ public class SearchPermissionExecutorService {
   public void handleEvent(SearchPermissionQueueEvent event) {
     switch (event.getEventType()) {
       case RESOURCE_MOVED:
-        updateOneArtifact(CedarArtifactId.buildSafe(event.getId()));
+        updateOneArtifact(CedarUntypedArtifactId.build(event.getId()));
         break;
       case RESOURCE_PERMISSION_CHANGED:
-        updateOneArtifact(CedarArtifactId.buildSafe(event.getId()));
+        updateOneArtifact(CedarUntypedArtifactId.build(event.getId()));
         break;
       case FOLDER_MOVED:
-        updateFolderRecursively(CedarFolderId.buildSafe(event.getId()));
+        updateFolderRecursively(CedarFolderId.build(event.getId()));
         break;
       case FOLDER_PERMISSION_CHANGED:
-        updateFolderRecursively(CedarFolderId.buildSafe(event.getId()));
+        updateFolderRecursively(CedarFolderId.build(event.getId()));
         break;
       case GROUP_MEMBERS_UPDATED:
-        updateAllByUpdatedGroup(CedarGroupId.buildSafe(event.getId()));
+        updateAllByUpdatedGroup(CedarGroupId.build(event.getId()));
         break;
       case GROUP_DELETED:
-        updateAllByDeletedGroup(CedarGroupId.buildSafe(event.getId()));
+        updateAllByDeletedGroup(CedarGroupId.build(event.getId()));
         break;
     }
   }
@@ -121,7 +118,7 @@ public class SearchPermissionExecutorService {
 
     for (String cid : allCedarIdsForGroup) {
       log.info("Need to update permissions for:" + cid);
-      upsertOnePermissions(Upsert.UPDATE, CedarFilesystemResourceId.buildSafe(cid));
+      upsertOnePermissions(Upsert.UPDATE, CedarUntypedArtifactId.build(cid));
     }
   }
 

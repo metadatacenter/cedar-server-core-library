@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Iterators;
 import org.metadatacenter.config.LinkedDataConfig;
 import org.metadatacenter.constant.LinkedData;
-import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.CedarResourceType;
 import org.slf4j.Logger;
@@ -52,15 +50,10 @@ public class LinkedDataUtil {
     return getLinkedDataId(resourceType, UUID.randomUUID().toString());
   }
 
-  public <T extends CedarResourceId> T  buildNewLinkedDataIdObject(Class<T> type) {
+  public <T extends CedarResourceId> T buildNewLinkedDataIdObject(Class<T> type) {
     CedarResourceType cedarResourceType = CedarResourceType.forResourceIdClass(type);
     String id = buildNewLinkedDataId(cedarResourceType);
-    try {
-      return (T)CedarResourceId.build(id, cedarResourceType);
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return (T) CedarResourceId.build(id, cedarResourceType);
   }
 
   public String getUUID(String resourceId, CedarResourceType resourceType) {
@@ -126,13 +119,4 @@ public class LinkedDataUtil {
     return false;
   }
 
-  public CedarCategoryId buildNewLinkedDataCategoryId() {
-    String s = buildNewLinkedDataId(CedarResourceType.CATEGORY);
-    try {
-      return CedarCategoryId.build(s);
-    } catch (CedarProcessingException e) {
-      logger.error("Error while building Category Id", e);
-    }
-    return null;
-  }
 }

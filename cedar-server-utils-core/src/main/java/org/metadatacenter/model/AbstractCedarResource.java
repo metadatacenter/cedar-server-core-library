@@ -1,12 +1,13 @@
 package org.metadatacenter.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.folderserver.datagroup.BaseDataGroup;
 import org.metadatacenter.model.folderserver.datagroup.NameDescriptionIdentifierGroup;
 import org.metadatacenter.server.model.provenance.ProvenanceTime;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 
-public abstract class AbstractCedarResource implements CedarResource {
+public abstract class AbstractCedarResource<T extends CedarResourceId> implements CedarResource<T> {
 
   protected BaseDataGroup baseDataGroup;
   protected NameDescriptionIdentifierGroup nameDescriptionIdentifierGroup;

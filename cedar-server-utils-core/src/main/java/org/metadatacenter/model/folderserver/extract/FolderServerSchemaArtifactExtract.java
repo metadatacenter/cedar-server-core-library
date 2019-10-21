@@ -73,6 +73,6 @@ public class FolderServerSchemaArtifactExtract extends FolderServerArtifactExtra
   @Override
   @JsonIgnore
   public CedarSchemaArtifactId getResourceId() {
-    return CedarSchemaArtifactId.buildSafe(this.getId());
+    return CedarSchemaArtifactId.build(this.getId(), this.getType());
   }
 }

@@ -76,6 +76,6 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
   public static String userExists() {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PROP.ID>}})" +
-        " RETURN COUNT(user) == 1";
+        " RETURN COUNT(user) = 1";
   }
 }

@@ -9,7 +9,7 @@ import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.datagroup.*;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.ResourceWithIdAndType;
+import org.metadatacenter.server.security.model.FilesystemResourceWithIdAndType;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.util.json.JsonMapper;
 
@@ -26,7 +26,7 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerTemplateExtract.class, name = CedarResourceType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerTemplateInstanceExtract.class, name = CedarResourceType.Types.INSTANCE)
 })
-public abstract class FolderServerResourceExtract extends AbstractCedarResourceExtract implements ResourceWithIdAndType, ResourceWithUserNamesData,
+public abstract class FolderServerResourceExtract extends AbstractCedarResourceExtract implements FilesystemResourceWithIdAndType, ResourceWithUserNamesData,
     ResourceWithUsersData, ResourceWithEverybodyPermission {
 
   protected UsersDataGroup usersData;

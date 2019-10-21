@@ -1,13 +1,13 @@
 package org.metadatacenter.server;
 
 import org.metadatacenter.outcome.OutcomeWithReason;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 
 public interface VersionServiceSession {
 
-  OutcomeWithReason userCanPerformVersioning(ResourceWithCurrentUserPermissions resource);
+  OutcomeWithReason userCanPerformVersioning(FilesystemResourceWithCurrentUserPermissions resource);
 
-  OutcomeWithReason resourceCanBePublished(ResourceWithCurrentUserPermissions resource);
+  OutcomeWithReason resourceCanBePublished(FilesystemResourceWithCurrentUserPermissions resource);
 
-  OutcomeWithReason resourceCanBeDrafted(ResourceWithCurrentUserPermissions resource);
+  OutcomeWithReason resourceCanBeDrafted(FilesystemResourceWithCurrentUserPermissions resource);
 }

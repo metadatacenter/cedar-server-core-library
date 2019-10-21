@@ -292,13 +292,13 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     Set<CedarUserId> oldUsers = new HashSet<>();
     for (CedarGroupUser gu : currentGroupUsers.getUsers()) {
       if ((filter == Neo4JUserSessionGroupOperations.Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Neo4JUserSessionGroupOperations.Filter.MEMBER && gu.isMember())) {
-        oldUsers.add(gu.getUserId());
+        oldUsers.add(gu.getResourceId());
       }
     }
     Set<CedarUserId> newUsers = new HashSet<>();
     for (CedarGroupUser gu : newGroupUsers.getUsers()) {
       if ((filter == Neo4JUserSessionGroupOperations.Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Neo4JUserSessionGroupOperations.Filter.MEMBER && gu.isMember())) {
-        newUsers.add(gu.getUserId());
+        newUsers.add(gu.getResourceId());
       }
     }
 
@@ -330,25 +330,25 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
 
   private void addGroupPermissions(CedarFilesystemResourceId resourceId, Set<ResourcePermissionGroupPermissionPair> toAddGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toAddGroupPermissions) {
-      proxies.permission().addPermissionToGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
+      proxies.permission().addPermissionToGroup(resourceId, pair.getGroup().getResourceId(), pair.getPermission());
     }
   }
 
   private void removeGroupPermissions(CedarFilesystemResourceId resourceId, Set<ResourcePermissionGroupPermissionPair> toRemoveGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
-      proxies.permission().removePermissionFromGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
+      proxies.permission().removePermissionFromGroup(resourceId, pair.getGroup().getResourceId(), pair.getPermission());
     }
   }
 
   private void addUserPermissions(CedarFilesystemResourceId resourceId, Set<ResourcePermissionUserPermissionPair> toAddUserPermissions) {
     for (ResourcePermissionUserPermissionPair pair : toAddUserPermissions) {
-      proxies.permission().addPermissionToUser(resourceId, pair.getUser().getIdObject(), pair.getPermission());
+      proxies.permission().addPermissionToUser(resourceId, pair.getUser().getResourceIds(), pair.getPermission());
     }
   }
 
   private void removeUserPermissions(CedarFilesystemResourceId resourceId, Set<ResourcePermissionUserPermissionPair> toRemoveUserPermissions) {
     for (ResourcePermissionUserPermissionPair pair : toRemoveUserPermissions) {
-      proxies.permission().removePermissionFromUser(resourceId, pair.getUser().getIdObject(), pair.getPermission());
+      proxies.permission().removePermissionFromUser(resourceId, pair.getUser().getResourceIds(), pair.getPermission());
     }
   }
 

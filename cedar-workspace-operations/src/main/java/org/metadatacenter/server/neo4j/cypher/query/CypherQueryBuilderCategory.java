@@ -139,7 +139,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String categoryExists() {
     return "" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>}})" +
-        " RETURN COUNT(category) == 1";
+        " RETURN COUNT(category) = 1";
   }
 
 }

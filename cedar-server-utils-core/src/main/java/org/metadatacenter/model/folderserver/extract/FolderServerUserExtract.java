@@ -36,7 +36,7 @@ public class FolderServerUserExtract extends AbstractCedarResourceWithDates impl
   @Override
   @JsonIgnore
   public CedarUserId getResourceId() {
-    return CedarUserId.buildSafe(getId());
+    return CedarUserId.build(getId());
   }
 
   @JsonProperty(NodeProperty.Label.FIRST_NAME)

@@ -12,6 +12,7 @@ import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFilesystemResource;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFilesystemResource;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFilesystemResourcePermission;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
@@ -26,28 +27,28 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
 
   boolean addPermission(CedarFilesystemResourceId resourceId, CedarGroupId groupId, FilesystemResourcePermission permission) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.addPermissionToFilesystemResourceForGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndGroup(resourceId, groupId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndGroup(resourceId, groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
   boolean removePermission(CedarFilesystemResourceId resourceId, CedarGroupId groupId, FilesystemResourcePermission permission) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.removePermissionForFilesystemResourceFromGroup(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndGroup(resourceId, groupId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndGroup(resourceId, groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
 
   boolean addPermission(CedarFilesystemResourceId resourceId, CedarUserId userId, FilesystemResourcePermission permission) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.addPermissionToFilesystemResourceForUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndUser(resourceId, userId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndUser(resourceId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding permission");
   }
 
   boolean removePermission(CedarFilesystemResourceId resourceId, CedarUserId userId, FilesystemResourcePermission permission) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.removePermissionForFilesystemResourceFromUser(permission);
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndUser(resourceId, userId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndUser(resourceId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing permission");
   }
@@ -94,7 +95,7 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
 
   boolean userHasReadAccessToFilesystemResource(CedarUserId userId, CedarFilesystemResourceId resourceId) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.userCanReadFilesystemResource();
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndUser(resourceId, userId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndUser(resourceId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
     return cedarFSUser != null;
@@ -102,7 +103,7 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
 
   boolean userHasWriteAccessToFilesystemResource(CedarUserId userId, CedarFilesystemResourceId resourceId) {
     String cypher = CypherQueryBuilderFilesystemResourcePermission.userCanWriteFilesystemResource();
-    CypherParameters params = AbstractCypherParamBuilder.matchFilesystemResourceAndUser(resourceId, userId);
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResourceAndUser(resourceId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     FolderServerUser cedarFSUser = executeReadGetOne(q, FolderServerUser.class);
     return cedarFSUser != null;

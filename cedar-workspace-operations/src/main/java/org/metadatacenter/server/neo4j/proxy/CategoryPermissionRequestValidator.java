@@ -94,7 +94,7 @@ public class CategoryPermissionRequestValidator {
           .parameter("paramName", "owner")
           .message("The owner should be present in the request");
     } else {
-      CedarUserId userId = CedarUserId.buildSafe(owner.getId());
+      CedarUserId userId = CedarUserId.build(owner.getId());
       FolderServerUser newOwner = proxies.user().findUserById(userId);
       if (newOwner == null) {
         callResult.addError(NOT_FOUND)
@@ -124,7 +124,7 @@ public class CategoryPermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          CedarUserId userId = CedarUserId.buildSafe(permissionUser.getId());
+          CedarUserId userId = CedarUserId.build(permissionUser.getId());
           FolderServerUser user = proxies.user().findUserById(userId);
           if (user == null) {
             callResult.addError(NOT_FOUND)
@@ -157,7 +157,7 @@ public class CategoryPermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          CedarGroupId groupId = CedarGroupId.buildSafe(permissionGroup.getId());
+          CedarGroupId groupId = CedarGroupId.build(permissionGroup.getId());
           FolderServerGroup group = proxies.group().findGroupById(groupId);
           if (group == null) {
             callResult.addError(NOT_FOUND)

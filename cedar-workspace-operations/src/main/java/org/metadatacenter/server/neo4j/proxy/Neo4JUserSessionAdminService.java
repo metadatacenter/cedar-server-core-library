@@ -112,15 +112,11 @@ public class Neo4JUserSessionAdminService extends AbstractNeo4JUserSession imple
       log.info("Root Category not found, trying to create it");
       String rootCategoryId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.CATEGORY);
       CedarCategoryId ccRootId;
-      try {
-        ccRootId = CedarCategoryId.build(rootCategoryId);
-        log.info("Root Category URL just generated:" + ccRootId.getId());
-        rootCategory = proxies.category().createCategory(null, ccRootId, config.getRootCategoryName(),
-            config.getRootCategoryDescription(), config.getRootCategoryIdentifier(), userId);
-        log.info("Root Category created, returned:" + rootCategory);
-      } catch (CedarProcessingException e) {
-        log.error("Error while creating root category", e);
-      }
+      ccRootId = CedarCategoryId.build(rootCategoryId);
+      log.info("Root Category URL just generated:" + ccRootId.getId());
+      rootCategory = proxies.category().createCategory(null, ccRootId, config.getRootCategoryName(),
+          config.getRootCategoryDescription(), config.getRootCategoryIdentifier(), userId);
+      log.info("Root Category created, returned:" + rootCategory);
     } else {
       log.info("Root Category found");
     }

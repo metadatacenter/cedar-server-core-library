@@ -26,13 +26,13 @@ public final class Neo4JUserSessionGroupOperations {
     Set<CedarUserId> oldUsers = new HashSet<>();
     for (CedarGroupUser gu : currentGroupUsers.getUsers()) {
       if ((filter == Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Filter.MEMBER && gu.isMember())) {
-        oldUsers.add(gu.getUserId());
+        oldUsers.add(gu.getResourceId());
       }
     }
     Set<CedarUserId> newUsers = new HashSet<>();
     for (CedarGroupUser gu : newGroupUsers.getUsers()) {
       if ((filter == Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Filter.MEMBER && gu.isMember())) {
-        newUsers.add(gu.getUserId());
+        newUsers.add(gu.getResourceId());
       }
     }
 
@@ -65,21 +65,21 @@ public final class Neo4JUserSessionGroupOperations {
   static void addGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                   Set<ResourcePermissionGroupPermissionPair> toAddGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toAddGroupPermissions) {
-      neo4JProxy.addPermissionToGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
+      neo4JProxy.addPermissionToGroup(resourceId, pair.getGroup().getResourceId(), pair.getPermission());
     }
   }
 
   static void removeGroupPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                      Set<ResourcePermissionGroupPermissionPair> toRemoveGroupPermissions) {
     for (ResourcePermissionGroupPermissionPair pair : toRemoveGroupPermissions) {
-      neo4JProxy.removePermissionFromGroup(resourceId, pair.getGroup().getIdObject(), pair.getPermission());
+      neo4JProxy.removePermissionFromGroup(resourceId, pair.getGroup().getResourceId(), pair.getPermission());
     }
   }
 
   static void addUserPermissions(Neo4JProxyResourcePermission neo4JProxy, CedarFilesystemResourceId resourceId,
                                  Set<ResourcePermissionUserPermissionPair> toAddUserPermissions) {
     for (ResourcePermissionUserPermissionPair pair : toAddUserPermissions) {
-      neo4JProxy.addPermissionToUser(resourceId, pair.getUser().getIdObject(), pair.getPermission());
+      neo4JProxy.addPermissionToUser(resourceId, pair.getUser().getResourceIds(), pair.getPermission());
     }
   }
 

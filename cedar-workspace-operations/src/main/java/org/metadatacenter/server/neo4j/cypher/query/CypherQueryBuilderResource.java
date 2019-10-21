@@ -147,6 +147,12 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN resource";
   }
 
+  public static String getResourceTypeById() {
+    return "" +
+        " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN resource.<PROP.RESOURCE_TYPE>";
+  }
+
   public static String setResourceOwner() {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
@@ -169,7 +175,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
   public static String resourceExists() {
     return "" +
         " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
-        " RETURN COUNT(resource) == 1";
+        " RETURN COUNT(resource) = 1";
   }
 
 }

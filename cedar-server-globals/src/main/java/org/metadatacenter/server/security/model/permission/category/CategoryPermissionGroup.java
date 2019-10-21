@@ -50,7 +50,7 @@ public class CategoryPermissionGroup {
 
   @JsonIgnore
   public CedarGroupId getResourceId() {
-    return CedarGroupId.buildSafe(this.id);
+    return CedarGroupId.build(this.id);
   }
 
 }

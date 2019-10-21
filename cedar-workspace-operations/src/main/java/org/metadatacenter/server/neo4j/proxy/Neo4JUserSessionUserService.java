@@ -1,6 +1,7 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -9,7 +10,6 @@ import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
 import org.metadatacenter.server.neo4j.Neo4JFieldValues;
 import org.metadatacenter.server.security.model.user.CedarUser;
 
-import java.io.IOException;
 import java.util.List;
 
 public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implements UserServiceSession {
@@ -34,10 +34,10 @@ public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implem
   }
 
   @Override
-  public boolean addUserToEverybodyGroup(CedarUserId userId) throws IOException {
+  public boolean addUserToEverybodyGroup(CedarUserId userId) throws CedarProcessingException {
     FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
     if (proxies.user().userExists(userId) && everybody != null) {
-      return proxies.user().addUserToGroup(userId, everybody.getIdObject());
+      return proxies.user().addUserToGroup(userId, everybody.getResourceId());
     }
     return false;
   }

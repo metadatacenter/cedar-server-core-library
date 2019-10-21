@@ -39,18 +39,18 @@ public enum NodeLabel {
 
   public static class ComposedLabel {
     public static final String RESOURCE = SimpleLabel.RESOURCE;
-    public static final String USER = RESOURCE + S + SimpleLabel.USER;
-    public static final String GROUP = RESOURCE + S + SimpleLabel.GROUP;
-    public static final String CATEGORY = RESOURCE + S + SimpleLabel.CATEGORY;
-    public static final String FILESYSTEM_RESOURCE = RESOURCE + S + SimpleLabel.FILESYSTEM_RESOURCE;
-    public static final String FOLDER = FILESYSTEM_RESOURCE + S + SimpleLabel.FOLDER;
-    public static final String SYSTEM_FOLDER = FOLDER + S + SimpleLabel.SYSTEM_FOLDER;
-    public static final String USER_HOME_FOLDER = FOLDER + S + SimpleLabel.USER_HOME_FOLDER;
-    public static final String ARTIFACT = FILESYSTEM_RESOURCE + S + SimpleLabel.ARTIFACT;
-    public static final String FIELD = ARTIFACT + S + SimpleLabel.FIELD;
-    public static final String ELEMENT = ARTIFACT + S + SimpleLabel.ELEMENT;
-    public static final String TEMPLATE = ARTIFACT + S + SimpleLabel.TEMPLATE;
-    public static final String INSTANCE = ARTIFACT + S + SimpleLabel.INSTANCE;
+    public static final String USER = SimpleLabel.USER + S + RESOURCE;
+    public static final String GROUP = SimpleLabel.GROUP + S + RESOURCE;
+    public static final String CATEGORY = SimpleLabel.CATEGORY + S + RESOURCE;
+    public static final String FILESYSTEM_RESOURCE = SimpleLabel.FILESYSTEM_RESOURCE + S + RESOURCE;
+    public static final String FOLDER = SimpleLabel.FOLDER + S + FILESYSTEM_RESOURCE;
+    public static final String SYSTEM_FOLDER = SimpleLabel.SYSTEM_FOLDER + S + FOLDER;
+    public static final String USER_HOME_FOLDER = SimpleLabel.USER_HOME_FOLDER + S + FOLDER;
+    public static final String ARTIFACT = SimpleLabel.ARTIFACT + S + FILESYSTEM_RESOURCE;
+    public static final String FIELD = SimpleLabel.FIELD + S + ARTIFACT;
+    public static final String ELEMENT = SimpleLabel.ELEMENT + S + ARTIFACT;
+    public static final String TEMPLATE = SimpleLabel.TEMPLATE + S + ARTIFACT;
+    public static final String INSTANCE = SimpleLabel.INSTANCE + S + ARTIFACT;
   }
 
   private final String composedLabel;

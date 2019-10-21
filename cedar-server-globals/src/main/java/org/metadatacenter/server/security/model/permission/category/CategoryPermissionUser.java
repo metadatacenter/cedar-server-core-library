@@ -49,7 +49,7 @@ public class CategoryPermissionUser {
 
   @JsonIgnore
   public CedarUserId getResourceId() {
-    return CedarUserId.buildSafe(this.id);
+    return CedarUserId.build(this.id);
   }
 
 }
