@@ -6,7 +6,6 @@ import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.CategoryPermissionServiceSession;
-import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.permission.category.*;

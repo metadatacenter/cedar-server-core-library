@@ -47,4 +47,6 @@ public interface CategoryServiceSession {
   CedarNodeMaterializedCategories getNodeMaterializedCategories(String id);
 
   List<List<FolderServerCategoryExtract>> getAttachedCategoryPaths(String artifactId);
+
+  List<FolderServerCategoryExtract> getCategoryPath(CedarCategoryId cid);
 }
