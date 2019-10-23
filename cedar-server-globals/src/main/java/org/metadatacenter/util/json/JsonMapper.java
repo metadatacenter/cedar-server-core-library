@@ -28,11 +28,13 @@ public final class JsonMapper {
     MAPPER.registerModule(new JavaTimeModule());
     MAPPER.registerModule(javaTimeModule);
     MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    // Do not use, infinite loop MAPPER.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
 
     PRETTY_MAPPER = new ObjectMapper();
     PRETTY_MAPPER.registerModule(new JavaTimeModule());
     PRETTY_MAPPER.registerModule(javaTimeModule);
     PRETTY_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     PRETTY_MAPPER.configure(SerializationFeature.INDENT_OUTPUT, true);
+    // Do not use, infinite loop PRETTY_MAPPER.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
   }
 }

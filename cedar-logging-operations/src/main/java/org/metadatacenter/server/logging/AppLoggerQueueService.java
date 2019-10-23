@@ -22,10 +22,10 @@ public class AppLoggerQueueService extends QueueServiceWithBlockingQueue {
       String json = null;
       try {
         json = JsonMapper.MAPPER.writeValueAsString(message);
+        jedis.rpush(queueName, json);
       } catch (JsonProcessingException e) {
         log.error("Error while enqueueing log message", e);
       }
-      jedis.rpush(queueName, json);
     }
   }
 
