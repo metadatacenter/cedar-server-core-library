@@ -125,6 +125,7 @@ public enum CedarErrorKey {
   NO_CATEGORIES_WERE_ATTACHED("noCategoriesWereAttached"),
 
   MALFORMED_JSON_REQUEST_BODY("malformedJsonRequestBody"),
+  MALFORMED_SEARCH_SYNTAX("malformedSearchTerm"),
 
   PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
   PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),

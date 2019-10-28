@@ -16,6 +16,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.metadatacenter.config.ElasticsearchConfig;
+import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
@@ -133,8 +134,16 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
           QueryBuilder summaryTextQuery = QueryBuilders.matchPhraseQuery(SUMMARY_RAW_TEXT, query);
           mainQuery.must(summaryTextQuery);
         } else {
-          QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
-          mainQuery.must(summaryTextQuery);
+          QueryParser parser = new QueryParser("", new WhitespaceAnalyzer());
+          try {
+            Query queryParsed = parser.parse(query);
+            QueryBuilder summaryTextQuery = QueryBuilders.queryStringQuery(query).field(SUMMARY_TEXT);
+            mainQuery.must(summaryTextQuery);
+          } catch (ParseException e) {
+            CedarProcessingException ex = new CedarProcessingException("Error processing query: " + query, e);
+            ex.getErrorPack().errorKey(CedarErrorKey.MALFORMED_SEARCH_SYNTAX);
+            throw ex;
+          }
         }
       }
       // Query field name/value (infoFields), optionally combined with artifact id and description (summaryText).

@@ -12,6 +12,7 @@ import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.request.NodeListRequest;
@@ -50,14 +51,12 @@ public class NodeSearchingService extends AbstractSearchingService {
   NodeSearchingService(CedarConfig cedarConfig, Client client) {
     this.client = client;
     this.config = cedarConfig.getElasticsearchConfig();
-    permissionEnabledSearchWorker =
-        new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
+    permissionEnabledSearchWorker = new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
     searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
   }
 
   public IndexedDocumentId getByCedarId(String resourceId) throws CedarProcessingException {
-    return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(),
-        IndexedDocumentType.DOC.getValue());
+    return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(), IndexedDocumentType.DOC.getValue());
   }
 
   public IndexedDocumentDocument getDocumentByCedarId(String resourceId) throws CedarProcessingException {
@@ -84,50 +83,43 @@ public class NodeSearchingService extends AbstractSearchingService {
     return searchWorker.findAllValuesForField(fieldName);
   }
 
-  public List<String> findAllCedarIdsForGroup(String groupId) throws CedarProcessingException {
+  public List<String> findAllCedarIdsForGroup(String groupId) {
     QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId);
     return searchWorker.findAllValuesForField("cid", queryBuilder);
   }
 
-  public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String>
-      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                             String categoryId, List<String> sortList, int limit, int offset,
-                                             String absoluteUrl)
-      throws CedarProcessingException {
+  public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
+                                             ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String categoryId,
+                                             List<String> sortList, int limit, int offset, String absoluteUrl) throws CedarProcessingException {
     try {
-      SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version,
-          publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
-          sortList,
-          limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = permissionEnabledSearchWorker.search(rctx, query, resourceTypes, version, publicationStatus, categoryId,
+          sortList, limit, offset);
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList, limit, offset,
+          absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
 
-  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String>
-      resourceTypes, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                                 String categoryId, List<String> sortList, int limit, int offset,
-                                                 String absoluteUrl)
+  public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
+                                                 ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
+                                                 String categoryId, List<String> sortList, int limit, int offset, String absoluteUrl)
       throws CedarProcessingException {
     try {
-      SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version,
-          publicationStatus, categoryId, sortList, limit, offset);
-      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId,
-          sortList,
-          limit, offset, absoluteUrl);
+      SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version, publicationStatus,
+          categoryId, sortList, limit, offset);
+      return assembleResponse(rctx, searchResult, query, id, resourceTypes, version, publicationStatus, categoryId, sortList, limit, offset,
+          absoluteUrl);
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
   }
 
-  private FolderServerNodeListResponse assembleResponse(CedarRequestContext rctx, SearchResponseResult searchResult,
-                                                        String query, String id,
+  private FolderServerNodeListResponse assembleResponse(CedarRequestContext rctx, SearchResponseResult searchResult, String query, String id,
                                                         List<String> resourceTypes, ResourceVersionFilter version,
-                                                        ResourcePublicationStatusFilter publicationStatus,
-                                                        String categoryId, List<String> sortList, int limit, int offset,
-                                                        String absoluteUrl) {
+                                                        ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList
+      , int limit, int offset, String absoluteUrl) {
     List<FolderServerResourceExtract> resources = new ArrayList<>();
 
     // Get the object from the result
@@ -170,7 +162,9 @@ public class NodeSearchingService extends AbstractSearchingService {
       CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(rctx);
       FolderServerCategory category = categorySession.getCategoryById(cid);
       if (category != null) {
-        req.setCategoryName(category.getName());
+        response.setCategoryName(category.getName());
+        List<FolderServerCategoryExtract> categoryPath = categorySession.getCategoryPath(cid);
+        response.setCategoryPath(categoryPath);
       }
     } catch (CedarProcessingException e) {
       e.printStackTrace();

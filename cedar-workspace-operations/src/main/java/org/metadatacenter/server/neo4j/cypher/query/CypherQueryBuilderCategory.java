@@ -135,4 +135,10 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category";
   }
 
+  public static String getCategoryPath() {
+    return "" +
+        " MATCH (directcategory:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)" +
+        " RETURN category";
+  }
 }

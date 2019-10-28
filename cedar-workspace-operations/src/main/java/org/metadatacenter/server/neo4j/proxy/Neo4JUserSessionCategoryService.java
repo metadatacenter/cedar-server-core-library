@@ -173,6 +173,17 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
     return categoriesList;
   }
 
+  @Override
+  public List<FolderServerCategoryExtract> getCategoryPath(CedarCategoryId categoryId) {
+    LinkedList<FolderServerCategoryExtract> path = new LinkedList<>();;
+    List<FolderServerCategory> categoryPath = proxies.category().getCategoryPath(categoryId);
+    for(FolderServerCategory category: categoryPath) {
+      FolderServerCategoryExtract extract = FolderServerCategoryExtract.fromCategory(category);
+      path.addFirst(extract);
+    }
+    return path;
+  }
+
   private List<FolderServerCategory> getCategoryPaths(String artifactId) {
     return proxies.category().getCategoryPaths(artifactId);
   }

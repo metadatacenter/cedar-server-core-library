@@ -2,7 +2,6 @@ package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.model.Upsert;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -107,14 +106,7 @@ public class SearchPermissionExecutorService {
 
   private void updateAllByDeletedGroup(String id) {
     log.debug("Update all visible by group:");
-    List<String> allCedarIdsForGroup = null;
-    try {
-      allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(id);
-    } catch (CedarProcessingException e) {
-      log.error("Error while retrieving all the affected documents for group:" + id);
-      return;
-    }
-
+    List<String> allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(id);
     for (String cid : allCedarIdsForGroup) {
       log.info("Need to update permissions for:" + cid);
       upsertOnePermissions(Upsert.UPDATE, cid);

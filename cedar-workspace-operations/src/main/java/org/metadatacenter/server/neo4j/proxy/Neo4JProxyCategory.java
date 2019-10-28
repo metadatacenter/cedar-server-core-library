@@ -145,4 +145,10 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return false;
   }
 
+  public List<FolderServerCategory> getCategoryPath(CedarCategoryId categoryId) {
+    String cypher = CypherQueryBuilderCategory.getCategoryPath();
+    CypherParameters params = CypherParamBuilderNode.getNodeById(categoryId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerCategory.class);
+  }
 }
