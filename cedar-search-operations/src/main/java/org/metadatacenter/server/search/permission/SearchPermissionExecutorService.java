@@ -111,14 +111,13 @@ public class SearchPermissionExecutorService {
     List<String> allCedarIdsForGroup = null;
     try {
       allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(groupId);
+      for (String cid : allCedarIdsForGroup) {
+        log.info("Need to update permissions for:" + cid);
+        upsertOnePermissions(Upsert.UPDATE, CedarUntypedArtifactId.build(cid));
+      }
     } catch (CedarProcessingException e) {
       log.error("Error while retrieving all the affected documents for group:" + groupId);
       return;
-    }
-
-    for (String cid : allCedarIdsForGroup) {
-      log.info("Need to update permissions for:" + cid);
-      upsertOnePermissions(Upsert.UPDATE, CedarUntypedArtifactId.build(cid));
     }
   }
 

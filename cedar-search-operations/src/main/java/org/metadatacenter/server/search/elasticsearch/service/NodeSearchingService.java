@@ -13,6 +13,7 @@ import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
+import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.request.NodeListRequest;
@@ -51,14 +52,12 @@ public class NodeSearchingService extends AbstractSearchingService {
   NodeSearchingService(CedarConfig cedarConfig, Client client) {
     this.client = client;
     this.config = cedarConfig.getElasticsearchConfig();
-    permissionEnabledSearchWorker =
-        new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
+    permissionEnabledSearchWorker = new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
     searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
   }
 
   public IndexedDocumentId getByCedarId(String resourceId) throws CedarProcessingException {
-    return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(),
-        IndexedDocumentType.DOC.getValue());
+    return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(), IndexedDocumentType.DOC.getValue());
   }
 
   public IndexedDocumentDocument getDocumentByCedarId(String resourceId) throws CedarProcessingException {
@@ -162,7 +161,9 @@ public class NodeSearchingService extends AbstractSearchingService {
     CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(rctx);
     FolderServerCategory category = categorySession.getCategoryById(cid);
     if (category != null) {
-      req.setCategoryName(category.getName());
+      response.setCategoryName(category.getName());
+      List<FolderServerCategoryExtract> categoryPath = categorySession.getCategoryPath(cid);
+      response.setCategoryPath(categoryPath);
     }
     req.setLimit(limit);
     req.setOffset(offset);

@@ -1,7 +1,7 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import org.metadatacenter.id.CedarArtifactId;
-import org.metadatacenter.id.CedarSchemaArtifactId;
+import org.metadatacenter.id.CedarUntypedArtifactId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.datagroup.DerivedFromGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithDerivedFromData;
@@ -19,12 +19,12 @@ public abstract class FolderServerArtifactCurrentUserReport extends FolderServer
   }
 
   @Override
-  public CedarArtifactId getDerivedFrom() {
+  public CedarUntypedArtifactId getDerivedFrom() {
     return derivedFromGroup.getDerivedFrom();
   }
 
   @Override
-  public void setDerivedFrom(CedarArtifactId df) {
+  public void setDerivedFrom(CedarUntypedArtifactId df) {
     derivedFromGroup.setDerivedFrom(df);
   }
 
@@ -38,8 +38,8 @@ public abstract class FolderServerArtifactCurrentUserReport extends FolderServer
     this.isOpen = isOpen;
   }
 
-  public CedarSchemaArtifactId getResourceId() {
-    return CedarSchemaArtifactId.build(getId(), getType());
+  public CedarArtifactId getResourceId() {
+    return CedarArtifactId.build(getId(), getType());
   }
 
 }

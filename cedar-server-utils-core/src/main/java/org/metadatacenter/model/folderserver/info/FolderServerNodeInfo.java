@@ -3,9 +3,9 @@ package org.metadatacenter.model.folderserver.info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarSchemaArtifactId;
 import org.metadatacenter.id.CedarTemplateId;
+import org.metadatacenter.id.CedarUntypedArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceVersion;
@@ -148,28 +148,33 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public CedarArtifactId getDerivedFrom() {
-    return derivedFromData.getDerivedFrom();
+  public String getDerivedFrom() {
+    return derivedFromData.getDerivedFrom() == null ? null : derivedFromData.getDerivedFrom().getId();
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public void setDerivedFrom(CedarArtifactId df) {
+  public void setDerivedFrom(CedarUntypedArtifactId df) {
     derivedFromData.setDerivedFrom(df);
+  }
+
+  @JsonIgnore
+  public CedarUntypedArtifactId getDerivedFromId() {
+    return derivedFromData.getDerivedFrom();
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public String getIsBasedOn() {
-    return isBasedOnData.getIsBasedOn().getId();
-  }
-
-  @JsonIgnore
-  public CedarTemplateId getIsBasedOnId() {
-    return isBasedOnData.getIsBasedOn();
+    return isBasedOnData.getIsBasedOn() == null ? null : isBasedOnData.getIsBasedOn().getId();
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
   public void setIsBasedOn(CedarTemplateId isBasedOn) {
     isBasedOnData.setIsBasedOn(isBasedOn);
+  }
+
+  @JsonIgnore
+  public CedarTemplateId getIsBasedOnId() {
+    return isBasedOnData.getIsBasedOn();
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)

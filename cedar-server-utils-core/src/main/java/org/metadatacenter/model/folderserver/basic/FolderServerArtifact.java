@@ -3,7 +3,7 @@ package org.metadatacenter.model.folderserver.basic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.metadatacenter.id.CedarArtifactId;
+import org.metadatacenter.id.CedarUntypedArtifactId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.currentuserpermissions.FolderServerArtifactCurrentUserReport;
 import org.metadatacenter.model.folderserver.datagroup.DerivedFromGroup;
@@ -46,12 +46,12 @@ public abstract class FolderServerArtifact extends FileSystemResource implements
   }
 
   @Override
-  public CedarArtifactId getDerivedFrom() {
+  public CedarUntypedArtifactId getDerivedFrom() {
     return provenanceDataGroup.getDerivedFrom();
   }
 
   @Override
-  public void setDerivedFrom(CedarArtifactId df) {
+  public void setDerivedFrom(CedarUntypedArtifactId df) {
     provenanceDataGroup.setDerivedFrom(df);
   }
 

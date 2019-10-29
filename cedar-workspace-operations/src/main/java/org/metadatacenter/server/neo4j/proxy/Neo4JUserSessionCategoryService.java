@@ -163,7 +163,6 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
       FolderServerCategory root = getRootCategory();
       String rootId = root.getId();
       LinkedList<FolderServerCategoryExtract> path = new LinkedList<>();
-      ;
       List<FolderServerCategory> attachedCategories = getCategoryPaths(artifactId);
       for (FolderServerCategory category : attachedCategories) {
         FolderServerCategoryExtract extract = FolderServerCategoryExtract.fromCategory(category);
@@ -179,6 +178,17 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   private List<FolderServerCategory> getCategoryPaths(CedarArtifactId artifactId) {
     return proxies.category().getCategoryPaths(artifactId);
+  }
+
+  @Override
+  public List<FolderServerCategoryExtract> getCategoryPath(CedarCategoryId categoryId) {
+    LinkedList<FolderServerCategoryExtract> path = new LinkedList<>();
+    List<FolderServerCategory> categoryPath = proxies.category().getCategoryPath(categoryId);
+    for (FolderServerCategory category : categoryPath) {
+      FolderServerCategoryExtract extract = FolderServerCategoryExtract.fromCategory(category);
+      path.addFirst(extract);
+    }
+    return path;
   }
 
 }

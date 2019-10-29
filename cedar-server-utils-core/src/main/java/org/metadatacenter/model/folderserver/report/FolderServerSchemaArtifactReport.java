@@ -1,6 +1,7 @@
 package org.metadatacenter.model.folderserver.report;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarSchemaArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -39,6 +40,10 @@ public abstract class FolderServerSchemaArtifactReport extends FolderServerArtif
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
   public void setPublicationStatus(String s) {
     versionData.setPublicationStatus(BiboStatus.forValue(s));
+  }
+
+  public CedarSchemaArtifactId getResourceId() {
+    return CedarSchemaArtifactId.build(this.getId(), this.getType());
   }
 
 }
