@@ -3,9 +3,7 @@ package org.metadatacenter.model.folderserver.info;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.id.CedarSchemaArtifactId;
-import org.metadatacenter.id.CedarTemplateId;
-import org.metadatacenter.id.CedarUntypedArtifactId;
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceVersion;
@@ -47,8 +45,7 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
 
   public static FolderServerNodeInfo fromNode(FileSystemResource node) {
     try {
-      FolderServerNodeInfo info =
-          JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
+      FolderServerNodeInfo info = JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
       info.setType(node.getType());
       return info;
     } catch (IOException e) {
@@ -128,13 +125,18 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public CedarSchemaArtifactId getPreviousVersion() {
-    return previousVersionData.getPreviousVersion();
+  public String getPreviousVersion() {
+    return previousVersionData.getPreviousVersion() == null ? null : previousVersionData.getPreviousVersion().getId();
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public void setPreviousVersion(CedarSchemaArtifactId pv) {
+  public void setPreviousVersion(CedarUntypedSchemaArtifactId pv) {
     previousVersionData.setPreviousVersion(pv);
+  }
+
+  @JsonIgnore
+  public CedarUntypedSchemaArtifactId getPreviousVersionId() {
+    return previousVersionData.getPreviousVersion();
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)

@@ -1,6 +1,6 @@
 package org.metadatacenter.model.folderserver.basic;
 
-import org.metadatacenter.id.CedarSchemaArtifactId;
+import org.metadatacenter.id.CedarUntypedSchemaArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceVersion;
@@ -23,12 +23,12 @@ public abstract class FolderServerSchemaArtifact extends FolderServerArtifact im
   }
 
   @Override
-  public CedarSchemaArtifactId getPreviousVersion() {
+  public CedarUntypedSchemaArtifactId getPreviousVersion() {
     return previousVersionGroup.getPreviousVersion();
   }
 
   @Override
-  public void setPreviousVersion(CedarSchemaArtifactId pv) {
+  public void setPreviousVersion(CedarUntypedSchemaArtifactId pv) {
     previousVersionGroup.setPreviousVersion(pv);
   }
 

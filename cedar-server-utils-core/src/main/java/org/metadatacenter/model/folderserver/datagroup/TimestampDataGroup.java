@@ -5,7 +5,6 @@ public class TimestampDataGroup {
   protected long createdOnTS;
   protected long lastUpdatedOnTS;
 
-
   public TimestampDataGroup() {
   }
 
