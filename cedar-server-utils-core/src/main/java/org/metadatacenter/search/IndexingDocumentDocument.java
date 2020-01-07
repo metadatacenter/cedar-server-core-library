@@ -53,7 +53,9 @@ public class IndexingDocumentDocument extends IndexedDocumentDocument {
 
   public void setMaterializedCategories(CedarNodeMaterializedCategories categories) {
     this.categories = new ArrayList<>();
-    this.categories.addAll(categories.getCategoryIds());
+    if (categories != null) {
+      this.categories.addAll(categories.getCategoryIds());
+    }
   }
 
 }
