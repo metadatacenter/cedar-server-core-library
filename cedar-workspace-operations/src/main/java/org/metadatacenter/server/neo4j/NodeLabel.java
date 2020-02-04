@@ -5,52 +5,52 @@ import org.metadatacenter.model.CedarResourceType;
 
 public enum NodeLabel {
 
-  SCOPE(ComposedLabel.SCOPE, SimpleLabel.SCOPE),
-  FOLDER(ComposedLabel.FOLDER, SimpleLabel.FOLDER),
-  SYSTEM_FOLDER(ComposedLabel.SYSTEM_FOLDER, SimpleLabel.SYSTEM_FOLDER),
-  USER_HOME_FOLDER(ComposedLabel.USER_HOME_FOLDER, SimpleLabel.USER_HOME_FOLDER),
   RESOURCE(ComposedLabel.RESOURCE, SimpleLabel.RESOURCE),
   USER(ComposedLabel.USER, SimpleLabel.USER),
   GROUP(ComposedLabel.GROUP, SimpleLabel.GROUP),
   CATEGORY(ComposedLabel.CATEGORY, SimpleLabel.CATEGORY),
+  FILESYSTEM_RESOURCE(SimpleLabel.FILESYSTEM_RESOURCE, SimpleLabel.FILESYSTEM_RESOURCE),
+  FOLDER(ComposedLabel.FOLDER, SimpleLabel.FOLDER),
+  SYSTEM_FOLDER(ComposedLabel.SYSTEM_FOLDER, SimpleLabel.SYSTEM_FOLDER),
+  USER_HOME_FOLDER(ComposedLabel.USER_HOME_FOLDER, SimpleLabel.USER_HOME_FOLDER),
+  ARTIFACT(ComposedLabel.ARTIFACT, SimpleLabel.ARTIFACT),
   FIELD(ComposedLabel.FIELD, SimpleLabel.FIELD),
   ELEMENT(ComposedLabel.ELEMENT, SimpleLabel.ELEMENT),
   TEMPLATE(ComposedLabel.TEMPLATE, SimpleLabel.TEMPLATE),
-  INSTANCE(ComposedLabel.INSTANCE, SimpleLabel.INSTANCE),
-  FSNODE(SimpleLabel.FSNODE, SimpleLabel.FSNODE);
+  INSTANCE(ComposedLabel.INSTANCE, SimpleLabel.INSTANCE);
 
   private static final String S = ":";
 
   public static class SimpleLabel {
-    public static final String SCOPE = "CEDAR";
-
-    public static final String FOLDER = "Folder";
-    public static final String SYSTEM_FOLDER = "SystemFolder";
-    public static final String USER_HOME_FOLDER = "UserHomeFolder";
     public static final String RESOURCE = "Resource";
     public static final String USER = "User";
     public static final String GROUP = "Group";
     public static final String CATEGORY = "Category";
+    public static final String FILESYSTEM_RESOURCE = "FileSystemResource";
+    public static final String FOLDER = "Folder";
+    public static final String SYSTEM_FOLDER = "SystemFolder";
+    public static final String USER_HOME_FOLDER = "UserHomeFolder";
+    public static final String ARTIFACT = "Artifact";
     public static final String FIELD = "Field";
     public static final String ELEMENT = "Element";
     public static final String TEMPLATE = "Template";
     public static final String INSTANCE = "Instance";
-    public static final String FSNODE = "FSNode";
   }
 
   public static class ComposedLabel {
-    public static final String SCOPE = SimpleLabel.SCOPE;
-    public static final String FOLDER = SimpleLabel.FOLDER + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
+    public static final String RESOURCE = SimpleLabel.RESOURCE;
+    public static final String USER = SimpleLabel.USER + S + RESOURCE;
+    public static final String GROUP = SimpleLabel.GROUP + S + RESOURCE;
+    public static final String CATEGORY = SimpleLabel.CATEGORY + S + RESOURCE;
+    public static final String FILESYSTEM_RESOURCE = SimpleLabel.FILESYSTEM_RESOURCE + S + RESOURCE;
+    public static final String FOLDER = SimpleLabel.FOLDER + S + FILESYSTEM_RESOURCE;
     public static final String SYSTEM_FOLDER = SimpleLabel.SYSTEM_FOLDER + S + FOLDER;
     public static final String USER_HOME_FOLDER = SimpleLabel.USER_HOME_FOLDER + S + FOLDER;
-    public static final String USER = SimpleLabel.USER + S + SimpleLabel.SCOPE;
-    public static final String GROUP = SimpleLabel.GROUP + S + SimpleLabel.SCOPE;
-    public static final String CATEGORY = SimpleLabel.CATEGORY + S + SimpleLabel.SCOPE;;
-    public static final String RESOURCE = SimpleLabel.RESOURCE + S + SimpleLabel.FSNODE + S + SimpleLabel.SCOPE;
-    public static final String FIELD = SimpleLabel.FIELD + S + RESOURCE;
-    public static final String ELEMENT = SimpleLabel.ELEMENT + S + RESOURCE;
-    public static final String TEMPLATE = SimpleLabel.TEMPLATE + S + RESOURCE;
-    public static final String INSTANCE = SimpleLabel.INSTANCE + S + RESOURCE;
+    public static final String ARTIFACT = SimpleLabel.ARTIFACT + S + FILESYSTEM_RESOURCE;
+    public static final String FIELD = SimpleLabel.FIELD + S + ARTIFACT;
+    public static final String ELEMENT = SimpleLabel.ELEMENT + S + ARTIFACT;
+    public static final String TEMPLATE = SimpleLabel.TEMPLATE + S + ARTIFACT;
+    public static final String INSTANCE = SimpleLabel.INSTANCE + S + ARTIFACT;
   }
 
   private final String composedLabel;

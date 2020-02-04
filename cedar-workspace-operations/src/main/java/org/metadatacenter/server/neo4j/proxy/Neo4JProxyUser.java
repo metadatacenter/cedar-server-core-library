@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorType;
 import org.metadatacenter.exception.CedarProcessingException;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
+import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
@@ -39,9 +40,9 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerUser.class);
   }
 
-  boolean addUserToGroup(FolderServerUser user, FolderServerGroup group) {
+  boolean addUserToGroup(CedarUserId userId, CedarGroupId groupId) {
     String cypher = CypherQueryBuilderUser.addUserToGroup();
-    CypherParameters params = AbstractCypherParamBuilder.matchUserAndGroup(user.getId(), group.getId());
+    CypherParameters params = AbstractCypherParamBuilder.matchUserAndGroup(userId, groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "adding user to group");
   }
@@ -52,9 +53,9 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  public FolderServerUser findUserById(String userURL) {
+  public FolderServerUser findUserById(CedarUserId userId) {
     String cypher = CypherQueryBuilderUser.getUserById();
-    CypherParameters params = CypherParamBuilderUser.getUserById(userURL);
+    CypherParameters params = CypherParamBuilderUser.getUserById(userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerUser.class);
   }
@@ -85,20 +86,13 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerUser.class);
   }
 
-  public BackendCallResult<CedarUser> patchUser(String id, JsonNode modifications) {
+  public BackendCallResult<CedarUser> patchUser(CedarUserId userId, JsonNode modifications) {
     BackendCallResult<CedarUser> result = new BackendCallResult<>();
-    if ((id == null) || (id.length() == 0)) {
-      result.addError(CedarErrorType.INVALID_ARGUMENT)
-          .message("The id empty")
-          .parameter("id", id);
-      return result;
-    }
-
-    FolderServerUser oldUser = findUserById(id);
+    FolderServerUser oldUser = findUserById(userId);
     if (oldUser == null) {
       result.addError(CedarErrorType.NOT_FOUND)
           .message("The user can not be found by id")
-          .parameter("id", id);
+          .parameter("id", userId.getId());
       return result;
     }
 
@@ -126,11 +120,17 @@ public class Neo4JProxyUser extends AbstractNeo4JProxy {
     } else {
       result.addError(CedarErrorType.INVALID_ARGUMENT)
           .message("The requested modifications are invalid")
-          .parameter("id", id)
+          .parameter("id", userId.getId())
           .parameter("modifications", modifications);
       return result;
     }
   }
 
+  public boolean userExists(CedarUserId userId) {
+    String cypher = CypherQueryBuilderUser.userExists();
+    CypherParameters params = CypherParamBuilderUser.getUserById(userId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetBoolean(q);
+  }
 }
 

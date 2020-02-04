@@ -1,7 +1,7 @@
 package org.metadatacenter.server.security.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.metadatacenter.server.security.model.permission.resource.ResourcePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUser;
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUserPermissionPair;
 import org.metadatacenter.server.security.model.user.CedarUserExtract;
@@ -14,7 +14,7 @@ public class CedarNodeUserPermission extends CedarNodePermission {
   public CedarNodeUserPermission() {
   }
 
-  public CedarNodeUserPermission(CedarUserExtract user, ResourcePermission permission) {
+  public CedarNodeUserPermission(CedarUserExtract user, FilesystemResourcePermission permission) {
     this.user = user;
     this.permission = permission;
   }

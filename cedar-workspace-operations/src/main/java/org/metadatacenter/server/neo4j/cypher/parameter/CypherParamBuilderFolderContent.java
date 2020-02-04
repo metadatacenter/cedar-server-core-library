@@ -1,5 +1,7 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
+import org.metadatacenter.id.CedarFolderId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -11,11 +13,11 @@ import java.util.Collection;
 
 public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder {
 
-  public static CypherParameters getFolderContentsFilteredCountParameters(String folderURL,
-                                                                          Collection<CedarResourceType> resourceTypes
-      , ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus, String ownerId) {
+  public static CypherParameters getFolderContentsFilteredCountParameters(CedarFolderId folderId, Collection<CedarResourceType> resourceTypes,
+                                                                          ResourceVersionFilter version,
+                                                                          ResourcePublicationStatusFilter publicationStatus, CedarUserId ownerId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
+    params.put(ParameterPlaceholder.FOLDER_ID, folderId);
     params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
@@ -24,14 +26,12 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     return params;
   }
 
-  public static CypherParameters getFolderContentsFilteredLookupParameters(String folderURL,
-                                                                           Collection<CedarResourceType>
-                                                                               resourceTypes,
+  public static CypherParameters getFolderContentsFilteredLookupParameters(CedarFolderId folderId, Collection<CedarResourceType> resourceTypes,
                                                                            ResourceVersionFilter version,
-                                                                           ResourcePublicationStatusFilter publicationStatus, int limit, int
-                                                                               offset, String ownerId) {
+                                                                           ResourcePublicationStatusFilter publicationStatus, int limit, int offset
+      , CedarUserId ownerId) {
     CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
+    params.put(ParameterPlaceholder.FOLDER_ID, folderId);
     params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());

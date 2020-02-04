@@ -1,5 +1,6 @@
 package org.metadatacenter.server.permissions;
 
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
@@ -10,31 +11,29 @@ public class CurrentUserPermissionUpdaterForGraphDbFolder extends CurrentUserPer
   private final ResourcePermissionServiceSession permissionSession;
   private final FolderWithCurrentUserPermissions folder;
 
-  private CurrentUserPermissionUpdaterForGraphDbFolder(ResourcePermissionServiceSession permissionSession,
-                                                       FolderWithCurrentUserPermissions folder) {
+  private CurrentUserPermissionUpdaterForGraphDbFolder(ResourcePermissionServiceSession permissionSession, FolderWithCurrentUserPermissions folder) {
     this.permissionSession = permissionSession;
     this.folder = folder;
   }
 
-  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession,
-                                                 FolderWithCurrentUserPermissions folder) {
+  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession, FolderWithCurrentUserPermissions folder) {
     return new CurrentUserPermissionUpdaterForGraphDbFolder(permissionSession, folder);
   }
 
   @Override
   public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
-    String id = folder.getId();
-    if (permissionSession.userHasWriteAccessToNode(id)) {
+    CedarFilesystemResourceId id = folder.getResourceId();
+    if (permissionSession.userHasWriteAccessToResource(id)) {
       folder.getCurrentUserPermissions().setCanWrite(true);
       folder.getCurrentUserPermissions().setCanDelete(true);
       folder.getCurrentUserPermissions().setCanRead(true);
       if (!folder.isRoot() && !folder.isSystem() && !folder.isUserHome()) {
         folder.getCurrentUserPermissions().setCanShare(true);
       }
-    } else if (permissionSession.userHasReadAccessToNode(id)) {
+    } else if (permissionSession.userHasReadAccessToResource(id)) {
       folder.getCurrentUserPermissions().setCanRead(true);
     }
-    if (permissionSession.userCanChangeOwnerOfNode(id)) {
+    if (permissionSession.userCanChangeOwnerOfResource(id)) {
       folder.getCurrentUserPermissions().setCanChangeOwner(true);
     }
   }

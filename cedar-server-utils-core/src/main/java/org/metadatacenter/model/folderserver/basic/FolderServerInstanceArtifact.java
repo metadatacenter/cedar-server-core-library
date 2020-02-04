@@ -1,7 +1,7 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithIsBasedOn;
 
 public abstract class FolderServerInstanceArtifact extends FolderServerArtifact implements ResourceWithIsBasedOn {
@@ -10,16 +10,16 @@ public abstract class FolderServerInstanceArtifact extends FolderServerArtifact 
     super(resourceType);
   }
 
-  private ResourceUri isBasedOn;
+  private CedarTemplateId isBasedOn;
 
   @Override
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOn;
   }
 
   @Override
-  public void setIsBasedOn(String isBasedOn) {
-    this.isBasedOn = ResourceUri.forValue(isBasedOn);
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    this.isBasedOn = isBasedOn;
   }
 
 }

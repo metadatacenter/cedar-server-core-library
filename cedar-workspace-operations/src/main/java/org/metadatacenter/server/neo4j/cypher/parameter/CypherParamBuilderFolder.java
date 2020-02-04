@@ -1,6 +1,8 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.apache.commons.lang.StringUtils;
+import org.metadatacenter.id.CedarFolderId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
@@ -13,30 +15,16 @@ import java.util.Map;
 
 public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
 
-  public static CypherParameters matchFolderIdAndParentFolderId(String folderId, String parentFolderId) {
+  public static CypherParameters matchFolderIdAndParentFolderId(CedarFolderId folderId, CedarFolderId parentFolderId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderId);
     params.put(ParameterPlaceholder.PARENT_FOLDER_ID, parentFolderId);
     return params;
   }
 
-  public static CypherParameters matchFolderId(String folderURL) {
-    CypherParameters params = new CypherParameters();
-    params.put(ParameterPlaceholder.FOLDER_ID, folderURL);
-    return params;
-  }
-
-  public static CypherParameters matchId(String folderURL) {
-    return getNodeByIdentity(folderURL);
-  }
-
-  public static CypherParameters updateFolderById(String folderURL, Map<? extends CypherQueryParameter, String>
-      updateFields, String updatedBy) {
-    return updateNodeById(folderURL, updateFields, updatedBy);
-  }
-
-  public static CypherParameters deleteFolderById(String folderURL) {
-    return getNodeByIdentity(folderURL);
+  public static CypherParameters updateFolderById(CedarFolderId folderId, Map<? extends CypherQueryParameter, String> updateFields,
+                                                  CedarUserId updatedBy) {
+    return updateResourceById(folderId, updateFields, updatedBy);
   }
 
   public static CypherParameters getFolderLookupByDepthParameters(PathUtil pathUtil, String path) {
@@ -50,15 +38,17 @@ public class CypherParamBuilderFolder extends AbstractCypherParamBuilder {
     return folderNames;
   }
 
-  public static CypherParameters getFolderLookupByIDParameters(PathUtil pathUtil, String id) {
-    return getNodeByIdentityAndName(id, pathUtil.getRootPath());
+  public static CypherParameters getFolderLookupByIdParameters(String pathName, CedarFolderId folderId) {
+    return getResourceByIdentityAndName(folderId, pathName);
   }
 
-  public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, FolderServerFolder newFolder, String
-      parentId) {
-    String nodeId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.FOLDER);
-    newFolder.setId(nodeId);
-    return createNode(newFolder, parentId);
+  public static CypherParameters createFolder(LinkedDataUtil linkedDataUtil, FolderServerFolder newFolder, CedarFolderId cedarFolderId) {
+    String newFolderId = linkedDataUtil.buildNewLinkedDataId(CedarResourceType.FOLDER);
+    newFolder.setId(newFolderId);
+    return createFilesystemResource(newFolder, cedarFolderId);
   }
 
+  public static CypherParameters matchId(CedarFolderId folderId) {
+    return matchResourceByIdentity(folderId);
+  }
 }

@@ -18,6 +18,7 @@ import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.search.IndexedDocumentId;
@@ -80,14 +81,14 @@ public class ElasticsearchIndexingWorker {
    * @return
    * @throws CedarProcessingException
    */
-  public long removeAllFromIndex(String resourceId) throws CedarProcessingException {
+  public long removeAllFromIndex(CedarFilesystemResourceId resourceId) throws CedarProcessingException {
     log.debug("Removing " + documentType + " cid:" + resourceId + " from the " + indexName + " index");
     try {
       // Get resources by artifact id
       // TODO: note that this search query will retrieve only 10 results by default, so the maximum number
       // of documents that will be removed will be 10. Consider using the "delete by query" API
       SearchResponse responseSearch = client.prepareSearch(indexName).setTypes(documentType)
-          .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
+          .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId.getId()))
           .execute().actionGet();
 
       long removedCount = 0;
@@ -97,10 +98,10 @@ public class ElasticsearchIndexingWorker {
         removedCount++;
       }
       if (removedCount == 0) {
-        log.error("The " + documentType + " cid:" + resourceId + " was not removed from the " + indexName + " index");
+        log.error("The " + documentType + " cid:" + resourceId.getId() + " was not removed from the " + indexName + " index");
       } else {
-        log.debug("Removed " + removedCount + " documents of type " + documentType + " cid:" + resourceId
-            + " from the " + indexName + " index");
+        log.debug("Removed " + removedCount + " documents of type " + documentType + " cid:" + resourceId.getId() + " from the " + indexName + " " +
+            "index");
       }
       return removedCount;
     } catch (Exception e) {

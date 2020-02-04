@@ -1,11 +1,10 @@
 package org.metadatacenter.server.neo4j.parameter;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.server.neo4j.cypher.CypherQueryParameter;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
@@ -36,10 +35,6 @@ public class CypherParameters {
     map.put(parameter, object.getValue());
   }
 
-  public void put(CypherQueryParameter parameter, ResourceUri object) {
-    map.put(parameter, object.getValue());
-  }
-
   public void put(CypherQueryParameter parameter, Boolean value) {
     map.put(parameter, value);
   }
@@ -65,7 +60,7 @@ public class CypherParameters {
     for (CypherQueryParameter k : map.keySet()) {
       Object value = map.get(k);
       if (value instanceof CedarResourceId) {
-        value = ((CedarResourceId)value).getId();
+        value = ((CedarResourceId) value).getId();
       }
       r.put(Neo4JUtil.escapePropertyName(k.getValue()), value);
     }

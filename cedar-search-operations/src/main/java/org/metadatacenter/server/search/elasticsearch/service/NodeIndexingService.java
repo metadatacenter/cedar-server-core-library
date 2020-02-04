@@ -5,6 +5,8 @@ import org.elasticsearch.client.Client;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarArtifactId;
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
@@ -40,12 +42,9 @@ public class NodeIndexingService extends AbstractIndexingService {
     instanceContentExtractor = new TemplateInstanceContentExtractor(cedarConfig);
   }
 
-  public IndexingDocumentDocument createIndexDocument(FileSystemResource node,
-                                                      CedarNodeMaterializedPermissions permissions,
-                                                      CedarNodeMaterializedCategories categories,
-                                                      CedarRequestContext requestContext,
+  public IndexingDocumentDocument createIndexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
+                                                      CedarNodeMaterializedCategories categories, CedarRequestContext requestContext,
                                                       boolean isIndexRegenerationTask) throws CedarProcessingException {
-
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
@@ -60,26 +59,27 @@ public class NodeIndexingService extends AbstractIndexingService {
   }
 
   public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
-                                         CedarNodeMaterializedCategories categories,
-                                         CedarRequestContext requestContext) throws CedarProcessingException {
+                                         CedarNodeMaterializedCategories categories, CedarRequestContext requestContext) throws CedarProcessingException {
     return indexDocument(node, permissions, categories, requestContext, false);
   }
 
-  public IndexedDocumentId indexDocument(FileSystemResource node, CedarRequestContext requestContext) throws CedarProcessingException {
-    log.debug("Indexing resource (id = " + node.getId() + ")");
+  public IndexedDocumentId indexDocument(FileSystemResource resource, CedarRequestContext requestContext) throws CedarProcessingException {
+    log.debug("Indexing resource (id = " + resource.getId() + ")");
     ResourcePermissionServiceSession permissionSession = CedarDataServices.getResourcePermissionServiceSession(requestContext);
-    CedarNodeMaterializedPermissions permissions = permissionSession.getNodeMaterializedPermission(node.getId());
+    CedarNodeMaterializedPermissions permissions = permissionSession.getResourceMaterializedPermission(resource.getResourceId());
     CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(requestContext);
-    CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(node.getId());
-    return indexDocument(node, permissions, categories, requestContext);
+    CedarNodeMaterializedCategories categories = new CedarNodeMaterializedCategories(resource.getId());
+    if (resource.getType() != CedarResourceType.FOLDER) {
+      categories = categorySession.getArtifactMaterializedCategories(CedarArtifactId.build(resource.getId(), resource.getType()));
+    }
+    return indexDocument(resource, permissions, categories, requestContext);
   }
 
-  public IndexedDocumentId indexDocument(FileSystemResource node, CedarNodeMaterializedPermissions permissions,
-                                         CedarNodeMaterializedCategories categories,
-                                         CedarRequestContext requestContext, boolean isIndexRegenerationTask) throws CedarProcessingException {
-    log.debug("Indexing resource (id = " + node.getId() + ")");
-    IndexingDocumentDocument ir = createIndexDocument(node, permissions, categories, requestContext,
-        isIndexRegenerationTask);
+  public IndexedDocumentId indexDocument(FileSystemResource resource, CedarNodeMaterializedPermissions permissions,
+                                         CedarNodeMaterializedCategories categories, CedarRequestContext requestContext,
+                                         boolean isIndexRegenerationTask) throws CedarProcessingException {
+    log.debug("Indexing resource (id = " + resource.getId() + ")");
+    IndexingDocumentDocument ir = createIndexDocument(resource, permissions, categories, requestContext, isIndexRegenerationTask);
     JsonNode jsonResource = JsonMapper.MAPPER.convertValue(ir, JsonNode.class);
     return indexWorker.addToIndex(jsonResource);
   }
@@ -123,10 +123,10 @@ public class NodeIndexingService extends AbstractIndexingService {
     return sb.toString();
   }
 
-  public long removeDocumentFromIndex(String nodeId) throws CedarProcessingException {
-    if (nodeId != null) {
-      log.debug("Removing resource from index (id = " + nodeId);
-      return indexWorker.removeAllFromIndex(nodeId);
+  public long removeDocumentFromIndex(CedarFilesystemResourceId resourceId) throws CedarProcessingException {
+    if (resourceId != null) {
+      log.debug("Removing resource from index (id = " + resourceId);
+      return indexWorker.removeAllFromIndex(resourceId);
     } else {
       return -1;
     }

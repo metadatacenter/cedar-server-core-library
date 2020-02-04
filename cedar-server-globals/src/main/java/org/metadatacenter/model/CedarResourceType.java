@@ -1,21 +1,23 @@
 package org.metadatacenter.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.metadatacenter.id.*;
 
 public enum CedarResourceType {
 
-  FOLDER(Types.FOLDER, Prefix.FOLDERS, null),
-  FIELD(Types.FIELD, Prefix.FIELDS, AtType.FIELD),
-  ELEMENT(Types.ELEMENT, Prefix.ELEMENTS, AtType.ELEMENT),
-  TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES, AtType.TEMPLATE),
-  ELEMENT_INSTANCE(Types.ELEMENT_INSTANCE, Prefix.ELEMENT_INSTANCES, null),
-  INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null),
-  USER(Types.USER, Prefix.USERS, null),
-  GROUP(Types.GROUP, Prefix.GROUPS, null),
-  CATEGORY(Types.CATEGORY, Prefix.CATEGORIES, null),
-  MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null),
-  USERMESSAGE(Types.USERMESSAGE, Prefix.USERMESSAGES, null),
-  PROCESS(Types.PROCESS_TYPE, Prefix.PROCESS_TYPES, null);
+  FOLDER(Types.FOLDER, Prefix.FOLDERS, null, CedarFolderId.class),
+  FIELD(Types.FIELD, Prefix.FIELDS, AtType.FIELD, CedarFieldId.class),
+  ELEMENT(Types.ELEMENT, Prefix.ELEMENTS, AtType.ELEMENT, CedarElementId.class),
+  TEMPLATE(Types.TEMPLATE, Prefix.TEMPLATES, AtType.TEMPLATE, CedarTemplateId.class),
+  //TODO: this should be removed once we don't need it in the frontend and the validation
+  ELEMENT_INSTANCE(Types.ELEMENT_INSTANCE, Prefix.ELEMENT_INSTANCES, null, null),
+  INSTANCE(Types.INSTANCE, Prefix.INSTANCES, null, CedarTemplateInstanceId.class),
+  USER(Types.USER, Prefix.USERS, null, CedarUserId.class),
+  GROUP(Types.GROUP, Prefix.GROUPS, null, CedarGroupId.class),
+  CATEGORY(Types.CATEGORY, Prefix.CATEGORIES, null, CedarCategoryId.class),
+  MESSAGE(Types.MESSAGE, Prefix.MESSAGES, null, null),
+  USERMESSAGE(Types.USERMESSAGE, Prefix.USERMESSAGES, null, null),
+  PROCESS(Types.PROCESS_TYPE, Prefix.PROCESS_TYPES, null, null);
 
   public static class Types {
     public static final String FOLDER = "folder";
@@ -23,6 +25,7 @@ public enum CedarResourceType {
     public static final String ELEMENT = "element";
     public static final String TEMPLATE = "template";
     public static final String INSTANCE = "instance";
+    //TODO: this should be removed once we don't need it in the frontend and the validation
     public static final String ELEMENT_INSTANCE = "element-instance";
     public static final String USER = "user";
     public static final String GROUP = "group";
@@ -37,6 +40,7 @@ public enum CedarResourceType {
     public static final String FIELDS = "template-fields";
     public static final String ELEMENTS = "template-elements";
     public static final String TEMPLATES = "templates";
+    //TODO: this should be removed once we don't need it in the frontend and the validation
     public static final String ELEMENT_INSTANCES = "template-element-instances";
     public static final String INSTANCES = "template-instances";
     public static final String USERS = "users";
@@ -57,11 +61,13 @@ public enum CedarResourceType {
   private final String value;
   private final String prefix;
   private final String atType;
+  private final Class<CedarResourceId> resourceIdClass;
 
-  CedarResourceType(String value, String prefix, String atType) {
+  CedarResourceType(String value, String prefix, String atType, Class resourceIdClass) {
     this.value = value;
     this.prefix = prefix;
     this.atType = atType;
+    this.resourceIdClass = resourceIdClass;
   }
 
   @JsonValue
@@ -75,6 +81,10 @@ public enum CedarResourceType {
 
   public String getAtType() {
     return atType;
+  }
+
+  public Class<CedarResourceId> getResourceIdClass() {
+    return resourceIdClass;
   }
 
   public static CedarResourceType forValue(String type) {
@@ -96,6 +106,18 @@ public enum CedarResourceType {
     }
     return null;
   }
+
+  public static <T extends CedarResourceId> CedarResourceType forResourceIdClass(Class<T> type) {
+    if (type != null) {
+      for (CedarResourceType t : values()) {
+        if (type.equals(t.getResourceIdClass())) {
+          return t;
+        }
+      }
+    }
+    return null;
+  }
+
 
   public boolean isVersioned() {
     return this == ELEMENT || this == TEMPLATE || this == FIELD;

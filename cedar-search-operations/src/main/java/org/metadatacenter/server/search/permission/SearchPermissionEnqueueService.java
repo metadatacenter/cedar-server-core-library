@@ -1,6 +1,7 @@
 package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.server.queue.util.PermissionQueueService;
 import org.metadatacenter.server.search.SearchPermissionQueueEvent;
 import org.metadatacenter.server.search.SearchPermissionQueueEventType;
@@ -24,18 +25,18 @@ public class SearchPermissionEnqueueService {
     enqueue(id, RESOURCE_MOVED);
   }
 
-  public void resourcePermissionsChanged(String id) {
+  public void resourcePermissionsChanged(CedarFilesystemResourceId id) {
     // TODO: Check if this was a real change. Check this at the calling side
-    enqueue(id, RESOURCE_PERMISSION_CHANGED);
+    enqueue(id.getId(), RESOURCE_PERMISSION_CHANGED);
   }
 
   public void folderMoved(String id) {
     enqueue(id, FOLDER_MOVED);
   }
 
-  public void folderPermissionsChanged(String id) {
+  public void folderPermissionsChanged(CedarFilesystemResourceId id) {
     // TODO: Check if this was a real change. Check this at the calling side
-    enqueue(id, FOLDER_PERMISSION_CHANGED);
+    enqueue(id.getId(), FOLDER_PERMISSION_CHANGED);
   }
 
   public void groupMembersUpdated(String id) {

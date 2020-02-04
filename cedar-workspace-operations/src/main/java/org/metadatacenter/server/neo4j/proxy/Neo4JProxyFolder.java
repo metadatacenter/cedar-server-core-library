@@ -1,17 +1,18 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarFolderId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.CedarResource;
+import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
-import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFolder;
-import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderNode;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFolder;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderNode;
+import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderResource;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 
 import java.util.List;
@@ -23,54 +24,52 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     super(proxies, cedarConfig);
   }
 
-  boolean moveFolder(FolderServerFolder sourceFolder, FolderServerFolder targetFolder) {
-    if (sourceFolder.getId().equals(targetFolder.getId())) {
+  boolean moveFolder(CedarFolderId sourceFolderId, CedarFolderId targetFolderId) {
+    if (sourceFolderId.getId().equals(targetFolderId.getId())) {
       return false;
     }
-    if (folderIsAncestorOf(sourceFolder, targetFolder)) {
+    if (folderIsAncestorOf(sourceFolderId, targetFolderId)) {
       return false;
     }
-    boolean unlink = unlinkFolderFromParent(sourceFolder);
+    boolean unlink = unlinkFolderFromParent(sourceFolderId);
     if (unlink) {
-      return linkFolderUnderFolder(sourceFolder, targetFolder);
+      return linkFolderUnderFolder(sourceFolderId, targetFolderId);
     }
     return false;
   }
 
-  private boolean folderIsAncestorOf(FolderServerFolder parentFolder, FolderServerFolder folder) {
+  private boolean folderIsAncestorOf(CedarFolderId parentFolderId, CedarFolderId folderId) {
     String cypher = CypherQueryBuilderFolder.folderIsAncestorOf();
-    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder
-        .getId());
+    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folderId, parentFolderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     FolderServerFolder parent = executeReadGetOne(q, FolderServerFolder.class);
     return parent != null;
   }
 
-  private boolean unlinkFolderFromParent(FolderServerFolder folder) {
+  private boolean unlinkFolderFromParent(CedarFolderId folderId) {
     String cypher = CypherQueryBuilderFolder.unlinkFolderFromParent();
-    CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
+    CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "unlinking folder");
   }
 
-  private boolean linkFolderUnderFolder(FolderServerFolder folder, FolderServerFolder parentFolder) {
+  private boolean linkFolderUnderFolder(CedarFolderId folderId, CedarFolderId parentFolderId) {
     String cypher = CypherQueryBuilderFolder.linkFolderUnderFolder();
-    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folder.getId(), parentFolder.getId
-        ());
+    CypherParameters params = CypherParamBuilderFolder.matchFolderIdAndParentFolderId(folderId, parentFolderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "linking folder");
   }
 
-  FolderServerFolder updateFolderById(String folderId, Map<NodeProperty, String> updateFields, String updatedBy) {
+  FolderServerFolder updateFolderById(CedarFolderId folderId, Map<NodeProperty, String> updateFields, CedarUserId updatedBy) {
     String cypher = CypherQueryBuilderFolder.updateFolderById(updateFields);
     CypherParameters params = CypherParamBuilderFolder.updateFolderById(folderId, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerFolder.class);
   }
 
-  boolean deleteFolderById(String folderId) {
+  boolean deleteFolderById(CedarFolderId folderId) {
     String cypher = CypherQueryBuilderFolder.deleteFolderContentsRecursivelyById();
-    CypherParameters params = CypherParamBuilderFolder.deleteFolderById(folderId);
+    CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "deleting folder");
   }
@@ -83,14 +82,14 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerFolder.class);
   }
 
-  private <T extends CedarResource> List<T> findFolderPathGenericById(String id, Class<T> klazz) {
+  private <T extends CedarResource> List<T> findFolderPathGenericById(CedarFolderId id, Class<T> klazz) {
     String cypher = CypherQueryBuilderFolder.getFolderLookupQueryById();
-    CypherParameters params = CypherParamBuilderFolder.getFolderLookupByIDParameters(proxies.pathUtil, id);
+    CypherParameters params = CypherParamBuilderFolder.getFolderLookupByIdParameters(proxies.pathUtil.getRootPath(), id);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, klazz);
   }
 
-  List<FolderServerFolder> findFolderPathById(String id) {
+  List<FolderServerFolder> findFolderPathById(CedarFolderId id) {
     return findFolderPathGenericById(id, FolderServerFolder.class);
   }
 
@@ -102,36 +101,36 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return null;
   }
 
-  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, String parentId) {
+  FolderServerFolder createFolderAsChildOfId(FolderServerFolder newFolder, CedarFolderId parentFolderId) {
     String cypher = CypherQueryBuilderFolder.createFolderAsChildOfId(newFolder);
-    CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), newFolder, parentId);
+    CypherParameters params = CypherParamBuilderFolder.createFolder(proxies.getLinkedDataUtil(), newFolder, parentFolderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerFolder.class);
   }
 
-  private boolean setOwner(FolderServerFolder folder, FolderServerUser user) {
+  private boolean setOwner(CedarFolderId folderId, CedarUserId userId) {
     String cypher = CypherQueryBuilderFolder.setFolderOwner();
-    CypherParameters params = CypherParamBuilderFolder.matchFolderAndUser(folder.getId(), user.getId());
+    CypherParameters params = CypherParamBuilderFolder.matchFolderAndUser(folderId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "setting owner");
   }
 
-  private boolean removeOwner(FolderServerFolder folder) {
+  private boolean removeOwner(CedarFolderId folderId) {
     String cypher = CypherQueryBuilderFolder.removeFolderOwner();
-    CypherParameters params = CypherParamBuilderFolder.matchFolderId(folder.getId());
+    CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing owner");
   }
 
-  boolean updateOwner(FolderServerFolder folder, FolderServerUser user) {
-    boolean removed = removeOwner(folder);
+  boolean updateOwner(CedarFolderId folderId, CedarUserId userId) {
+    boolean removed = removeOwner(folderId);
     if (removed) {
-      return setOwner(folder, user);
+      return setOwner(folderId, userId);
     }
     return false;
   }
 
-  FolderServerFolder createRootFolder(String creatorId) {
+  FolderServerFolder createRootFolder(CedarUserId creatorId) {
     FolderServerFolder newRoot = new FolderServerFolder();
     newRoot.setName(proxies.config.getRootFolderPath());
     newRoot.setDescription(proxies.config.getRootFolderDescription());
@@ -146,17 +145,25 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerFolder.class);
   }
 
-  public FolderServerFolder findHomeFolderOf(String userId) {
+  public FolderServerFolder findHomeFolderOf(CedarUserId userId) {
     String cypher = CypherQueryBuilderFolder.getHomeFolderOf();
     CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerFolder.class);
   }
 
-  public FolderServerFolder findFolderById(String nodeUUID) {
-    String cypher = CypherQueryBuilderNode.getNodeById();
-    CypherParameters params = CypherParamBuilderNode.getNodeById(nodeUUID);
+  public FolderServerFolder findFolderById(CedarFolderId folderId) {
+    String cypher = CypherQueryBuilderResource.getResourceById();
+    CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerFolder.class);
   }
+
+  public List<FileSystemResource> findAllChildArtifactsOfFolder(CedarFolderId id) {
+    String cypher = CypherQueryBuilderFolder.getAllChildArtifacts();
+    CypherParameters params = CypherParamBuilderFolder.matchId(id);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FileSystemResource.class);
+  }
+
 }

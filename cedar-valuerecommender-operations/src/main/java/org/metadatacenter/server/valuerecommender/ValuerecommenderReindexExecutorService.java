@@ -6,6 +6,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.WorkerValuerecommenderConfig;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.service.UserService;
 import org.metadatacenter.server.url.MicroserviceUrlUtil;
@@ -31,8 +32,7 @@ public class ValuerecommenderReindexExecutorService {
   private final MicroserviceUrlUtil microserviceUrlUtil;
   private CedarUser adminUser;
 
-  public ValuerecommenderReindexExecutorService(CedarConfig cedarConfig,
-                                                ValuerecommenderReindexQueueService valuerecommenderQueueService) {
+  public ValuerecommenderReindexExecutorService(CedarConfig cedarConfig, ValuerecommenderReindexQueueService valuerecommenderQueueService) {
     this.cedarConfig = cedarConfig;
     this.valuerecommenderConfig = cedarConfig.getWorkerConfig().getValuerecommender();
     this.valuerecommenderQueueService = valuerecommenderQueueService;
@@ -54,19 +54,19 @@ public class ValuerecommenderReindexExecutorService {
 
   public void handleMessages(List<ValuerecommenderReindexMessage> messageList) {
     log.debug("Working on a list of valuerecommender messages...");
-    Map<String, List<ValuerecommenderReindexMessage>> uniqueTemplateIdMap = new LinkedHashMap<>();
+    Map<CedarTemplateId, List<ValuerecommenderReindexMessage>> uniqueTemplateIdMap = new LinkedHashMap<>();
     log.debug("Generating unique templateId list...");
     for (ValuerecommenderReindexMessage message : messageList) {
-      String templateId = message.getTemplateId();
+      CedarTemplateId templateId = message.getTemplateId();
       if (!uniqueTemplateIdMap.containsKey(templateId)) {
         uniqueTemplateIdMap.put(templateId, new ArrayList<>());
       }
       uniqueTemplateIdMap.get(templateId).add(message);
     }
     log.debug("Iterating over final unique templateId list...");
-    Iterator<String> iterator = uniqueTemplateIdMap.keySet().iterator();
+    Iterator<CedarTemplateId> iterator = uniqueTemplateIdMap.keySet().iterator();
     while (iterator.hasNext()) {
-      String templateId = iterator.next();
+      CedarTemplateId templateId = iterator.next();
       log.debug("Reading currently processing threads...");
       Set<String> processingIds = getCurrentlyProcessingIds();
       if (processingIds.size() >= valuerecommenderConfig.getMaxReindexingThreadCount()) {
@@ -134,7 +134,7 @@ public class ValuerecommenderReindexExecutorService {
     }
   }
 
-  private void launchReindex(String templateId) {
+  private void launchReindex(CedarTemplateId templateId) {
     String url = microserviceUrlUtil.getValuerecommender().getCommandGenerateRules(templateId);
     String authString = adminUser.getFirstApiKeyAuthHeader();
     log.debug(url);

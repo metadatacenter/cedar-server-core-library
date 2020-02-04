@@ -1,10 +1,11 @@
 package org.metadatacenter.model.folderserver.info;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.datagroup.*;
@@ -44,8 +45,7 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
 
   public static FolderServerNodeInfo fromNode(FileSystemResource node) {
     try {
-      FolderServerNodeInfo info =
-          JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
+      FolderServerNodeInfo info = JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
       info.setType(node.getType());
       return info;
     } catch (IOException e) {
@@ -125,13 +125,18 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public ResourceUri getPreviousVersion() {
-    return previousVersionData.getPreviousVersion();
+  public String getPreviousVersion() {
+    return previousVersionData.getPreviousVersion() == null ? null : previousVersionData.getPreviousVersion().getId();
   }
 
   @JsonProperty(NodeProperty.Label.PREVIOUS_VERSION)
-  public void setPreviousVersion(String pv) {
-    previousVersionData.setPreviousVersion(ResourceUri.forValue(pv));
+  public void setPreviousVersion(CedarUntypedSchemaArtifactId pv) {
+    previousVersionData.setPreviousVersion(pv);
+  }
+
+  @JsonIgnore
+  public CedarUntypedSchemaArtifactId getPreviousVersionId() {
+    return previousVersionData.getPreviousVersion();
   }
 
   @JsonProperty(NodeProperty.Label.PUBLICATION_STATUS)
@@ -145,23 +150,33 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public ResourceUri getDerivedFrom() {
-    return derivedFromData.getDerivedFrom();
+  public String getDerivedFrom() {
+    return derivedFromData.getDerivedFrom() == null ? null : derivedFromData.getDerivedFrom().getId();
   }
 
   @JsonProperty(NodeProperty.Label.DERIVED_FROM)
-  public void setDerivedFrom(String df) {
-    derivedFromData.setDerivedFrom(ResourceUri.forValue(df));
+  public void setDerivedFrom(CedarUntypedArtifactId df) {
+    derivedFromData.setDerivedFrom(df);
+  }
+
+  @JsonIgnore
+  public CedarUntypedArtifactId getDerivedFromId() {
+    return derivedFromData.getDerivedFrom();
   }
 
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public ResourceUri getIsBasedOn() {
+  public String getIsBasedOn() {
+    return isBasedOnData.getIsBasedOn() == null ? null : isBasedOnData.getIsBasedOn().getId();
+  }
+
+  @JsonProperty(NodeProperty.Label.IS_BASED_ON)
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    isBasedOnData.setIsBasedOn(isBasedOn);
+  }
+
+  @JsonIgnore
+  public CedarTemplateId getIsBasedOnId() {
     return isBasedOnData.getIsBasedOn();
-  }
-
-  @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public void setIsBasedOn(String isBasedOn) {
-    isBasedOnData.setIsBasedOn(ResourceUri.forValue(isBasedOn));
   }
 
   @JsonProperty(NodeProperty.Label.IS_ROOT)

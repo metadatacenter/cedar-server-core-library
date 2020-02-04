@@ -1,10 +1,10 @@
 package org.metadatacenter.server.security.model;
 
-import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.id.CedarTemplateId;
 
 public interface InstanceArtifactWithIsBasedOn {
 
-  ResourceUri getIsBasedOn();
+  CedarTemplateId getIsBasedOn();
 
-  void setIsBasedOn(String isBasedOn);
+  void setIsBasedOn(CedarTemplateId isBasedOn);
 }

@@ -3,7 +3,9 @@ package org.metadatacenter.server.search.util;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.CategoryServiceSession;
@@ -108,8 +110,11 @@ public class RegenerateSearchIndexTask {
         List<IndexingDocumentDocument> currentBatch = new ArrayList<>();
         for (FileSystemResource node : resources) {
           try {
-            CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(node.getId());
-            CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(node.getId());
+            CedarNodeMaterializedPermissions perm = permissionSession.getResourceMaterializedPermission(node.getResourceId());
+            CedarNodeMaterializedCategories categories = null;
+            if (node instanceof FolderServerArtifact) {
+              categories = categorySession.getArtifactMaterializedCategories((CedarArtifactId) node.getResourceId());
+            }
             currentBatch.add(nodeIndexingService.createIndexDocument(node, perm, categories, requestContext, true));
 
             if (count % 100 == 0) {

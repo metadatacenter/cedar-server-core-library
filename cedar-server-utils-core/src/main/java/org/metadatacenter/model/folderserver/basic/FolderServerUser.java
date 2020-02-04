@@ -3,7 +3,6 @@ package org.metadatacenter.model.folderserver.basic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.AbstractCedarResourceWithDates;
 import org.metadatacenter.model.CedarResourceType;
@@ -43,7 +42,7 @@ public class FolderServerUser extends AbstractCedarResourceWithDates implements 
   @Override
   @JsonIgnore
   public CedarUserId getResourceId() {
-    return CedarUserId.buildSafe(getId());
+    return CedarUserId.build(getId());
   }
 
   @JsonProperty(NodeProperty.Label.FIRST_NAME)
@@ -159,16 +158,6 @@ public class FolderServerUser extends AbstractCedarResourceWithDates implements 
     u.setApiKeys(apiKeyList);
 
     return u;
-  }
-
-  @JsonIgnore
-  public CedarUserId getIdObject() {
-    try {
-      return CedarUserId.build(getId());
-    } catch (CedarProcessingException e) {
-      log.error("Error creating CedarUserId", e);
-      return null;
-    }
   }
 
 }

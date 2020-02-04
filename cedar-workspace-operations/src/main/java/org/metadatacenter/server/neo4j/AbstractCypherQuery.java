@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j;
 
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class AbstractCypherQuery implements CypherQuery {
   protected static final Set<NodeLabel> labels;
   protected static final Set<RelationLabel> relations;
   protected static final Set<NodeProperty> properties;
+  protected static final Set<ParameterPlaceholder> placeholders;
   protected static final Map<String, String> replacementTable;
 
   static {
@@ -25,6 +27,9 @@ public class AbstractCypherQuery implements CypherQuery {
 
     properties = new HashSet<>();
     Collections.addAll(properties, NodeProperty.values());
+
+    placeholders = new HashSet<>();
+    Collections.addAll(placeholders, ParameterPlaceholder.values());
 
     replacementTable = new HashMap<>();
 
@@ -39,6 +44,10 @@ public class AbstractCypherQuery implements CypherQuery {
 
     for (NodeProperty property : properties) {
       replacementTable.put("<PROP." + property.name() + ">", Neo4JUtil.escapePropertyName(property.getValue()));
+    }
+
+    for (ParameterPlaceholder placeholder : placeholders) {
+      replacementTable.put("<PH." + placeholder.name() + ">", Neo4JUtil.escapePropertyName(placeholder.getValue()));
     }
 
   }

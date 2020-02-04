@@ -1,6 +1,7 @@
 package org.metadatacenter.server.service.neo4j;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.proxy.Neo4JProxyUser;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -25,7 +26,7 @@ public class UserServiceNeo4j implements UserService {
   }
 
   @Override
-  public CedarUser findUser(String userId) {
+  public CedarUser findUser(CedarUserId userId) {
     FolderServerUser user = userProxy.findUserById(userId);
     return user == null ? null : user.buildUser();
   }
@@ -42,7 +43,7 @@ public class UserServiceNeo4j implements UserService {
   }
 
   @Override
-  public BackendCallResult<CedarUser> patchUser(String userId, JsonNode modifications) {
+  public BackendCallResult<CedarUser> patchUser(CedarUserId userId, JsonNode modifications) {
     return userProxy.patchUser(userId, modifications);
   }
 

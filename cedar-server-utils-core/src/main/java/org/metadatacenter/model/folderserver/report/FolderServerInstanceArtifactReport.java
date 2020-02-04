@@ -1,16 +1,19 @@
 package org.metadatacenter.model.folderserver.report;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.datagroup.IsBasedOnGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithIsBasedOn;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.model.folderserver.extract.FolderServerTemplateExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
+import org.metadatacenter.util.json.JsonMapper;
 
-public abstract class FolderServerInstanceArtifactReport extends FolderServerArtifactReport
-    implements ResourceWithIsBasedOn, ResourceWithOpenFlag {
+import java.io.IOException;
+
+public abstract class FolderServerInstanceArtifactReport extends FolderServerArtifactReport implements ResourceWithIsBasedOn, ResourceWithOpenFlag {
 
   private IsBasedOnGroup isBasedOnGroup;
   private FolderServerTemplateExtract isBasedOnExtract;
@@ -20,14 +23,24 @@ public abstract class FolderServerInstanceArtifactReport extends FolderServerArt
     isBasedOnGroup = new IsBasedOnGroup();
   }
 
+  public static FolderServerInstanceArtifactReport fromResource(FolderServerArtifact resource) {
+    try {
+      String s = JsonMapper.MAPPER.writeValueAsString(resource);
+      return JsonMapper.MAPPER.readValue(s, FolderServerInstanceArtifactReport.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
   @Override
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOnGroup.getIsBasedOn();
   }
 
   @Override
-  public void setIsBasedOn(String isBasedOn) {
-    isBasedOnGroup.setIsBasedOn(ResourceUri.forValue(isBasedOn));
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    isBasedOnGroup.setIsBasedOn(isBasedOn);
   }
 
   @JsonProperty(NodeProperty.OnTheFly.IS_BASED_ON)

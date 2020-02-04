@@ -1,5 +1,6 @@
 package org.metadatacenter.server;
 
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.result.BackendCallResult;
@@ -13,19 +14,19 @@ public interface GroupServiceSession {
 
   List<FolderServerGroup> findGroups();
 
-  FolderServerGroup findGroupById(String groupURL);
+  FolderServerGroup findGroupById(CedarGroupId groupId);
 
   FolderServerGroup findGroupByName(String groupName);
 
-  FolderServerGroup createGroup(String groupName, String groupDisplayName, String groupDescription);
+  FolderServerGroup createGroup(String groupName, String groupDescription);
 
-  FolderServerGroup updateGroupById(String groupURL, Map<NodeProperty, String> updateFields);
+  FolderServerGroup updateGroupById(CedarGroupId groupId, Map<NodeProperty, String> updateFields);
 
-  boolean deleteGroupById(String groupURL);
+  boolean deleteGroupById(CedarGroupId groupId);
 
-  CedarGroupUsers findGroupUsers(String groupURL);
+  CedarGroupUsers findGroupUsers(CedarGroupId groupId);
 
-  BackendCallResult updateGroupUsers(String groupURL, CedarGroupUsersRequest request);
+  BackendCallResult updateGroupUsers(CedarGroupId groupId, CedarGroupUsersRequest request);
 
-  boolean userAdministersGroup(String groupURL);
+  boolean userAdministersGroup(CedarGroupId groupId);
 }

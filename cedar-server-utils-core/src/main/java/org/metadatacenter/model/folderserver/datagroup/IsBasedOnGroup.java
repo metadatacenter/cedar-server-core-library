@@ -1,19 +1,19 @@
 package org.metadatacenter.model.folderserver.datagroup;
 
-import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.id.CedarTemplateId;
 
 public class IsBasedOnGroup {
 
-  private ResourceUri isBasedOn;
+  private CedarTemplateId isBasedOn;
 
   public IsBasedOnGroup() {
   }
 
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOn;
   }
 
-  public void setIsBasedOn(ResourceUri isBasedOn) {
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
     this.isBasedOn = isBasedOn;
   }
 }

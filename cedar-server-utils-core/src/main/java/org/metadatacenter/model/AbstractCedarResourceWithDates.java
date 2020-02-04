@@ -1,13 +1,14 @@
 package org.metadatacenter.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.folderserver.datagroup.TimestampDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.util.FolderServerNodeContext;
 
 import java.util.Map;
 
-public abstract class AbstractCedarResourceWithDates extends AbstractCedarResource {
+public abstract class AbstractCedarResourceWithDates<T extends CedarResourceId> extends AbstractCedarResource<T> {
 
   protected TimestampDataGroup timestampDataGroup;
 

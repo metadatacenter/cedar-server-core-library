@@ -85,7 +85,7 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
   public static String getGroupUsersWithRelation(RelationLabel relationLabel) {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PROP.ID>}})" +
         " MATCH (user)-[:" + relationLabel + "]->(group)" +
         " RETURN user";
   }

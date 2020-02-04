@@ -2,6 +2,7 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -20,13 +21,13 @@ import java.util.Set;
 
 public class Neo4JUserSessionCategoryPermissionService extends AbstractNeo4JUserSession implements CategoryPermissionServiceSession {
 
-  private Neo4JUserSessionCategoryPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
-                                                    String globalRequestId, String localRequestId) {
+  private Neo4JUserSessionCategoryPermissionService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId,
+                                                    String localRequestId) {
     super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static CategoryPermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
-                                                     String globalRequestId, String localRequestId) {
+  public static CategoryPermissionServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String globalRequestId,
+                                                     String localRequestId) {
     return new Neo4JUserSessionCategoryPermissionService(cedarConfig, proxies, cedarUser, globalRequestId,
         localRequestId);
   }
@@ -57,8 +58,8 @@ public class Neo4JUserSessionCategoryPermissionService extends AbstractNeo4JUser
       CategoryPermissions currentPermissions = getCategoryPermissions(categoryId);
       CategoryPermissions newPermissions = prv.getPermissions();
 
-      String oldOwnerId = currentPermissions.getOwner().getId();
-      String newOwnerId = newPermissions.getOwner().getId();
+      CedarUserId oldOwnerId = currentPermissions.getOwner().getResourceId();
+      CedarUserId newOwnerId = newPermissions.getOwner().getResourceId();
       if (oldOwnerId != null && !oldOwnerId.equals(newOwnerId)) {
         Neo4JUserSessionCategoryOperations.updateCategoryOwner(proxies.category(), categoryId, newOwnerId);
       }
@@ -119,19 +120,17 @@ public class Neo4JUserSessionCategoryPermissionService extends AbstractNeo4JUser
     return owner != null && owner.getId().equals(cu.getId());
   }
 
-  private List<FolderServerUser> getUsersWithDirectCategoryPermission(CedarCategoryId categoryId,
-                                                                      CategoryPermission permission) {
+  private List<FolderServerUser> getUsersWithDirectCategoryPermission(CedarCategoryId categoryId, CategoryPermission permission) {
     return proxies.categoryPermission().getUsersWithDirectPermissionOnCategory(categoryId, permission);
   }
 
-  private List<FolderServerGroup> getGroupsWithDirectCategoryPermission(CedarCategoryId categoryId,
-                                                                        CategoryPermission permission) {
+  private List<FolderServerGroup> getGroupsWithDirectCategoryPermission(CedarCategoryId categoryId, CategoryPermission permission) {
     return proxies.categoryPermission().getGroupsWithDirectPermissionOnCategory(categoryId, permission);
   }
 
   private CategoryPermissions buildCategoryPermissions(FolderServerUser owner, List<FolderServerUser> attachUsers,
-                                                       List<FolderServerUser> writeUsers, List<FolderServerGroup>
-                                                           attachGroups, List<FolderServerGroup> writeGroups) {
+                                                       List<FolderServerUser> writeUsers, List<FolderServerGroup> attachGroups,
+                                                       List<FolderServerGroup> writeGroups) {
     CategoryPermissions permissions = new CategoryPermissions();
     CedarUserExtract o = owner.buildExtract();
     permissions.setOwner(o);
@@ -193,4 +192,10 @@ public class Neo4JUserSessionCategoryPermissionService extends AbstractNeo4JUser
       return owner != null && owner.getId().equals(cu.getId());
     }
   }
+
+  @Override
+  public boolean userHas(CedarPermission permission) {
+    return cu.has(permission);
+  }
+
 }

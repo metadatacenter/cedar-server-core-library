@@ -10,6 +10,7 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
@@ -83,8 +84,8 @@ public class NodeSearchingService extends AbstractSearchingService {
     return searchWorker.findAllValuesForField(fieldName);
   }
 
-  public List<String> findAllCedarIdsForGroup(String groupId) {
-    QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId);
+  public List<String> findAllCedarIdsForGroup(CedarGroupId groupId) throws CedarProcessingException {
+    QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId.getId());
     return searchWorker.findAllValuesForField("cid", queryBuilder);
   }
 
@@ -104,8 +105,7 @@ public class NodeSearchingService extends AbstractSearchingService {
 
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
                                                  ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                                 String categoryId, List<String> sortList, int limit, int offset, String absoluteUrl)
-      throws CedarProcessingException {
+                                                 String categoryId, List<String> sortList, int limit, int offset, String absoluteUrl) throws CedarProcessingException {
     try {
       SearchResponseResult searchResult = permissionEnabledSearchWorker.searchDeep(rctx, query, resourceTypes, version, publicationStatus,
           categoryId, sortList, limit, offset);
@@ -157,17 +157,13 @@ public class NodeSearchingService extends AbstractSearchingService {
     req.setVersion(version);
     req.setPublicationStatus(publicationStatus);
     req.setCategoryId(categoryId);
-    try {
-      CedarCategoryId cid = CedarCategoryId.build(categoryId);
-      CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(rctx);
-      FolderServerCategory category = categorySession.getCategoryById(cid);
-      if (category != null) {
-        response.setCategoryName(category.getName());
-        List<FolderServerCategoryExtract> categoryPath = categorySession.getCategoryPath(cid);
-        response.setCategoryPath(categoryPath);
-      }
-    } catch (CedarProcessingException e) {
-      e.printStackTrace();
+    CedarCategoryId cid = CedarCategoryId.build(categoryId);
+    CategoryServiceSession categorySession = CedarDataServices.getCategoryServiceSession(rctx);
+    FolderServerCategory category = categorySession.getCategoryById(cid);
+    if (category != null) {
+      response.setCategoryName(category.getName());
+      List<FolderServerCategoryExtract> categoryPath = categorySession.getCategoryPath(cid);
+      response.setCategoryPath(categoryPath);
     }
     req.setLimit(limit);
     req.setOffset(offset);

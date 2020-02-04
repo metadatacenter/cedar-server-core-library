@@ -3,12 +3,12 @@ package org.metadatacenter.server.security.model.permission.resource;
 public class ResourcePermissionGroupPermissionPair {
 
   private ResourcePermissionGroup group;
-  private ResourcePermission permission;
+  private FilesystemResourcePermission permission;
 
   public ResourcePermissionGroupPermissionPair() {
   }
 
-  public ResourcePermissionGroupPermissionPair(ResourcePermissionGroup group, ResourcePermission permission) {
+  public ResourcePermissionGroupPermissionPair(ResourcePermissionGroup group, FilesystemResourcePermission permission) {
     this.group = group;
     this.permission = permission;
   }
@@ -21,11 +21,11 @@ public class ResourcePermissionGroupPermissionPair {
     this.group = group;
   }
 
-  public ResourcePermission getPermission() {
+  public FilesystemResourcePermission getPermission() {
     return permission;
   }
 
-  public void setPermission(ResourcePermission permission) {
+  public void setPermission(FilesystemResourcePermission permission) {
     this.permission = permission;
   }
 
