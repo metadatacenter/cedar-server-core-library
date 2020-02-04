@@ -134,7 +134,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     if (isBasedOn != null) {
       if (resourceTypesInput.isPresent()) {
         throw new CedarAssertionException(
-            "You must pass not specify 'resource_types' if the 'is_based_on' is specified!")
+            "You must not specify 'resource_types' if the 'is_based_on' is specified!")
             .badRequest()
             .parameter("is_based_on", isBasedOn)
             .parameter("resource_types", resourceTypesInput.get())
