@@ -1,8 +1,10 @@
 package org.metadatacenter.server.permissions;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarFilesystemResourceId;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithOpenFlag;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
@@ -10,44 +12,40 @@ import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.VersionServiceSession;
 import org.metadatacenter.server.security.model.InstanceArtifactWithIsBasedOn;
 import org.metadatacenter.server.security.model.auth.CurrentUserResourcePermissions;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 
 public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserPermissionUpdater {
 
   private final ResourcePermissionServiceSession permissionSession;
   private final VersionServiceSession versionSession;
   private final CedarConfig cedarConfig;
-  private final ResourceWithCurrentUserPermissions resource;
+  private final FilesystemResourceWithCurrentUserPermissions resource;
 
-  private CurrentUserPermissionUpdaterForGraphDbResource(ResourcePermissionServiceSession permissionSession,
-                                                         VersionServiceSession versionSession,
-                                                         CedarConfig cedarConfig,
-                                                         ResourceWithCurrentUserPermissions resource) {
+  private CurrentUserPermissionUpdaterForGraphDbResource(ResourcePermissionServiceSession permissionSession, VersionServiceSession versionSession,
+                                                         CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
     this.permissionSession = permissionSession;
     this.versionSession = versionSession;
     this.cedarConfig = cedarConfig;
     this.resource = resource;
   }
 
-  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession,
-                                                 VersionServiceSession versionSession,
-                                                 CedarConfig cedarConfig, ResourceWithCurrentUserPermissions resource) {
-    return new CurrentUserPermissionUpdaterForGraphDbResource(permissionSession, versionSession, cedarConfig,
-        resource);
+  public static CurrentUserPermissionUpdater get(ResourcePermissionServiceSession permissionSession, VersionServiceSession versionSession,
+                                                 CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
+    return new CurrentUserPermissionUpdaterForGraphDbResource(permissionSession, versionSession, cedarConfig, resource);
   }
 
   @Override
-  public void update(CurrentUserResourcePermissions currentUserResourcePermissions) {
-    String id = resource.getId();
-    if (permissionSession.userHasWriteAccessToNode(id)) {
+  public void update(CurrentUserResourcePermissions currentUserResourcePermissions){
+    CedarFilesystemResourceId id = resource.getResourceId();
+    if (permissionSession.userHasWriteAccessToResource(id)) {
       currentUserResourcePermissions.setCanWrite(true);
       currentUserResourcePermissions.setCanDelete(true);
       currentUserResourcePermissions.setCanRead(true);
       currentUserResourcePermissions.setCanShare(true);
-    } else if (permissionSession.userHasReadAccessToNode(id)) {
+    } else if (permissionSession.userHasReadAccessToResource(id)) {
       currentUserResourcePermissions.setCanRead(true);
     }
-    if (permissionSession.userCanChangeOwnerOfNode(id)) {
+    if (permissionSession.userCanChangeOwnerOfResource(id)) {
       currentUserResourcePermissions.setCanChangeOwner(true);
     }
     OutcomeWithReason versioningOutcome = versionSession.userCanPerformVersioning(resource);
@@ -73,9 +71,9 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
     }
     if (resource.getType() == CedarResourceType.INSTANCE) {
       InstanceArtifactWithIsBasedOn instance = (InstanceArtifactWithIsBasedOn) resource;
-      ResourceUri basedOnTemplate = instance.getIsBasedOn();
+      CedarTemplateId basedOnTemplate = instance.getIsBasedOn();
       if (basedOnTemplate != null) {
-        String basedOnTemplateId = basedOnTemplate.getValue();
+        String basedOnTemplateId = basedOnTemplate.getId();
         if (isSubmittable(basedOnTemplateId)) {
           currentUserResourcePermissions.setCanSubmit(true);
         }
@@ -93,8 +91,7 @@ public class CurrentUserPermissionUpdaterForGraphDbResource extends CurrentUserP
   }
 
   private boolean isSubmittable(String basedOnTemplateId) {
-    return cedarConfig.getSubmissionConfig().getSubmittableTemplateIds() != null &&
-        cedarConfig.getSubmissionConfig().getSubmittableTemplateIds().contains(basedOnTemplateId);
+    return cedarConfig.getSubmissionConfig().getSubmittableTemplateIds() != null && cedarConfig.getSubmissionConfig().getSubmittableTemplateIds().contains(basedOnTemplateId);
   }
 
 }

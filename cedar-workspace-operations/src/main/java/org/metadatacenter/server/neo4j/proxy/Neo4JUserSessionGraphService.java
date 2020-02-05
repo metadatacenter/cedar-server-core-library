@@ -2,10 +2,11 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.GraphServiceSession;
 import org.metadatacenter.server.neo4j.AbstractNeo4JUserSession;
@@ -15,24 +16,23 @@ import java.util.List;
 
 public class Neo4JUserSessionGraphService extends AbstractNeo4JUserSession implements GraphServiceSession {
 
-  private Neo4JUserSessionGraphService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu,
-                                       String globalRequestId, String localRequestId) {
+  private Neo4JUserSessionGraphService(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cu, String globalRequestId, String localRequestId) {
     super(cedarConfig, proxies, cu, globalRequestId, localRequestId);
   }
 
-  public static GraphServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser,
-                                        String globalRequestId, String localRequestId) {
+  public static GraphServiceSession get(CedarConfig cedarConfig, Neo4JProxies proxies, CedarUser cedarUser, String globalRequestId,
+                                        String localRequestId) {
     return new Neo4JUserSessionGraphService(cedarConfig, proxies, cedarUser, globalRequestId, localRequestId);
   }
 
   @Override
-  public List<FolderServerArc> getOutgoingArcs(String nodeId) {
-    return proxies.graph().getOutgoingArcs(nodeId);
+  public List<FolderServerArc> getOutgoingArcs(CedarResourceId resourceId) {
+    return proxies.graph().getOutgoingArcs(resourceId);
   }
 
   @Override
-  public List<FolderServerArc> getIncomingArcs(String nodeId) {
-    return proxies.graph().getIncomingArcs(nodeId);
+  public List<FolderServerArc> getIncomingArcs(CedarResourceId resourceId) {
+    return proxies.graph().getIncomingArcs(resourceId);
   }
 
   @Override
@@ -46,12 +46,12 @@ public class Neo4JUserSessionGraphService extends AbstractNeo4JUserSession imple
   }
 
   @Override
-  public FileSystemResource createNode(JsonNode node) {
-    return proxies.graph().createNode(node);
+  public FileSystemResource createFilesystemResource(JsonNode node) {
+    return proxies.graph().createFilesystemResource(node);
   }
 
   @Override
-  public boolean createArc(String sourceId, RelationLabel relationLabel, String targetId) {
+  public boolean createArc(CedarResourceId sourceId, RelationLabel relationLabel, CedarResourceId targetId) {
     return proxies.graph().createArc(sourceId, relationLabel, targetId);
   }
 

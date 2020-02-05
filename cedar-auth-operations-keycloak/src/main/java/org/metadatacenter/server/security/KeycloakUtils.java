@@ -7,6 +7,7 @@ import org.metadatacenter.exception.security.AccessTokenExpiredException;
 import org.metadatacenter.exception.security.AccessTokenMissingException;
 import org.metadatacenter.exception.security.CedarAccessException;
 import org.metadatacenter.exception.security.InvalidOfflineAccessTokenException;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.server.jsonld.LinkedDataUtil;
 import org.metadatacenter.server.security.model.AuthRequest;
 import org.metadatacenter.server.security.model.user.CedarUser;
@@ -52,15 +53,15 @@ public class KeycloakUtils {
     }
   }
 
-  public static CedarUser getUserFromAuthRequest(LinkedDataUtil linkedDataUtil, AuthRequest authRequest, IUserService
-      userService) throws CedarAccessException {
+  public static CedarUser getUserFromAuthRequest(LinkedDataUtil linkedDataUtil, AuthRequest authRequest, IUserService userService) throws CedarAccessException {
     String token = authRequest.getAuthString();
     AccessToken accessToken = checkIfTokenIsStillActiveByUserInfo(token);
     String userUuid = accessToken.getSubject();
     String userId = linkedDataUtil.getUserId(userUuid);
+    CedarUserId uid = CedarUserId.build(userId);
     CedarUser user = null;
     try {
-      user = userService.findUser(userId);
+      user = userService.findUser(uid);
     } catch (IOException e) {
       log.error("Error while getting user", e);
     }

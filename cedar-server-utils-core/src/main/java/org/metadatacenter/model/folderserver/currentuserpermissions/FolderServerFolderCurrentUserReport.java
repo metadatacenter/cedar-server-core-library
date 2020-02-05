@@ -7,8 +7,8 @@ import org.metadatacenter.model.folderserver.datagroup.ResourceWithFolderData;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolderCurrentUserReport extends FolderServerResourceCurrentUserReport
-    implements ResourceWithFolderData, FolderWithCurrentUserPermissions {
+public class FolderServerFolderCurrentUserReport extends FolderServerResourceCurrentUserReport implements ResourceWithFolderData,
+    FolderWithCurrentUserPermissions {
 
   private FolderDataGroup folderDataGroup;
 

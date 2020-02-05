@@ -19,6 +19,7 @@ public class Neo4JProxies {
   private final Neo4JProxyResourcePermission permissionProxy;
   private final Neo4JProxyArtifact artifactProxy;
   private final Neo4JProxyResource resourceProxy;
+  private final Neo4JProxyFilesystemResource filesystemResourceProxy;
   private final Neo4JProxyGraph graphProxy;
   private final Neo4JProxyVersion versionProxy;
   private final Neo4JProxyCategory categoryProxy;
@@ -37,6 +38,7 @@ public class Neo4JProxies {
     this.permissionProxy = new Neo4JProxyResourcePermission(this, cedarConfig);
     this.artifactProxy = new Neo4JProxyArtifact(this, cedarConfig);
     this.resourceProxy = new Neo4JProxyResource(this, cedarConfig);
+    this.filesystemResourceProxy = new Neo4JProxyFilesystemResource(this, cedarConfig);
     this.graphProxy = new Neo4JProxyGraph(this, cedarConfig);
     this.versionProxy = new Neo4JProxyVersion(this, cedarConfig);
     this.categoryProxy = new Neo4JProxyCategory(this, cedarConfig);
@@ -69,6 +71,10 @@ public class Neo4JProxies {
 
   public Neo4JProxyResource resource() {
     return resourceProxy;
+  }
+
+  public Neo4JProxyFilesystemResource filesystemResource() {
+    return filesystemResourceProxy;
   }
 
   public Neo4JProxyGraph graph() {

@@ -1,6 +1,6 @@
 package org.metadatacenter.server;
 
-import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
@@ -9,19 +9,19 @@ import org.metadatacenter.server.security.model.permission.resource.ResourcePerm
 
 public interface ResourcePermissionServiceSession {
 
-  CedarNodePermissions getNodePermissions(String nodeURL);
+  CedarNodePermissions getResourcePermissions(CedarFilesystemResourceId resourceId);
 
-  CedarNodeMaterializedPermissions getNodeMaterializedPermission(String nodeURL);
+  CedarNodeMaterializedPermissions getResourceMaterializedPermission(CedarFilesystemResourceId resourceId);
 
-  BackendCallResult updateNodePermissions(String nodeURL, ResourcePermissionsRequest request);
+  BackendCallResult updateResourcePermissions(CedarFilesystemResourceId resourceId, ResourcePermissionsRequest request);
 
-  boolean userCanChangeOwnerOfNode(String nodeURL);
+  boolean userCanChangeOwnerOfResource(CedarFilesystemResourceId resourceId);
 
-  boolean userHasReadAccessToNode(String nodeURL);
+  boolean userHasReadAccessToResource(CedarFilesystemResourceId resourceId);
 
-  boolean userHasWriteAccessToNode(String nodeURL);
+  boolean userHasWriteAccessToResource(CedarFilesystemResourceId resourceId);
 
-  boolean userIsOwnerOfNode(FileSystemResource node);
+  boolean userIsOwnerOfResource(CedarFilesystemResourceId resource);
 
-  boolean userHas(CedarPermission permission);
+  boolean userHasPermission(CedarPermission permission);
 }

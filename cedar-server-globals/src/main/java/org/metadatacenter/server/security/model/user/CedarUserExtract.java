@@ -30,7 +30,7 @@ public class CedarUserExtract implements CedarUserRepresentation {
   @Override
   @JsonIgnore
   public CedarUserId getResourceId() {
-    return CedarUserId.buildSafe(id);
+    return CedarUserId.build(id);
   }
 
   @JsonProperty("@id")

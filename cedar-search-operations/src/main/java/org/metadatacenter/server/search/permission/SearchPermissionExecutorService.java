@@ -2,6 +2,8 @@ package org.metadatacenter.server.search.permission;
 
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.*;
 import org.metadatacenter.model.Upsert;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -54,73 +56,82 @@ public class SearchPermissionExecutorService {
   public void handleEvent(SearchPermissionQueueEvent event) {
     switch (event.getEventType()) {
       case RESOURCE_MOVED:
-        updateOneResource(event.getId());
+        updateOneArtifact(CedarUntypedArtifactId.build(event.getId()));
         break;
       case RESOURCE_PERMISSION_CHANGED:
-        updateOneResource(event.getId());
+        updateOneArtifact(CedarUntypedArtifactId.build(event.getId()));
         break;
       case FOLDER_MOVED:
-        updateFolderRecursively(event.getId());
+        updateFolderRecursively(CedarFolderId.build(event.getId()));
         break;
       case FOLDER_PERMISSION_CHANGED:
-        updateFolderRecursively(event.getId());
+        updateFolderRecursively(CedarFolderId.build(event.getId()));
         break;
       case GROUP_MEMBERS_UPDATED:
-        updateAllByUpdatedGroup(event.getId());
+        updateAllByUpdatedGroup(CedarGroupId.build(event.getId()));
         break;
       case GROUP_DELETED:
-        updateAllByDeletedGroup(event.getId());
+        updateAllByDeletedGroup(CedarGroupId.build(event.getId()));
         break;
     }
   }
 
-  private void updateOneResource(String id) {
-    FolderServerArtifact resource = folderSession.findArtifactById(id);
+  private void updateOneArtifact(CedarArtifactId artifactId) {
+    FolderServerArtifact resource = folderSession.findArtifactById(artifactId);
     if (resource != null) {
       log.debug("Update one artifact:" + resource.getName());
-      upsertOnePermissions(Upsert.UPDATE, id);
+      upsertOnePermissions(Upsert.UPDATE, artifactId);
     } else {
-      log.error("Resource was not found:" + id);
+      log.error("Resource was not found:" + artifactId);
     }
   }
 
-  private void updateFolderRecursively(String id) {
+  private void updateFolderRecursively(CedarFolderId folderId) {
     log.debug("Update recursive folder:");
-    List<FileSystemResource> subtree = folderSession.findAllDescendantNodesById(id);
+    List<FileSystemResource> subtree = folderSession.findAllDescendantNodesById(folderId);
     for (FileSystemResource n : subtree) {
-      upsertOnePermissions(Upsert.UPDATE, n.getId());
+      upsertOnePermissions(Upsert.UPDATE, n.getResourceId());
     }
   }
 
-  private void updateAllByUpdatedGroup(String id) {
+  private void updateAllByUpdatedGroup(CedarGroupId groupId) {
     log.debug("Update all visible by group:");
-    List<FileSystemResource> collection = folderSession.findAllNodesVisibleByGroupId(id);
+    List<FileSystemResource> collection = folderSession.findAllNodesVisibleByGroupId(groupId);
     for (FileSystemResource n : collection) {
       if (indexUtils.needsIndexing(n)) {
-        upsertOnePermissions(Upsert.UPDATE, n.getId());
+        upsertOnePermissions(Upsert.UPDATE, n.getResourceId());
       } else {
         log.info("The resource was skipped from indexing:" + n.getId());
       }
     }
   }
 
-  private void updateAllByDeletedGroup(String id) {
+  private void updateAllByDeletedGroup(CedarGroupId groupId) {
     log.debug("Update all visible by group:");
-    List<String> allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(id);
-    for (String cid : allCedarIdsForGroup) {
-      log.info("Need to update permissions for:" + cid);
-      upsertOnePermissions(Upsert.UPDATE, cid);
+    List<String> allCedarIdsForGroup = null;
+    try {
+      allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(groupId);
+      for (String cid : allCedarIdsForGroup) {
+        log.info("Need to update permissions for:" + cid);
+        upsertOnePermissions(Upsert.UPDATE, CedarUntypedArtifactId.build(cid));
+      }
+    } catch (CedarProcessingException e) {
+      log.error("Error while retrieving all the affected documents for group:" + groupId);
+      return;
     }
   }
 
-  private void upsertOnePermissions(Upsert upsert, String id) {
-    log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + id);
+  private void upsertOnePermissions(Upsert upsert, CedarFilesystemResourceId resourceId) {
+    log.debug("upsertOneDocument for permissions:" + upsert.getValue() + ":" + resourceId);
     try {
-      FileSystemResource node = folderSession.findResourceById(id);
-      CedarNodeMaterializedPermissions perm = permissionSession.getNodeMaterializedPermission(id);
-      CedarNodeMaterializedCategories categories = categorySession.getNodeMaterializedCategories(id);
+      FileSystemResource node = folderSession.findResourceById(resourceId);
+      CedarNodeMaterializedPermissions perm = permissionSession.getResourceMaterializedPermission(resourceId);
+      CedarNodeMaterializedCategories categories = null;
+      if (resourceId instanceof CedarArtifactId) {
+        categories = categorySession.getArtifactMaterializedCategories((CedarArtifactId) resourceId);
+      }
       if (upsert == Upsert.UPDATE) {
-        nodeIndexingService.removeDocumentFromIndex(id);
+        nodeIndexingService.removeDocumentFromIndex(resourceId);
       }
       nodeIndexingService.indexDocument(node, perm, categories, cedarRequestContext);
     } catch (Exception e) {

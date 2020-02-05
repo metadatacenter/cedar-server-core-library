@@ -212,8 +212,8 @@ public abstract class AbstractCypherQueryBuilder {
 
   protected static String createFSFolderAsChildOfId(FolderServerFolder newFolder) {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_ID>}})" +
         createFSFolder("child", newFolder) +
         " CREATE (user)-[:<REL.OWNS>]->(child)" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
@@ -232,8 +232,7 @@ public abstract class AbstractCypherQueryBuilder {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->(" + nodeAlias + ")";
   }
 
-  protected static String getUserToResourceRelationThroughGroupWithContains(RelationLabel relationLabel,
-                                                                            String nodeAlias) {
+  protected static String getUserToResourceRelationThroughGroupWithContains(RelationLabel relationLabel, String nodeAlias) {
     return "(user)-[:<REL.MEMBEROF>*0..1]->()-[:" + relationLabel + "]->()-[:<REL.CONTAINS>*0..]->(" + nodeAlias + ")";
   }
 
@@ -249,8 +248,7 @@ public abstract class AbstractCypherQueryBuilder {
         ")";
   }
 
-  protected static String getVersionConditions(ResourceVersionFilter version,
-                                               String relationPrefix, String nodeAlias) {
+  protected static String getVersionConditions(ResourceVersionFilter version, String relationPrefix, String nodeAlias) {
     if (version == ResourceVersionFilter.LATEST) {
       return "" +
           " " + relationPrefix + " " +

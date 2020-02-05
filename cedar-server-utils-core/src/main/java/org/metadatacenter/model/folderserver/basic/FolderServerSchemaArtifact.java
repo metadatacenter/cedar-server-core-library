@@ -1,8 +1,8 @@
 package org.metadatacenter.model.folderserver.basic;
 
+import org.metadatacenter.id.CedarUntypedSchemaArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.ResourceVersion;
 import org.metadatacenter.model.folderserver.datagroup.PreviousVersionGroup;
 import org.metadatacenter.model.folderserver.datagroup.ResourceWithPreviousVersionData;
@@ -10,8 +10,8 @@ import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
 import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
 import org.metadatacenter.server.security.model.NodeWithPublicationStatus;
 
-public abstract class FolderServerSchemaArtifact extends FolderServerArtifact
-    implements ResourceWithPreviousVersionData, NodeWithPublicationStatus, ResourceWithVersionData {
+public abstract class FolderServerSchemaArtifact extends FolderServerArtifact implements ResourceWithPreviousVersionData, NodeWithPublicationStatus
+    , ResourceWithVersionData {
 
   protected VersionDataGroup versionData;
   protected PreviousVersionGroup previousVersionGroup;
@@ -23,13 +23,13 @@ public abstract class FolderServerSchemaArtifact extends FolderServerArtifact
   }
 
   @Override
-  public ResourceUri getPreviousVersion() {
+  public CedarUntypedSchemaArtifactId getPreviousVersion() {
     return previousVersionGroup.getPreviousVersion();
   }
 
   @Override
-  public void setPreviousVersion(String pv) {
-    previousVersionGroup.setPreviousVersion(ResourceUri.forValue(pv));
+  public void setPreviousVersion(CedarUntypedSchemaArtifactId pv) {
+    previousVersionGroup.setPreviousVersion(pv);
   }
 
   @Override

@@ -30,8 +30,8 @@ public enum CedarErrorKey {
   TEMPLATE_INSTANCE_NOT_UPDATED("templateInstanceNotUpdated"),
   TEMPLATE_INSTANCES_NOT_LISTED("templateInstancesNotListed"),
 
-  NO_READ_ACCESS_TO_NODE("noReadAccessToNode"),
-  NO_WRITE_ACCESS_TO_NODE("noWriteAccessToNode"),
+  NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
+  NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
 
   NO_READ_ACCESS_TO_FOLDER("noReadAccessToFolder"),
   NO_WRITE_ACCESS_TO_FOLDER("noWriteAccessToFolder"),
@@ -48,8 +48,8 @@ public enum CedarErrorKey {
   NO_READ_ACCESS_TO_TEMPLATE_INSTANCE("noReadAccessToTemplateInstance"),
   NO_WRITE_ACCESS_TO_TEMPLATE_INSTANCE("noWriteAccessToTemplateInstance"),
 
-  NO_READ_ACCESS_TO_RESOURCE("noReadAccessToResource"),
-  NO_WRITE_ACCESS_TO_RESOURCE("noWriteAccessToResource"),
+  NO_READ_ACCESS_TO_ARTIFACT("noReadAccessToArtifact"),
+  NO_WRITE_ACCESS_TO_ARTIFACT("noWriteAccessToArtifact"),
 
   NO_WRITE_ACCESS_TO_CATEGORY("noWriteAccessToCategory"),
 
@@ -99,7 +99,7 @@ public enum CedarErrorKey {
   MISSING_NAME_AND_DESCRIPTION("missingNameAndDescription"),
   MISSING_DATA("missingData"),
   FOLDER_NOT_DELETED("folderNotDeleted"),
-  RESOURCE_NOT_DELETED("resourceNotDeleted"),
+  ARTIFACT_NOT_DELETED("artifactNotDeleted"),
   RESOURCE_NOT_CREATED("resourceNotCreated"),
   INVALID_RESOURCE_TYPE("invalidResourceType"),
   INVALID_ARTIFACT_TYPE("invalidArtifactType"),
@@ -127,8 +127,8 @@ public enum CedarErrorKey {
   MALFORMED_JSON_REQUEST_BODY("malformedJsonRequestBody"),
   MALFORMED_SEARCH_SYNTAX("malformedSearchTerm"),
 
-  PUBLISHED_RESOURCES_CAN_NOT_BE_CHANGED("publishedResourceCanNotBeChanged"),
-  PUBLISHED_RESOURCES_CAN_NOT_BE_DELETED("publishedResourceCanNotBeDeleted"),
+  PUBLISHED_ARTIFACT_CAN_NOT_BE_CHANGED("publishedArtifactCanNotBeChanged"),
+  PUBLISHED_ARTIFACT_CAN_NOT_BE_DELETED("publishedArtifactCanNotBeDeleted"),
   VERSIONING_ONLY_ON_LATEST("versioningOnlyOnLatest"),
   VERSIONING_ONLY_BY_OWNER("versioningOnlyByOwner"),
   NON_VERSIONED_ARTIFACT_TYPE("nonVersionedArtifactType"),
@@ -137,7 +137,9 @@ public enum CedarErrorKey {
 
   DRAFT_NOT_CREATED("draftNotCreated"),
 
-  CONTENT_NOT_VALID("contentNotValid");
+  CONTENT_NOT_VALID("contentNotValid"),
+
+  INTERNAL_ERROR("internalError");
 
   private final String value;
 

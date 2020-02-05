@@ -1,8 +1,8 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.model.folderserver.datagroup.IsBasedOnGroup;
 import org.metadatacenter.model.folderserver.extract.FolderServerTemplateExtract;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
@@ -21,14 +21,14 @@ public abstract class FolderServerInstanceArtifactCurrentUserReport extends Fold
 
   @Override
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public ResourceUri getIsBasedOn() {
+  public CedarTemplateId getIsBasedOn() {
     return isBasedOnGroup.getIsBasedOn();
   }
 
   @Override
   @JsonProperty(NodeProperty.Label.IS_BASED_ON)
-  public void setIsBasedOn(String isBasedOn) {
-    isBasedOnGroup.setIsBasedOn(ResourceUri.forValue(isBasedOn));
+  public void setIsBasedOn(CedarTemplateId isBasedOn) {
+    isBasedOnGroup.setIsBasedOn(isBasedOn);
   }
 
   @JsonProperty(NodeProperty.OnTheFly.IS_BASED_ON)

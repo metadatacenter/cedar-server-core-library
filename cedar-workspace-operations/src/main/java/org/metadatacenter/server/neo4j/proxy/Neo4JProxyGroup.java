@@ -1,6 +1,8 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -24,11 +26,9 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     super(proxies, cedarConfig);
   }
 
-  FolderServerGroup createGroup(String groupURL, String name, String displayName, String description, String
-      ownerURL, String specialGroup) {
+  FolderServerGroup createGroup(CedarGroupId groupId, String name, String description, CedarUserId ownerId, String specialGroup) {
     String cypher = CypherQueryBuilderGroup.createGroupWithAdministrator();
-    CypherParameters params = CypherParamBuilderGroup.createGroup(groupURL, name, displayName, description, ownerURL,
-        specialGroup);
+    CypherParameters params = CypherParamBuilderGroup.createGroup(groupId, name, description, ownerId, specialGroup);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerGroup.class);
   }
@@ -39,9 +39,9 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
-  FolderServerGroup findGroupById(String groupURL) {
+  FolderServerGroup findGroupById(CedarGroupId groupId) {
     String cypher = CypherQueryBuilderGroup.getGroupById();
-    CypherParameters params = CypherParamBuilderGroup.getGroupById(groupURL);
+    CypherParameters params = CypherParamBuilderGroup.matchId(groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerGroup.class);
   }
@@ -53,48 +53,48 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerGroup.class);
   }
 
-  FolderServerGroup updateGroupById(String groupId, Map<NodeProperty, String> updateFields, String updatedBy) {
+  FolderServerGroup updateGroupById(CedarGroupId groupId, Map<NodeProperty, String> updateFields, CedarUserId updatedBy) {
     String cypher = CypherQueryBuilderGroup.updateGroupById(updateFields);
     CypherParameters params = CypherParamBuilderGroup.updateGroupById(groupId, updateFields, updatedBy);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWriteGetOne(q, FolderServerGroup.class);
   }
 
-  boolean deleteGroupById(String groupURL) {
+  boolean deleteGroupById(CedarGroupId groupId) {
     String cypher = CypherQueryBuilderGroup.deleteGroupById();
-    CypherParameters params = CypherParamBuilderGroup.deleteGroupById(groupURL);
+    CypherParameters params = CypherParamBuilderGroup.matchId(groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "deleting group");
   }
 
-  List<FolderServerUser> findGroupMembers(String groupURL) {
+  List<FolderServerUser> findGroupMembers(CedarGroupId groupURL) {
     String cypher = CypherQueryBuilderGroup.getGroupUsersWithRelation(RelationLabel.MEMBEROF);
-    CypherParameters params = CypherParamBuilderGroup.matchGroupId(groupURL);
+    CypherParameters params = CypherParamBuilderGroup.matchId(groupURL);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  List<FolderServerUser> findGroupAdministrators(String groupURL) {
+  List<FolderServerUser> findGroupAdministrators(CedarGroupId groupId) {
     String cypher = CypherQueryBuilderGroup.getGroupUsersWithRelation(RelationLabel.ADMINISTERS);
-    CypherParameters params = CypherParamBuilderGroup.matchGroupId(groupURL);
+    CypherParameters params = CypherParamBuilderGroup.matchId(groupId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerUser.class);
   }
 
-  void addUserGroupRelation(String userURL, String groupURL, RelationLabel relation) {
-    FolderServerGroup group = findGroupById(groupURL);
+  void addUserGroupRelation(CedarUserId userId, CedarGroupId groupId, RelationLabel relation) {
+    FolderServerGroup group = findGroupById(groupId);
     if (group != null) {
-      FolderServerUser user = proxies.user().findUserById(userURL);
+      FolderServerUser user = proxies.user().findUserById(userId);
       if (user != null) {
         addRelation(user, group, relation);
       }
     }
   }
 
-  void removeUserGroupRelation(String userURL, String groupURL, RelationLabel relation) {
-    FolderServerGroup group = findGroupById(groupURL);
+  void removeUserGroupRelation(CedarUserId userId, CedarGroupId groupId, RelationLabel relation) {
+    FolderServerGroup group = findGroupById(groupId);
     if (group != null) {
-      FolderServerUser user = proxies.user().findUserById(userURL);
+      FolderServerUser user = proxies.user().findUserById(userId);
       if (user != null) {
         removeRelation(user, group, relation);
       }

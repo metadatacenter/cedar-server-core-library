@@ -1,18 +1,20 @@
 package org.metadatacenter.model.folderserver.extract;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.metadatacenter.id.CedarFolderId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
 import org.metadatacenter.model.folderserver.datagroup.FolderDataGroup;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
-import org.metadatacenter.server.security.model.ResourceWithIdAndType;
+import org.metadatacenter.server.security.model.FilesystemResourceWithIdAndType;
 import org.metadatacenter.util.json.JsonMapper;
 
 import java.io.IOException;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FolderServerFolderExtract extends FolderServerResourceExtract implements ResourceWithIdAndType {
+public class FolderServerFolderExtract extends FolderServerResourceExtract implements FilesystemResourceWithIdAndType {
 
   private FolderDataGroup folderDataGroup;
 
@@ -60,4 +62,9 @@ public class FolderServerFolderExtract extends FolderServerResourceExtract imple
     this.folderDataGroup.setRoot(root);
   }
 
+  @Override
+  @JsonIgnore
+  public CedarFolderId getResourceId() {
+    return CedarFolderId.build(this.getId());
+  }
 }

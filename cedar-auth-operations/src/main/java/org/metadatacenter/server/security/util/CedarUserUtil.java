@@ -24,8 +24,8 @@ public class CedarUserUtil {
   private CedarUserUtil() {
   }
 
-  public static CedarUser createUserFromBlueprint(BlueprintUserProfile blueprintProfile, CedarUserRepresentation ur,
-                                                  CedarSuperRole superRole, CedarConfig cedarConfig, String username) {
+  public static CedarUser createUserFromBlueprint(BlueprintUserProfile blueprintProfile, CedarUserRepresentation ur, CedarSuperRole superRole,
+                                                  CedarConfig cedarConfig, String username) {
     BlueprintUIPreferences uiPref = blueprintProfile.getUiPreferences();
 
     CedarUser user = new CedarUser();

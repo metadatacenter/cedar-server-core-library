@@ -1,19 +1,21 @@
 package org.metadatacenter.server.neo4j.cypher.parameter;
 
 import org.metadatacenter.constant.CedarConstants;
-import org.metadatacenter.model.CedarResourceType;
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarUserId;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
 import org.metadatacenter.server.neo4j.parameter.ParameterPlaceholder;
 
 import java.time.Instant;
+import java.util.Map;
 
 public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
 
-  public static CypherParameters createCategory(CedarCategoryId parentCategoryId, CedarCategoryId newCategoryId,
-                                                String categoryName, String categoryDescription,
-                                                String categoryIdentifier, String userId) {
+  public static CypherParameters createCategory(CedarCategoryId parentCategoryId, CedarCategoryId newCategoryId, String categoryName,
+                                                String categoryDescription, String categoryIdentifier, CedarUserId userId) {
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -54,7 +56,29 @@ public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
     return params;
   }
 
-  public static CypherParameters deleteCategoryById(CedarCategoryId categoryId) {
-    return getNodeByIdentity(categoryId);
+  public static CypherParameters matchId(CedarCategoryId categoryId) {
+    return matchResourceByIdentity(categoryId);
+  }
+
+  public static CypherParameters matchCategoryAndUser(CedarCategoryId categoryId, CedarUserId userId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);
+    params.put(ParameterPlaceholder.USER_ID, userId);
+    return params;
+  }
+
+  public static CypherParameters categoryIdAndArtifactId(CedarCategoryId categoryId, CedarArtifactId artifactId) {
+    CypherParameters params = new CypherParameters();
+    params.put(NodeProperty.CATEGORY_ID, categoryId);
+    params.put(NodeProperty.ARTIFACT_ID, artifactId);
+    return params;
+  }
+
+  public static CypherParameters updateCategoryById(CedarCategoryId categoryId, Map<NodeProperty, String> updateFields, CedarUserId updatedBy) {
+    return updateResourceById(categoryId, updateFields, updatedBy);
+  }
+
+  public static CypherParameters getCategoryById(CedarCategoryId categoryId) {
+    return matchResourceByIdentity(categoryId);
   }
 }

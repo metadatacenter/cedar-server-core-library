@@ -1,19 +1,19 @@
 package org.metadatacenter.model.folderserver.datagroup;
 
-import org.metadatacenter.model.ResourceUri;
+import org.metadatacenter.id.CedarUntypedArtifactId;
 
 public class DerivedFromGroup {
 
-  protected ResourceUri derivedFrom;
+  protected CedarUntypedArtifactId derivedFrom;
 
   public DerivedFromGroup() {
   }
 
-  public ResourceUri getDerivedFrom() {
+  public CedarUntypedArtifactId getDerivedFrom() {
     return derivedFrom;
   }
 
-  public void setDerivedFrom(ResourceUri derivedFrom) {
+  public void setDerivedFrom(CedarUntypedArtifactId derivedFrom) {
     this.derivedFrom = derivedFrom;
   }
 }

@@ -1,8 +1,8 @@
 package org.metadatacenter.server.search.elasticsearch.permission;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarTemplateId;
 import org.metadatacenter.model.CedarResourceType;
-import org.metadatacenter.model.ResourceUri;
 import org.metadatacenter.outcome.OutcomeWithReason;
 import org.metadatacenter.permission.currentuserpermission.CurrentUserPermissionUpdater;
 import org.metadatacenter.search.IndexedDocumentDocument;
@@ -11,13 +11,11 @@ import org.metadatacenter.server.security.model.user.CedarUser;
 
 public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurrentUserPermissionUpdaterForSearch {
 
-  private CurrentUserPermissionUpdaterForSearchResource(IndexedDocumentDocument indexedDocument, CedarUser cedarUser,
-                                                        CedarConfig cedarConfig) {
+  private CurrentUserPermissionUpdaterForSearchResource(IndexedDocumentDocument indexedDocument, CedarUser cedarUser, CedarConfig cedarConfig) {
     super(indexedDocument, cedarUser, cedarConfig);
   }
 
-  public static CurrentUserPermissionUpdater get(IndexedDocumentDocument indexedDocument, CedarUser cedarUser,
-                                                 CedarConfig cedarConfig) {
+  public static CurrentUserPermissionUpdater get(IndexedDocumentDocument indexedDocument, CedarUser cedarUser, CedarConfig cedarConfig) {
     return new CurrentUserPermissionUpdaterForSearchResource(indexedDocument, cedarUser, cedarConfig);
   }
 
@@ -72,9 +70,9 @@ public class CurrentUserPermissionUpdaterForSearchResource extends AbstractCurre
   }
 
   private boolean isSubmittable() {
-    ResourceUri basedOnTemplate = indexedDocument.getInfo().getIsBasedOn();
+    CedarTemplateId basedOnTemplate = indexedDocument.getInfo().getIsBasedOnId();
     if (basedOnTemplate != null) {
-      String basedOnTemplateId = basedOnTemplate.getValue();
+      String basedOnTemplateId = basedOnTemplate.getId();
       return cedarConfig.getSubmissionConfig().getSubmittableTemplateIds() != null &&
           cedarConfig.getSubmissionConfig().getSubmittableTemplateIds().contains(basedOnTemplateId);
     }

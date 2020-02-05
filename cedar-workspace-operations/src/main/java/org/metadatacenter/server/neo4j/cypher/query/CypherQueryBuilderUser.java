@@ -60,8 +60,8 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
 
   public static String addUserToGroup() {
     return "" +
-        " MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})" +
-        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{groupId}})" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
         " MERGE (user)-[:<REL.MEMBEROF>]->(group)" +
         " RETURN user";
   }
@@ -69,8 +69,13 @@ public class CypherQueryBuilderUser extends AbstractCypherQueryBuilder {
   public static String getUserByApiKey() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +
-        " WHERE {apiKey} IN user.<PROP.API_KEYS>" +
+        " WHERE {<PH.API_KEY>} IN user.<PROP.API_KEYS>" +
         " RETURN user";
   }
 
+  public static String userExists() {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN COUNT(user) = 1";
+  }
 }

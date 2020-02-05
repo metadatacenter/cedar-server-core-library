@@ -48,8 +48,7 @@ public abstract class AbstractNeo4JProxy {
   protected AbstractNeo4JProxy(Neo4JProxies proxies, CedarConfig cedarConfig) {
     this.proxies = proxies;
     this.cedarConfig = cedarConfig;
-    driver = GraphDatabase.driver(proxies.config.getUri(),
-        AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
+    driver = GraphDatabase.driver(proxies.config.getUri(), AuthTokens.basic(proxies.config.getUserName(), proxies.config.getUserPassword()));
   }
 
   private void reportQueryError(ClientException ex, CypherQuery q) {
@@ -228,7 +227,7 @@ public abstract class AbstractNeo4JProxy {
     return record;
   }
 
-  protected long executeReadGetCount(CypherQuery q) {
+  protected long executeReadGetLong(CypherQuery q) {
     try (Session session = driver.session()) {
       Record record = executeQueryGetRecord(session, q);
       if (record != null) {
@@ -242,6 +241,38 @@ public abstract class AbstractNeo4JProxy {
     }
 
     return -1;
+  }
+
+  protected String executeReadGetString(CypherQuery q) {
+    try (Session session = driver.session()) {
+      Record record = executeQueryGetRecord(session, q);
+      if (record != null) {
+        Value value = record.get(0);
+        if (value.type().equals(session.typeSystem().STRING())) {
+          return value.asString();
+        }
+      }
+    } catch (ClientException ex) {
+      reportQueryError(ex, q);
+    }
+
+    return null;
+  }
+
+  protected boolean executeReadGetBoolean(CypherQuery q) {
+    try (Session session = driver.session()) {
+      Record record = executeQueryGetRecord(session, q);
+      if (record != null) {
+        Value value = record.get(0);
+        if (value.type().equals(session.typeSystem().STRING())) {
+          return value.asBoolean();
+        }
+      }
+    } catch (ClientException ex) {
+      reportQueryError(ex, q);
+    }
+
+    return false;
   }
 
   protected <T extends CedarResource> T executeReadGetOne(CypherQuery q, Class<T> type) {
@@ -395,9 +426,7 @@ public abstract class AbstractNeo4JProxy {
   protected FolderServerArc buildArc(JsonNode a) {
     FolderServerArc arc = null;
     if (a != null && !a.isMissingNode()) {
-      arc = new FolderServerArc(a.at("/sid").textValue(), RelationLabel.forValue(a.at("/type").textValue()), a.at
-          ("/tid")
-          .textValue());
+      arc = new FolderServerArc(a.at("/sid").textValue(), RelationLabel.forValue(a.at("/type").textValue()), a.at("/tid").textValue());
     }
     return arc;
   }

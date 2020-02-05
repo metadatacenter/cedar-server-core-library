@@ -2,6 +2,8 @@ package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -27,10 +29,8 @@ public class CategoryPermissionRequestValidator {
 
   private FolderServerCategory category;
 
-  public CategoryPermissionRequestValidator(CategoryPermissionServiceSession categoryPermissionService,
-                                            Neo4JProxies proxies,
-                                            CedarCategoryId categoryId,
-                                            CategoryPermissionRequest request) {
+  public CategoryPermissionRequestValidator(CategoryPermissionServiceSession categoryPermissionService, Neo4JProxies proxies,
+                                            CedarCategoryId categoryId, CategoryPermissionRequest request) {
     this.categoryPermissionService = categoryPermissionService;
     this.proxies = proxies;
     this.callResult = new BackendCallResult();
@@ -94,13 +94,13 @@ public class CategoryPermissionRequestValidator {
           .parameter("paramName", "owner")
           .message("The owner should be present in the request");
     } else {
-      String newOwnerId = owner.getId();
-      FolderServerUser newOwner = proxies.user().findUserById(newOwnerId);
+      CedarUserId userId = CedarUserId.build(owner.getId());
+      FolderServerUser newOwner = proxies.user().findUserById(userId);
       if (newOwner == null) {
         callResult.addError(NOT_FOUND)
             .errorKey(CedarErrorKey.USER_NOT_FOUND)
             .message("The new owner can not be found")
-            .parameter("userId", newOwnerId);
+            .parameter("userId", userId.getId());
       } else {
         permissions.setOwner(newOwner.buildExtract());
       }
@@ -124,13 +124,13 @@ public class CategoryPermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          String userURL = permissionUser.getId();
-          FolderServerUser user = proxies.user().findUserById(userURL);
+          CedarUserId userId = CedarUserId.build(permissionUser.getId());
+          FolderServerUser user = proxies.user().findUserById(userId);
           if (user == null) {
             callResult.addError(NOT_FOUND)
                 .errorKey(CedarErrorKey.USER_NOT_FOUND)
                 .message("The user from request can not be found")
-                .parameter("userId", userURL);
+                .parameter("userId", userId.getId());
 
           } else {
             permissions.addUserPermissions(new CategoryUserPermission(user.buildExtract(), permission));
@@ -157,13 +157,13 @@ public class CategoryPermissionRequestValidator {
               .parameter("paramName", "permission")
               .message("The permission is missing from the request");
         } else {
-          String groupURL = permissionGroup.getId();
-          FolderServerGroup group = proxies.group().findGroupById(groupURL);
+          CedarGroupId groupId = CedarGroupId.build(permissionGroup.getId());
+          FolderServerGroup group = proxies.group().findGroupById(groupId);
           if (group == null) {
             callResult.addError(NOT_FOUND)
                 .errorKey(CedarErrorKey.GROUP_NOT_FOUND)
                 .message("The group from request can not be found")
-                .parameter("groupId", groupURL);
+                .parameter("groupId", groupId.getId());
           } else {
             permissions.addGroupPermissions(new CategoryGroupPermission(group.buildExtract(), permission));
           }

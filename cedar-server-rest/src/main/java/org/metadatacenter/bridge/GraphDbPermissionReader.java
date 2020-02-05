@@ -4,7 +4,9 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.exception.CedarException;
 import org.metadatacenter.exception.CedarObjectNotFoundException;
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
+import org.metadatacenter.id.CedarFolderId;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
@@ -19,20 +21,17 @@ import org.metadatacenter.server.*;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbCategory;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbFolder;
 import org.metadatacenter.server.permissions.CurrentUserPermissionUpdaterForGraphDbResource;
+import org.metadatacenter.server.security.model.auth.FilesystemResourceWithCurrentUserPermissions;
 import org.metadatacenter.server.security.model.auth.FolderWithCurrentUserPermissions;
-import org.metadatacenter.server.security.model.permission.resource.ResourceWithCurrentUserPermissions;
 
 public class GraphDbPermissionReader {
 
   private GraphDbPermissionReader() {
   }
 
-  public static FolderServerArtifactCurrentUserReport getArtifactCurrentUserReport(CedarRequestContext context,
-                                                                                   FolderServiceSession folderSession,
+  public static FolderServerArtifactCurrentUserReport getArtifactCurrentUserReport(CedarRequestContext context, FolderServiceSession folderSession,
                                                                                    ResourcePermissionServiceSession permissionSession,
-                                                                                   CedarConfig cedarConfig,
-                                                                                   String artifactId)
-      throws CedarException {
+                                                                                   CedarConfig cedarConfig, CedarArtifactId artifactId) throws CedarException {
     if (artifactId != null) {
       FolderServerArtifact artifact = folderSession.findArtifactById(artifactId);
       if (artifact == null) {
@@ -55,22 +54,17 @@ public class GraphDbPermissionReader {
     return null;
   }
 
-  public static void decorateResourceWithCurrentUserPermissions(CedarRequestContext c,
-                                                                ResourcePermissionServiceSession permissionSession,
-                                                                CedarConfig cedarConfig,
-                                                                ResourceWithCurrentUserPermissions resource) {
-    VersionServiceSession versionSession = CedarDataServices.getVersionServiceSession(c);
-    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbResource.get(permissionSession,
-        versionSession, cedarConfig, resource);
+  public static void decorateResourceWithCurrentUserPermissions(CedarRequestContext context, ResourcePermissionServiceSession permissionSession,
+                                                                CedarConfig cedarConfig, FilesystemResourceWithCurrentUserPermissions resource) {
+    VersionServiceSession versionSession = CedarDataServices.getVersionServiceSession(context);
+    CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbResource.get(permissionSession, versionSession, cedarConfig, resource);
     cupu.update(resource.getCurrentUserPermissions());
   }
 
-  public static FolderServerFolderCurrentUserReport getFolderCurrentUserReport(CedarRequestContext context,
-                                                                               FolderServiceSession folderSession,
+  public static FolderServerFolderCurrentUserReport getFolderCurrentUserReport(CedarRequestContext context, FolderServiceSession folderSession,
                                                                                ResourcePermissionServiceSession permissionSession,
-                                                                               String folderId) throws CedarException {
+                                                                               CedarFolderId folderId) throws CedarException {
     if (folderId != null) {
-
       FolderServerFolder folder = folderSession.findFolderById(folderId);
       if (folder == null) {
         throw new CedarObjectNotFoundException("The folder can not be found by id")
@@ -85,26 +79,23 @@ public class GraphDbPermissionReader {
       FolderServerFolderCurrentUserReport folderReport =
           (FolderServerFolderCurrentUserReport) FolderServerResourceCurrentUserReport.fromResource(folder);
 
-      decorateFolderWithCurrentUserPermissions(context, permissionSession, folderReport);
+      decorateFolderWithCurrentUserPermissions(permissionSession, folderReport);
 
       return folderReport;
     }
     return null;
   }
 
-  private static void decorateFolderWithCurrentUserPermissions(CedarRequestContext c,
-                                                               ResourcePermissionServiceSession permissionSession,
+  private static void decorateFolderWithCurrentUserPermissions(ResourcePermissionServiceSession permissionSession,
                                                                FolderWithCurrentUserPermissions folder) {
     CurrentUserPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbFolder.get(permissionSession, folder);
     cupu.update(folder.getCurrentUserPermissions());
   }
 
-  public static FolderServerCategoryCurrentUserReport getCategoryCurrentUserReport(CedarRequestContext context,
-                                                                                   CategoryServiceSession categorySession,
+  public static FolderServerCategoryCurrentUserReport getCategoryCurrentUserReport(CategoryServiceSession categorySession,
                                                                                    CategoryPermissionServiceSession categoryPermissionSession,
                                                                                    CedarCategoryId categoryId) throws CedarException {
     if (categoryId != null) {
-
       FolderServerCategory category = categorySession.getCategoryById(categoryId);
       if (category == null) {
         throw new CedarObjectNotFoundException("The category can not be found by id")
@@ -112,22 +103,18 @@ public class GraphDbPermissionReader {
             .parameter("id", categoryId);
       }
 
-      FolderServerCategoryCurrentUserReport categoryReport =
-          FolderServerCategoryCurrentUserReport.fromCategory(category);
+      FolderServerCategoryCurrentUserReport categoryReport = FolderServerCategoryCurrentUserReport.fromCategory(category);
 
-      decorateCategoryWithCurrentUserPermissions(context, categoryPermissionSession, categoryReport);
+      decorateCategoryWithCurrentUserPermissions(categoryPermissionSession, categoryReport);
 
       return categoryReport;
     }
     return null;
   }
 
-  private static void decorateCategoryWithCurrentUserPermissions(CedarRequestContext context,
-                                                                 CategoryPermissionServiceSession categoryPermissionSession,
+  private static void decorateCategoryWithCurrentUserPermissions(CategoryPermissionServiceSession categoryPermissionSession,
                                                                  FolderServerCategoryCurrentUserReport categoryReport) {
-    CurrentUserCategoryPermissionUpdater cupu =
-        CurrentUserPermissionUpdaterForGraphDbCategory.get(categoryPermissionSession,
-        categoryReport);
+    CurrentUserCategoryPermissionUpdater cupu = CurrentUserPermissionUpdaterForGraphDbCategory.get(categoryPermissionSession, categoryReport);
     cupu.update(categoryReport.getCurrentUserPermissions());
   }
 

@@ -7,7 +7,7 @@ import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 public class CypherQueryBuilderAdmin extends AbstractCypherQueryBuilder {
 
   public static String wipeAllData() {
-    return " MATCH (n:" + NodeLabel.SimpleLabel.SCOPE + ") DETACH DELETE n";
+    return " MATCH (n:" + NodeLabel.SimpleLabel.RESOURCE + ") DETACH DELETE n";
   }
 
   public static String createUniqueConstraint(NodeLabel nodeLabel, NodeProperty property) {

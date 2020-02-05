@@ -1,5 +1,6 @@
 package org.metadatacenter.server;
 
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
@@ -26,8 +27,6 @@ public interface CategoryServiceSession {
 
   boolean deleteCategoryById(CedarCategoryId categoryId);
 
-  //
-
   FolderServerCategory getRootCategory();
 
   List<FolderServerCategory> getChildrenOf(CedarCategoryId parentCategoryId, int limit, int offset);
@@ -40,13 +39,13 @@ public interface CategoryServiceSession {
 
   Object getCategoryDetails(CedarCategoryId categoryId);
 
-  boolean attachCategoryToArtifact(CedarCategoryId categoryId, String artifactId);
+  boolean attachCategoryToArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId);
 
-  boolean detachCategoryFromArtifact(CedarCategoryId categoryId, String artifactId);
+  boolean detachCategoryFromArtifact(CedarCategoryId categoryId, CedarArtifactId artifactId);
 
-  CedarNodeMaterializedCategories getNodeMaterializedCategories(String id);
+  CedarNodeMaterializedCategories getArtifactMaterializedCategories(CedarArtifactId artifactId);
 
-  List<List<FolderServerCategoryExtract>> getAttachedCategoryPaths(String artifactId);
+  List<List<FolderServerCategoryExtract>> getAttachedCategoryPaths(CedarArtifactId artifactId);
 
   List<FolderServerCategoryExtract> getCategoryPath(CedarCategoryId cid);
 }
