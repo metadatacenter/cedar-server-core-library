@@ -138,4 +138,9 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
         " RETURN child";
   }
 
+  public static String getFolderById() {
+    return "" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PROP.ID>}})" +
+        " RETURN folder";
+  }
 }

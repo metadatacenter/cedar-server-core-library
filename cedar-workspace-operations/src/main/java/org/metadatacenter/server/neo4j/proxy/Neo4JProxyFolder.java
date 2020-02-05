@@ -153,7 +153,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
   }
 
   public FolderServerFolder findFolderById(CedarFolderId folderId) {
-    String cypher = CypherQueryBuilderResource.getResourceById();
+    String cypher = CypherQueryBuilderFolder.getFolderById();
     CypherParameters params = CypherParamBuilderFolder.matchId(folderId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetOne(q, FolderServerFolder.class);
