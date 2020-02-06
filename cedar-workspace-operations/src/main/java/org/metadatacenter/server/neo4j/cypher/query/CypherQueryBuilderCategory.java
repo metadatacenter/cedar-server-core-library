@@ -112,7 +112,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String getCategoryPathsByArtifactId() {
     return "" +
         " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
-        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[<REL" +
+        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[:<REL" +
         ".CONTAINSARTIFACT>]->(artifact)" +
         " RETURN category";
   }
@@ -145,7 +145,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String getCategoryPath() {
     return "" +
         " MATCH (directcategory:<LABEL.CATEGORY> {<PROP.ID>:{<PROP.ID>} })" +
-        " MATCH (category:<LABEL.CATEGORY>)-[<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)" +
+        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)" +
         " RETURN category";
   }
 }
