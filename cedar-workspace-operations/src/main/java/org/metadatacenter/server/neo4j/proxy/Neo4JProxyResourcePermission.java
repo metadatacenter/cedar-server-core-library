@@ -5,16 +5,16 @@ import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
+import org.metadatacenter.model.folderserver.ResourceIdEverybodyPermissionTuple;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderFilesystemResource;
-import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFilesystemResource;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderFilesystemResourcePermission;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 
 import java.util.List;
@@ -157,6 +157,22 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerUser.class);
   }
 
+  List<CedarUserId> getUserIdsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
+    String cypher = null;
+    switch (permission) {
+      case READ:
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveReadOnFilesystemResource();
+        break;
+      case WRITE:
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveWriteOnFilesystemResource();
+        break;
+    }
+
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResource(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetIdList(q, CedarUserId.class);
+  }
+
   List<FolderServerGroup> getGroupsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     String cypher = null;
     switch (permission) {
@@ -173,4 +189,35 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
+  List<CedarGroupId> getGroupIdsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
+    String cypher = null;
+    switch (permission) {
+      case READ:
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveReadOnFilesystemResource();
+        break;
+      case WRITE:
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveWriteOnFilesystemResource();
+        break;
+    }
+
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResource(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetIdList(q, CedarGroupId.class);
+  }
+
+  public NodeSharePermission getTransitiveEverybodyPermission(CedarFilesystemResourceId resourceId) {
+    String cypher = CypherQueryBuilderFilesystemResourcePermission.getTransitiveEverybodyPermission();
+    CypherParameters params = CypherParamBuilderFilesystemResource.matchId(resourceId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    List<ResourceIdEverybodyPermissionTuple> nodesWithEverybodyPermission = executeReadGetToupleList(q, ResourceIdEverybodyPermissionTuple.class);
+    NodeSharePermission perm = null;
+    for(ResourceIdEverybodyPermissionTuple t : nodesWithEverybodyPermission) {
+      if (perm == null) {
+        perm = t.getEverybodyPermission();
+      } else if (t.getEverybodyPermission() == NodeSharePermission.WRITE) {
+        perm = NodeSharePermission.WRITE;
+      }
+    }
+    return perm;
+  }
 }

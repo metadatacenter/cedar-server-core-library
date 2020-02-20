@@ -50,13 +50,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     this.indexName = config.getIndexes().getSearchIndex().getName();
   }
 
-  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                     ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                         publicationStatus, String categoryId, List<String> sortList, int limit,
+  public SearchResponseResult search(CedarRequestContext rctx, String query, List<String> resourceTypes, ResourceVersionFilter version,
+                                     ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList, int limit,
                                      int offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, categoryId, sortList);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version, publicationStatus, categoryId, sortList);
 
     searchRequest.setFrom(offset);
     searchRequest.setSize(limit);
@@ -77,13 +75,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   // It uses the scroll API. It retrieves all results. No pagination and therefore no offset. Scrolling is not
   // intended for real time user requests, but rather for processing large amounts of data.
   // More info: https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-scroll.html
-  public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes,
-                                         ResourceVersionFilter version, ResourcePublicationStatusFilter
-                                             publicationStatus, String categoryId, List<String> sortList, int limit,
+  public SearchResponseResult searchDeep(CedarRequestContext rctx, String query, List<String> resourceTypes, ResourceVersionFilter version,
+                                         ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList, int limit,
                                          int offset) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version,
-        publicationStatus, categoryId, sortList);
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version, publicationStatus, categoryId, sortList);
 
     // Set scroll and scroll size
     TimeValue timeout = TimeValue.timeValueMinutes(2);
@@ -112,13 +108,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     return result;
   }
 
-  private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query,
-                                                       List<String> resourceTypes, ResourceVersionFilter version,
-                                                       ResourcePublicationStatusFilter publicationStatus,
+  private SearchRequestBuilder getSearchRequestBuilder(CedarRequestContext rctx, String query, List<String> resourceTypes,
+                                                       ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
                                                        String categoryId, List<String> sortList) throws CedarProcessingException {
 
-    SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName)
-        .setTypes(IndexedDocumentType.DOC.getValue());
+    SearchRequestBuilder searchRequestBuilder = client.prepareSearch(indexName).setTypes(IndexedDocumentType.DOC.getValue());
 
     BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
 
@@ -165,14 +159,11 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     String userId = rctx.getCedarUser().getId();
     if (!rctx.getCedarUser().has(CedarPermission.READ_NOT_READABLE_NODE)) {
       // Filter by user
-      QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId,
-          FilesystemResourcePermission.READ));
+      QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(userId, FilesystemResourcePermission.READ));
       BoolQueryBuilder permissionQuery = QueryBuilders.boolQuery();
 
-      QueryBuilder everybodyReadQuery =
-          QueryBuilders.termsQuery(INFO_EVERYBODY_PERMISSION, NodeSharePermission.READ.getValue());
-      QueryBuilder everybodyWriteQuery =
-          QueryBuilders.termsQuery(INFO_EVERYBODY_PERMISSION, NodeSharePermission.WRITE.getValue());
+      QueryBuilder everybodyReadQuery = QueryBuilders.termsQuery(COMPUTED_EVERYBODY_PERMISSION, NodeSharePermission.READ.getValue());
+      QueryBuilder everybodyWriteQuery = QueryBuilders.termsQuery(COMPUTED_EVERYBODY_PERMISSION, NodeSharePermission.WRITE.getValue());
 
       permissionQuery.should(userIdQuery);
       permissionQuery.should(everybodyReadQuery);
@@ -215,8 +206,7 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       BoolQueryBuilder publicationStatusQuery = QueryBuilders.boolQuery();
       BoolQueryBuilder inner1Query = QueryBuilders.boolQuery();
-      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(INFO_BIBO_STATUS,
-          publicationStatus.getValue());
+      QueryBuilder publicationStatusEqualsQuery = QueryBuilders.termsQuery(INFO_BIBO_STATUS, publicationStatus.getValue());
       inner1Query.must(publicationStatusEqualsQuery);
       BoolQueryBuilder inner2Query = QueryBuilders.boolQuery();
       QueryBuilder publicationStatusExistsQuery = QueryBuilders.existsQuery(INFO_BIBO_STATUS);
@@ -340,11 +330,9 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
 
     } else { // Field name/value query
 
-      QueryBuilder infoFieldsQueryString =
-          QueryBuilders.queryStringQuery(generateInfoFieldsQueryString(fieldName, fieldValue, withPrefix));
+      QueryBuilder infoFieldsQueryString = QueryBuilders.queryStringQuery(generateInfoFieldsQueryString(fieldName, fieldValue, withPrefix));
 
-      QueryBuilder nestedInfoFieldsQuery =
-          QueryBuilders.nestedQuery(INFO_FIELDS, infoFieldsQueryString, ScoreMode.None);
+      QueryBuilder nestedInfoFieldsQuery = QueryBuilders.nestedQuery(INFO_FIELDS, infoFieldsQueryString, ScoreMode.None);
 
       return nestedInfoFieldsQuery;
     }

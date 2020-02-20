@@ -4,12 +4,15 @@ import org.metadatacenter.error.CedarErrorKey;
 import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarUserId;
-import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
+import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
 import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.result.BackendCallResult;
-import org.metadatacenter.server.security.model.auth.*;
+import org.metadatacenter.server.security.model.auth.CedarNodeGroupPermission;
+import org.metadatacenter.server.security.model.auth.CedarNodePermissionsWithExtract;
+import org.metadatacenter.server.security.model.auth.CedarNodeUserPermission;
+import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.permission.resource.*;
 
 import java.util.HashSet;
@@ -24,7 +27,7 @@ public class ResourcePermissionRequestValidator {
   private final ResourcePermissionServiceSession permissionService;
   private final Neo4JProxies proxies;
   private final BackendCallResult callResult;
-  private final CedarNodePermissions permissions;
+  private final CedarNodePermissionsWithExtract permissions;
   private final CedarFilesystemResourceId resourceId;
 
   private FileSystemResource resource;
@@ -36,7 +39,7 @@ public class ResourcePermissionRequestValidator {
     this.callResult = new BackendCallResult();
     this.request = request;
     this.resourceId = resourceId;
-    this.permissions = new CedarNodePermissions();
+    this.permissions = new CedarNodePermissionsWithExtract();
 
     validateNodeExistence();
 
@@ -218,7 +221,7 @@ public class ResourcePermissionRequestValidator {
 
   private void validateOwnerSetPermission() {
     String newOwnerId = permissions.getOwner().getId();
-    CedarNodePermissions currentPermissions = permissionService.getResourcePermissions(resourceId);
+    CedarNodePermissionsWithExtract currentPermissions = permissionService.getResourcePermissions(resourceId);
     String currentOwnerId = currentPermissions.getOwner().getId();
     if (!newOwnerId.equals(currentOwnerId)) {
       // if it has the role, we do not check
@@ -238,7 +241,7 @@ public class ResourcePermissionRequestValidator {
     return callResult;
   }
 
-  public CedarNodePermissions getPermissions() {
+  public CedarNodePermissionsWithExtract getPermissions() {
     return permissions;
   }
 }

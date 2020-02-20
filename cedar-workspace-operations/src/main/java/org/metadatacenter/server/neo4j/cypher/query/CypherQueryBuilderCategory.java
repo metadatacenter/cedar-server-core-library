@@ -64,17 +64,17 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   }
 
   public static String getAllCategories() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (category:<LABEL.CATEGORY>)");
-    sb.append(" RETURN category");
-    sb.append(" ORDER BY LOWER(category.<PROP.NAME>)");
-    sb.append(" SKIP {offset}");
-    sb.append(" LIMIT {limit}");
-    return sb.toString();
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY>)" +
+        " RETURN category" +
+        " ORDER BY LOWER(category.<PROP.NAME>)" +
+        " SKIP {offset}" +
+        " LIMIT {limit}";
   }
 
   public static String getTotalCount() {
-    return " MATCH (category:<LABEL.CATEGORY>)" +
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY>)" +
         " RETURN count(category)";
   }
 
@@ -112,9 +112,15 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
   public static String getCategoryPathsByArtifactId() {
     return "" +
         " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
-        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[:<REL" +
-        ".CONTAINSARTIFACT>]->(artifact)" +
+        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[:<REL.CONTAINSARTIFACT>]->(artifact)" +
         " RETURN category";
+  }
+
+  public static String getCategoryPathIdsByArtifactId() {
+    return "" +
+        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSCATEGORY>*0..]->(directcategory:<LABEL.CATEGORY>)-[:<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " RETURN category.<PROP.ID>";
   }
 
   public static String setCategoryOwner() {

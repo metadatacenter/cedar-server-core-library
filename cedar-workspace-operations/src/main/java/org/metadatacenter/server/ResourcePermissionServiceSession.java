@@ -3,13 +3,13 @@ package org.metadatacenter.server;
 import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.server.result.BackendCallResult;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
-import org.metadatacenter.server.security.model.auth.CedarNodePermissions;
+import org.metadatacenter.server.security.model.auth.CedarNodePermissionsWithExtract;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionsRequest;
 
 public interface ResourcePermissionServiceSession {
 
-  CedarNodePermissions getResourcePermissions(CedarFilesystemResourceId resourceId);
+  CedarNodePermissionsWithExtract getResourcePermissions(CedarFilesystemResourceId resourceId);
 
   CedarNodeMaterializedPermissions getResourceMaterializedPermission(CedarFilesystemResourceId resourceId);
 

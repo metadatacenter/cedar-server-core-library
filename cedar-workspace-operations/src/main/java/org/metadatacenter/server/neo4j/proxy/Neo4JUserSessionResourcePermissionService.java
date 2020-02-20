@@ -40,7 +40,7 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
   }
 
   @Override
-  public CedarNodePermissions getResourcePermissions(CedarFilesystemResourceId resourceId) {
+  public CedarNodePermissionsWithExtract getResourcePermissions(CedarFilesystemResourceId resourceId) {
     FileSystemResource node = proxies.filesystemResource().findResourceById(resourceId);
     if (node != null) {
       FolderServerUser owner = getFilesystemResourceOwner(resourceId);
@@ -70,8 +70,8 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     if (bcr.isError()) {
       return bcr;
     } else {
-      CedarNodePermissions currentPermissions = getResourcePermissions(resourceId);
-      CedarNodePermissions newPermissions = prv.getPermissions();
+      CedarNodePermissionsWithExtract currentPermissions = getResourcePermissions(resourceId);
+      CedarNodePermissionsWithExtract newPermissions = prv.getPermissions();
 
       CedarUserId oldOwnerId = currentPermissions.getOwner().getResourceId();
       CedarUserId newOwnerId = newPermissions.getOwner().getResourceId();
@@ -181,9 +181,10 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     return owner != null && owner.getId().equals(cu.getId());
   }
 
-  private CedarNodePermissions buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers, List<FolderServerUser> writeUsers,
-                                                List<FolderServerGroup> readGroups, List<FolderServerGroup> writeGroups) {
-    CedarNodePermissions permissions = new CedarNodePermissions();
+  private CedarNodePermissionsWithExtract buildPermissions(FolderServerUser owner, List<FolderServerUser> readUsers,
+                                                           List<FolderServerUser> writeUsers,
+                                                           List<FolderServerGroup> readGroups, List<FolderServerGroup> writeGroups) {
+    CedarNodePermissionsWithExtract permissions = new CedarNodePermissionsWithExtract();
     CedarUserExtract o = owner.buildExtract();
     permissions.setOwner(o);
     if (readUsers != null) {
@@ -217,62 +218,98 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     return permissions;
   }
 
+  private CedarNodePermissionsWithId buildPermissionsWithIds(FolderServerUser owner, List<CedarUserId> readUsers, List<CedarUserId> writeUsers,
+                                                             List<CedarGroupId> readGroups, List<CedarGroupId> writeGroups) {
+    CedarNodePermissionsWithId permissions = new CedarNodePermissionsWithId();
+    CedarUserExtract o = owner.buildExtract();
+    permissions.setOwner(o);
+    if (readUsers != null) {
+      for (CedarUserId userId : readUsers) {
+        CedarNodeUserIdPermission up = new CedarNodeUserIdPermission(userId, FilesystemResourcePermission.READ);
+        permissions.addUserPermissions(up);
+      }
+    }
+    if (writeUsers != null) {
+      for (CedarUserId userId : writeUsers) {
+        CedarNodeUserIdPermission up = new CedarNodeUserIdPermission(userId, FilesystemResourcePermission.WRITE);
+        permissions.addUserPermissions(up);
+      }
+    }
+    if (readGroups != null) {
+      for (CedarGroupId groupId : readGroups) {
+        CedarNodeGroupIdPermission gp = new CedarNodeGroupIdPermission(groupId, FilesystemResourcePermission.READ);
+        permissions.addGroupPermissions(gp);
+      }
+    }
+    if (writeGroups != null) {
+      for (CedarGroupId groupId : writeGroups) {
+        CedarNodeGroupIdPermission gp = new CedarNodeGroupIdPermission(groupId, FilesystemResourcePermission.WRITE);
+        permissions.addGroupPermissions(gp);
+      }
+    }
+    return permissions;
+  }
+
   @Override
   public CedarNodeMaterializedPermissions getResourceMaterializedPermission(CedarFilesystemResourceId resourceId) {
     FileSystemResource node = proxies.filesystemResource().findResourceById(resourceId);
     if (node != null) {
       NodeSharePermission everybodyPermission = node.getEverybodyPermission();
       if (everybodyPermission == null) {
+        everybodyPermission = proxies.permission().getTransitiveEverybodyPermission(resourceId);
+      }
+
+      if (everybodyPermission == null) {
         everybodyPermission = NodeSharePermission.NONE;
       }
 
-      List<FolderServerUser> readUsers = new ArrayList<>();
-      List<FolderServerUser> writeUsers = new ArrayList<>();
-      List<FolderServerGroup> readGroups = new ArrayList<>();
-      List<FolderServerGroup> writeGroups = new ArrayList<>();
+      List<CedarUserId> readUsers = new ArrayList<>();
+      List<CedarUserId> writeUsers = new ArrayList<>();
+      List<CedarGroupId> readGroups = new ArrayList<>();
+      List<CedarGroupId> writeGroups = new ArrayList<>();
 
       if (everybodyPermission == NodeSharePermission.WRITE) {
         // do not read permissions, since everybody will have full access
       } else if (everybodyPermission == NodeSharePermission.READ) {
         // read just write permissions, since everybody can read
-        writeUsers = getUsersWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
-        writeGroups = getGroupsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
+        writeUsers = getUserIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
+        writeGroups = getGroupIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
       } else {
         // read all permissions, since there is no everybody permission
-        writeUsers = getUsersWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
-        writeGroups = getGroupsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
-        readUsers = getUsersWithTransitivePermission(resourceId, FilesystemResourcePermission.READ);
-        readGroups = getGroupsWithTransitivePermission(resourceId, FilesystemResourcePermission.READ);
+        writeUsers = getUserIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
+        writeGroups = getGroupIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.WRITE);
+        readUsers = getUserIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.READ);
+        readGroups = getGroupIdsWithTransitivePermission(resourceId, FilesystemResourcePermission.READ);
       }
 
-      return buildMaterializedPermissions(resourceId, readUsers, writeUsers, readGroups, writeGroups);
+      return buildMaterializedPermissions(resourceId, readUsers, writeUsers, readGroups, writeGroups, everybodyPermission);
     } else {
       return null;
     }
   }
 
-  private CedarNodeMaterializedPermissions buildMaterializedPermissions(CedarFilesystemResourceId resourceId, List<FolderServerUser> readUsers,
-                                                                        List<FolderServerUser> writeUsers, List<FolderServerGroup> readGroups,
-                                                                        List<FolderServerGroup> writeGroups) {
-    CedarNodeMaterializedPermissions permissions = new CedarNodeMaterializedPermissions(resourceId);
+  private CedarNodeMaterializedPermissions buildMaterializedPermissions(CedarFilesystemResourceId resourceId, List<CedarUserId> readUsers,
+                                                                        List<CedarUserId> writeUsers, List<CedarGroupId> readGroups,
+                                                                        List<CedarGroupId> writeGroups, NodeSharePermission everybodyPermission) {
+    CedarNodeMaterializedPermissions permissions = new CedarNodeMaterializedPermissions(resourceId, everybodyPermission);
     if (readUsers != null) {
-      for (FolderServerUser user : readUsers) {
-        permissions.setUserPermission(user.getId(), FilesystemResourcePermission.READ);
+      for (CedarUserId userId : readUsers) {
+        permissions.setUserPermission(userId.getId(), FilesystemResourcePermission.READ);
       }
     }
     if (writeUsers != null) {
-      for (FolderServerUser user : writeUsers) {
-        permissions.setUserPermission(user.getId(), FilesystemResourcePermission.WRITE);
+      for (CedarUserId userId : writeUsers) {
+        permissions.setUserPermission(userId.getId(), FilesystemResourcePermission.WRITE);
       }
     }
     if (readGroups != null) {
-      for (FolderServerGroup group : readGroups) {
-        permissions.setGroupPermission(group.getId(), FilesystemResourcePermission.READ);
+      for (CedarGroupId groupId : readGroups) {
+        permissions.setGroupPermission(groupId.getId(), FilesystemResourcePermission.READ);
       }
     }
     if (writeGroups != null) {
-      for (FolderServerGroup group : writeGroups) {
-        permissions.setGroupPermission(group.getId(), FilesystemResourcePermission.WRITE);
+      for (CedarGroupId groupId : writeGroups) {
+        permissions.setGroupPermission(groupId.getId(), FilesystemResourcePermission.WRITE);
       }
     }
     return permissions;
@@ -282,8 +319,16 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     return proxies.permission().getUsersWithTransitivePermissionOnResource(resourceId, permission);
   }
 
+  private List<CedarUserId> getUserIdsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
+    return proxies.permission().getUserIdsWithTransitivePermissionOnResource(resourceId, permission);
+  }
+
   private List<FolderServerGroup> getGroupsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     return proxies.permission().getGroupsWithTransitivePermissionOnResource(resourceId, permission);
+  }
+
+  private List<CedarGroupId> getGroupIdsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
+    return proxies.permission().getGroupIdsWithTransitivePermissionOnResource(resourceId, permission);
   }
 
 

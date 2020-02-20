@@ -74,12 +74,28 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
         " RETURN user";
   }
 
+  public static String getUserIdsWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (user:<LABEL.USER>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (user)-[:" + relationLabel + "]->(resource)" +
+        " RETURN user.<PROP.ID>";
+  }
+
   public static String getGroupsWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
     return "" +
         " MATCH (group:<LABEL.GROUP>)" +
         " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
         " MATCH (group)-[:" + relationLabel + "]->(resource)" +
         " RETURN group";
+  }
+
+  public static String getGroupIdsWithDirectPermissionOnFilesystemResource(RelationLabel relationLabel) {
+    return "" +
+        " MATCH (group:<LABEL.GROUP>)" +
+        " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
+        " MATCH (group)-[:" + relationLabel + "]->(resource)" +
+        " RETURN group.<PROP.ID>";
   }
 
   public static String getUsersWithTransitiveReadOnFilesystemResource() {
@@ -94,6 +110,21 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
     sb.append(" )");
     sb.append(" RETURN user");
+    return sb.toString();
+  }
+
+  public static String getUserIdsWithTransitiveReadOnFilesystemResource() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER>)");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANREAD, "resource"));
+    sb.append(" )");
+    sb.append(" RETURN user.<PROP.ID>");
     return sb.toString();
   }
 
@@ -112,6 +143,21 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return sb.toString();
   }
 
+  public static String getUserIdsWithTransitiveWriteOnFilesystemResource() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (user:<LABEL.USER>)");
+    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
+    sb.append(" WHERE");
+
+    sb.append(" (");
+    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
+    sb.append(" OR ");
+    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
+    sb.append(" )");
+    sb.append(" RETURN user.<PROP.ID>");
+    return sb.toString();
+  }
+
   public static String getGroupsWithTransitiveReadOnFilesystemResource() {
     String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
 
@@ -120,6 +166,18 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
     sb.append(node);
     sb.append(" RETURN group");
+
+    return sb.toString();
+  }
+
+  public static String getGroupIdsWithTransitiveReadOnFilesystemResource() {
+    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
+    sb.append(" RETURN group.<PROP.ID>");
 
     return sb.toString();
   }
@@ -135,4 +193,22 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return sb.toString();
   }
 
+  public static String getGroupIdsWithTransitiveWriteOnFilesystemResource() {
+    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
+
+    StringBuilder sb = new StringBuilder();
+    sb.append(" MATCH (group:<LABEL.GROUP>)");
+    sb.append(" -[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->");
+    sb.append(node);
+    sb.append(" RETURN group.<PROP.ID>");
+    return sb.toString();
+  }
+
+  public static String getTransitiveEverybodyPermission() {
+    return "" +
+        "MATCH" +
+        " (parent:<LABEL.FILESYSTEM_RESOURCE>)-[:<REL.CONTAINS>*0..]->(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PROP.ID>}})" +
+        " WHERE EXISTS(parent.<PROP.EVERYBODY_PERMISSION>) AND parent.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
+        " RETURN parent.<PROP.ID> AS resourceId, parent.<PROP.EVERYBODY_PERMISSION> AS everybodyPermission";
+  }
 }

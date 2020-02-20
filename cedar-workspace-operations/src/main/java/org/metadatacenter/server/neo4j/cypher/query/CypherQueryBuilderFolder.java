@@ -67,15 +67,15 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
   public static String folderIsAncestorOf() {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_FOLDER_ID>}})" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>} })" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>}})" +
         " MATCH (parent)-[:<REL.CONTAINS>*0..]->(folder)" +
         " RETURN parent";
   }
 
   public static String linkFolderUnderFolder() {
     return "" +
-        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{parentFolderId} })" +
-        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{folderId} })" +
+        " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_FOLDER_ID>}})" +
+        " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>}})" +
         " CREATE (parent)-[:<REL.CONTAINS>]->(folder)" +
         " RETURN folder";
   }

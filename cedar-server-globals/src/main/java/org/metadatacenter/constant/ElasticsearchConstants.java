@@ -25,7 +25,7 @@ public final class ElasticsearchConstants {
   public static final String INFO_PAV_LAST_UPDATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_LAST_UPDATED_ON;
   public static final String INFO_PAV_CREATED_ON = ES_INFO_PREFIX + ModelNodeNames.PAV_CREATED_ON;
   public static final String INFO_IS_BASED_ON = ES_INFO_PREFIX + ModelNodeNames.SCHEMA_IS_BASED_ON;
-  public static final String INFO_EVERYBODY_PERMISSION = ES_INFO_PREFIX + "everybodyPermission";
+  public static final String COMPUTED_EVERYBODY_PERMISSION = "computedEverybodyPermission";
   public static final String INFO_FIELDS = "infoFields";
   public static final String INFO_FIELDS_FIELD_NAME = INFO_FIELDS + "." + "fieldName";
   public static final String INFO_FIELDS_FIELD_PREFERRED_LABEL = INFO_FIELDS + "." + "fieldPrefLabel";

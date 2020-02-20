@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.CedarResource;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
@@ -20,6 +22,7 @@ import org.metadatacenter.server.logging.model.AppLogType;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
+import org.metadatacenter.model.folderserver.result.ResultTuple;
 import org.metadatacenter.server.neo4j.log.CypherQueryLog;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
@@ -375,6 +378,52 @@ public abstract class AbstractNeo4JProxy {
     return folderServerNodeList;
   }
 
+  protected <T extends CedarResourceId> List<T> executeReadGetIdList(CypherQuery q, Class<T> type) {
+    List<T> folderServerIdList = new ArrayList<>();
+    try (Session session = driver.session()) {
+      List<Record> records = executeQueryGetRecordList(session, q);
+      if (records != null) {
+        for (Record r : records) {
+          if (r.size() == 1) {
+            Value value = r.get(0);
+            if (value.type().equals(session.typeSystem().STRING())) {
+              String sv = value.asString();
+              T folderServerId = buildIdClass(sv, type);
+              folderServerIdList.add(folderServerId);
+            }
+          }
+        }
+        return folderServerIdList;
+      }
+    } catch (ClientException ex) {
+      reportQueryError(ex, q);
+    }
+
+
+    return folderServerIdList;
+  }
+
+  protected <T extends ResultTuple> List<T> executeReadGetToupleList(CypherQuery q, Class<T> type) {
+    List<T> tupleList = new ArrayList<>();
+    try (Session session = driver.session()) {
+      List<Record> records = executeQueryGetRecordList(session, q);
+      if (records != null) {
+        for (Record r : records) {
+          Map m = r.asMap();
+          JsonNode node = JsonMapper.MAPPER.valueToTree(m);
+          T tuple = buildToupleClass(node, type);
+          tupleList.add(tuple);
+        }
+        return tupleList;
+      }
+    } catch (ClientException ex) {
+      reportQueryError(ex, q);
+    }
+
+
+    return tupleList;
+  }
+
   protected List<FolderServerArc> executeReadGetArcList(CypherQuery q) {
     List<FolderServerArc> folderServerArcList = new ArrayList<>();
     try (Session session = driver.session()) {
@@ -406,6 +455,24 @@ public abstract class AbstractNeo4JProxy {
         cn = JsonMapper.MAPPER.treeToValue(unescaped, type);
       } catch (JsonProcessingException e) {
         log.error("Error deserializing resource into " + type.getSimpleName(), e);
+      }
+    }
+    return cn;
+  }
+
+  private <T extends CedarResourceId> T buildIdClass(String idValue, Class<T> type) {
+    T cn = (T) CedarResourceId.build(idValue, CedarResourceType.forResourceIdClass(type));
+    return cn;
+  }
+
+  private <T extends ResultTuple> T buildToupleClass(JsonNode node, Class<T> type) {
+    T cn = null;
+    if (node != null && !node.isMissingNode()) {
+      try {
+        JsonNode unescaped = Neo4JUtil.unescapeTopLevelPropertyNames(node);
+        cn = JsonMapper.MAPPER.treeToValue(unescaped, type);
+      } catch (JsonProcessingException e) {
+        log.error("Error deserializing touple into " + type.getSimpleName(), e);
       }
     }
     return cn;
