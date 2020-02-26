@@ -173,4 +173,18 @@ public class CypherParamBuilderFilesystemResource extends AbstractCypherParamBui
     return params;
   }
 
+  public static CypherParameters getSpecialFoldersLookupParameters(int limit, int offset,CedarUserId ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.LIMIT, limit);
+    params.put(ParameterPlaceholder.OFFSET, offset);
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
+  public static CypherParameters getSpecialFoldersCountParameters(CedarUserId ownerId) {
+    CypherParameters params = new CypherParameters();
+    params.put(ParameterPlaceholder.USER_ID, ownerId);
+    return params;
+  }
+
 }

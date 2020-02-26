@@ -45,6 +45,7 @@ public class IndexingDocumentDocument extends IndexedDocumentDocument {
         groups.add(CedarNodeMaterializedPermissions.getKey(groupId, FilesystemResourcePermission.WRITE));
       }
     }
+    this.setComputedEverybodyPermission(permissions.getEverybodyPermission());
   }
 
   public List<String> getGroups() {

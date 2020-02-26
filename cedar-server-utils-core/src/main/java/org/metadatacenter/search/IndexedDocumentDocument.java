@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
+import org.metadatacenter.server.security.model.auth.NodeSharePermission;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class IndexedDocumentDocument {
   protected FolderServerNodeInfo info;
 
   protected List<InfoField> infoFields;
+
+  protected NodeSharePermission computedEverybodyPermission;
 
   protected List<String> users;
 
@@ -56,6 +59,14 @@ public class IndexedDocumentDocument {
   public List<InfoField> getInfoFields() { return infoFields; }
 
   public void setInfoFields(List<InfoField> infoFields) { this.infoFields = infoFields; }
+
+  public NodeSharePermission getComputedEverybodyPermission() {
+    return computedEverybodyPermission;
+  }
+
+  public void setComputedEverybodyPermission(NodeSharePermission computedEverybodyPermission) {
+    this.computedEverybodyPermission = computedEverybodyPermission;
+  }
 
   public List<String> getUsers() {
     return users;

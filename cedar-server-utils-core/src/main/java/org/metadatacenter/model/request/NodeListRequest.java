@@ -19,6 +19,7 @@ public class NodeListRequest {
   private String q;
   private String id;
   private String categoryId;
+  private String mode;
   @JsonProperty("is_based_on")
   private String isBasedOn;
 
@@ -102,4 +103,11 @@ public class NodeListRequest {
     this.categoryId = categoryId;
   }
 
+  public String getMode() {
+    return mode;
+  }
+
+  public void setMode(String mode) {
+    this.mode = mode;
+  }
 }

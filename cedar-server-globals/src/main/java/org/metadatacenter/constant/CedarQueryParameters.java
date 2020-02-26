@@ -21,6 +21,7 @@ public final class CedarQueryParameters {
   public static final String QP_Q = "q";
   public static final String QP_ID = "id";
   public static final String QP_SHARING = "sharing";
+  public static final String QP_MODE = "mode";
   public static final String QP_FORMAT = "format";
   public static final String QP_NOTIFICATION_STATUS = "notification_status";
   public static final String QP_CATEGORY_ID = "categoryId";

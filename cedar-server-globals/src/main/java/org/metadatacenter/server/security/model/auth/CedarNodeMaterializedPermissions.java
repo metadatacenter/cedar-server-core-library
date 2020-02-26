@@ -13,10 +13,12 @@ public class CedarNodeMaterializedPermissions {
   private final String id;
   private final Map<String, FilesystemResourcePermission> userPermissions;
   private final Map<String, FilesystemResourcePermission> groupPermissions;
+  private final NodeSharePermission everybodyPermission;
 
 
-  public CedarNodeMaterializedPermissions(CedarFilesystemResourceId resourceId) {
+  public CedarNodeMaterializedPermissions(CedarFilesystemResourceId resourceId, NodeSharePermission everybodyPermission) {
     this.id = resourceId.getId();
+    this.everybodyPermission = everybodyPermission;
     userPermissions = new HashMap<>();
     groupPermissions = new HashMap<>();
   }
@@ -24,6 +26,10 @@ public class CedarNodeMaterializedPermissions {
   @JsonProperty("@id")
   public String getId() {
     return id;
+  }
+
+  public NodeSharePermission getEverybodyPermission() {
+    return everybodyPermission;
   }
 
   public Map<String, FilesystemResourcePermission> getUserPermissions() {

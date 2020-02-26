@@ -7,14 +7,14 @@ import org.metadatacenter.server.security.model.user.CedarUserExtract;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CedarNodePermissions {
+public class CedarNodePermissionsWithExtract {
 
   private CedarUserExtract owner;
   private final List<CedarNodeUserPermission> userPermissions;
   private final List<CedarNodeGroupPermission> groupPermissions;
 
 
-  public CedarNodePermissions() {
+  public CedarNodePermissionsWithExtract() {
     userPermissions = new ArrayList<>();
     groupPermissions = new ArrayList<>();
   }

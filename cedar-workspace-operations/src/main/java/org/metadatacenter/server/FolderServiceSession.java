@@ -104,6 +104,10 @@ public interface FolderServiceSession {
 
   long viewAllCount(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus);
 
+  List<FolderServerResourceExtract> viewSpecialFolders(int limit, int offset, List<String> sortList);
+
+  long viewSpecialFoldersCount();
+
   List<FileSystemResource> findAllDescendantNodesById(CedarFolderId id);
 
   List<FileSystemResource> findAllChildArtifactsOfFolder(CedarFolderId id);

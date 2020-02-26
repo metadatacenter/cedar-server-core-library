@@ -16,9 +16,11 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
   private Optional<String> isBasedOnInput;
   private Optional<String> idInput;
   private Optional<String> categoryIdInput;
+  private Optional<String> modeInput;
   private String q;
   private String isBasedOn;
   private String categoryId;
+  private String mode;
   private String id;
 
   public PagedSortedTypedSearchQuery(PaginationConfig config) {
@@ -42,6 +44,11 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   public PagedSortedTypedSearchQuery categoryId(Optional<String> categoryIdInput) {
     this.categoryIdInput = categoryIdInput;
+    return this;
+  }
+
+  public PagedSortedTypedSearchQuery mode(Optional<String> modeInput) {
+    this.modeInput = modeInput;
     return this;
   }
 
@@ -88,6 +95,7 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
     validateId();
     validateCategoryId();
     validateResourceTypesWithTemplateId();
+    validateMode();
   }
 
   public String getIsBasedOn() {
@@ -100,6 +108,10 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
 
   public String getQ() {
     return q;
+  }
+
+  public String getMode() {
+    return mode;
   }
 
   public String getId() {
@@ -181,12 +193,26 @@ public class PagedSortedTypedSearchQuery extends PagedSortedTypedQuery {
       if (categoryIdInput.get() == null || categoryIdInput.get().trim().isEmpty()) {
         throw new CedarAssertionException("You must pass in a valid 'categoryId'!")
             .badRequest()
-            .parameter("categoryId", idInput.get());
+            .parameter("categoryId", categoryIdInput.get());
       } else {
         categoryId = categoryIdInput.get();
       }
     } else {
       categoryId = null;
+    }
+  }
+
+  public void validateMode() throws CedarException {
+    if (modeInput.isPresent()) {
+      if (modeInput.get() == null || modeInput.get().trim().isEmpty()) {
+        throw new CedarAssertionException("You must pass in a valid 'modeInput'!")
+            .badRequest()
+            .parameter("modeInput", modeInput.get());
+      } else {
+        mode = modeInput.get();
+      }
+    } else {
+      mode = null;
     }
   }
 

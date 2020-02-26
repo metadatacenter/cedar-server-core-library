@@ -144,10 +144,10 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   public CedarNodeMaterializedCategories getArtifactMaterializedCategories(CedarArtifactId artifactId) {
     FolderServerArtifact artifact = proxies.artifact().findArtifactById(artifactId);
     if (artifact != null) {
-      List<FolderServerCategory> attachedCategories = getCategoryPaths(artifactId);
+      List<CedarCategoryId> attachedCategoryIds = getCategoryPathIds(artifactId);
       CedarNodeMaterializedCategories categories = new CedarNodeMaterializedCategories(artifactId.getId());
-      for (FolderServerCategory category : attachedCategories) {
-        categories.addCategory(category.getId());
+      for (CedarCategoryId cid : attachedCategoryIds) {
+        categories.addCategory(cid.getId());
       }
       return categories;
     } else {
@@ -178,6 +178,10 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
 
   private List<FolderServerCategory> getCategoryPaths(CedarArtifactId artifactId) {
     return proxies.category().getCategoryPaths(artifactId);
+  }
+
+  private List<CedarCategoryId> getCategoryPathIds(CedarArtifactId artifactId) {
+    return proxies.category().getCategoryPathIds(artifactId);
   }
 
   @Override

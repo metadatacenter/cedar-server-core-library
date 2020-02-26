@@ -300,6 +300,16 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
   }
 
   @Override
+  public List<FolderServerResourceExtract> viewSpecialFolders(int limit, int offset, List<String> sortList) {
+    return proxies.resource().viewSpecialFoldersFiltered(limit, offset, sortList, cu);
+  }
+
+  @Override
+  public long viewSpecialFoldersCount() {
+    return proxies.resource().viewSpecialFoldersFilteredCount(cu);
+  }
+
+  @Override
   public List<FileSystemResource> findAllDescendantNodesById(CedarFolderId folderId) {
     return proxies.resource().findAllDescendantResourcesByFolderId(folderId);
   }

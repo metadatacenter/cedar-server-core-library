@@ -69,7 +69,6 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
         " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
             " WHERE EXISTS(resource.<PROP.EVERYBODY_PERMISSION>) AND resource.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
             " AND resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
-            " AND resource.<PROP.OWNED_BY> <> {userId}" +
             " AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) "
     );
     if (version != null && version != ResourceVersionFilter.ALL) {
@@ -93,7 +92,6 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
         " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE>)" +
             " WHERE EXISTS(resource.<PROP.EVERYBODY_PERMISSION>) AND resource.<PROP.EVERYBODY_PERMISSION> IS NOT NULL" +
             " AND resource.<PROP.RESOURCE_TYPE> in {resourceTypeList}" +
-            " AND resource.<PROP.OWNED_BY> <> {userId}" +
             " AND (resource.<PROP.IS_USER_HOME> IS NULL OR resource.<PROP.IS_USER_HOME> <> true) "
     );
     if (version != null && version != ResourceVersionFilter.ALL) {
@@ -102,9 +100,7 @@ public class CypherQueryBuilderFilesystemResource extends AbstractCypherQueryBui
     if (publicationStatus != null && publicationStatus != ResourcePublicationStatusFilter.ALL) {
       sb.append(getPublicationStatusConditions(" AND ", "resource"));
     }
-    sb.append(
-        " RETURN count(resource)"
-    );
+    sb.append(" RETURN count(resource)");
     return sb.toString();
   }
 

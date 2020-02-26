@@ -33,6 +33,7 @@ public enum NodeProperty implements CypherQueryParameter {
   DERIVED_FROM(Label.DERIVED_FROM),
   IS_OPEN(Label.IS_OPEN),
   EVERYBODY_PERMISSION(Label.EVERYBODY_PERMISSION),
+  SPECIAL_FOLDER(Label.SPECIAL_FOLDER),
   HOME_FOLDER_ID(Label.HOME_FOLDER_ID),
   API_KEYS(Label.API_KEYS),
   API_KEY_MAP(Label.API_KEY_MAP),
@@ -75,6 +76,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String DERIVED_FROM = "pav:derivedFrom";
     public static final String IS_OPEN = "isOpen";
     public static final String EVERYBODY_PERMISSION = "everybodyPermission";
+    public static final String SPECIAL_FOLDER = "specialFolder";
     public static final String HOME_FOLDER_ID = "homeFolderId";
     public static final String API_KEYS = "apiKeys";
     public static final String API_KEY_MAP = "apiKeyMap";
