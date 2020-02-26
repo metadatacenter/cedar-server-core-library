@@ -178,4 +178,39 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
         " RETURN COUNT(resource) = 1";
   }
 
+
+  public static String getSpecialFoldersLookupQuery(List<String> sortList, boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE EXISTS(resource.<PROP.SPECIAL_FOLDER>)");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    sb.append(" RETURN DISTINCT(resource)");
+    sb.append(" ORDER BY resource.<PROP.NODE_SORT_ORDER>,");
+    sb.append(getOrderByExpression("resource", sortList));
+    sb.append(" SKIP {offset}");
+    sb.append(" LIMIT {limit}");
+    return sb.toString();
+  }
+
+  public static String getSpecialFoldersCountQuery(boolean addPermissionConditions) {
+    StringBuilder sb = new StringBuilder();
+    if (addPermissionConditions) {
+      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
+    }
+    sb.append(" MATCH (resource)");
+    sb.append(" WHERE EXISTS(resource.<PROP.SPECIAL_FOLDER>)");
+    if (addPermissionConditions) {
+      sb.append(getResourcePermissionConditions(" AND ", "resource"));
+    }
+    sb.append(
+        " RETURN count(resource)"
+    );
+    return sb.toString();
+  }
+
 }

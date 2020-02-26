@@ -144,8 +144,8 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   public List<FolderServerResourceExtract> viewSharedWithEverybodyFiltered(List<CedarResourceType> resourceTypes, ResourceVersionFilter version,
-                                                                           ResourcePublicationStatusFilter publicationStatus, int limit, int offset
-      , List<String> sortList, CedarUserId ownerId) {
+                                                                           ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                                           List<String> sortList, CedarUserId ownerId) {
     String cypher = CypherQueryBuilderFilesystemResource.getSharedWithEverybodyLookupQuery(version, publicationStatus, sortList);
     CypherParameters params = CypherParamBuilderFilesystemResource.getSharedWithEverybodyLookupParameters(resourceTypes, version, publicationStatus
         , limit, offset, ownerId);
@@ -166,6 +166,28 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
     String cypher = CypherQueryBuilderFilesystemResource.getSharedWithEverybodyCountQuery(version, publicationStatus);
     CypherParameters params = CypherParamBuilderFilesystemResource.getSharedWithEverybodyCountParameters(resourceTypes, version, publicationStatus,
         ownerId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetLong(q);
+  }
+
+  public List<FolderServerResourceExtract> viewSpecialFoldersFiltered(int limit, int offset, List<String> sortList, CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderResource.getSpecialFoldersLookupQuery(sortList, addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFilesystemResource.getSpecialFoldersLookupParameters(limit, offset, cu.getResourceId());
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerResourceExtract.class);
+  }
+
+  public long viewSpecialFoldersFilteredCount(CedarUser cu) {
+    boolean addPermissionConditions = true;
+    if (cu.has(READ_NOT_READABLE_NODE)) {
+      addPermissionConditions = false;
+    }
+    String cypher = CypherQueryBuilderResource.getSpecialFoldersCountQuery(addPermissionConditions);
+    CypherParameters params = CypherParamBuilderFilesystemResource.getSpecialFoldersCountParameters(cu.getResourceId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetLong(q);
   }
