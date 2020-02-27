@@ -267,7 +267,7 @@ public abstract class AbstractNeo4JProxy {
       Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Value value = record.get(0);
-        if (value.type().equals(session.typeSystem().STRING())) {
+        if (value.type().equals(session.typeSystem().BOOLEAN())) {
           return value.asBoolean();
         }
       }
