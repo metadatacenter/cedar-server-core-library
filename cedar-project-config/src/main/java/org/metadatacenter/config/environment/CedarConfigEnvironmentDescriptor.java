@@ -30,8 +30,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarVersion.add(SystemComponent.FRONTEND_TEST);
     cedarVersion.add(SystemComponent.FRONTEND_PRODUCTION);
 
-    Set<SystemComponent> cedarVersionModifier = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_VERSION_MODIFIER);
+    Set<SystemComponent> cedarVersionModifier = variableToComponent.get(CedarEnvironmentVariable.CEDAR_VERSION_MODIFIER);
     // gulpfile.js replaces in version.js
     cedarVersionModifier.add(SystemComponent.FRONTEND_DEVELOPMENT);
     cedarVersionModifier.add(SystemComponent.FRONTEND_TEST);
@@ -73,12 +72,10 @@ public class CedarConfigEnvironmentDescriptor {
     // all the microservices
     cedarNetGateway.addAll(allMicroservices);
 
-    Set<SystemComponent> cedarBioportalApiKey = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_BIOPORTAL_API_KEY);
+    Set<SystemComponent> cedarBioportalApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_BIOPORTAL_API_KEY);
     cedarBioportalApiKey.add(SystemComponent.SERVER_TERMINOLOGY);
 
-    Set<SystemComponent> cedarBioportalRestBase = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_BIOPORTAL_REST_BASE);
+    Set<SystemComponent> cedarBioportalRestBase = variableToComponent.get(CedarEnvironmentVariable.CEDAR_BIOPORTAL_REST_BASE);
     cedarBioportalRestBase.add(SystemComponent.SERVER_TERMINOLOGY);
 
     Set<SystemComponent> cedarAnalyticsKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ANALYTICS_KEY);
@@ -87,32 +84,25 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_TEST);
     cedarAnalyticsKey.add(SystemComponent.FRONTEND_PRODUCTION);
 
-    Set<SystemComponent> cedarNcbiSraFtpPassword = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_NCBI_SRA_FTP_PASSWORD);
+    Set<SystemComponent> cedarNcbiSraFtpPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD);
     cedarNcbiSraFtpPassword.add(SystemComponent.SERVER_SUBMISSION);
 
-    Set<SystemComponent> cedarNcbiSraFtpUser = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_NCBI_SRA_FTP_USER);
+    Set<SystemComponent> cedarNcbiSraFtpUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_USER);
     cedarNcbiSraFtpUser.addAll(cedarNcbiSraFtpPassword);
 
-    Set<SystemComponent> cedarNcbiSraFtpHost = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_NCBI_SRA_FTP_HOST);
+    Set<SystemComponent> cedarNcbiSraFtpHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_HOST);
     cedarNcbiSraFtpHost.addAll(cedarNcbiSraFtpPassword);
 
-    Set<SystemComponent> cedarNcbiSraFtpDirectory = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_NCBI_SRA_FTP_DIRECTORY);
+    Set<SystemComponent> cedarNcbiSraFtpDirectory = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_DIRECTORY);
     cedarNcbiSraFtpDirectory.addAll(cedarNcbiSraFtpPassword);
 
-    Set<SystemComponent> cedarImmPortSubmissionUser = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_IMMPORT_SUBMISSION_USER);
+    Set<SystemComponent> cedarImmPortSubmissionUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_USER);
     cedarImmPortSubmissionUser.add(SystemComponent.SERVER_SUBMISSION);
 
-    Set<SystemComponent> cedarImmPortSubmissionPassword = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_IMMPORT_SUBMISSION_PASSWORD);
+    Set<SystemComponent> cedarImmPortSubmissionPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD);
     cedarImmPortSubmissionPassword.add(SystemComponent.SERVER_SUBMISSION);
 
-    Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_NEO4J_USER_PASSWORD);
+    Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL);
     cedarNeo4jUserPassword.addAll(allMicroservices);
 
@@ -125,8 +115,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarNeo4jBoltPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_BOLT_PORT);
     cedarNeo4jBoltPort.addAll(cedarNeo4jUserPassword);
 
-    Set<SystemComponent> cedarAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ADMIN_USER_API_KEY);
+    Set<SystemComponent> cedarAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY);
     cedarAdminUserApiKey.add(SystemComponent.ADMIN_TOOL); // all neo4j, keycloak related tasks + search reindex
     cedarAdminUserApiKey.add(SystemComponent.KEYCLOAK_EVENT_LISTENER); // user login callback, auth with this
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
@@ -134,89 +123,75 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
     cedarAdminUserApiKey.add(SystemComponent.SERVER_SUBMISSION);
 
-    Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ADMIN_USER_PASSWORD);
+    Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD);
     cedarAdminUserPasswd.add(SystemComponent.ADMIN_TOOL); // all keycloak related tasks
 
-    Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MONGO_APP_USER_NAME);
+    Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME);
     cedarMongoUserName.add(SystemComponent.ADMIN_TOOL);
     // all the microservices for MongoDB initialization for user details
     cedarMongoUserName.addAll(allMicroservices);
 
-    Set<SystemComponent> cedarMongoUserPasswd = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MONGO_APP_USER_PASSWORD);
+    Set<SystemComponent> cedarMongoUserPasswd = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_PASSWORD);
     cedarMongoUserPasswd.addAll(cedarMongoUserName);// used together with the username
 
-    Set<SystemComponent> cedarMongoHost = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MONGO_HOST);
+    Set<SystemComponent> cedarMongoHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_HOST);
     cedarMongoHost.addAll(cedarMongoUserName);// used together with the username
 
-    Set<SystemComponent> cedarPortMongo = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MONGO_PORT);
+    Set<SystemComponent> cedarPortMongo = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_PORT);
     cedarPortMongo.addAll(cedarMongoUserName);// used together with the username
 
-    Set<SystemComponent> cedarElasticsearchHost = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ELASTICSEARCH_HOST);
+    Set<SystemComponent> cedarElasticsearchHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ELASTICSEARCH_HOST);
     cedarElasticsearchHost.add(SystemComponent.SERVER_WORKER);
     cedarElasticsearchHost.add(SystemComponent.SERVER_VALUERECOMMENDER);
     cedarElasticsearchHost.add(SystemComponent.SERVER_RESOURCE);
+    cedarElasticsearchHost.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarElasticsearchTransportPort = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ELASTICSEARCH_TRANSPORT_PORT);
+    Set<SystemComponent> cedarElasticsearchTransportPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ELASTICSEARCH_TRANSPORT_PORT);
     cedarElasticsearchTransportPort.addAll(cedarElasticsearchHost);
 
-    Set<SystemComponent> cedarMessagingMysqlHost = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_MYSQL_HOST);
+    Set<SystemComponent> cedarMessagingMysqlHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_HOST);
     cedarMessagingMysqlHost.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarMessagingMysqlPort = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_MYSQL_PORT);
+    Set<SystemComponent> cedarMessagingMysqlPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_PORT);
     cedarMessagingMysqlPort.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarMessagingMysqlDb = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_MYSQL_DB);
+    Set<SystemComponent> cedarMessagingMysqlDb = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_DB);
     cedarMessagingMysqlDb.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarMessagingMysqlUser = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_MYSQL_USER);
+    Set<SystemComponent> cedarMessagingMysqlUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_USER);
     cedarMessagingMysqlUser.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarMessagingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_MYSQL_PASSWORD);
+    Set<SystemComponent> cedarMessagingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_MYSQL_PASSWORD);
     cedarMessagingMysqlPassword.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarLoggingMysqlHost = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_LOG_MYSQL_HOST);
+    Set<SystemComponent> cedarLoggingMysqlHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_HOST);
     cedarLoggingMysqlHost.add(SystemComponent.SERVER_WORKER);
+    cedarLoggingMysqlHost.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarLoggingMysqlPort = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_LOG_MYSQL_PORT);
+    Set<SystemComponent> cedarLoggingMysqlPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_PORT);
     cedarLoggingMysqlPort.add(SystemComponent.SERVER_WORKER);
+    cedarLoggingMysqlPort.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarLoggingMysqlDb = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_LOG_MYSQL_DB);
+    Set<SystemComponent> cedarLoggingMysqlDb = variableToComponent.get(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_DB);
     cedarLoggingMysqlDb.add(SystemComponent.SERVER_WORKER);
+    cedarLoggingMysqlDb.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarLoggingMysqlUser = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_LOG_MYSQL_USER);
+    Set<SystemComponent> cedarLoggingMysqlUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_USER);
     cedarLoggingMysqlUser.add(SystemComponent.SERVER_WORKER);
+    cedarLoggingMysqlUser.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarLoggingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_LOG_MYSQL_PASSWORD);
+    Set<SystemComponent> cedarLoggingMysqlPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_LOG_MYSQL_PASSWORD);
     cedarLoggingMysqlPassword.add(SystemComponent.SERVER_WORKER);
+    cedarLoggingMysqlPassword.add(SystemComponent.SERVER_INTERNALS);
 
-    Set<SystemComponent> cedarValidationEnabled = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_VALIDATION_ENABLED);
+    Set<SystemComponent> cedarValidationEnabled = variableToComponent.get(CedarEnvironmentVariable.CEDAR_VALIDATION_ENABLED);
     cedarValidationEnabled.add(SystemComponent.SERVER_ARTIFACT);
 
-    Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SUBMISSION_TEMPLATE_ID_1);
+    Set<SystemComponent> submissionTemplateId1 = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SUBMISSION_TEMPLATE_ID_1);
     submissionTemplateId1.add(SystemComponent.SERVER_WORKER);
     submissionTemplateId1.add(SystemComponent.SERVER_RESOURCE);
 
-    Set<SystemComponent> submissionTemplateId2 = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SUBMISSION_TEMPLATE_ID_2);
+    Set<SystemComponent> submissionTemplateId2 = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SUBMISSION_TEMPLATE_ID_2);
     submissionTemplateId2.add(SystemComponent.SERVER_WORKER);
     submissionTemplateId2.add(SystemComponent.SERVER_RESOURCE);
 
@@ -229,8 +204,7 @@ public class CedarConfigEnvironmentDescriptor {
     redisPersistentHost.addAll(allMicroservices);
     redisPersistentHost.add(SystemComponent.ADMIN_TOOL);
 
-    Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_REDIS_PERSISTENT_PORT);
+    Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_REDIS_PERSISTENT_PORT);
     redisPersistentPort.addAll(allMicroservices);
     redisPersistentPort.add(SystemComponent.ADMIN_TOOL);
 
@@ -241,15 +215,12 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarStopPortGroup = variableToComponent.get(CedarEnvironmentVariable.CEDAR_GROUP_STOP_PORT);
     cedarStopPortGroup.add(SystemComponent.SERVER_GROUP);
 
-    Set<SystemComponent> cedarHttpPortMessaging = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortMessaging = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_HTTP_PORT);
     cedarHttpPortMessaging.add(SystemComponent.SERVER_MESSAGING);
     cedarHttpPortMessaging.add(SystemComponent.SERVER_SUBMISSION);
-    Set<SystemComponent> cedarAdminPortMessaging = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortMessaging = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_ADMIN_PORT);
     cedarAdminPortMessaging.add(SystemComponent.SERVER_MESSAGING);
-    Set<SystemComponent> cedarStopPortMessaging = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_MESSAGING_STOP_PORT);
+    Set<SystemComponent> cedarStopPortMessaging = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MESSAGING_STOP_PORT);
     cedarStopPortMessaging.add(SystemComponent.SERVER_MESSAGING);
 
     Set<SystemComponent> cedarHttpPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_HTTP_PORT);
@@ -267,21 +238,17 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarStopPortRepo = variableToComponent.get(CedarEnvironmentVariable.CEDAR_REPO_STOP_PORT);
     cedarStopPortRepo.add(SystemComponent.SERVER_REPO);
 
-    Set<SystemComponent> cedarHttpPortResource = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_RESOURCE_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_HTTP_PORT);
     cedarHttpPortResource.add(SystemComponent.SERVER_RESOURCE);
     cedarHttpPortResource.add(SystemComponent.ADMIN_TOOL);
-    Set<SystemComponent> cedarAdminPortResource = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_RESOURCE_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_ADMIN_PORT);
     cedarAdminPortResource.add(SystemComponent.SERVER_RESOURCE);
-    Set<SystemComponent> cedarStopPortResource = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_RESOURCE_STOP_PORT);
+    Set<SystemComponent> cedarStopPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_STOP_PORT);
     cedarStopPortResource.add(SystemComponent.SERVER_RESOURCE);
 
     Set<SystemComponent> cedarHttpPortSchema = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SCHEMA_HTTP_PORT);
     cedarHttpPortSchema.add(SystemComponent.SERVER_SCHEMA);
-    Set<SystemComponent> cedarAdminPortSchema = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SCHEMA_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortSchema = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SCHEMA_ADMIN_PORT);
     cedarAdminPortSchema.add(SystemComponent.SERVER_SCHEMA);
     Set<SystemComponent> cedarStopPortSchema = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SCHEMA_STOP_PORT);
     cedarStopPortSchema.add(SystemComponent.SERVER_SCHEMA);
@@ -290,48 +257,36 @@ public class CedarConfigEnvironmentDescriptor {
     cedarPortArtifact.add(SystemComponent.SERVER_ARTIFACT);
     cedarPortArtifact.add(SystemComponent.SERVER_RESOURCE);
     cedarPortArtifact.add(SystemComponent.SERVER_WORKER);
-    Set<SystemComponent> cedarAdminPortTemplate = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ARTIFACT_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortTemplate = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ARTIFACT_ADMIN_PORT);
     cedarAdminPortTemplate.add(SystemComponent.SERVER_ARTIFACT);
-    Set<SystemComponent> cedarStopPortTemplate = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_ARTIFACT_STOP_PORT);
+    Set<SystemComponent> cedarStopPortTemplate = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ARTIFACT_STOP_PORT);
     cedarStopPortTemplate.add(SystemComponent.SERVER_ARTIFACT);
 
-    Set<SystemComponent> cedarHttpPortTerminology = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_TERMINOLOGY_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortTerminology = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_HTTP_PORT);
     cedarHttpPortTerminology.add(SystemComponent.SERVER_TERMINOLOGY);
-    Set<SystemComponent> cedarAdminPortTerminology = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_TERMINOLOGY_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortTerminology = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_ADMIN_PORT);
     cedarAdminPortTerminology.add(SystemComponent.SERVER_TERMINOLOGY);
-    Set<SystemComponent> cedarStopPortTerminology = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_TERMINOLOGY_STOP_PORT);
+    Set<SystemComponent> cedarStopPortTerminology = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TERMINOLOGY_STOP_PORT);
     cedarStopPortTerminology.add(SystemComponent.SERVER_TERMINOLOGY);
 
-    Set<SystemComponent> cedarHttpPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_VALUERECOMMENDER_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_HTTP_PORT);
     cedarHttpPortValuerecommender.add(SystemComponent.SERVER_VALUERECOMMENDER);
     cedarHttpPortValuerecommender.add(SystemComponent.SERVER_WORKER);
-    Set<SystemComponent> cedarAdminPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_VALUERECOMMENDER_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_ADMIN_PORT);
     cedarAdminPortValuerecommender.add(SystemComponent.SERVER_VALUERECOMMENDER);
-    Set<SystemComponent> cedarStopPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_VALUERECOMMENDER_STOP_PORT);
+    Set<SystemComponent> cedarStopPortValuerecommender = variableToComponent.get(CedarEnvironmentVariable.CEDAR_VALUERECOMMENDER_STOP_PORT);
     cedarStopPortValuerecommender.add(SystemComponent.SERVER_VALUERECOMMENDER);
 
-    Set<SystemComponent> cedarHttpPortSubmission = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SUBMISSION_HTTP_PORT);
+    Set<SystemComponent> cedarHttpPortSubmission = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SUBMISSION_HTTP_PORT);
     cedarHttpPortSubmission.add(SystemComponent.SERVER_SUBMISSION);
-    Set<SystemComponent> cedarAdminPortSubmission = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SUBMISSION_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortSubmission = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SUBMISSION_ADMIN_PORT);
     cedarAdminPortSubmission.add(SystemComponent.SERVER_SUBMISSION);
-    Set<SystemComponent> cedarStopPortSubmission = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_SUBMISSION_STOP_PORT);
+    Set<SystemComponent> cedarStopPortSubmission = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SUBMISSION_STOP_PORT);
     cedarStopPortSubmission.add(SystemComponent.SERVER_SUBMISSION);
 
     Set<SystemComponent> cedarHttpPortWorker = variableToComponent.get(CedarEnvironmentVariable.CEDAR_WORKER_HTTP_PORT);
     cedarHttpPortWorker.add(SystemComponent.SERVER_WORKER);
-    Set<SystemComponent> cedarAdminPortWorker = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_WORKER_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortWorker = variableToComponent.get(CedarEnvironmentVariable.CEDAR_WORKER_ADMIN_PORT);
     cedarAdminPortWorker.add(SystemComponent.SERVER_WORKER);
     Set<SystemComponent> cedarStopPortWorker = variableToComponent.get(CedarEnvironmentVariable.CEDAR_WORKER_STOP_PORT);
     cedarStopPortWorker.add(SystemComponent.SERVER_WORKER);
@@ -346,11 +301,17 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarHttpPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_HTTP_PORT);
     cedarHttpPortOpen.add(SystemComponent.SERVER_OPEN);
-    Set<SystemComponent> cedarAdminPortOpen = variableToComponent.get(CedarEnvironmentVariable
-        .CEDAR_OPEN_ADMIN_PORT);
+    Set<SystemComponent> cedarAdminPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_ADMIN_PORT);
     cedarAdminPortOpen.add(SystemComponent.SERVER_OPEN);
     Set<SystemComponent> cedarStopPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_STOP_PORT);
     cedarStopPortOpen.add(SystemComponent.SERVER_OPEN);
+
+    Set<SystemComponent> cedarHttpPortInternals = variableToComponent.get(CedarEnvironmentVariable.CEDAR_INTERNALS_HTTP_PORT);
+    cedarHttpPortInternals.add(SystemComponent.SERVER_INTERNALS);
+    Set<SystemComponent> cedarAdminPortInternals = variableToComponent.get(CedarEnvironmentVariable.CEDAR_INTERNALS_ADMIN_PORT);
+    cedarAdminPortInternals.add(SystemComponent.SERVER_INTERNALS);
+    Set<SystemComponent> cedarStopPortInternals = variableToComponent.get(CedarEnvironmentVariable.CEDAR_INTERNALS_STOP_PORT);
+    cedarStopPortInternals.add(SystemComponent.SERVER_INTERNALS);
 
 
     // Compute the reverse map

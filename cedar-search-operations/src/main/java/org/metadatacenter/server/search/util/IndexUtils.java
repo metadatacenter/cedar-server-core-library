@@ -52,7 +52,7 @@ public class IndexUtils {
    * This method retrieves all the resources from the Neo4j Server that are expected to be in the search index.
    * Those resources that don't have to be in the index, such as the "/" folder and the "Lost+Found" folder are ignored.
    */
-  public List<FileSystemResource> findAllResources(CedarRequestContext context) throws CedarProcessingException {
+  public List<FileSystemResource> findAllResources(CedarRequestContext context) {
     log.info("Retrieving all resources.");
     List<FileSystemResource> resources = new ArrayList<>();
     boolean finished = false;
@@ -66,7 +66,7 @@ public class IndexUtils {
       try {
         pagedNodes = findAllNodes(context, Optional.empty(), limit, offset);
       } catch (CedarException e) {
-        log.error("Error whiler reading nodes", e);
+        log.error("Error while reading nodes", e);
         e.printStackTrace();
       }
       int count = 0;
