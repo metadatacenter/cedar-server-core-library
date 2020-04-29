@@ -122,10 +122,8 @@ public abstract class CedarMicroserviceApplication<T extends CedarMicroserviceCo
     initializeApp();
 
     DefaultServerFactory serverFactory = (DefaultServerFactory) configuration.getServerFactory();
-    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(getApplicationHttpPort
-        (configuration));
-    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(getApplicationAdminPort
-        (configuration));
+    ((HttpConnectorFactory) serverFactory.getApplicationConnectors().get(0)).setPort(getApplicationHttpPort(configuration));
+    ((HttpConnectorFactory) serverFactory.getAdminConnectors().get(0)).setPort(getApplicationAdminPort(configuration));
     System.setProperty("STOP.PORT", String.valueOf(getServerStopPort(configuration)));
     System.setProperty("STOP.KEY", "Stop:" + getServerName().getName() + ":Me");
 
