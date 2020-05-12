@@ -1,7 +1,9 @@
 package org.metadatacenter.server.security.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.server.security.model.permission.resource.ResourcePermissionUser;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CedarGroupUserRequest {
 
   private ResourcePermissionUser user;
