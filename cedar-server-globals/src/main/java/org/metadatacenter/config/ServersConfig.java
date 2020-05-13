@@ -28,6 +28,8 @@ public class ServersConfig {
 
   private ServerConfig open;
 
+  private ServerConfig internals;
+
   public ServerConfig getGroup() {
     return group;
   }
@@ -76,6 +78,10 @@ public class ServersConfig {
     return open;
   }
 
+  public ServerConfig getInternals() {
+    return open;
+  }
+
   public ServerConfig get(ServerName serverName) {
     switch (serverName) {
       case GROUP:
@@ -102,6 +108,8 @@ public class ServersConfig {
         return worker;
       case OPEN:
         return open;
+      case INTERNALS:
+        return internals;
       default:
         return null;
     }

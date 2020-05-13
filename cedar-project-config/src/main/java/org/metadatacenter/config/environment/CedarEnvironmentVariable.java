@@ -116,7 +116,11 @@ public enum CedarEnvironmentVariable {
 
   CEDAR_OPEN_HTTP_PORT("CEDAR_OPEN_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
   CEDAR_OPEN_ADMIN_PORT("CEDAR_OPEN_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
-  CEDAR_OPEN_STOP_PORT("CEDAR_OPEN_STOP_PORT", CedarEnvironmentVariableType.NUMERIC);
+  CEDAR_OPEN_STOP_PORT("CEDAR_OPEN_STOP_PORT", CedarEnvironmentVariableType.NUMERIC),
+
+  CEDAR_INTERNALS_HTTP_PORT("CEDAR_INTERNALS_HTTP_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_INTERNALS_ADMIN_PORT("CEDAR_INTERNALS_ADMIN_PORT", CedarEnvironmentVariableType.NUMERIC),
+  CEDAR_INTERNALS_STOP_PORT("CEDAR_INTERNALS_STOP_PORT", CedarEnvironmentVariableType.NUMERIC);
 
   private final String name;
   private final CedarEnvironmentVariableSecure secure;

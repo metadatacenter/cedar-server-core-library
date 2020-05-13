@@ -13,7 +13,8 @@ public enum ServerName {
   USER("user"),
   VALUERECOMMENDER("valuerecommender"),
   WORKER("worker"),
-  OPEN("open");
+  OPEN("open"),
+  INTERNALS("internals");
 
   private String name;
 
