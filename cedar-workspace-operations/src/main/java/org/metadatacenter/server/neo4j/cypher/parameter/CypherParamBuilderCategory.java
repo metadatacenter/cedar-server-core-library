@@ -60,6 +60,10 @@ public class CypherParamBuilderCategory extends AbstractCypherParamBuilder {
     return matchResourceByIdentity(categoryId);
   }
 
+  public static CypherParameters matchName(String name) {
+    return matchResourceByName(name);
+  }
+
   public static CypherParameters matchCategoryAndUser(CedarCategoryId categoryId, CedarUserId userId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.CATEGORY_ID, categoryId);

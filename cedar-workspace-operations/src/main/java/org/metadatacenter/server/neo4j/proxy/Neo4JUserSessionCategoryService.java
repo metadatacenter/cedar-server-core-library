@@ -57,6 +57,11 @@ public class Neo4JUserSessionCategoryService extends AbstractNeo4JUserSession im
   }
 
   @Override
+  public boolean deleteAllCategoriesExceptRoot() {
+    return proxies.category().deleteAllCategoriesExceptRoot();
+  }
+
+  @Override
   public FolderServerCategory getRootCategory() {
     return proxies.category().getRootCategory();
   }

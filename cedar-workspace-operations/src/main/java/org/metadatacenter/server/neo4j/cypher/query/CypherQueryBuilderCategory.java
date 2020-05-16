@@ -84,6 +84,13 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " DETACH DELETE category";
   }
 
+  public static String deleteAllCategoriesExceptRoot() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY>)" +
+        " WHERE category.<PROP.NAME> <> {<PROP.NAME>}" +
+        " DETACH DELETE category";
+  }
+
   public static String getCategoryOwner() {
     return "" +
         " MATCH (user:<LABEL.USER>)" +

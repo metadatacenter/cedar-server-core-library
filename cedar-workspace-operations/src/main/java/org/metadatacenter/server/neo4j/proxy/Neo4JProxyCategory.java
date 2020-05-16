@@ -83,6 +83,14 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeWrite(q, "deleting category");
   }
 
+  public boolean deleteAllCategoriesExceptRoot() {
+    String cypher = CypherQueryBuilderCategory.deleteAllCategoriesExceptRoot();
+    String rootCategoryName = cedarConfig.getFolderStructureConfig().getRootCategory().getName();
+    CypherParameters params = CypherParamBuilderCategory.matchName(rootCategoryName);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeWrite(q, "deleting all categories except root");
+  }
+
   public FolderServerUser getCategoryOwner(CedarCategoryId categoryId) {
     String cypher = CypherQueryBuilderCategory.getCategoryOwner();
     CypherParameters params = CypherParamBuilderFilesystemResource.matchId(categoryId);

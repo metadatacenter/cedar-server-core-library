@@ -111,6 +111,11 @@ public abstract class AbstractCypherParamBuilder {
     return params;
   }
 
+  protected static CypherParameters matchResourceByName(String resourceName) {
+    CypherParameters params = new CypherParameters();
+    params.put(NodeProperty.NAME, resourceName);
+    return params;
+  }
 
   protected static CypherParameters getResourceByIdentityAndName(CedarFilesystemResourceId folderId, String resourceName) {
     CypherParameters params = new CypherParameters();
