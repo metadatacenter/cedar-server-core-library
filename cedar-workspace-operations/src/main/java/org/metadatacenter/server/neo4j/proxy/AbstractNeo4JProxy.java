@@ -12,6 +12,7 @@ import org.metadatacenter.model.folderserver.FolderServerArc;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.basic.FolderServerFolder;
+import org.metadatacenter.model.folderserver.result.ResultTuple;
 import org.metadatacenter.server.logging.AppLogger;
 import org.metadatacenter.server.logging.filter.LoggingContext;
 import org.metadatacenter.server.logging.filter.ThreadLocalRequestIdHolder;
@@ -22,7 +23,6 @@ import org.metadatacenter.server.logging.model.AppLogType;
 import org.metadatacenter.server.neo4j.CypherQuery;
 import org.metadatacenter.server.neo4j.CypherQueryLiteral;
 import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.model.folderserver.result.ResultTuple;
 import org.metadatacenter.server.neo4j.log.CypherQueryLog;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -399,7 +400,6 @@ public abstract class AbstractNeo4JProxy {
       reportQueryError(ex, q);
     }
 
-
     return folderServerIdList;
   }
 
@@ -419,7 +419,6 @@ public abstract class AbstractNeo4JProxy {
     } catch (ClientException ex) {
       reportQueryError(ex, q);
     }
-
 
     return tupleList;
   }
@@ -446,6 +445,62 @@ public abstract class AbstractNeo4JProxy {
     return folderServerArcList;
   }
 
+  protected List<Map<String, Object>> executeReadGetMapList(CypherQuery q, List<String> fieldNameList) {
+    Map<String, String> fieldNameMap = new HashMap<>();
+    if (fieldNameList != null) {
+      for (String fieldName : fieldNameList) {
+        fieldNameMap.put(Neo4JUtil.escapePropertyName(fieldName), fieldName);
+      }
+    }
+    fieldNameMap.put(Neo4JUtil.escapePropertyName("@id"), "@id");
+    fieldNameMap.put(Neo4JUtil.escapePropertyName("resourceType"), "resourceType");
+    
+    List<Map<String, Object>> folderServerNodeList = new ArrayList<>();
+    try (Session session = driver.session()) {
+      List<Record> records = executeQueryGetRecordList(session, q);
+      if (records != null) {
+        for (Record r : records) {
+          if (r.size() == 1) {
+            Value value = r.get(0);
+            if (value.type().equals(session.typeSystem().NODE())) {
+              Node n = value.asNode();
+              if (n != null) {
+                Map<String, Object> m = convertToMap(n, fieldNameMap);
+                folderServerNodeList.add(m);
+              }
+            }
+          } else {
+            for (Value value : r.values()) {
+              if (value.type().equals(session.typeSystem().NODE())) {
+                Node n = value.asNode();
+                if (n != null) {
+                  Map<String, Object> m = convertToMap(n, fieldNameMap);
+                  folderServerNodeList.add(m);
+                }
+              }
+            }
+          }
+        }
+        return folderServerNodeList;
+      }
+    } catch (ClientException ex) {
+      reportQueryError(ex, q);
+    }
+
+    return folderServerNodeList;
+  }
+
+  private Map<String, Object> convertToMap(Node n, Map<String, String> fieldNameMap) {
+    Map<String, Object> m = n.asMap();
+    Map<String, Object> filtered = new HashMap<>();
+    for (String escapedName : fieldNameMap.keySet()) {
+      String regularName = fieldNameMap.get(escapedName);
+      if (m.containsKey(escapedName)) {
+        filtered.put(regularName, m.get(escapedName));
+      }
+    }
+    return filtered;
+  }
 
   private <T extends CedarResource> T buildClass(JsonNode node, Class<T> type) {
     T cn = null;

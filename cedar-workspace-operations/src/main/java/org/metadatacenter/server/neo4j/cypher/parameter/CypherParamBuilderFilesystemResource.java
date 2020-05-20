@@ -23,7 +23,7 @@ public class CypherParamBuilderFilesystemResource extends AbstractCypherParamBui
     return getResourceByIdentityAndName(resourceId, filesystemResourceName);
   }
 
-  public static CypherParameters getAllResourcesLookupParameters(int limit, int offset) {
+  public static CypherParameters getAllResourcesLookupParameters(long limit, long offset) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
@@ -88,8 +88,8 @@ public class CypherParamBuilderFilesystemResource extends AbstractCypherParamBui
   }
 
   public static CypherParameters getAllLookupParameters(List<CedarResourceType> resourceTypes, ResourceVersionFilter version,
-                                                        ResourcePublicationStatusFilter publicationStatus, int limit, int offset, CedarUserId ownerId,
-                                                        boolean addPermissionConditions) {
+                                                        ResourcePublicationStatusFilter publicationStatus, long limit, long offset,
+                                                        CedarUserId ownerId, boolean addPermissionConditions) {
     CypherParameters params = new CypherParameters();
     params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
@@ -173,7 +173,7 @@ public class CypherParamBuilderFilesystemResource extends AbstractCypherParamBui
     return params;
   }
 
-  public static CypherParameters getSpecialFoldersLookupParameters(int limit, int offset,CedarUserId ownerId) {
+  public static CypherParameters getSpecialFoldersLookupParameters(int limit, int offset, CedarUserId ownerId) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);

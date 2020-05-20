@@ -182,8 +182,7 @@ public class IndexUtils {
     return esServiceFactory.nodeIndexingService();
   }
 
-  public FolderServerNodeListResponse findAllNodes(CedarRequestContext c, Optional<String> sortParam, int limit, int offset)
-      throws CedarException {
+  public FolderServerNodeListResponse findAllNodes(CedarRequestContext c, Optional<String> sortParam, int limit, int offset) throws CedarException {
 
     PagedSortedQuery pagedSortedQuery = new PagedSortedQuery(
         cedarConfig.getResourceRESTAPI().getPagination())

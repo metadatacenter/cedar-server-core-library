@@ -8,6 +8,7 @@ import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
 import org.metadatacenter.model.folderserver.basic.FolderServerSchemaArtifact;
 import org.metadatacenter.model.folderserver.extract.FolderServerResourceExtract;
 import org.metadatacenter.model.folderserver.extract.FolderServerArtifactExtract;
+import org.metadatacenter.model.request.NodeListRequest;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
@@ -59,20 +60,11 @@ public interface FolderServiceSession {
                                                       ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
                                                       List<String> sortList);
 
-  List<FolderServerResourceExtract> findFolderContentsExtractFiltered(CedarFolderId folderId, List<CedarResourceType> resourceTypeList,
-                                                                      ResourceVersionFilter version,
-                                                                      ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
-                                                                      List<String> sortList);
+  List<FolderServerResourceExtract> findFolderContentsExtract(CedarFolderId folderId, NodeListRequest req);
 
-  List<FolderServerResourceExtract> findFolderContentsExtract(CedarFolderId folderId, List<CedarResourceType> resourceTypeList,
-                                                              ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                                              int limit, int offset, List<String> sortList);
+  List<Map<String, Object>> findFolderContentsExtractMap(CedarFolderId folderId, NodeListRequest req, List<String> fieldNameList);
 
-  long findFolderContentsFilteredCount(CedarFolderId folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                                       ResourcePublicationStatusFilter publicationStatus);
-
-  long findFolderContentsCount(CedarFolderId folderId, List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                               ResourcePublicationStatusFilter publicationStatus);
+  long findFolderContentsCount(CedarFolderId folderId, NodeListRequest req);
 
   long findFolderContentsUnfilteredCount(CedarFolderId folderId);
 
