@@ -55,4 +55,9 @@ public class HttpServletRequestContext extends AbstractRequestContext {
   public String getClientSessionIdHeader() {
     return httpHeaders.getHeaderString(CedarHeaderParameters.CLIENT_SESSION_ID);
   }
+
+  @Override
+  public String getSourceHashHeader() {
+    return httpHeaders.getHeaderString(CedarHeaderParameters.SOURCE_HASH);
+  }
 }

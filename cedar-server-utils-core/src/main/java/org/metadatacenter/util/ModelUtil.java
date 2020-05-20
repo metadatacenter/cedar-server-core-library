@@ -70,7 +70,7 @@ public class ModelUtil {
   }
 
   public static void ensureFieldIdsRecursively(JsonNode genericInstance, ProvenanceInfo pi, ProvenanceUtil provenanceUtil,
-                                        LinkedDataUtil linkedDataUtil) {
+                                               LinkedDataUtil linkedDataUtil) {
     JsonNode properties = genericInstance.get("properties");
     if (properties != null) {
       Iterator<Map.Entry<String, JsonNode>> it = properties.fields();

@@ -87,4 +87,14 @@ public abstract class AbstractCedarResource<T extends CedarResourceId> implement
     this.nameDescriptionIdentifierGroup.setIdentifier(identifier);
   }
 
+  @JsonProperty(NodeProperty.Label.SOURCE_HASH)
+  public String getSourceHash() {
+    return this.baseDataGroup.getSourceHash();
+  }
+
+  @JsonProperty(NodeProperty.Label.SOURCE_HASH)
+  public void setSourceHash(String sourceHash) {
+    this.baseDataGroup.setSourceHash(sourceHash);
+  }
+
 }

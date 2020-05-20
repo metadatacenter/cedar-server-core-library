@@ -9,6 +9,7 @@ public class BaseDataGroup {
   protected CedarResourceType resourceType;
   protected ProvenanceTime createdOn;
   protected ProvenanceTime lastUpdatedOn;
+  protected String sourceHash;
 
   public BaseDataGroup() {
   }
@@ -43,5 +44,13 @@ public class BaseDataGroup {
 
   public void setLastUpdatedOn(ProvenanceTime lastUpdatedOn) {
     this.lastUpdatedOn = lastUpdatedOn;
+  }
+
+  public String getSourceHash() {
+    return sourceHash;
+  }
+
+  public void setSourceHash(String sourceHash) {
+    this.sourceHash = sourceHash;
   }
 }

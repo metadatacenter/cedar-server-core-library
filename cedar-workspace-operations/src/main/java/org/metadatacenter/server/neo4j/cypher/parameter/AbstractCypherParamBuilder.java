@@ -43,6 +43,10 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.OWNED_BY, newResource.getOwnedBy());
     params.put(NodeProperty.RESOURCE_TYPE, newResource.getType().getValue());
 
+    if (newResource.getSourceHash() != null) {
+      params.put(NodeProperty.SOURCE_HASH, newResource.getSourceHash());
+    }
+
     if (newResource instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newResource;
       params.put(NodeProperty.IS_ROOT, newFolder.isRoot());

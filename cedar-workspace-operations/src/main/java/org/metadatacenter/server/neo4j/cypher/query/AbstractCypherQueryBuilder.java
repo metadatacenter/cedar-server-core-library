@@ -95,6 +95,9 @@ public abstract class AbstractCypherQueryBuilder {
       if (newResource.isOpen() != null) {
         sb.append(buildCreateAssignment(NodeProperty.IS_OPEN)).append(",");
       }
+      if (newResource.getSourceHash() != null) {
+        sb.append(buildCreateAssignment(NodeProperty.SOURCE_HASH)).append(",");
+      }
     }
     if (newNode instanceof FolderServerSchemaArtifact) {
       FolderServerSchemaArtifact newResource = (FolderServerSchemaArtifact) newNode;
