@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FolderServiceSession {
-  // Expose methods of PathUtil
+
   String sanitizeName(String name);
 
   String normalizePath(String path);

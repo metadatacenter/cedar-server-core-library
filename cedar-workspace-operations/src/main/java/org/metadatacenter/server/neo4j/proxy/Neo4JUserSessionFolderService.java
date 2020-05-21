@@ -250,16 +250,15 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public List<FolderServerResourceExtract> viewSharedWithMe(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                                                            ResourcePublicationStatusFilter publicationStatus, int limit,
-                                                            int offset, List<String> sortList) {
+                                                            ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                            List<String> sortList) {
     return proxies.resource().viewSharedWithMeFiltered(resourceTypeList, version, publicationStatus, limit, offset, sortList, cu.getResourceId());
   }
 
   @Override
-  public List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList,
-                                                                   ResourceVersionFilter version,
-                                                                   ResourcePublicationStatusFilter publicationStatus,
-                                                                   int limit, int offset, List<String> sortList) {
+  public List<FolderServerResourceExtract> viewSharedWithEverybody(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
+                                                                   ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
+                                                                   List<String> sortList) {
     return proxies.resource().viewSharedWithEverybodyFiltered(resourceTypeList, version, publicationStatus, limit, offset, sortList,
         cu.getResourceId());
   }
@@ -278,8 +277,7 @@ public class Neo4JUserSessionFolderService extends AbstractNeo4JUserSession impl
 
   @Override
   public List<FolderServerResourceExtract> viewAll(List<CedarResourceType> resourceTypeList, ResourceVersionFilter version,
-                                                   ResourcePublicationStatusFilter publicationStatus, int limit, int offset,
-                                                   List<String> sortList) {
+                                                   ResourcePublicationStatusFilter publicationStatus, int limit, int offset, List<String> sortList) {
     return proxies.resource().viewAllFiltered(resourceTypeList, version, publicationStatus, limit, offset, sortList, cu);
   }
 
