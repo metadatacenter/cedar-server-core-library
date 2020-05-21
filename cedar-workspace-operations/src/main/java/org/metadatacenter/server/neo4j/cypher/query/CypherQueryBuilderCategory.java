@@ -123,6 +123,13 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category.<PROP.ID>";
   }
 
+  public static String getCategoryIdsByArtifactId() {
+    return "" +
+        " MATCH (artifact:<LABEL.RESOURCE> {<PROP.ID>:{<PROP.ID>} })" +
+        " MATCH (category:<LABEL.CATEGORY>)-[:<REL.CONTAINSARTIFACT>]->(artifact)" +
+        " RETURN category.<PROP.ID>";
+  }
+
   public static String setCategoryOwner() {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
