@@ -2,6 +2,7 @@ package org.metadatacenter.server.search.elasticsearch.service;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -26,6 +27,9 @@ import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchPermissionEnabledContentSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchSearchingWorker;
 import org.metadatacenter.server.search.elasticsearch.worker.SearchResponseResult;
+import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
+import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.metadatacenter.util.http.LinkHeaderUtil;
@@ -39,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.metadatacenter.constant.ElasticsearchConstants.DOCUMENT_CEDAR_ID;
+import static org.metadatacenter.constant.ElasticsearchConstants.GROUPS;
 
 public class NodeSearchingService extends AbstractSearchingService {
 
@@ -85,8 +90,20 @@ public class NodeSearchingService extends AbstractSearchingService {
   }
 
   public List<String> findAllCedarIdsForGroup(CedarGroupId groupId) throws CedarProcessingException {
-    QueryBuilder queryBuilder = QueryBuilders.termQuery("groups.id", groupId.getId());
-    return searchWorker.findAllValuesForField("cid", queryBuilder);
+
+    BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+    BoolQueryBuilder permissionQuery = QueryBuilders.boolQuery();
+
+    QueryBuilder groupReadQuery = QueryBuilders.termsQuery(GROUPS, CedarNodeMaterializedPermissions.getKey(groupId.getId(),
+        FilesystemResourcePermission.READ));
+    QueryBuilder groupWriteQuery = QueryBuilders.termsQuery(GROUPS, CedarNodeMaterializedPermissions.getKey(groupId.getId(),
+        FilesystemResourcePermission.WRITE));
+
+    permissionQuery.should(groupReadQuery);
+    permissionQuery.should(groupWriteQuery);
+    mainQuery.must(permissionQuery);
+
+    return searchWorker.findAllValuesForField("cid", mainQuery);
   }
 
   public FolderServerNodeListResponse search(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
@@ -100,13 +117,6 @@ public class NodeSearchingService extends AbstractSearchingService {
     } catch (Exception e) {
       throw new CedarProcessingException(e);
     }
-  }
-
-  public String searchQueryString(CedarRequestContext rctx, String query, List<String> resourceTypes, ResourceVersionFilter version,
-                                  ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList, int limit,
-                                  int offset) throws CedarProcessingException {
-    return permissionEnabledSearchWorker.searchQueryString(rctx, query, resourceTypes, version, publicationStatus, categoryId, sortList, limit,
-        offset);
   }
 
   public FolderServerNodeListResponse searchDeep(CedarRequestContext rctx, String query, String id, List<String> resourceTypes,
@@ -179,6 +189,14 @@ public class NodeSearchingService extends AbstractSearchingService {
     response.setRequest(req);
 
     return response;
+  }
+
+  public long searchAccessibleResourceCountByUser(List<String> resourceTypes, FilesystemResourcePermission permission, CedarUser user) throws CedarProcessingException {
+    try {
+      return permissionEnabledSearchWorker.searchAccessibleResourceCountByUser(resourceTypes, permission, user);
+    } catch (Exception e) {
+      throw new CedarProcessingException(e);
+    }
   }
 
 }

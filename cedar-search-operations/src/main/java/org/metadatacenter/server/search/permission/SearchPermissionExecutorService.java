@@ -4,6 +4,7 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.*;
+import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.Upsert;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerArtifact;
@@ -36,9 +37,7 @@ public class SearchPermissionExecutorService {
   private final IndexUtils indexUtils;
   private final CedarRequestContext cedarRequestContext;
 
-  public SearchPermissionExecutorService(CedarConfig cedarConfig,
-                                         IndexUtils indexUtils,
-                                         NodeSearchingService nodeSearchingService,
+  public SearchPermissionExecutorService(CedarConfig cedarConfig, IndexUtils indexUtils, NodeSearchingService nodeSearchingService,
                                          NodeIndexingService nodeIndexingService) {
     UserService userService = CedarDataServices.getNeoUserService();
     this.nodeSearchingService = nodeSearchingService;
@@ -113,7 +112,7 @@ public class SearchPermissionExecutorService {
       allCedarIdsForGroup = nodeSearchingService.findAllCedarIdsForGroup(groupId);
       for (String cid : allCedarIdsForGroup) {
         log.info("Need to update permissions for:" + cid);
-        upsertOnePermissions(Upsert.UPDATE, CedarUntypedArtifactId.build(cid));
+        upsertOnePermissions(Upsert.UPDATE, CedarUntypedFilesystemResourceId.build(cid));
       }
     } catch (CedarProcessingException e) {
       log.error("Error while retrieving all the affected documents for group:" + groupId);
@@ -127,8 +126,8 @@ public class SearchPermissionExecutorService {
       FileSystemResource node = folderSession.findResourceById(resourceId);
       CedarNodeMaterializedPermissions perm = permissionSession.getResourceMaterializedPermission(resourceId);
       CedarNodeMaterializedCategories categories = null;
-      if (resourceId instanceof CedarArtifactId) {
-        categories = categorySession.getArtifactMaterializedCategories((CedarArtifactId) resourceId);
+      if (node != null && node.getType() != CedarResourceType.FOLDER) {
+        categories = categorySession.getArtifactMaterializedCategories(CedarUntypedArtifactId.build(resourceId.getId()));
       }
       if (upsert == Upsert.UPDATE) {
         nodeIndexingService.removeDocumentFromIndex(resourceId);

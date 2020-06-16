@@ -13,6 +13,7 @@ import org.metadatacenter.server.neo4j.NodeLabel;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
+import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderUser;
 import org.metadatacenter.server.neo4j.cypher.query.AbstractCypherQueryBuilder;
 import org.metadatacenter.server.neo4j.cypher.query.CypherQueryBuilderGroup;
 import org.metadatacenter.server.neo4j.parameter.CypherParameters;
@@ -120,6 +121,20 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     CypherParameters params = AbstractCypherParamBuilder.matchFromNodeToNode(user.getId(), group.getId());
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeWrite(q, "removing relation");
+  }
+
+  public List<FolderServerGroup> findGroupsOfMemberUser(CedarUserId userId) {
+    String cypher = CypherQueryBuilderGroup.getGroupsByMemberUserId();
+    CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerGroup.class);
+  }
+
+  public List<FolderServerGroup> findGroupsOfAdministratorUser(CedarUserId userId) {
+    String cypher = CypherQueryBuilderGroup.getGroupsByAdministratorUserId();
+    CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetList(q, FolderServerGroup.class);
   }
 
 }

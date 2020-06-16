@@ -121,4 +121,17 @@ public class CypherQueryBuilderGroup extends AbstractCypherQueryBuilder {
     return sb.toString();
   }
 
+  public static String getGroupsByMemberUserId() {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (user)-[:<REL.MEMBEROF>]->(group:<LABEL.GROUP>)" +
+        " RETURN group";
+  }
+
+  public static String getGroupsByAdministratorUserId() {
+    return "" +
+        " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
+        " MATCH (user)-[:<REL.ADMINISTERS>]->(group:<LABEL.GROUP>)" +
+        " RETURN group";
+  }
 }
