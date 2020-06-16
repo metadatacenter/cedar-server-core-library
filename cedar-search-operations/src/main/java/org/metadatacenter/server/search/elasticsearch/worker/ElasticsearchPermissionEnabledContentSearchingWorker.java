@@ -22,8 +22,8 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
-import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
@@ -70,6 +70,18 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
     }
 
     return result;
+  }
+
+  public String searchQueryString(CedarRequestContext rctx, String query, List<String> resourceTypes, ResourceVersionFilter version,
+                                     ResourcePublicationStatusFilter publicationStatus, String categoryId, List<String> sortList, int limit,
+                                     int offset) throws CedarProcessingException {
+
+    SearchRequestBuilder searchRequest = getSearchRequestBuilder(rctx, query, resourceTypes, version, publicationStatus, categoryId, sortList);
+
+    searchRequest.setFrom(offset);
+    searchRequest.setSize(limit);
+
+    return searchRequest.toString();
   }
 
   // It uses the scroll API. It retrieves all results. No pagination and therefore no offset. Scrolling is not

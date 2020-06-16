@@ -128,21 +128,6 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return sb.toString();
   }
 
-  public static String getUsersWithTransitiveWriteOnFilesystemResource() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (user:<LABEL.USER>)");
-    sb.append(" MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})");
-    sb.append(" WHERE");
-
-    sb.append(" (");
-    sb.append(getUserToResourceRelationWithContains(RelationLabel.OWNS, "resource"));
-    sb.append(" OR ");
-    sb.append(getUserToResourceRelationThroughGroupWithContains(RelationLabel.CANWRITE, "resource"));
-    sb.append(" )");
-    sb.append(" RETURN user");
-    return sb.toString();
-  }
-
   public static String getUserIdsWithTransitiveWriteOnFilesystemResource() {
     StringBuilder sb = new StringBuilder();
     sb.append(" MATCH (user:<LABEL.USER>)");
@@ -158,18 +143,6 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return sb.toString();
   }
 
-  public static String getGroupsWithTransitiveReadOnFilesystemResource() {
-    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
-
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (group:<LABEL.GROUP>)");
-    sb.append(" -[:<REL.CANREAD>]->()-[:<REL.CONTAINS>*0..]->");
-    sb.append(node);
-    sb.append(" RETURN group");
-
-    return sb.toString();
-  }
-
   public static String getGroupIdsWithTransitiveReadOnFilesystemResource() {
     String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
 
@@ -179,17 +152,6 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     sb.append(node);
     sb.append(" RETURN group.<PROP.ID>");
 
-    return sb.toString();
-  }
-
-  public static String getGroupsWithTransitiveWriteOnFilesystemResource() {
-    String node = "(resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})";
-
-    StringBuilder sb = new StringBuilder();
-    sb.append(" MATCH (group:<LABEL.GROUP>)");
-    sb.append(" -[:<REL.CANWRITE>]->()-[:<REL.CONTAINS>*0..]->");
-    sb.append(node);
-    sb.append(" RETURN group");
     return sb.toString();
   }
 
