@@ -9,4 +9,5 @@ public final class CedarHeaderParameters {
   public static final String GLOBAL_REQUEST_ID_KEY = "CEDAR-Global-Request-Id";
   public static final String LOCAL_REQUEST_ID_KEY = "CEDAR-Local-Request-Id";
   public static final String CLIENT_SESSION_ID = "CEDAR-Client-Session-Id";
+  public static final String SOURCE_HASH = "CEDAR-Source-Hash";
 }

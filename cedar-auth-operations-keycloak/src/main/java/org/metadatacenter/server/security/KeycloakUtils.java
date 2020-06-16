@@ -1,8 +1,22 @@
 package org.metadatacenter.server.security;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.util.JsonSerialization;
+import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.security.AccessTokenExpiredException;
 import org.metadatacenter.exception.security.AccessTokenMissingException;
 import org.metadatacenter.exception.security.CedarAccessException;
@@ -66,5 +80,63 @@ public class KeycloakUtils {
       log.error("Error while getting user", e);
     }
     return user;
+  }
+
+  public static KeycloakUtilInfo initKeycloak(CedarConfig cedarConfig) {
+    KeycloakUtilInfo kcInfo = new KeycloakUtilInfo();
+
+    kcInfo.setCedarAdminUserName(cedarConfig.getAdminUserConfig().getUserName());
+    kcInfo.setCedarAdminUserPassword(cedarConfig.getAdminUserConfig().getPassword());
+    kcInfo.setCedarAdminUserApiKey(cedarConfig.getAdminUserConfig().getApiKey());
+    kcInfo.setKeycloakClientId(cedarConfig.getKeycloakConfig().getClientId());
+
+    KeycloakDeploymentProvider keycloakDeploymentProvider = new KeycloakDeploymentProvider();
+    KeycloakDeployment keycloakDeployment = keycloakDeploymentProvider.buildDeployment(cedarConfig.getKeycloakConfig());
+
+    kcInfo.setKeycloakRealmName(keycloakDeployment.getRealm());
+    kcInfo.setKeycloakBaseURI(keycloakDeployment.getAuthServerBaseUrl());
+
+    return kcInfo;
+  }
+
+  private static JacksonJsonProvider getCustomizedJacksonJsonProvider() {
+    ObjectMapper m = new ObjectMapper();
+    JacksonJsonProvider jacksonJsonProvider = new JacksonJaxbJsonProvider();
+    jacksonJsonProvider.setMapper(m);
+
+    m.addHandler(new DeserializationProblemHandler() {
+      @Override
+      public boolean handleUnknownProperty(DeserializationContext ctxt, JsonParser jp, JsonDeserializer<?>
+          deserializer, Object beanOrClass, String propertyName) throws IOException {
+        //out.info("Run into unknown property:" + propertyName + "=>" + ctxt.getParser().getText());
+        if ("access_token".equals(propertyName)) {
+          if (beanOrClass instanceof AccessTokenResponse) {
+            AccessTokenResponse atr = (AccessTokenResponse) beanOrClass;
+            String text = ctxt.getParser().getText();
+            atr.setToken(text);
+          }
+        } else {
+          super.handleUnknownProperty(ctxt, jp, deserializer, beanOrClass, propertyName);
+        }
+        return true;
+      }
+    });
+    return jacksonJsonProvider;
+  }
+
+  public static Keycloak buildKeycloak(KeycloakUtilInfo kcInfo) {
+    JacksonJsonProvider jacksonJsonProvider = getCustomizedJacksonJsonProvider();
+
+    ResteasyClient resteasyClient = new ResteasyClientBuilder().connectionPoolSize(10).register(jacksonJsonProvider)
+        .build();
+
+    return KeycloakBuilder.builder()
+        .serverUrl(kcInfo.getKeycloakBaseURI())
+        .realm(kcInfo.getKeycloakRealmName())
+        .username(kcInfo.getCedarAdminUserName())
+        .password(kcInfo.getCedarAdminUserPassword())
+        .clientId(kcInfo.getKeycloakClientId())
+        .resteasyClient(resteasyClient)
+        .build();
   }
 }

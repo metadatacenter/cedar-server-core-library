@@ -15,21 +15,12 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
         " RETURN count(child)";
   }
 
-  public static String getFolderContentsFilteredCountQuery(ResourceVersionFilter version,
-                                                           ResourcePublicationStatusFilter publicationStatus,
-                                                           boolean addPermissionConditions) {
+  public static String getFolderContentsFilteredCountQuery(ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus) {
     StringBuilder sb = new StringBuilder();
-    if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-    }
     sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
     sb.append(" WHERE child.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions(" AND ", "parent"));
-      sb.append(getResourcePermissionConditions(" AND ", "child"));
-    }
     if (version != null && version != ResourceVersionFilter.ALL) {
       sb.append(getVersionConditions(version, " AND ", "child"));
     }
@@ -41,20 +32,12 @@ public class CypherQueryBuilderFolderContent extends AbstractCypherQueryBuilder 
   }
 
   public static String getFolderContentsFilteredLookupQuery(List<String> sortList, ResourceVersionFilter version,
-                                                            ResourcePublicationStatusFilter publicationStatus,
-                                                            boolean addPermissionConditions) {
+                                                            ResourcePublicationStatusFilter publicationStatus) {
     StringBuilder sb = new StringBuilder();
-    if (addPermissionConditions) {
-      sb.append(" MATCH (user:<LABEL.USER> {<PROP.ID>:{userId}})");
-    }
     sb.append(" MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{folderId}})");
     sb.append(" MATCH (child)");
     sb.append(" MATCH (parent)-[:<REL.CONTAINS>]->(child)");
     sb.append(" WHERE child.<PROP.RESOURCE_TYPE> in {resourceTypeList}");
-    if (addPermissionConditions) {
-      sb.append(getResourcePermissionConditions(" AND ", "parent"));
-      sb.append(getResourcePermissionConditions(" AND ", "child"));
-    }
     if (version != null && version != ResourceVersionFilter.ALL) {
       sb.append(getVersionConditions(version, " AND ", "child"));
     }

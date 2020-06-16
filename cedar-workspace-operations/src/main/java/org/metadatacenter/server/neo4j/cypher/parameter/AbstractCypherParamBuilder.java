@@ -22,7 +22,6 @@ public abstract class AbstractCypherParamBuilder {
   }
 
   protected static CypherParameters createFilesystemResource(FileSystemResource newResource, CedarFolderId parentFolderId) {
-
     Instant now = Instant.now();
     String nowString = CedarConstants.xsdDateTimeFormatter.format(now);
     Long nowTS = now.getEpochSecond();
@@ -42,6 +41,10 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.LAST_UPDATED_ON_TS, nowTS);
     params.put(NodeProperty.OWNED_BY, newResource.getOwnedBy());
     params.put(NodeProperty.RESOURCE_TYPE, newResource.getType().getValue());
+
+    if (newResource.getSourceHash() != null) {
+      params.put(NodeProperty.SOURCE_HASH, newResource.getSourceHash());
+    }
 
     if (newResource instanceof FolderServerFolder) {
       FolderServerFolder newFolder = (FolderServerFolder) newResource;
@@ -110,7 +113,6 @@ public abstract class AbstractCypherParamBuilder {
     params.put(NodeProperty.ID, resourceId);
     return params;
   }
-
 
   protected static CypherParameters getResourceByIdentityAndName(CedarFilesystemResourceId folderId, String resourceName) {
     CypherParameters params = new CypherParameters();

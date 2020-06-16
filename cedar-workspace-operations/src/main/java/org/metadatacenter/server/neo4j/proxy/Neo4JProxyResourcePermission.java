@@ -141,22 +141,6 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     return executeReadGetList(q, FolderServerGroup.class);
   }
 
-  List<FolderServerUser> getUsersWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
-    String cypher = null;
-    switch (permission) {
-      case READ:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveReadOnFilesystemResource();
-        break;
-      case WRITE:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveWriteOnFilesystemResource();
-        break;
-    }
-
-    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResource(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerUser.class);
-  }
-
   List<CedarUserId> getUserIdsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     String cypher = null;
     switch (permission) {
@@ -164,7 +148,7 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
         cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveReadOnFilesystemResource();
         break;
       case WRITE:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveWriteOnFilesystemResource();
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getUserIdsWithTransitiveWriteOnFilesystemResource();
         break;
     }
 
@@ -173,30 +157,14 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     return executeReadGetIdList(q, CedarUserId.class);
   }
 
-  List<FolderServerGroup> getGroupsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
-    String cypher = null;
-    switch (permission) {
-      case READ:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveReadOnFilesystemResource();
-        break;
-      case WRITE:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveWriteOnFilesystemResource();
-        break;
-    }
-
-    CypherParameters params = CypherParamBuilderFilesystemResource.matchFilesystemResource(resourceId);
-    CypherQuery q = new CypherQueryWithParameters(cypher, params);
-    return executeReadGetList(q, FolderServerGroup.class);
-  }
-
   List<CedarGroupId> getGroupIdsWithTransitivePermissionOnResource(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveReadOnFilesystemResource();
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupIdsWithTransitiveReadOnFilesystemResource();
         break;
       case WRITE:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupsWithTransitiveWriteOnFilesystemResource();
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getGroupIdsWithTransitiveWriteOnFilesystemResource();
         break;
     }
 
@@ -211,7 +179,7 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     List<ResourceIdEverybodyPermissionTuple> nodesWithEverybodyPermission = executeReadGetToupleList(q, ResourceIdEverybodyPermissionTuple.class);
     NodeSharePermission perm = null;
-    for(ResourceIdEverybodyPermissionTuple t : nodesWithEverybodyPermission) {
+    for (ResourceIdEverybodyPermissionTuple t : nodesWithEverybodyPermission) {
       if (perm == null) {
         perm = t.getEverybodyPermission();
       } else if (t.getEverybodyPermission() == NodeSharePermission.WRITE) {

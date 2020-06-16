@@ -40,4 +40,6 @@ public interface CedarRequestContext {
   String getLocalRequestIdHeader();
 
   String getClientSessionIdHeader();
+
+  String getSourceHashHeader();
 }

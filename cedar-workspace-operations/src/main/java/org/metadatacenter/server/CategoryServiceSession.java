@@ -47,5 +47,7 @@ public interface CategoryServiceSession {
 
   List<List<FolderServerCategoryExtract>> getAttachedCategoryPaths(CedarArtifactId artifactId);
 
+  List<CedarCategoryId> getAttachedCategoryIds(CedarArtifactId artifactId);
+
   List<FolderServerCategoryExtract> getCategoryPath(CedarCategoryId cid);
 }

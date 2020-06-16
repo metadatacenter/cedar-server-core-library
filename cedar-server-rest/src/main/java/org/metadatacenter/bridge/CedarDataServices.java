@@ -143,6 +143,17 @@ public final class CedarDataServices {
     }
   }
 
+  // DO NOT USE unless you need internal functionality
+  public static Neo4JProxies getProxies() {
+    if (instance.proxies == null) {
+      log.error("You need to initialize Neo4j services:CedarDataServices.initializeNeo4jServices(cedarConfig)");
+      System.exit(-2);
+      return null;
+    } else {
+      return instance.proxies;
+    }
+  }
+
   public static UserService getNeoUserService() {
     if (instance.neoUserService == null) {
       log.error("You need to initialize neo user service: CedarDataServices.initializeNeoUserService()");

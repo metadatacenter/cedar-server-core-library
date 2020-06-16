@@ -25,8 +25,7 @@ public final class LinkHeaderUtil {
   private LinkHeaderUtil() {
   }
 
-  public static String getPagingLinkHeader(String baseUrl, Long total, Integer limit, Integer
-      offset) {
+  public static String getPagingLinkHeader(String baseUrl, Long total, Integer limit, Integer offset) {
 
     Map<String, String> pagingLinkHeaders = getPagingLinkHeaders(baseUrl, total, limit, offset);
 
@@ -36,13 +35,11 @@ public final class LinkHeaderUtil {
     return links.toString();
   }
 
-  public static Map<String, String> getPagingLinkHeaders(URI uri, Long total, Integer limit,
-                                                         Integer offset) {
+  public static Map<String, String> getPagingLinkHeaders(URI uri, Long total, Integer limit, Integer offset) {
     return getPagingLinkHeaders(uri.toString(), total, limit, offset);
   }
 
-  public static Map<String, String> getPagingLinkHeaders(String baseUrl, Long total, Integer limit,
-                                                         Integer offset) {
+  public static Map<String, String> getPagingLinkHeaders(String baseUrl, Long total, Integer limit, Integer offset) {
     if (limit == null) {
       limit = 0;
     }

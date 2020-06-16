@@ -13,8 +13,8 @@ public class NodeListRequest {
   private List<CedarResourceType> resourceTypes;
   private ResourceVersionFilter version;
   private ResourcePublicationStatusFilter publicationStatus;
-  private long limit;
-  private long offset;
+  private int limit;
+  private int offset;
   private List<String> sort;
   private String q;
   private String id;
@@ -47,19 +47,19 @@ public class NodeListRequest {
     this.publicationStatus = publicationStatus;
   }
 
-  public long getLimit() {
+  public int getLimit() {
     return limit;
   }
 
-  public void setLimit(long limit) {
+  public void setLimit(int limit) {
     this.limit = limit;
   }
 
-  public long getOffset() {
+  public int getOffset() {
     return offset;
   }
 
-  public void setOffset(long offset) {
+  public void setOffset(int offset) {
     this.offset = offset;
   }
 

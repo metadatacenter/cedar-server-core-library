@@ -14,22 +14,18 @@ import java.util.Collection;
 public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder {
 
   public static CypherParameters getFolderContentsFilteredCountParameters(CedarFolderId folderId, Collection<CedarResourceType> resourceTypes,
-                                                                          ResourceVersionFilter version,
-                                                                          ResourcePublicationStatusFilter publicationStatus, CedarUserId ownerId) {
+                                                                          ResourcePublicationStatusFilter publicationStatus) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderId);
     params.addResourceTypes(resourceTypes);
     if (publicationStatus != null) {
       params.put(NodeProperty.PUBLICATION_STATUS, publicationStatus.getValue());
     }
-    params.put(ParameterPlaceholder.USER_ID, ownerId);
     return params;
   }
 
   public static CypherParameters getFolderContentsFilteredLookupParameters(CedarFolderId folderId, Collection<CedarResourceType> resourceTypes,
-                                                                           ResourceVersionFilter version,
-                                                                           ResourcePublicationStatusFilter publicationStatus, int limit, int offset
-      , CedarUserId ownerId) {
+                                                                           ResourcePublicationStatusFilter publicationStatus, long limit, long offset) {
     CypherParameters params = new CypherParameters();
     params.put(ParameterPlaceholder.FOLDER_ID, folderId);
     params.addResourceTypes(resourceTypes);
@@ -38,7 +34,6 @@ public class CypherParamBuilderFolderContent extends AbstractCypherParamBuilder 
     }
     params.put(ParameterPlaceholder.LIMIT, limit);
     params.put(ParameterPlaceholder.OFFSET, offset);
-    params.put(ParameterPlaceholder.USER_ID, ownerId);
     return params;
   }
 

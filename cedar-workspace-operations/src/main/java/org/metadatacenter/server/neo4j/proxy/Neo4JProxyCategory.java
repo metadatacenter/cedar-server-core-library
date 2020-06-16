@@ -120,6 +120,14 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeReadGetIdList(q, CedarCategoryId.class);
   }
 
+  public List<CedarCategoryId> getCategoryIds(CedarArtifactId artifactId) {
+    String cypher = CypherQueryBuilderCategory.getCategoryIdsByArtifactId();
+    CypherParameters params = CypherParamBuilderArtifact.matchId(artifactId);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetIdList(q, CedarCategoryId.class);
+  }
+
+
   public void updateCategoryOwner(CedarCategoryId categoryId, CedarUserId newOwnerId) {
     boolean userExists = proxies.user().userExists(newOwnerId);
     if (userExists) {
