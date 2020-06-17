@@ -55,7 +55,9 @@ public enum CedarPermission {
   UPDATE_PERMISSION_NOT_WRITABLE_CATEGORY(CedarObjectConstants.NOT_WRITABLE_CATEGORY_PERMISSIONS,
       CedarObjectConstants.ACCESS_UPDATE),
   SEND_PROCESS_MESSAGE(CedarObjectConstants.PROCESS_MESSAGE, CedarObjectConstants.ACCESS_CREATE),
-  UPDATE_NOT_ADMINISTERED_GROUP(CedarObjectConstants.NOT_ADMINISTERED_GROUP, CedarObjectConstants.ACCESS_UPDATE);
+  UPDATE_NOT_ADMINISTERED_GROUP(CedarObjectConstants.NOT_ADMINISTERED_GROUP, CedarObjectConstants.ACCESS_UPDATE),
+
+  INTERNALS_READ(CedarObjectConstants.INTERNALS, CedarObjectConstants.ACCESS_READ);
 
   private final String resourceType;
   private final String accessType;

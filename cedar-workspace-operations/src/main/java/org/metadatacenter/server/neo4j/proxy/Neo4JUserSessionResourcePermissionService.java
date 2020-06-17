@@ -4,7 +4,6 @@ import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.id.CedarFilesystemResourceId;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarUserId;
-import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FileSystemResource;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
@@ -218,38 +217,6 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     return permissions;
   }
 
-  private CedarNodePermissionsWithId buildPermissionsWithIds(FolderServerUser owner, List<CedarUserId> readUsers, List<CedarUserId> writeUsers,
-                                                             List<CedarGroupId> readGroups, List<CedarGroupId> writeGroups) {
-    CedarNodePermissionsWithId permissions = new CedarNodePermissionsWithId();
-    CedarUserExtract o = owner.buildExtract();
-    permissions.setOwner(o);
-    if (readUsers != null) {
-      for (CedarUserId userId : readUsers) {
-        CedarNodeUserIdPermission up = new CedarNodeUserIdPermission(userId, FilesystemResourcePermission.READ);
-        permissions.addUserPermissions(up);
-      }
-    }
-    if (writeUsers != null) {
-      for (CedarUserId userId : writeUsers) {
-        CedarNodeUserIdPermission up = new CedarNodeUserIdPermission(userId, FilesystemResourcePermission.WRITE);
-        permissions.addUserPermissions(up);
-      }
-    }
-    if (readGroups != null) {
-      for (CedarGroupId groupId : readGroups) {
-        CedarNodeGroupIdPermission gp = new CedarNodeGroupIdPermission(groupId, FilesystemResourcePermission.READ);
-        permissions.addGroupPermissions(gp);
-      }
-    }
-    if (writeGroups != null) {
-      for (CedarGroupId groupId : writeGroups) {
-        CedarNodeGroupIdPermission gp = new CedarNodeGroupIdPermission(groupId, FilesystemResourcePermission.WRITE);
-        permissions.addGroupPermissions(gp);
-      }
-    }
-    return permissions;
-  }
-
   @Override
   public CedarNodeMaterializedPermissions getResourceMaterializedPermission(CedarFilesystemResourceId resourceId) {
     FileSystemResource node = proxies.filesystemResource().findResourceById(resourceId);
@@ -315,62 +282,12 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
     return permissions;
   }
 
-  private List<FolderServerUser> getUsersWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
-    return proxies.permission().getUsersWithTransitivePermissionOnResource(resourceId, permission);
-  }
-
   private List<CedarUserId> getUserIdsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     return proxies.permission().getUserIdsWithTransitivePermissionOnResource(resourceId, permission);
   }
 
-  private List<FolderServerGroup> getGroupsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
-    return proxies.permission().getGroupsWithTransitivePermissionOnResource(resourceId, permission);
-  }
-
   private List<CedarGroupId> getGroupIdsWithTransitivePermission(CedarFilesystemResourceId resourceId, FilesystemResourcePermission permission) {
     return proxies.permission().getGroupIdsWithTransitivePermissionOnResource(resourceId, permission);
-  }
-
-
-  static void updateGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupId, CedarGroupUsers currentGroupUsers, CedarGroupUsers newGroupUsers,
-                               RelationLabel relation, Neo4JUserSessionGroupOperations.Filter filter) {
-    Set<CedarUserId> oldUsers = new HashSet<>();
-    for (CedarGroupUser gu : currentGroupUsers.getUsers()) {
-      if ((filter == Neo4JUserSessionGroupOperations.Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Neo4JUserSessionGroupOperations.Filter.MEMBER && gu.isMember())) {
-        oldUsers.add(gu.getResourceId());
-      }
-    }
-    Set<CedarUserId> newUsers = new HashSet<>();
-    for (CedarGroupUser gu : newGroupUsers.getUsers()) {
-      if ((filter == Neo4JUserSessionGroupOperations.Filter.ADMINISTRATOR && gu.isAdministrator()) || (filter == Neo4JUserSessionGroupOperations.Filter.MEMBER && gu.isMember())) {
-        newUsers.add(gu.getResourceId());
-      }
-    }
-
-    Set<CedarUserId> toRemoveUsers = new HashSet<>(oldUsers);
-    toRemoveUsers.removeAll(newUsers);
-    if (!toRemoveUsers.isEmpty()) {
-      removeGroupUsers(neo4JProxy, groupId, toRemoveUsers, relation);
-    }
-
-    Set<CedarUserId> toAddUsers = new HashSet<>();
-    toAddUsers.addAll(newUsers);
-    toAddUsers.removeAll(oldUsers);
-    if (!toAddUsers.isEmpty()) {
-      addGroupUsers(neo4JProxy, groupId, toAddUsers, relation);
-    }
-  }
-
-  private static void addGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupId, Set<CedarUserId> toAddUsers, RelationLabel relation) {
-    for (CedarUserId cuId : toAddUsers) {
-      neo4JProxy.addUserGroupRelation(cuId, groupId, relation);
-    }
-  }
-
-  private static void removeGroupUsers(Neo4JProxyGroup neo4JProxy, CedarGroupId groupId, Set<CedarUserId> toRemoveUsers, RelationLabel relation) {
-    for (CedarUserId cuId : toRemoveUsers) {
-      neo4JProxy.removeUserGroupRelation(cuId, groupId, relation);
-    }
   }
 
   private void addGroupPermissions(CedarFilesystemResourceId resourceId, Set<ResourcePermissionGroupPermissionPair> toAddGroupPermissions) {

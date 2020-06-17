@@ -122,9 +122,11 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
     cedarAdminUserApiKey.add(SystemComponent.SERVER_MESSAGING); // messages from processes
     cedarAdminUserApiKey.add(SystemComponent.SERVER_SUBMISSION);
+    cedarAdminUserApiKey.add(SystemComponent.SERVER_INTERNALS);
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD);
     cedarAdminUserPasswd.add(SystemComponent.ADMIN_TOOL); // all keycloak related tasks
+    cedarAdminUserPasswd.add(SystemComponent.SERVER_INTERNALS);
 
     Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME);
     cedarMongoUserName.add(SystemComponent.ADMIN_TOOL);

@@ -22,8 +22,9 @@ import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexedDocumentType;
 import org.metadatacenter.server.security.model.auth.CedarNodeMaterializedPermissions;
 import org.metadatacenter.server.security.model.auth.CedarPermission;
-import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
 import org.metadatacenter.server.security.model.auth.NodeSharePermission;
+import org.metadatacenter.server.security.model.permission.resource.FilesystemResourcePermission;
+import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
 import org.slf4j.Logger;
@@ -461,4 +462,35 @@ public class ElasticsearchPermissionEnabledContentSearchingWorker {
   }
 
 
+  public long searchAccessibleResourceCountByUser(List<String> resourceTypes, FilesystemResourcePermission permission, CedarUser user) {
+
+    SearchRequestBuilder searchRequest = client.prepareSearch(indexName).setTypes(IndexedDocumentType.DOC.getValue());
+
+    BoolQueryBuilder mainQuery = QueryBuilders.boolQuery();
+
+    if (!user.has(CedarPermission.READ_NOT_READABLE_NODE)) {
+      // Filter by user
+      QueryBuilder userIdQuery = QueryBuilders.termQuery(USERS, CedarNodeMaterializedPermissions.getKey(user.getId(), permission));
+      BoolQueryBuilder permissionQuery = QueryBuilders.boolQuery();
+
+      QueryBuilder everybodyReadQuery = QueryBuilders.termsQuery(COMPUTED_EVERYBODY_PERMISSION, NodeSharePermission.READ.getValue());
+      QueryBuilder everybodyWriteQuery = QueryBuilders.termsQuery(COMPUTED_EVERYBODY_PERMISSION, NodeSharePermission.WRITE.getValue());
+
+      permissionQuery.should(userIdQuery);
+      permissionQuery.should(everybodyReadQuery);
+      permissionQuery.should(everybodyWriteQuery);
+      mainQuery.must(permissionQuery);
+    }
+
+    // Filter by resource type
+    QueryBuilder resourceTypesQuery = QueryBuilders.termsQuery(RESOURCE_TYPE, resourceTypes);
+    mainQuery.must(resourceTypesQuery);
+
+    // Set main query
+    searchRequest.setQuery(mainQuery);
+
+    // Execute request
+    SearchResponse response = searchRequest.execute().actionGet();
+    return response.getHits().getTotalHits();
+  }
 }

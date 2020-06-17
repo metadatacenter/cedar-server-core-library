@@ -139,6 +139,7 @@ public enum CedarErrorKey {
 
   CONTENT_NOT_VALID("contentNotValid"),
 
+  RESOURCE_NOT_FOUND("resourceNotFound"),
   INTERNAL_ERROR("internalError");
 
   private final String value;

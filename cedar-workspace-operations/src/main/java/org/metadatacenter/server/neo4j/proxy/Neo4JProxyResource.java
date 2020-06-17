@@ -81,8 +81,9 @@ public class Neo4JProxyResource extends AbstractNeo4JProxy {
   }
 
   List<Map<String, Object>> findFolderContentsExtractMap(CedarFolderId folderId, Collection<CedarResourceType> resourceTypes,
-                                         ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
-                                         long limit, long offset, List<String> sortList, CedarUserId ownerId, List<String> fieldNameList) {
+                                                         ResourceVersionFilter version, ResourcePublicationStatusFilter publicationStatus,
+                                                         long limit, long offset, List<String> sortList, CedarUserId ownerId,
+                                                         List<String> fieldNameList) {
     String cypher = CypherQueryBuilderFolderContent.getFolderContentsFilteredLookupQuery(sortList, version, publicationStatus);
     CypherParameters params = CypherParamBuilderFolderContent.getFolderContentsFilteredLookupParameters(folderId, resourceTypes, publicationStatus,
         limit, offset);
