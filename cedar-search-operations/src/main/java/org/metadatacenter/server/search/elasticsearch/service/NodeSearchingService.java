@@ -10,8 +10,10 @@ import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
 import org.metadatacenter.exception.CedarProcessingException;
+import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
 import org.metadatacenter.id.CedarGroupId;
+import org.metadatacenter.id.CedarResourceId;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.folderserver.basic.FolderServerCategory;
 import org.metadatacenter.model.folderserver.extract.FolderServerCategoryExtract;
@@ -65,18 +67,17 @@ public class NodeSearchingService extends AbstractSearchingService {
     return getByCedarId(client, resourceId, config.getIndexes().getSearchIndex().getName(), IndexedDocumentType.DOC.getValue());
   }
 
-  public IndexedDocumentDocument getDocumentByCedarId(String resourceId) throws CedarProcessingException {
+  public Map<String, Object> getDocumentByCedarId(CedarResourceId resourceId) throws CedarProcessingException {
     try {
       // Get resources by artifact id
       SearchResponse responseSearch =
           client.prepareSearch(config.getIndexes().getSearchIndex().getName())
               .setTypes(IndexedDocumentType.DOC.getValue())
-              .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId))
+              .setQuery(QueryBuilders.matchQuery(DOCUMENT_CEDAR_ID, resourceId.getId()))
               .execute().actionGet();
       for (SearchHit hit : responseSearch.getHits()) {
         if (hit != null) {
-          Map<String, Object> map = hit.getSourceAsMap();
-          return new IndexedDocumentDocument((String) map.get(DOCUMENT_CEDAR_ID));
+          return hit.getSourceAsMap();
         }
       }
     } catch (Exception e) {
