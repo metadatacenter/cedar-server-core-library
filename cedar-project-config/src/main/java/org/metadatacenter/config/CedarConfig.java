@@ -84,6 +84,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
 
+  @JsonProperty("nciCadsrTools")
+  private NciCadsrToolsConfig nciCadsrToolsConfig;
+
   @JsonProperty("testUsers")
   private TestUsers testUsers;
 
@@ -257,9 +260,9 @@ public class CedarConfig extends Configuration {
     return categoryRESTAPI;
   }
 
-  public SubmissionConfig getSubmissionConfig() {
-    return submissionConfig;
-  }
+  public SubmissionConfig getSubmissionConfig() { return submissionConfig; }
+
+  public NciCadsrToolsConfig getNciCadsrToolsConfig() { return nciCadsrToolsConfig; }
 
   public TestUsers getTestUsers() {
     return testUsers;

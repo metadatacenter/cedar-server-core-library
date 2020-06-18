@@ -51,7 +51,7 @@ public class CedarConfigEnvironmentDescriptor {
     cedarFrontendBeh.add(SystemComponent.FRONTEND_DEVELOPMENT);
     cedarFrontendBeh.add(SystemComponent.FRONTEND_TEST);
     cedarFrontendBeh.add(SystemComponent.FRONTEND_PRODUCTION);
-
+    
     Set<SystemComponent> cedarFrontendTarget = variableToComponent.get(CedarEnvironmentVariable.CEDAR_FRONTEND_TARGET);
     // gulpfile.js replaces this in several files, frontend connects to this server
     cedarFrontendTarget.add(SystemComponent.FRONTEND_DEVELOPMENT);
@@ -101,6 +101,21 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarImmPortSubmissionPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD);
     cedarImmPortSubmissionPassword.add(SystemComponent.SERVER_SUBMISSION);
+
+    Set<SystemComponent> cedarNciCadsrFtpHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_HOST);
+    cedarNciCadsrFtpHost.add(SystemComponent.NCI_CADSR_TOOLS);
+
+    Set<SystemComponent> cedarNciCadsrFtpUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_USER);
+    cedarNciCadsrFtpUser.add(SystemComponent.NCI_CADSR_TOOLS);
+
+    Set<SystemComponent> cedarNciCadsrFtpPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_PASSWORD);
+    cedarNciCadsrFtpPassword.add(SystemComponent.NCI_CADSR_TOOLS);
+
+    Set<SystemComponent> cedarNciCadsrFtpCdesDirectory = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_CDES_DIRECTORY);
+    cedarNciCadsrFtpCdesDirectory.add(SystemComponent.NCI_CADSR_TOOLS);
+
+    Set<SystemComponent> cedarNciCadsrFtpClassificationsDirectory = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_CLASSIFICATIONS_DIRECTORY);
+    cedarNciCadsrFtpClassificationsDirectory.add(SystemComponent.NCI_CADSR_TOOLS);
 
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL);

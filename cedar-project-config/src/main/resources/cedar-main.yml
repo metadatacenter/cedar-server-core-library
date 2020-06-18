@@ -325,6 +325,14 @@ submission:
     - "${CEDAR_SUBMISSION_TEMPLATE_ID_1}"
     - "${CEDAR_SUBMISSION_TEMPLATE_ID_2}"
 
+nciCadsrTools:
+  ftp:
+    host: "${CEDAR_NCI_CADSR_FTP_HOST}"
+    user: "${CEDAR_NCI_CADSR_FTP_USER}"
+    password: "${CEDAR_NCI_CADSR_FTP_PASSWORD}"
+    cdesDirectory: "${CEDAR_NCI_CADSR_FTP_CDES_DIRECTORY}"
+    classificationsDirectory: "${CEDAR_NCI_CADSR_FTP_CLASSIFICATIONS_DIRECTORY}"
+
 testUsers:
   testUser1:
     id: "${CEDAR_TEST_USER1_ID}"

@@ -18,6 +18,7 @@ public enum SystemComponent {
   FRONTEND_DEVELOPMENT("frontend-development"),
   FRONTEND_TEST("frontend-test"),
   FRONTEND_PRODUCTION("frontend-production"),
+  NCI_CADSR_TOOLS("nci-cadsr-tools"),
   ADMIN_TOOL("admin-tool"),
   KEYCLOAK_EVENT_LISTENER("keycloak-event-listener"), // keycloak standalone.xml
   UTIL_BIN("util-bin"), // shell scripts in cedar-util/bin

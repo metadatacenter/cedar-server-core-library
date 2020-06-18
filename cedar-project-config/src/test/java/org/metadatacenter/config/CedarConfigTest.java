@@ -41,6 +41,12 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_PASSWORD.getName(), "ftpPassword");
     env.put(CedarEnvironmentVariable.CEDAR_NCBI_SRA_FTP_DIRECTORY.getName(), "ftpDirectory");
 
+    env.put(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_HOST.getName(), "nciCadsrFtpHost");
+    env.put(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_USER.getName(), "nciCadsrFtpUser");
+    env.put(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_PASSWORD.getName(), "nciCadsrFtpPassword");
+    env.put(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_CDES_DIRECTORY.getName(), "nciCadsrFtpCdesDirectory");
+    env.put(CedarEnvironmentVariable.CEDAR_NCI_CADSR_FTP_CLASSIFICATIONS_DIRECTORY.getName(), "nciCadsrFtpClassificationsDirectory");
+
     env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_USER.getName(), "submissionUser");
     env.put(CedarEnvironmentVariable.CEDAR_IMMPORT_SUBMISSION_PASSWORD.getName(), "submissionPassword");
 
