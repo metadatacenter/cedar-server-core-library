@@ -15,6 +15,7 @@ public class CedarConfigTest {
 
   public static final String CEDAR_ADMIN_USER_PASSWORD = "Password123";
   public static final String CEDAR_ADMIN_USER_API_KEY = "abcd-efgh";
+  public static final String CEDAR_CADSR_ADMIN_USER_API_KEY = "ijkl-mnop";
 
   @Before
   public void setEnvironment() {
@@ -46,6 +47,8 @@ public class CedarConfigTest {
 
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD.getName(), CEDAR_ADMIN_USER_PASSWORD);
     env.put(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY.getName(), CEDAR_ADMIN_USER_API_KEY);
+
+    env.put(CedarEnvironmentVariable.CEDAR_CADSR_ADMIN_USER_API_KEY.getName(), CEDAR_CADSR_ADMIN_USER_API_KEY);
 
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME.getName(), "neo4j");
     env.put(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD.getName(), "userPassword");
@@ -130,9 +133,9 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_WORKER_ADMIN_PORT.getName(), "9111");
     env.put(CedarEnvironmentVariable.CEDAR_WORKER_STOP_PORT.getName(), "9211");
 
-    env.put(CedarEnvironmentVariable.CEDAR_OPEN_HTTP_PORT.getName(), "9013");
-    env.put(CedarEnvironmentVariable.CEDAR_OPEN_ADMIN_PORT.getName(), "9113");
-    env.put(CedarEnvironmentVariable.CEDAR_OPEN_STOP_PORT.getName(), "9213");
+    env.put(CedarEnvironmentVariable.CEDAR_OPENVIEW_HTTP_PORT.getName(), "9013");
+    env.put(CedarEnvironmentVariable.CEDAR_OPENVIEW_ADMIN_PORT.getName(), "9113");
+    env.put(CedarEnvironmentVariable.CEDAR_OPENVIEW_STOP_PORT.getName(), "9213");
 
     env.put(CedarEnvironmentVariable.CEDAR_INTERNALS_HTTP_PORT.getName(), "9014");
     env.put(CedarEnvironmentVariable.CEDAR_INTERNALS_ADMIN_PORT.getName(), "9114");

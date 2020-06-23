@@ -19,6 +19,12 @@ public class Neo4JProxyAdmin extends AbstractNeo4JProxy {
     return executeWrite(q, "deleting all data");
   }
 
+  boolean wipeAllCategories() {
+    String cypher = CypherQueryBuilderAdmin.wipeAllCategories();
+    CypherQuery q = new CypherQueryLiteral(cypher);
+    return executeWrite(q, "deleting all categories");
+  }
+
   boolean createUniqueConstraint(NodeLabel nodeLabel, NodeProperty property) {
     String cypher = CypherQueryBuilderAdmin.createUniqueConstraint(nodeLabel, property);
     CypherQuery q = new CypherQueryLiteral(cypher);

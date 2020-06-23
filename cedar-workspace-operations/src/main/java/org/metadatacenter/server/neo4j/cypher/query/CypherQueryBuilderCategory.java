@@ -57,6 +57,12 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
         " RETURN category";
   }
 
+  public static String getCategoryByIdentifier() {
+    return "" +
+        " MATCH (category:<LABEL.CATEGORY> {<PROP.IDENTIFIER>:{<PROP.IDENTIFIER>}})" +
+        " RETURN category";
+  }
+
   public static String getCategoryByParentAndName() {
     return "" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.NAME>:{<PROP.NAME>}, <PROP.PARENT_CATEGORY_ID>:{<PROP.PARENT_CATEGORY_ID>}})" +
@@ -134,7 +140,7 @@ public class CypherQueryBuilderCategory extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PH.CATEGORY_ID>}})" +
-        " CREATE (user)-[:<REL.OWNSCATEGORY>]->(category)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNSCATEGORY>]->(category)" +
         " SET category.<PROP.OWNED_BY> = {userId}" +
         " RETURN category";
   }

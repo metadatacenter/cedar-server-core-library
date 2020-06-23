@@ -26,7 +26,7 @@ public class ServersConfig {
 
   private ServerConfig worker;
 
-  private ServerConfig open;
+  private ServerConfig openview;
 
   private ServerConfig internals;
 
@@ -74,12 +74,12 @@ public class ServersConfig {
     return worker;
   }
 
-  public ServerConfig getOpen() {
-    return open;
+  public ServerConfig getOpenview() {
+    return openview;
   }
 
   public ServerConfig getInternals() {
-    return open;
+    return internals;
   }
 
   public ServerConfig get(ServerName serverName) {
@@ -106,8 +106,8 @@ public class ServersConfig {
         return valuerecommender;
       case WORKER:
         return worker;
-      case OPEN:
-        return open;
+      case OPENVIEW:
+        return openview;
       case INTERNALS:
         return internals;
       default:

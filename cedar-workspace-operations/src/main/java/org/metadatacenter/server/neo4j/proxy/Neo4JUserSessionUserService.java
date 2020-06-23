@@ -35,7 +35,7 @@ public class Neo4JUserSessionUserService extends AbstractNeo4JUserSession implem
 
   @Override
   public boolean addUserToEverybodyGroup(CedarUserId userId) throws CedarProcessingException {
-    FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+    FolderServerGroup everybody = proxies.group().getEverybodyGroup();
     if (proxies.user().userExists(userId) && everybody != null) {
       return proxies.user().addUserToGroup(userId, everybody.getResourceId());
     }

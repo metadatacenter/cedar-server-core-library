@@ -157,7 +157,7 @@ public class CypherQueryBuilderResource extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (resource:<LABEL.RESOURCE> {<PROP.ID>:{<PH.RESOURCE_ID>}})" +
-        " CREATE (user)-[:<REL.OWNS>]->(resource)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNS>]->(resource)" +
         " SET resource.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
         " RETURN resource";
   }

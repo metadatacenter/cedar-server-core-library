@@ -9,7 +9,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
-        " CREATE (user)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " CREATE UNIQUE (user)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " RETURN user";
   }
 
@@ -17,7 +17,7 @@ public class CypherQueryBuilderFilesystemResourcePermission extends AbstractCyph
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
         " MATCH (resource:<LABEL.FILESYSTEM_RESOURCE> {<PROP.ID>:{<PH.FS_RESOURCE_ID>}})" +
-        " CREATE (group)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
+        " CREATE UNIQUE (group)-[:" + RelationLabel.forFilesystemResourcePermission(permission) + "]->(resource)" +
         " RETURN group";
   }
 
