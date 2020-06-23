@@ -108,7 +108,7 @@ public class Neo4JProxyFolder extends AbstractNeo4JProxy {
     return executeWriteGetOne(q, FolderServerFolder.class);
   }
 
-  private boolean setOwner(CedarFolderId folderId, CedarUserId userId) {
+  public boolean setOwner(CedarFolderId folderId, CedarUserId userId) {
     String cypher = CypherQueryBuilderFolder.setFolderOwner();
     CypherParameters params = CypherParamBuilderFolder.matchFolderAndUser(folderId, userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);

@@ -1,15 +1,13 @@
 package org.metadatacenter.server.neo4j.proxy;
 
 import org.metadatacenter.config.CedarConfig;
+import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarGroupId;
 import org.metadatacenter.id.CedarUserId;
 import org.metadatacenter.model.RelationLabel;
 import org.metadatacenter.model.folderserver.basic.FolderServerGroup;
 import org.metadatacenter.model.folderserver.basic.FolderServerUser;
-import org.metadatacenter.server.neo4j.CypherQuery;
-import org.metadatacenter.server.neo4j.CypherQueryLiteral;
-import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
-import org.metadatacenter.server.neo4j.NodeLabel;
+import org.metadatacenter.server.neo4j.*;
 import org.metadatacenter.server.neo4j.cypher.NodeProperty;
 import org.metadatacenter.server.neo4j.cypher.parameter.AbstractCypherParamBuilder;
 import org.metadatacenter.server.neo4j.cypher.parameter.CypherParamBuilderGroup;
@@ -135,6 +133,10 @@ public class Neo4JProxyGroup extends AbstractNeo4JProxy {
     CypherParameters params = CypherParamBuilderUser.matchUserId(userId);
     CypherQuery q = new CypherQueryWithParameters(cypher, params);
     return executeReadGetList(q, FolderServerGroup.class);
+  }
+
+  public FolderServerGroup getEverybodyGroup() {
+    return findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
   }
 
 }

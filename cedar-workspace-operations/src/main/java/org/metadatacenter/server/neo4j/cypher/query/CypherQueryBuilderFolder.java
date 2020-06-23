@@ -12,7 +12,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         createFSFolder("root", newRoot) +
-        " CREATE (user)-[:<REL.OWNS>]->(root)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNS>]->(root)" +
         " RETURN root";
   }
 
@@ -76,7 +76,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_FOLDER_ID>}})" +
         " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>}})" +
-        " CREATE (parent)-[:<REL.CONTAINS>]->(folder)" +
+        " CREATE UNIQUE (parent)-[:<REL.CONTAINS>]->(folder)" +
         " RETURN folder";
   }
 
@@ -84,7 +84,7 @@ public class CypherQueryBuilderFolder extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (folder:<LABEL.FOLDER> {<PROP.ID>:{<PH.FOLDER_ID>}})" +
-        " CREATE (user)-[:<REL.OWNS>]->(folder)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNS>]->(folder)" +
         " SET folder.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
         " RETURN folder";
   }

@@ -38,8 +38,11 @@ public class CedarUserUtil {
     // create a default API Key
     CedarUserApiKey apiKeyObject = new CedarUserApiKey();
     String adminUserName = cedarConfig.getAdminUserConfig().getUserName();
+    String caDSRAdminUserName = cedarConfig.getCaDSRAdminUserConfig().getUserName();
     if (adminUserName.equals(username)) {
       apiKeyObject.setKey(cedarConfig.getAdminUserConfig().getApiKey());
+    } else if (caDSRAdminUserName.equals(username)) {
+      apiKeyObject.setKey(cedarConfig.getCaDSRAdminUserConfig().getApiKey());
     } else {
       apiKeyObject.setKey(generateApiKey(blueprintProfile.getDefaultAPIKey().getSalt(), (ur.getId())));
     }

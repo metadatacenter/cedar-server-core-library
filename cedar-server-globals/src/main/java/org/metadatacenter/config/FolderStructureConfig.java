@@ -10,6 +10,8 @@ public class FolderStructureConfig {
 
   private GraphCategory rootCategory;
 
+  private GraphCategory caDSRRootCategory;
+
   public GraphFolder getRootFolder() {
     return rootFolder;
   }
@@ -24,5 +26,9 @@ public class FolderStructureConfig {
 
   public GraphCategory getRootCategory() {
     return rootCategory;
+  }
+
+  public GraphCategory getCaDSRRootCategory() {
+    return caDSRRootCategory;
   }
 }

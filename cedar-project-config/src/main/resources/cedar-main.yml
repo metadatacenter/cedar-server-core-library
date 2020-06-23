@@ -8,6 +8,11 @@ adminUser:
   #apiKey
   apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
+caDSRAdminUser:
+  userName: "cadsr-admin"
+  #apiKey
+  apiKey: "${CEDAR_CADSR_ADMIN_USER_API_KEY}"
+
 #Keycloak server related settings.
 keycloak:
   #For admin tasks
@@ -105,9 +110,14 @@ folderStructure:
     name: "Everybody"
     description: "Group holding all the users"
   rootCategory:
-    name: "ROOT-CATEGORY"
+    name: "Root Category"
     description: "CEDAR Root Category"
-    identifier: "CEDAR Root Category Identifier"
+    identifier: "ROOT-CATEGORY-ID"
+  caDSRRootCategory:
+    name: "NCI caDSR"
+    description: "CDE Categories"
+    identifier: "CADSR-CATEGORY-ID"
+
 
 #Server bases
 #for inter-service REST calls

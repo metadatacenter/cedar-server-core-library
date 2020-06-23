@@ -128,6 +128,9 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminUserPasswd.add(SystemComponent.ADMIN_TOOL); // all keycloak related tasks
     cedarAdminUserPasswd.add(SystemComponent.SERVER_INTERNALS);
 
+    Set<SystemComponent> cedarCaDSRAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_CADSR_ADMIN_USER_API_KEY);
+    cedarCaDSRAdminUserApiKey.add(SystemComponent.ADMIN_TOOL);
+
     Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME);
     cedarMongoUserName.add(SystemComponent.ADMIN_TOOL);
     // all the microservices for MongoDB initialization for user details
