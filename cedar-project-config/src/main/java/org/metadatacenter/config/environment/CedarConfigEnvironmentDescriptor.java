@@ -227,7 +227,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarHttpPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_HTTP_PORT);
     cedarHttpPortUser.addAll(allMicroservices);
-    cedarHttpPortUser.remove(SystemComponent.SERVER_OPEN);
+    cedarHttpPortUser.remove(SystemComponent.SERVER_OPENVIEW);
     Set<SystemComponent> cedarAdminPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_ADMIN_PORT);
     cedarAdminPortUser.add(SystemComponent.SERVER_USER);
     Set<SystemComponent> cedarStopPortUser = variableToComponent.get(CedarEnvironmentVariable.CEDAR_USER_STOP_PORT);
@@ -301,12 +301,12 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
     cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
-    Set<SystemComponent> cedarHttpPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_HTTP_PORT);
-    cedarHttpPortOpen.add(SystemComponent.SERVER_OPEN);
-    Set<SystemComponent> cedarAdminPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_ADMIN_PORT);
-    cedarAdminPortOpen.add(SystemComponent.SERVER_OPEN);
-    Set<SystemComponent> cedarStopPortOpen = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPEN_STOP_PORT);
-    cedarStopPortOpen.add(SystemComponent.SERVER_OPEN);
+    Set<SystemComponent> cedarHttpPortOpenview = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPENVIEW_HTTP_PORT);
+    cedarHttpPortOpenview.add(SystemComponent.SERVER_OPENVIEW);
+    Set<SystemComponent> cedarAdminPortOpenview = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPENVIEW_ADMIN_PORT);
+    cedarAdminPortOpenview.add(SystemComponent.SERVER_OPENVIEW);
+    Set<SystemComponent> cedarStopPortOpenview = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPENVIEW_STOP_PORT);
+    cedarStopPortOpenview.add(SystemComponent.SERVER_OPENVIEW);
 
     Set<SystemComponent> cedarHttpPortInternals = variableToComponent.get(CedarEnvironmentVariable.CEDAR_INTERNALS_HTTP_PORT);
     cedarHttpPortInternals.add(SystemComponent.SERVER_INTERNALS);
