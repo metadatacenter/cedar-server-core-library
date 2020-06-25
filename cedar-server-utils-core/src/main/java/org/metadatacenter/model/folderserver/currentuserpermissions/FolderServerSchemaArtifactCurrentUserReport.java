@@ -1,18 +1,14 @@
 package org.metadatacenter.model.folderserver.currentuserpermissions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.metadatacenter.id.CedarSchemaArtifactId;
 import org.metadatacenter.id.CedarUntypedSchemaArtifactId;
 import org.metadatacenter.model.BiboStatus;
 import org.metadatacenter.model.CedarResourceType;
 import org.metadatacenter.model.ResourceVersion;
-import org.metadatacenter.model.folderserver.datagroup.PreviousVersionGroup;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithPreviousVersionData;
-import org.metadatacenter.model.folderserver.datagroup.ResourceWithVersionData;
-import org.metadatacenter.model.folderserver.datagroup.VersionDataGroup;
+import org.metadatacenter.model.folderserver.datagroup.*;
 
 public class FolderServerSchemaArtifactCurrentUserReport extends FolderServerArtifactCurrentUserReport implements ResourceWithVersionData,
-    ResourceWithPreviousVersionData {
+    ResourceWithPreviousVersionData, ResourceWithOpenFlag {
 
   protected VersionDataGroup versionDataGroup;
   protected PreviousVersionGroup previousVersionGroup;
