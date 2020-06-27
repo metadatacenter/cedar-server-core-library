@@ -56,6 +56,23 @@ public class ModelNodeValues {
   public static final String CHECKBOX = "checkbox";
 
   /*
+   * Value set for CEDAR "temporalGranularity" property
+   */
+  public static final String TEMPORAL_GRANULARITY_YEAR = "year";
+  public static final String TEMPORAL_GRANULARITY_MONTH = "month";
+  public static final String TEMPORAL_GRANULARITY_DAY = "day";
+  public static final String TEMPORAL_GRANULARITY_HOUR = "hour";
+  public static final String TEMPORAL_GRANULARITY_MINUTE = "minute";
+  public static final String TEMPORAL_GRANULARITY_SECOND = "second";
+  public static final String TEMPORAL_GRANULARITY_DECIMALSECOND = "decimalSecond";
+
+  /*
+   * Value set for CEDAR "displayTimeFormat" property
+   */
+  public static final String TIME_FORMAT_24H = "24h";
+  public static final String TIME_FORMAT_AMPM = "ampm";
+
+  /*
  * Value set for CEDAR "dateType" property
  */
   public static final String SINGLE_DATE = "single-date";

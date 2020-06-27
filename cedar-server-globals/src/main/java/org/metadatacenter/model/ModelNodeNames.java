@@ -144,11 +144,13 @@ public class ModelNodeNames
   public static final String UI_VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
   public static final String UI_FIELD_INPUT_TYPE = "inputType";
   public static final String UI_HIDDEN = "hidden";
-  public static final String UI_INPUT_TIME_DISPLAY_AMPM = "inputTimeDisplayAmPm";
+  public static final String UI_DISPLAY_TIME_FORMAT = "displayTimeFormat";
+  public static final String UI_TEMPORAL_GRANULARITY = "temporalGranularity";
+  public static final String UI_TIMEZONE_ENABLED = "timezoneEnabled";
 
   public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream
     .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN,
-        UI_INPUT_TIME_DISPLAY_AMPM).collect(Collectors.toUnmodifiableSet());
+        UI_DISPLAY_TIME_FORMAT).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR field input types
   public static final String FIELD_INPUT_TYPE_TEXTFIELD = "textfield";
@@ -201,9 +203,6 @@ public class ModelNodeNames
   public static final String VALUE_CONSTRAINTS_NUMBER_TYPE = "numberType";
   public static final String VALUE_CONSTRAINTS_UNIT_OF_MEASURE = "unitOfMeasure";
   public static final String VALUE_CONSTRAINTS_TEMPORAL_TYPE = "temporalType";
-  public static final String VALUE_CONSTRAINTS_XSD_DATE_FINEST_GRANULARITY = "xsdDateFinestGranularity";
-  public static final String VALUE_CONSTRAINTS_XSD_TIME_FINEST_GRANULARITY = "xsdTimeFinestGranularity";
-  public static final String VALUE_CONSTRAINTS_XSD_TIMEZONE_ENABLE = "xsdTimeZoneEnable";
 
   public static final Set<String> VALUE_CONSTRAINTS_KEYWORDS = Stream
     .of(VALUE_CONSTRAINTS_ONTOLOGIES, VALUE_CONSTRAINTS_VALUE_SETS,
@@ -213,9 +212,7 @@ public class ModelNodeNames
       VALUE_CONSTRAINTS_SOURCE, VALUE_CONSTRAINTS_ACRONYM, VALUE_CONSTRAINTS_EXCLUSIONS, VALUE_CONSTRAINTS_REQUIRED_VALUE,
       VALUE_CONSTRAINTS_SELECTED_BY_DEFAULT, VALUE_CONSTRAINTS_MIN_STRING_LENGTH, VALUE_CONSTRAINTS_MAX_STRING_LENGTH,
       VALUE_CONSTRAINTS_MIN_NUMBER_VALUE, VALUE_CONSTRAINTS_MAX_NUMBER_VALUE, VALUE_CONSTRAINTS_DECIMAL_PLACE,
-      VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE, VALUE_CONSTRAINTS_TEMPORAL_TYPE,
-        VALUE_CONSTRAINTS_XSD_DATE_FINEST_GRANULARITY, VALUE_CONSTRAINTS_XSD_TIME_FINEST_GRANULARITY,
-        VALUE_CONSTRAINTS_XSD_TIMEZONE_ENABLE).collect(Collectors.toUnmodifiableSet());
+      VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE, VALUE_CONSTRAINTS_TEMPORAL_TYPE).collect(Collectors.toUnmodifiableSet());
 
   public static final String XSD = "xsd";
   public static final String PAV = "pav";
