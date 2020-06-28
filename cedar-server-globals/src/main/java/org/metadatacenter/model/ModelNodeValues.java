@@ -56,7 +56,7 @@ public class ModelNodeValues {
    * Value set for CEDAR "displayTimeFormat" property
    */
   public static final String TIME_FORMAT_24H = "24h";
-  public static final String TIME_FORMAT_AMPM = "ampm";
+  public static final String TIME_FORMAT_12H = "12h";
 
   /*
  * Value set for CEDAR "dateType" property
