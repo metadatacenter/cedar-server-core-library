@@ -42,20 +42,6 @@ public class ModelNodeValues {
   public static final String DATE_TIME = "date-time";
 
   /*
-   * Value set for CEDAR "inputType" property
-   */
-  public static final String TEXT_FIELD = "textfield";
-  public static final String TEXT_AREA = "textarea";
-  public static final String RADIO = "radio";
-  public static final String DATE = "date";
-  public static final String EMAIL = "email";
-  public static final String LIST = "list";
-  public static final String NUMERIC = "numeric";
-  public static final String PHONE_NUMBER = "phone-number";
-  public static final String LINK = "link";
-  public static final String CHECKBOX = "checkbox";
-
-  /*
    * Value set for CEDAR "temporalGranularity" property
    */
   public static final String TEMPORAL_GRANULARITY_YEAR = "year";
