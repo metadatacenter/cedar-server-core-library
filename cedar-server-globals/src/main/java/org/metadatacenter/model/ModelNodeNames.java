@@ -144,13 +144,13 @@ public class ModelNodeNames
   public static final String UI_VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
   public static final String UI_FIELD_INPUT_TYPE = "inputType";
   public static final String UI_HIDDEN = "hidden";
-  public static final String UI_DISPLAY_TIME_FORMAT = "displayTimeFormat";
+  public static final String UI_INPUT_TIME_FORMAT = "inputTimeFormat";
   public static final String UI_TEMPORAL_GRANULARITY = "temporalGranularity";
   public static final String UI_TIMEZONE_ENABLED = "timezoneEnabled";
 
   public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream
     .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN,
-        UI_DISPLAY_TIME_FORMAT).collect(Collectors.toUnmodifiableSet());
+        UI_INPUT_TIME_FORMAT, UI_TEMPORAL_GRANULARITY, UI_TIMEZONE_ENABLED).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR field input types
   public static final String FIELD_INPUT_TYPE_TEXTFIELD = "textfield";
