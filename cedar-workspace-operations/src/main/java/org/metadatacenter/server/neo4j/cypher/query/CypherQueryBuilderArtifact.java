@@ -43,7 +43,7 @@ public class CypherQueryBuilderArtifact extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_FOLDER_ID>}})" +
         " MATCH (artifact:<LABEL.ARTIFACT> {<PROP.ID>:{<PH.ARTIFACT_ID>}})" +
-        " CREATE (parent)-[:<REL.CONTAINS>]->(artifact)" +
+        " CREATE UNIQUE (parent)-[:<REL.CONTAINS>]->(artifact)" +
         " RETURN artifact";
   }
 
@@ -51,7 +51,7 @@ public class CypherQueryBuilderArtifact extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (artifact:<LABEL.ARTIFACT> {<PROP.ID>:{<PH.ARTIFACT_ID>}})" +
-        " CREATE (user)-[:<REL.OWNS>]->(artifact)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNS>]->(artifact)" +
         " SET artifact.<PROP.OWNED_BY> = {<PH.USER_ID>}" +
         " RETURN artifact";
   }
@@ -84,7 +84,7 @@ public class CypherQueryBuilderArtifact extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (nr:<LABEL.ARTIFACT> {<PROP.ID>:{<PH.SOURCE_ID>}})" +
         " MATCH (or:<LABEL.ARTIFACT> {<PROP.ID>:{<PH.TARGET_ID>}})" +
-        " CREATE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
+        " CREATE UNIQUE (nr)-[:<REL.DERIVEDFROM>]->(or)" +
         " SET nr.<PROP.DERIVED_FROM> = {<PH.TARGET_ID>}" +
         " RETURN nr";
   }

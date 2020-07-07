@@ -8,6 +8,11 @@ adminUser:
   #apiKey
   apiKey: "${CEDAR_ADMIN_USER_API_KEY}"
 
+caDSRAdminUser:
+  userName: "cadsr-admin"
+  #apiKey
+  apiKey: "${CEDAR_CADSR_ADMIN_USER_API_KEY}"
+
 #Keycloak server related settings.
 keycloak:
   #For admin tasks
@@ -105,9 +110,14 @@ folderStructure:
     name: "Everybody"
     description: "Group holding all the users"
   rootCategory:
-    name: "ROOT-CATEGORY"
+    name: "Root Category"
     description: "CEDAR Root Category"
-    identifier: "CEDAR Root Category Identifier"
+    identifier: "ROOT-CATEGORY-ID"
+  caDSRRootCategory:
+    name: "NCI caDSR"
+    description: "CDE Categories"
+    identifier: "CADSR-CATEGORY-ID"
+
 
 #Server bases
 #for inter-service REST calls
@@ -168,10 +178,10 @@ servers:
     httpPort: "${CEDAR_WORKER_HTTP_PORT}"
     adminPort: "${CEDAR_WORKER_ADMIN_PORT}"
     stopPort: "${CEDAR_WORKER_STOP_PORT}"
-  open:
-    httpPort: "${CEDAR_OPEN_HTTP_PORT}"
-    adminPort: "${CEDAR_OPEN_ADMIN_PORT}"
-    stopPort: "${CEDAR_OPEN_STOP_PORT}"
+  openview:
+    httpPort: "${CEDAR_OPENVIEW_HTTP_PORT}"
+    adminPort: "${CEDAR_OPENVIEW_ADMIN_PORT}"
+    stopPort: "${CEDAR_OPENVIEW_STOP_PORT}"
   internals:
     httpPort: "${CEDAR_INTERNALS_HTTP_PORT}"
     adminPort: "${CEDAR_INTERNALS_ADMIN_PORT}"

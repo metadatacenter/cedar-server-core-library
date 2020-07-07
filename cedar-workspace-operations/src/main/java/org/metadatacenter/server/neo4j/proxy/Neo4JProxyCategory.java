@@ -55,6 +55,13 @@ public class Neo4JProxyCategory extends AbstractNeo4JProxy {
     return executeReadGetOne(q, FolderServerCategory.class);
   }
 
+  public FolderServerCategory getCategoryByIdentifier(String identifier) {
+    String cypher = CypherQueryBuilderCategory.getCategoryByIdentifier();
+    CypherParameters params = CypherParamBuilderCategory.matchIdentifier(identifier);
+    CypherQuery q = new CypherQueryWithParameters(cypher, params);
+    return executeReadGetOne(q, FolderServerCategory.class);
+  }
+
   public List<FolderServerCategory> getAllCategories(int limit, int offset) {
     String cypher = CypherQueryBuilderCategory.getAllCategories();
     CypherParameters params = CypherParamBuilderCategory.getAllCategories(limit, offset);

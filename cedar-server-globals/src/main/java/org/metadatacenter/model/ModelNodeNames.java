@@ -144,16 +144,20 @@ public class ModelNodeNames
   public static final String UI_VALUE_RECOMMENDATION_ENABLED = "valueRecommendationEnabled";
   public static final String UI_FIELD_INPUT_TYPE = "inputType";
   public static final String UI_HIDDEN = "hidden";
+  public static final String UI_INPUT_TIME_FORMAT = "inputTimeFormat";
+  public static final String UI_TEMPORAL_GRANULARITY = "temporalGranularity";
+  public static final String UI_TIMEZONE_ENABLED = "timezoneEnabled";
 
   public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream
-    .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN).collect(Collectors.toUnmodifiableSet());
+    .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN,
+        UI_INPUT_TIME_FORMAT, UI_TEMPORAL_GRANULARITY, UI_TIMEZONE_ENABLED).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR field input types
   public static final String FIELD_INPUT_TYPE_TEXTFIELD = "textfield";
   public static final String FIELD_INPUT_TYPE_TEXTAREA = "textarea";
   public static final String FIELD_INPUT_TYPE_RADIO = "radio";
   public static final String FIELD_INPUT_TYPE_CHECKBOX = "checkbox";
-  public static final String FIELD_INPUT_TYPE_DATE = "date";
+  public static final String FIELD_INPUT_TYPE_TEMPORAL = "temporal";
   public static final String FIELD_INPUT_TYPE_EMAIL = "email";
   public static final String FIELD_INPUT_TYPE_LIST = "list";
   public static final String FIELD_INPUT_TYPE_NUMERIC = "numeric";
@@ -166,12 +170,11 @@ public class ModelNodeNames
 
   public static final Set<String> INPUT_TYPES = Stream
     .of(FIELD_INPUT_TYPE_TEXTFIELD, FIELD_INPUT_TYPE_TEXTAREA, FIELD_INPUT_TYPE_RADIO, FIELD_INPUT_TYPE_CHECKBOX,
-      FIELD_INPUT_TYPE_DATE, FIELD_INPUT_TYPE_EMAIL, FIELD_INPUT_TYPE_LIST, FIELD_INPUT_TYPE_NUMERIC,
+        FIELD_INPUT_TYPE_TEMPORAL, FIELD_INPUT_TYPE_EMAIL, FIELD_INPUT_TYPE_LIST, FIELD_INPUT_TYPE_NUMERIC,
       FIELD_INPUT_TYPE_PHONE_NUMBER, FIELD_INPUT_TYPE_SECTION_BREAK, FIELD_INPUT_TYPE_RICH_TEXT, FIELD_INPUT_TYPE_IMAGE,
       FIELD_INPUT_TYPE_LINK, FIELD_INPUT_TYPE_YOUTUBE).collect(Collectors.toUnmodifiableSet());
 
   // CEDAR keywords that can occur in a field schema artifact's _valueConstraints object
-  public static final String VALUE_CONSTRAINTS_DATE_TYPE = "dateType";
   public static final String VALUE_CONSTRAINTS_ONTOLOGIES = "ontologies";
   public static final String VALUE_CONSTRAINTS_VALUE_SETS = "valueSets";
   public static final String VALUE_CONSTRAINTS_CLASSES = "classes";
@@ -199,16 +202,17 @@ public class ModelNodeNames
   public static final String VALUE_CONSTRAINTS_DECIMAL_PLACE = "decimalPlace";
   public static final String VALUE_CONSTRAINTS_NUMBER_TYPE = "numberType";
   public static final String VALUE_CONSTRAINTS_UNIT_OF_MEASURE = "unitOfMeasure";
+  public static final String VALUE_CONSTRAINTS_TEMPORAL_TYPE = "temporalType";
 
   public static final Set<String> VALUE_CONSTRAINTS_KEYWORDS = Stream
-    .of(VALUE_CONSTRAINTS_DATE_TYPE, VALUE_CONSTRAINTS_ONTOLOGIES, VALUE_CONSTRAINTS_VALUE_SETS,
+    .of(VALUE_CONSTRAINTS_ONTOLOGIES, VALUE_CONSTRAINTS_VALUE_SETS,
       VALUE_CONSTRAINTS_CLASSES, VALUE_CONSTRAINTS_BRANCHES, VALUE_CONSTRAINTS_LITERALS,
       VALUE_CONSTRAINTS_MULTIPLE_CHOICE, VALUE_CONSTRAINTS_DEFAULT_VALUE, VALUE_CONSTRAINTS_URI,
       VALUE_CONSTRAINTS_NUM_TERMS, VALUE_CONSTRAINTS_MAX_DEPTH, VALUE_CONSTRAINTS_VS_COLLECTION,
       VALUE_CONSTRAINTS_SOURCE, VALUE_CONSTRAINTS_ACRONYM, VALUE_CONSTRAINTS_EXCLUSIONS, VALUE_CONSTRAINTS_REQUIRED_VALUE,
       VALUE_CONSTRAINTS_SELECTED_BY_DEFAULT, VALUE_CONSTRAINTS_MIN_STRING_LENGTH, VALUE_CONSTRAINTS_MAX_STRING_LENGTH,
       VALUE_CONSTRAINTS_MIN_NUMBER_VALUE, VALUE_CONSTRAINTS_MAX_NUMBER_VALUE, VALUE_CONSTRAINTS_DECIMAL_PLACE,
-      VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE).collect(Collectors.toUnmodifiableSet());
+      VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE, VALUE_CONSTRAINTS_TEMPORAL_TYPE).collect(Collectors.toUnmodifiableSet());
 
   public static final String XSD = "xsd";
   public static final String PAV = "pav";

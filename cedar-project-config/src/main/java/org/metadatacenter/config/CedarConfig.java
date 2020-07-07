@@ -29,6 +29,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("adminUser")
   private AdminUserConfig adminUserConfig;
 
+  @JsonProperty("caDSRAdminUser")
+  private CaDSRAdminUserConfig caDSRAdminUserConfig;
+
   @JsonProperty("keycloak")
   private KeycloakConfig keycloakConfig;
 
@@ -183,6 +186,10 @@ public class CedarConfig extends Configuration {
 
   public AdminUserConfig getAdminUserConfig() {
     return adminUserConfig;
+  }
+
+  public CaDSRAdminUserConfig getCaDSRAdminUserConfig() {
+    return caDSRAdminUserConfig;
   }
 
   public KeycloakConfig getKeycloakConfig() {

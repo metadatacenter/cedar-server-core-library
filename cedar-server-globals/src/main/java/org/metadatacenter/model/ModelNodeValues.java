@@ -42,18 +42,21 @@ public class ModelNodeValues {
   public static final String DATE_TIME = "date-time";
 
   /*
-   * Value set for CEDAR "inputType" property
+   * Value set for CEDAR "temporalGranularity" property
    */
-  public static final String TEXT_FIELD = "textfield";
-  public static final String TEXT_AREA = "textarea";
-  public static final String RADIO = "radio";
-  public static final String DATE = "date";
-  public static final String EMAIL = "email";
-  public static final String LIST = "list";
-  public static final String NUMERIC = "numeric";
-  public static final String PHONE_NUMBER = "phone-number";
-  public static final String LINK = "link";
-  public static final String CHECKBOX = "checkbox";
+  public static final String TEMPORAL_GRANULARITY_YEAR = "year";
+  public static final String TEMPORAL_GRANULARITY_MONTH = "month";
+  public static final String TEMPORAL_GRANULARITY_DAY = "day";
+  public static final String TEMPORAL_GRANULARITY_HOUR = "hour";
+  public static final String TEMPORAL_GRANULARITY_MINUTE = "minute";
+  public static final String TEMPORAL_GRANULARITY_SECOND = "second";
+  public static final String TEMPORAL_GRANULARITY_DECIMALSECOND = "decimalSecond";
+
+  /*
+   * Value set for CEDAR "displayTimeFormat" property
+   */
+  public static final String TIME_FORMAT_24H = "24h";
+  public static final String TIME_FORMAT_12H = "12h";
 
   /*
  * Value set for CEDAR "dateType" property

@@ -26,8 +26,8 @@ import java.io.IOException;
     @JsonSubTypes.Type(value = FolderServerTemplateExtract.class, name = CedarResourceType.Types.TEMPLATE),
     @JsonSubTypes.Type(value = FolderServerTemplateInstanceExtract.class, name = CedarResourceType.Types.INSTANCE)
 })
-public abstract class FolderServerResourceExtract extends AbstractCedarResourceExtract implements FilesystemResourceWithIdAndType, ResourceWithUserNamesData,
-    ResourceWithUsersData, ResourceWithEverybodyPermission {
+public abstract class FolderServerResourceExtract extends AbstractCedarResourceExtract implements FilesystemResourceWithIdAndType,
+    ResourceWithUserNamesData, ResourceWithUsersData, ResourceWithEverybodyPermission {
 
   protected UsersDataGroup usersData;
   protected UserNamesDataGroup userNamesData;

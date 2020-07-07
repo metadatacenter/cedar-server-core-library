@@ -177,7 +177,7 @@ public abstract class AbstractCypherQueryBuilder {
     return "" +
         " MATCH (fromResource:" + fromLabel + " {<PROP.ID>:{fromId} })" +
         " MATCH (toNode:" + toLabel + " {<PROP.ID>:{toId} })" +
-        " CREATE (fromResource)-[:" + relation + "]->(toNode)" +
+        " CREATE UNIQUE (fromResource)-[:" + relation + "]->(toNode)" +
         " RETURN fromResource";
   }
 
@@ -201,12 +201,12 @@ public abstract class AbstractCypherQueryBuilder {
       }
     }
     sb.append(createFSResource("child", newResource));
-    sb.append(" CREATE (user)-[:<REL.OWNS>]->(child)");
-    sb.append(" CREATE (parent)-[:<REL.CONTAINS>]->(child)");
+    sb.append(" CREATE UNIQUE (user)-[:<REL.OWNS>]->(child)");
+    sb.append(" CREATE UNIQUE (parent)-[:<REL.CONTAINS>]->(child)");
     if (newResource instanceof FolderServerSchemaArtifact) {
       FolderServerSchemaArtifact schemaArtifact = (FolderServerSchemaArtifact) newResource;
       if (schemaArtifact.getPreviousVersion() != null) {
-        sb.append("CREATE (child)-[:<REL.PREVIOUSVERSION>]->(pvNode)");
+        sb.append("CREATE UNIQUE (child)-[:<REL.PREVIOUSVERSION>]->(pvNode)");
       }
     }
     sb.append(" RETURN child");
@@ -218,8 +218,8 @@ public abstract class AbstractCypherQueryBuilder {
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (parent:<LABEL.FOLDER> {<PROP.ID>:{<PH.PARENT_ID>}})" +
         createFSFolder("child", newFolder) +
-        " CREATE (user)-[:<REL.OWNS>]->(child)" +
-        " CREATE (parent)-[:<REL.CONTAINS>]->(child)" +
+        " CREATE UNIQUE (user)-[:<REL.OWNS>]->(child)" +
+        " CREATE UNIQUE (parent)-[:<REL.CONTAINS>]->(child)" +
         " RETURN child";
   }
 

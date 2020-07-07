@@ -10,6 +10,10 @@ public class CypherQueryBuilderAdmin extends AbstractCypherQueryBuilder {
     return " MATCH (n:" + NodeLabel.SimpleLabel.RESOURCE + ") DETACH DELETE n";
   }
 
+  public static String wipeAllCategories() {
+    return " MATCH (c:" + NodeLabel.ComposedLabel.CATEGORY + ") DETACH DELETE c";
+  }
+
   public static String createUniqueConstraint(NodeLabel nodeLabel, NodeProperty property) {
     return " CREATE CONSTRAINT ON (n:" + nodeLabel.getSimpleLabel() + ") ASSERT n." +
         Neo4JUtil.escapePropertyName(property.getValue()) + " IS UNIQUE";

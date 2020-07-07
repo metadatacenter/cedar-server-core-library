@@ -9,7 +9,7 @@ public class CypherQueryBuilderCategoryPermission extends AbstractCypherQueryBui
     return "" +
         " MATCH (user:<LABEL.USER> {<PROP.ID>:{<PH.USER_ID>}})" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PH.CATEGORY_ID>}})" +
-        " CREATE (user)-[:" + RelationLabel.forCategoryPermission(permission) + "]->(category)" +
+        " CREATE UNIQUE (user)-[:" + RelationLabel.forCategoryPermission(permission) + "]->(category)" +
         " RETURN user";
   }
 
@@ -17,7 +17,7 @@ public class CypherQueryBuilderCategoryPermission extends AbstractCypherQueryBui
     return "" +
         " MATCH (group:<LABEL.GROUP> {<PROP.ID>:{<PH.GROUP_ID>}})" +
         " MATCH (category:<LABEL.CATEGORY> {<PROP.ID>:{<PH.CATEGORY_ID>}})" +
-        " CREATE (group)-[:" + RelationLabel.forCategoryPermission(permission) + "]->(category)" +
+        " CREATE UNIQUE (group)-[:" + RelationLabel.forCategoryPermission(permission) + "]->(category)" +
         " RETURN group";
   }
 

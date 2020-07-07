@@ -13,7 +13,7 @@ public enum SystemComponent {
   SERVER_USER(ServerName.USER),
   SERVER_VALUERECOMMENDER(ServerName.VALUERECOMMENDER),
   SERVER_WORKER(ServerName.WORKER),
-  SERVER_OPEN(ServerName.OPEN),
+  SERVER_OPENVIEW(ServerName.OPENVIEW),
   SERVER_INTERNALS(ServerName.INTERNALS),
   FRONTEND_DEVELOPMENT("frontend-development"),
   FRONTEND_TEST("frontend-test"),

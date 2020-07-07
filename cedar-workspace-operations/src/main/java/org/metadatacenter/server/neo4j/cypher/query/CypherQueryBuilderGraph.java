@@ -21,7 +21,7 @@ public class CypherQueryBuilderGraph extends AbstractCypherQueryBuilder {
     return "" +
         " MATCH (source {<PROP.ID>:{sourceId}})" +
         " MATCH (target {<PROP.ID>:{targetId}})" +
-        " CREATE (source)-[:" + relationLabel.getValue() + "]->(target)" +
+        " CREATE UNIQUE (source)-[:" + relationLabel.getValue() + "]->(target)" +
         " RETURN source";
   }
 }

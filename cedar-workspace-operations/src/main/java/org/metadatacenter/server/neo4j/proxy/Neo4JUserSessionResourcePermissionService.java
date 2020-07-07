@@ -122,7 +122,7 @@ public class Neo4JUserSessionResourcePermissionService extends AbstractNeo4JUser
 
       ResourceWithEverybodyPermission node = proxies.filesystemResource().findResourceById(resourceId);
       if (node != null) {
-        FolderServerGroup everybody = proxies.group().findGroupBySpecialValue(Neo4JFieldValues.SPECIAL_GROUP_EVERYBODY);
+        FolderServerGroup everybody = proxies.group().getEverybodyGroup();
         NodeSharePermission setEverybodyPermission = null;
         for (ResourcePermissionGroupPermissionPair groupPermission : newGroupPermissions) {
           if (groupPermission.getGroup().getId().equals(everybody.getId())) {
