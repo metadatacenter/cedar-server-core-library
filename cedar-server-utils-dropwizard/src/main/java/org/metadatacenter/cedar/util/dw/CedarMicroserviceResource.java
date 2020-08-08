@@ -66,7 +66,7 @@ public abstract class CedarMicroserviceResource {
 
     String authHeader = sc.getAuthorizationHeader();
     String jwtTokenHash = null;
-    if (authHeader != null && authHeader.startsWith(HTTP_AUTH_HEADER_BEARER_PREFIX)) {
+    if (authHeader != null && (authHeader.regionMatches(true, 0, HTTP_AUTH_HEADER_BEARER_PREFIX, 0, HTTP_AUTH_HEADER_BEARER_PREFIX.length()))) {
       String headerValue = authHeader.substring(HTTP_AUTH_HEADER_BEARER_PREFIX.length());
       jwtTokenHash = DigestUtils.md5Hex(headerValue);
     }

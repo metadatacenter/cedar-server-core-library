@@ -16,6 +16,7 @@ public class CedarErrorPack {
   private CedarErrorReasonKey errorReasonKey = CedarErrorReasonKey.NONE;
   private String message;
   private final Map<String, Object> parameters;
+  private final Map<String, Object> objects;
   private final Map<String, Object> entities;
   private CedarSuggestedAction suggestedAction = CedarSuggestedAction.NONE;
   private Exception originalException;
@@ -25,6 +26,7 @@ public class CedarErrorPack {
   public CedarErrorPack() {
     parameters = new HashMap<>();
     entities = new HashMap<>();
+    objects = new HashMap<>();
   }
 
   public CedarErrorPack(CedarErrorPack other) {
@@ -36,6 +38,7 @@ public class CedarErrorPack {
       errorReasonKey = other.getErrorReasonKey();
       message = other.getMessage();
       parameters.putAll(other.getParameters());
+      objects.putAll(other.getObjects());
       entities.putAll(other.getEntities());
       suggestedAction = other.getSuggestedAction();
       originalException = normalizeException(other.getOriginalException());
@@ -63,6 +66,10 @@ public class CedarErrorPack {
     if (!other.parameters.isEmpty()) {
       parameters.clear();
       parameters.putAll(other.getParameters());
+    }
+    if (!other.objects.isEmpty()) {
+      objects.clear();
+      objects.putAll(other.getObjects());
     }
     if (!other.entities.isEmpty()) {
       entities.clear();
@@ -131,12 +138,21 @@ public class CedarErrorPack {
     return parameters;
   }
 
+  public Map<String, Object> getObjects() {
+    return objects;
+  }
+
   public Map<String, Object> getEntities() {
     return entities;
   }
 
   public CedarErrorPack parameter(String name, Object value) {
     this.parameters.put(name, value);
+    return this;
+  }
+
+  public CedarErrorPack object(String name, Object value) {
+    this.objects.put(name, value);
     return this;
   }
 

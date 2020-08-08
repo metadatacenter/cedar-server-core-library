@@ -9,7 +9,8 @@ public enum CedarErrorReasonKey {
   NON_EMPTY_FOLDER("nonEmptyFolder"),
   USER_HOME_FOLDER("userHomeFolder"),
   SYSTEM_FOLDER("systemFolder"),
-  TEMPLATE_REFERENCED_IN_INSTANCES("templateReferencedInInstances");
+  TEMPLATE_REFERENCED_IN_INSTANCES("templateReferencedInInstances"),
+  VALIDATION_ERROR("validationError");
 
   private final String value;
 

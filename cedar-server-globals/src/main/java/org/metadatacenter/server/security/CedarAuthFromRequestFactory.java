@@ -12,9 +12,9 @@ public abstract class CedarAuthFromRequestFactory {
     if (request != null) {
       String auth = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (auth != null) {
-        if (auth.startsWith(HTTP_AUTH_HEADER_BEARER_PREFIX)) {
+        if (auth.regionMatches(true, 0, HTTP_AUTH_HEADER_BEARER_PREFIX, 0, HTTP_AUTH_HEADER_BEARER_PREFIX.length())) {
           return new CedarBearerAuthRequest(request);
-        } else if (auth.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
+        } else if (auth.regionMatches(true, 0, HTTP_AUTH_HEADER_APIKEY_PREFIX, 0, HTTP_AUTH_HEADER_APIKEY_PREFIX.length())) {
           return new CedarApiKeyAuthRequest(request);
         } else {
           return new CedarUnknownAuthRequest(request);
