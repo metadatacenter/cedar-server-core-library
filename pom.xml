@@ -15,8 +15,8 @@
   <name>CEDAR Server Core Library</name>
 
   <scm>
-    <connection>scm:git:git@github.com:metadatacenter/cedar-server-core-library.git</connection>
-    <developerConnection>scm:git:git@github.com:metadatacenter/cedar-server-core-library.git</developerConnection>
+    <connection>scm:git:https://github.com/metadatacenter/cedar-server-core-library.git</connection>
+    <developerConnection>scm:git:https://github.com/metadatacenter/cedar-server-core-library.git</developerConnection>
     <url>https://github.com/metadatacenter/cedar-server-core-library</url>
     <tag>HEAD</tag>
   </scm>
