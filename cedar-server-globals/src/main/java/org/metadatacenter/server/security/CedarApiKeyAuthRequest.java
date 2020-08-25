@@ -19,7 +19,7 @@ public class CedarApiKeyAuthRequest implements AuthRequest {
     if (request != null) {
       authHeader = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (authHeader != null) {
-        if (authHeader.startsWith(HTTP_AUTH_HEADER_APIKEY_PREFIX)) {
+        if (authHeader.regionMatches(true, 0, HTTP_AUTH_HEADER_APIKEY_PREFIX, 0, HTTP_AUTH_HEADER_APIKEY_PREFIX.length())) {
           apiKey = authHeader.substring(HTTP_AUTH_HEADER_APIKEY_PREFIX.length());
         }
       }

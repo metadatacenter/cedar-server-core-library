@@ -19,7 +19,7 @@ public class CedarBearerAuthRequest implements AuthRequest {
     if (request != null) {
       authHeader = request.getHeader(HTTP_HEADER_AUTHORIZATION);
       if (authHeader != null) {
-        if (authHeader.startsWith(HTTP_AUTH_HEADER_BEARER_PREFIX)) {
+        if (authHeader.regionMatches(true, 0, HTTP_AUTH_HEADER_BEARER_PREFIX, 0, HTTP_AUTH_HEADER_BEARER_PREFIX.length())) {
           tokenString = authHeader.substring(HTTP_AUTH_HEADER_BEARER_PREFIX.length());
         }
       }

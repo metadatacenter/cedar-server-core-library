@@ -35,6 +35,7 @@ public abstract class CedarResponse {
   public static class CedarResponseBuilder {
 
     private final Map<String, Object> parameters;
+    private final Map<String, Object> objects;
     private CedarErrorKey errorKey;
     private CedarErrorReasonKey errorReasonKey;
     private String errorMessage;
@@ -46,10 +47,12 @@ public abstract class CedarResponse {
 
     protected CedarResponseBuilder() {
       this.parameters = new HashMap<>();
+      this.objects = new HashMap<>();
     }
 
     public CedarResponseBuilder(CedarErrorPack errorPack) {
       parameters = errorPack.getParameters();
+      objects = errorPack.getObjects();
       errorKey = errorPack.getErrorKey();
       errorReasonKey = errorPack.getErrorReasonKey();
       errorMessage = errorPack.getMessage();
@@ -76,6 +79,7 @@ public abstract class CedarResponse {
       } else {
         Map<String, Object> r = new HashMap<>();
         r.put("parameters", parameters);
+        r.put("objects", objects);
         r.put("errorKey", errorKey);
         r.put("errorReasonKey", errorReasonKey);
         r.put("errorMessage", errorMessage);
@@ -111,6 +115,11 @@ public abstract class CedarResponse {
 
     public CedarResponseBuilder parameter(String key, Object value) {
       this.parameters.put(key, value);
+      return this;
+    }
+
+    public CedarResponseBuilder object(String key, Object value) {
+      this.objects.put(key, value);
       return this;
     }
 
