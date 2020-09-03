@@ -1,7 +1,7 @@
 # cedar-server-utils
 Collection of utils shared by server components
 
-[![Build Status](https://travis-ci.org/metadatacenter/cedar-server-utils.svg?branch=master)](https://travis-ci.org/metadatacenter/cedar-server-utils)
+[![Build Status](https://travis-ci.com/metadatacenter/cedar-server-utils.svg?branch=master)](https://travis-ci.com/metadatacenter/cedar-server-utils)
 
 #### Questions
 
