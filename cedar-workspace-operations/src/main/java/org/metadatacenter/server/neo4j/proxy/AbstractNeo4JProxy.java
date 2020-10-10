@@ -26,10 +26,10 @@ import org.metadatacenter.server.neo4j.CypherQueryWithParameters;
 import org.metadatacenter.server.neo4j.log.CypherQueryLog;
 import org.metadatacenter.server.neo4j.util.Neo4JUtil;
 import org.metadatacenter.util.json.JsonMapper;
-import org.neo4j.driver.v1.*;
-import org.neo4j.driver.v1.exceptions.ClientException;
-import org.neo4j.driver.v1.types.Node;
-import org.neo4j.driver.v1.types.Path;
+import org.neo4j.driver.*;
+import org.neo4j.driver.exceptions.ClientException;
+import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +163,7 @@ public abstract class AbstractNeo4JProxy {
   }
 
   protected <T extends CedarResource> T executeWriteGetOne(CypherQuery q, Class<T> type) {
-    Record record = null;
+    org.neo4j.driver.Record record = null;
     CypherQueryLog queryLog = null;
     try (Session session = driver.session()) {
       if (q instanceof CypherQueryWithParameters) {
@@ -172,14 +172,14 @@ public abstract class AbstractNeo4JProxy {
         final Map<String, Object> parameterMap = qp.getParameterMap();
         queryLog = prepareQueryLog("writeGetOne", qp);
         record = session.writeTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery, parameterMap);
+          Result result = tx.run(runnableQuery, parameterMap);
           return result.hasNext() ? result.next() : null;
         });
       } else if (q instanceof CypherQueryLiteral) {
         final String runnableQuery = q.getRunnableQuery();
         queryLog = prepareQueryLog("writeGetOne", q);
         record = session.writeTransaction(tx -> {
-          StatementResult result = tx.run(runnableQuery);
+          Result result = tx.run(runnableQuery);
           return result.hasNext() ? result.next() : null;
         });
       }
@@ -194,7 +194,7 @@ public abstract class AbstractNeo4JProxy {
     return extractClassFromRecord(record, type);
   }
 
-  private <T extends CedarResource> T extractClassFromRecord(Record record, Class<T> type) {
+  private <T extends CedarResource> T extractClassFromRecord(org.neo4j.driver.Record record, Class<T> type) {
     if (record != null) {
       Node n = record.get(0).asNode();
       if (n != null) {
@@ -205,8 +205,8 @@ public abstract class AbstractNeo4JProxy {
     return null;
   }
 
-  private Record executeQueryGetRecord(Session session, CypherQuery q) {
-    Record record = null;
+  private org.neo4j.driver.Record executeQueryGetRecord(Session session, CypherQuery q) {
+    org.neo4j.driver.Record record = null;
     CypherQueryLog queryLog = null;
     if (q instanceof CypherQueryWithParameters) {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
@@ -214,14 +214,14 @@ public abstract class AbstractNeo4JProxy {
       final Map<String, Object> parameterMap = qp.getParameterMap();
       queryLog = prepareQueryLog("getRecord", qp);
       record = session.readTransaction(tx -> {
-        StatementResult result = tx.run(runnableQuery, parameterMap);
+        Result result = tx.run(runnableQuery, parameterMap);
         return result.hasNext() ? result.next() : null;
       });
     } else if (q instanceof CypherQueryLiteral) {
       final String runnableQuery = q.getRunnableQuery();
       queryLog = prepareQueryLog("getRecord", q);
       record = session.readTransaction(tx -> {
-        StatementResult result = tx.run(runnableQuery);
+        Result result = tx.run(runnableQuery);
         return result.hasNext() ? result.next() : null;
       });
     }
@@ -233,10 +233,11 @@ public abstract class AbstractNeo4JProxy {
 
   protected long executeReadGetLong(CypherQuery q) {
     try (Session session = driver.session()) {
-      Record record = executeQueryGetRecord(session, q);
+      org.neo4j.driver.Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Value value = record.get(0);
-        if (value.type().equals(session.typeSystem().INTEGER())) {
+        value.type().name();
+        if (value.type().equals(driver.defaultTypeSystem().INTEGER())) {
           return value.asLong();
         }
       }
@@ -249,10 +250,10 @@ public abstract class AbstractNeo4JProxy {
 
   protected String executeReadGetString(CypherQuery q) {
     try (Session session = driver.session()) {
-      Record record = executeQueryGetRecord(session, q);
+      org.neo4j.driver.Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Value value = record.get(0);
-        if (value.type().equals(session.typeSystem().STRING())) {
+        if (value.type().equals(driver.defaultTypeSystem().STRING())) {
           return value.asString();
         }
       }
@@ -265,10 +266,10 @@ public abstract class AbstractNeo4JProxy {
 
   protected boolean executeReadGetBoolean(CypherQuery q) {
     try (Session session = driver.session()) {
-      Record record = executeQueryGetRecord(session, q);
+      org.neo4j.driver.Record record = executeQueryGetRecord(session, q);
       if (record != null) {
         Value value = record.get(0);
-        if (value.type().equals(session.typeSystem().BOOLEAN())) {
+        if (value.type().equals(driver.defaultTypeSystem().BOOLEAN())) {
           return value.asBoolean();
         }
       }
@@ -281,7 +282,7 @@ public abstract class AbstractNeo4JProxy {
 
   protected <T extends CedarResource> T executeReadGetOne(CypherQuery q, Class<T> type) {
     try (Session session = driver.session()) {
-      Record record = executeQueryGetRecord(session, q);
+      org.neo4j.driver.Record record = executeQueryGetRecord(session, q);
       return extractClassFromRecord(record, type);
     } catch (ClientException ex) {
       reportQueryError(ex, q);
@@ -289,8 +290,8 @@ public abstract class AbstractNeo4JProxy {
     return null;
   }
 
-  private List<Record> executeQueryGetRecordList(Session session, CypherQuery q) {
-    List<Record> records = null;
+  private List<org.neo4j.driver.Record> executeQueryGetRecordList(Session session, CypherQuery q) {
+    List<org.neo4j.driver.Record> records = null;
     CypherQueryLog queryLog = null;
     if (q instanceof CypherQueryWithParameters) {
       CypherQueryWithParameters qp = (CypherQueryWithParameters) q;
@@ -298,8 +299,8 @@ public abstract class AbstractNeo4JProxy {
       final Map<String, Object> parameterMap = qp.getParameterMap();
       queryLog = prepareQueryLog("getRecordList", qp);
       records = session.readTransaction(tx -> {
-        StatementResult result = tx.run(runnableQuery, parameterMap);
-        List<Record> nodes = new ArrayList<>();
+        Result result = tx.run(runnableQuery, parameterMap);
+        List<org.neo4j.driver.Record> nodes = new ArrayList<>();
         while (result.hasNext()) {
           nodes.add(result.next());
         }
@@ -309,8 +310,8 @@ public abstract class AbstractNeo4JProxy {
       final String runnableQuery = q.getRunnableQuery();
       queryLog = prepareQueryLog("getRecordList", q);
       records = session.readTransaction(tx -> {
-        StatementResult result = tx.run(runnableQuery);
-        List<Record> nodes = new ArrayList<>();
+        Result result = tx.run(runnableQuery);
+        List<org.neo4j.driver.Record> nodes = new ArrayList<>();
         while (result.hasNext()) {
           nodes.add(result.next());
         }
@@ -327,26 +328,26 @@ public abstract class AbstractNeo4JProxy {
   protected <T extends CedarResource> List<T> executeReadGetList(CypherQuery q, Class<T> type) {
     List<T> folderServerNodeList = new ArrayList<>();
     try (Session session = driver.session()) {
-      List<Record> records = executeQueryGetRecordList(session, q);
+      List<org.neo4j.driver.Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
-        for (Record r : records) {
+        for (org.neo4j.driver.Record r : records) {
           if (r.size() == 1) {
             Value value = r.get(0);
-            if (value.type().equals(session.typeSystem().NODE())) {
+            if (value.type().equals(driver.defaultTypeSystem().NODE())) {
               Node n = value.asNode();
               if (n != null) {
                 JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
                 T folderServerNode = buildClass(node, type);
                 folderServerNodeList.add(folderServerNode);
               }
-            } else if (value.type().equals(session.typeSystem().PATH())) {
+            } else if (value.type().equals(driver.defaultTypeSystem().PATH())) {
               Path segments = value.asPath();
               for (Node n : segments.nodes()) {
                 JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
                 T folderServerNode = buildClass(node, type);
                 folderServerNodeList.add(folderServerNode);
               }
-            } else if (value.type().equals(session.typeSystem().LIST())) {
+            } else if (value.type().equals(driver.defaultTypeSystem().LIST())) {
               List<Object> list = value.asList();
               for (Object o : list) {
                 if (o instanceof Node) {
@@ -359,7 +360,7 @@ public abstract class AbstractNeo4JProxy {
             }
           } else {
             for (Value value : r.values()) {
-              if (value.type().equals(session.typeSystem().NODE())) {
+              if (value.type().equals(driver.defaultTypeSystem().NODE())) {
                 Node n = value.asNode();
                 if (n != null) {
                   JsonNode node = JsonMapper.MAPPER.valueToTree(n.asMap());
@@ -382,12 +383,12 @@ public abstract class AbstractNeo4JProxy {
   protected <T extends CedarResourceId> List<T> executeReadGetIdList(CypherQuery q, Class<T> type) {
     List<T> folderServerIdList = new ArrayList<>();
     try (Session session = driver.session()) {
-      List<Record> records = executeQueryGetRecordList(session, q);
+      List<org.neo4j.driver.Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
-        for (Record r : records) {
+        for (org.neo4j.driver.Record r : records) {
           if (r.size() == 1) {
             Value value = r.get(0);
-            if (value.type().equals(session.typeSystem().STRING())) {
+            if (value.type().equals(driver.defaultTypeSystem().STRING())) {
               String sv = value.asString();
               T folderServerId = buildIdClass(sv, type);
               folderServerIdList.add(folderServerId);
@@ -406,9 +407,9 @@ public abstract class AbstractNeo4JProxy {
   protected <T extends ResultTuple> List<T> executeReadGetToupleList(CypherQuery q, Class<T> type) {
     List<T> tupleList = new ArrayList<>();
     try (Session session = driver.session()) {
-      List<Record> records = executeQueryGetRecordList(session, q);
+      List<org.neo4j.driver.Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
-        for (Record r : records) {
+        for (org.neo4j.driver.Record r : records) {
           Map m = r.asMap();
           JsonNode node = JsonMapper.MAPPER.valueToTree(m);
           T tuple = buildToupleClass(node, type);
@@ -426,9 +427,9 @@ public abstract class AbstractNeo4JProxy {
   protected List<FolderServerArc> executeReadGetArcList(CypherQuery q) {
     List<FolderServerArc> folderServerArcList = new ArrayList<>();
     try (Session session = driver.session()) {
-      List<Record> records = executeQueryGetRecordList(session, q);
+      List<org.neo4j.driver.Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
-        for (Record r : records) {
+        for (org.neo4j.driver.Record r : records) {
           Map<String, Object> recordMap = r.asMap();
           if (recordMap != null) {
             JsonNode node = JsonMapper.MAPPER.valueToTree(recordMap);
@@ -454,15 +455,15 @@ public abstract class AbstractNeo4JProxy {
     }
     fieldNameMap.put(Neo4JUtil.escapePropertyName("@id"), "@id");
     fieldNameMap.put(Neo4JUtil.escapePropertyName("resourceType"), "resourceType");
-    
+
     List<Map<String, Object>> folderServerNodeList = new ArrayList<>();
     try (Session session = driver.session()) {
-      List<Record> records = executeQueryGetRecordList(session, q);
+      List<org.neo4j.driver.Record> records = executeQueryGetRecordList(session, q);
       if (records != null) {
-        for (Record r : records) {
+        for (org.neo4j.driver.Record r : records) {
           if (r.size() == 1) {
             Value value = r.get(0);
-            if (value.type().equals(session.typeSystem().NODE())) {
+            if (value.type().equals(driver.defaultTypeSystem().NODE())) {
               Node n = value.asNode();
               if (n != null) {
                 Map<String, Object> m = convertToMap(n, fieldNameMap);
@@ -471,7 +472,7 @@ public abstract class AbstractNeo4JProxy {
             }
           } else {
             for (Value value : r.values()) {
-              if (value.type().equals(session.typeSystem().NODE())) {
+              if (value.type().equals(driver.defaultTypeSystem().NODE())) {
                 Node n = value.asNode();
                 if (n != null) {
                   Map<String, Object> m = convertToMap(n, fieldNameMap);
