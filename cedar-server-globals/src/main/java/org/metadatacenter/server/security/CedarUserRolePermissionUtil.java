@@ -19,6 +19,7 @@ public abstract class CedarUserRolePermissionUtil {
   private static final Set<String> categoryPrivilegedAdministratorPermissions;
   private static final Set<String> searchReindexerPermissions;
   private static final Set<String> processMessageSenderPermission;
+  private static final Set<String> internalsManagerPermission;
 
   static {
     defaultUserPermissions = new HashSet<>();
@@ -82,6 +83,9 @@ public abstract class CedarUserRolePermissionUtil {
     processMessageSenderPermission = new HashSet<>();
     processMessageSenderPermission.add(CedarPermission.SEND_PROCESS_MESSAGE.getPermissionName());
 
+    internalsManagerPermission = new HashSet<>();
+    internalsManagerPermission.add(CedarPermission.INTERNALS_READ.getPermissionName());
+
     roleToPermissions = new HashMap<>();
     roleToPermissions.put(CedarUserRole.DEFAULT_USER, defaultUserPermissions);
     roleToPermissions.put(CedarUserRole.TEMPLATE_CREATOR, templateCreatorPermissions);
@@ -93,6 +97,7 @@ public abstract class CedarUserRolePermissionUtil {
     roleToPermissions.put(CedarUserRole.CATEGORY_PRIVILEGED_ADMINISTRATOR, categoryPrivilegedAdministratorPermissions);
     roleToPermissions.put(CedarUserRole.SEARCH_REINDEXER, searchReindexerPermissions);
     roleToPermissions.put(CedarUserRole.PROCESS_MESSAGE_SENDER, processMessageSenderPermission);
+    roleToPermissions.put(CedarUserRole.INTERNALS_MANAGER, internalsManagerPermission);
   }
 
   public static void expandRolesIntoPermissions(CedarUser u) {

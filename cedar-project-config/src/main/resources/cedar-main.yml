@@ -215,6 +215,7 @@ blueprintUserProfile:
       - "categoryPrivilegedAdministrator"
       - "searchReindexer"
       - "processMessageSender"
+      - "internalsManager"
   uiPreferences:
     folderView:
       sortBy: "name"
