@@ -53,6 +53,6 @@ public class CedarNodeMaterializedPermissions {
     sb.append(userOrGroupId);
     sb.append("|");
     sb.append(permission.getValue());
-    return DigestUtils.md5Hex(sb.toString());
+    return sb.toString();
   }
 }
