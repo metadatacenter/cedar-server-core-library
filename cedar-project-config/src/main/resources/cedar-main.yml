@@ -186,6 +186,10 @@ servers:
     httpPort: "${CEDAR_INTERNALS_HTTP_PORT}"
     adminPort: "${CEDAR_INTERNALS_ADMIN_PORT}"
     stopPort: "${CEDAR_INTERNALS_STOP_PORT}"
+  impex:
+    httpPort: "${CEDAR_IMPEX_HTTP_PORT}"
+    adminPort: "${CEDAR_IMPEX_ADMIN_PORT}"
+    stopPort: "${CEDAR_IMPEX_STOP_PORT}"
 
 
 #Default values for user profile
@@ -215,6 +219,7 @@ blueprintUserProfile:
       - "categoryPrivilegedAdministrator"
       - "searchReindexer"
       - "processMessageSender"
+      - "internalsManager"
   uiPreferences:
     folderView:
       sortBy: "name"

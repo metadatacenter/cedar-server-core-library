@@ -318,6 +318,13 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarStopPortInternals = variableToComponent.get(CedarEnvironmentVariable.CEDAR_INTERNALS_STOP_PORT);
     cedarStopPortInternals.add(SystemComponent.SERVER_INTERNALS);
 
+    Set<SystemComponent> cedarHttpPortImpex = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMPEX_HTTP_PORT);
+    cedarHttpPortImpex.add(SystemComponent.SERVER_IMPEX);
+    Set<SystemComponent> cedarAdminPortImpex = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMPEX_ADMIN_PORT);
+    cedarAdminPortImpex.add(SystemComponent.SERVER_IMPEX);
+    Set<SystemComponent> cedarStopPortImpex = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMPEX_STOP_PORT);
+    cedarStopPortImpex.add(SystemComponent.SERVER_IMPEX);
+
 
     // Compute the reverse map
     componentToVariable = new LinkedHashMap<>();

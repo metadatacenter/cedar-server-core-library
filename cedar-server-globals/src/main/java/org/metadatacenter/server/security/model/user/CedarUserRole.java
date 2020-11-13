@@ -13,7 +13,8 @@ public enum CedarUserRole {
   CATEGORY_ADMINISTRATOR("categoryAdministrator"),
   CATEGORY_PRIVILEGED_ADMINISTRATOR("categoryPrivilegedAdministrator"),
   SEARCH_REINDEXER("searchReindexer"),
-  PROCESS_MESSAGE_SENDER("processMessageSender");
+  PROCESS_MESSAGE_SENDER("processMessageSender"),
+  INTERNALS_MANAGER("internalsManager");
 
   private final String value;
 

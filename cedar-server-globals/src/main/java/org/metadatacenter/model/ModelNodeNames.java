@@ -214,12 +214,13 @@ public class ModelNodeNames
       VALUE_CONSTRAINTS_MIN_NUMBER_VALUE, VALUE_CONSTRAINTS_MAX_NUMBER_VALUE, VALUE_CONSTRAINTS_DECIMAL_PLACE,
       VALUE_CONSTRAINTS_NUMBER_TYPE, VALUE_CONSTRAINTS_UNIT_OF_MEASURE, VALUE_CONSTRAINTS_TEMPORAL_TYPE).collect(Collectors.toUnmodifiableSet());
 
+  public static final String RDFS = "rdfs";
   public static final String XSD = "xsd";
   public static final String PAV = "pav";
   public static final String SCHEMA = "schema";
   public static final String OSLC = "oslc";
-  public static final String BIBO = "bibo";
   public static final String SKOS = "skos";
+  public static final String BIBO = "bibo";
 
   public static final Set<String> ARTIFACT_CONTEXT_PREFIXES = Stream.of(XSD, PAV, SCHEMA, OSLC, BIBO, SKOS)
     .collect(Collectors.toUnmodifiableSet());

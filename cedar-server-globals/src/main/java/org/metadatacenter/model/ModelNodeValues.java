@@ -6,6 +6,7 @@ public class ModelNodeValues {
   }
 
   public static final String JSON_SCHEMA_IRI = "http://json-schema.org/draft-04/schema#";
+  public static final String RDFS_IRI = "http://www.w3.org/2000/01/rdf-schema#";
   public static final String XSD_IRI = "http://www.w3.org/2001/XMLSchema#";
   public static final String PAV_IRI = "http://purl.org/pav/";
   public static final String SCHEMA_IRI = "http://schema.org/";

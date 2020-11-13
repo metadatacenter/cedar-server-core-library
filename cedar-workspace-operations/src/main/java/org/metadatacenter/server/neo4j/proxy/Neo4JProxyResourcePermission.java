@@ -145,7 +145,7 @@ public class Neo4JProxyResourcePermission extends AbstractNeo4JProxy {
     String cypher = null;
     switch (permission) {
       case READ:
-        cypher = CypherQueryBuilderFilesystemResourcePermission.getUsersWithTransitiveReadOnFilesystemResource();
+        cypher = CypherQueryBuilderFilesystemResourcePermission.getUserIdsWithTransitiveReadOnFilesystemResource();
         break;
       case WRITE:
         cypher = CypherQueryBuilderFilesystemResourcePermission.getUserIdsWithTransitiveWriteOnFilesystemResource();

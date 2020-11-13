@@ -30,6 +30,8 @@ public class ServersConfig {
 
   private ServerConfig internals;
 
+  private ServerConfig impex;
+
   public ServerConfig getGroup() {
     return group;
   }
@@ -82,6 +84,10 @@ public class ServersConfig {
     return internals;
   }
 
+  public ServerConfig getImpex() {
+    return impex;
+  }
+
   public ServerConfig get(ServerName serverName) {
     switch (serverName) {
       case GROUP:
@@ -110,6 +116,8 @@ public class ServersConfig {
         return openview;
       case INTERNALS:
         return internals;
+      case IMPEX:
+        return impex;
       default:
         return null;
     }
