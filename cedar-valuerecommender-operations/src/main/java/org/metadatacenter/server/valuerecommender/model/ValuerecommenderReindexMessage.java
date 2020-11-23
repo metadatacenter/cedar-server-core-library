@@ -3,6 +3,7 @@ package org.metadatacenter.server.valuerecommender.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.metadatacenter.id.CedarInstanceArtifactId;
 import org.metadatacenter.id.CedarTemplateId;
+import org.metadatacenter.id.CedarTemplateInstanceId;
 
 import java.time.Instant;
 
@@ -10,7 +11,7 @@ import java.time.Instant;
 public class ValuerecommenderReindexMessage {
 
   private CedarTemplateId templateId;
-  private CedarInstanceArtifactId instanceId;
+  private CedarTemplateInstanceId instanceId;
   private ValuerecommenderReindexMessageResourceType resourceType;
   private ValuerecommenderReindexMessageActionType actionType;
   private Instant creationTime;
@@ -18,7 +19,7 @@ public class ValuerecommenderReindexMessage {
   public ValuerecommenderReindexMessage() {
   }
 
-  public ValuerecommenderReindexMessage(CedarTemplateId templateId, CedarInstanceArtifactId instanceId,
+  public ValuerecommenderReindexMessage(CedarTemplateId templateId, CedarTemplateInstanceId instanceId,
                                         ValuerecommenderReindexMessageResourceType resourceType,
                                         ValuerecommenderReindexMessageActionType actionType) {
     this.templateId = templateId;
