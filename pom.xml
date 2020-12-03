@@ -10,7 +10,9 @@
 
   <groupId>org.metadatacenter</groupId>
   <artifactId>cedar-server-core-library</artifactId>
+  <version>2.5.37-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <name>CEDAR Server Core Library</name>
 
   <scm>
