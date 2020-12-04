@@ -38,6 +38,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarHome = variableToComponent.get(CedarEnvironmentVariable.CEDAR_HOME);
     cedarHome.add(SystemComponent.ADMIN_TOOL); // generate-nginx-config, export dir
+    cedarHome.add(SystemComponent.CADSR_TOOL);
     cedarHome.add(SystemComponent.UTIL_BIN); // utility shell scrips
 
     Set<SystemComponent> keycloakHome = variableToComponent.get(CedarEnvironmentVariable.KEYCLOAK_HOME);
@@ -60,6 +61,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarHost = variableToComponent.get(CedarEnvironmentVariable.CEDAR_HOST);
     cedarHost.add(SystemComponent.ADMIN_TOOL); // generate-nginx-config, all Keycloak related tasks
+    cedarHost.add(SystemComponent.CADSR_TOOL);
     // gulpfile.js replaces values in url-service.conf.json and test-env.js
     cedarHost.add(SystemComponent.FRONTEND_DEVELOPMENT);
     cedarHost.add(SystemComponent.FRONTEND_TEST);
@@ -69,6 +71,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarNetGateway = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NET_GATEWAY);
     cedarNetGateway.add(SystemComponent.ADMIN_TOOL);
+    cedarNetGateway.add(SystemComponent.CADSR_TOOL);
     // all the microservices
     cedarNetGateway.addAll(allMicroservices);
 
@@ -104,6 +107,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarNeo4jUserPassword = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_PASSWORD);
     cedarNeo4jUserPassword.add(SystemComponent.ADMIN_TOOL);
+    cedarNeo4jUserPassword.add(SystemComponent.CADSR_TOOL);
     cedarNeo4jUserPassword.addAll(allMicroservices);
 
     Set<SystemComponent> cedarNeo4jUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_NEO4J_USER_NAME);
@@ -117,6 +121,7 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ADMIN_USER_API_KEY);
     cedarAdminUserApiKey.add(SystemComponent.ADMIN_TOOL); // all neo4j, keycloak related tasks + search reindex
+    cedarAdminUserApiKey.add(SystemComponent.CADSR_TOOL);
     cedarAdminUserApiKey.add(SystemComponent.KEYCLOAK_EVENT_LISTENER); // user login callback, auth with this
     cedarAdminUserApiKey.add(SystemComponent.SERVER_RESOURCE); // index regeneration
     cedarAdminUserApiKey.add(SystemComponent.SERVER_WORKER); // SearchPermissionExecutorService
@@ -126,13 +131,16 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarAdminUserPasswd = variableToComponent.get(CedarEnvironmentVariable.CEDAR_ADMIN_USER_PASSWORD);
     cedarAdminUserPasswd.add(SystemComponent.ADMIN_TOOL); // all keycloak related tasks
+    cedarAdminUserPasswd.add(SystemComponent.CADSR_TOOL);
     cedarAdminUserPasswd.add(SystemComponent.SERVER_INTERNALS);
 
     Set<SystemComponent> cedarCaDSRAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_CADSR_ADMIN_USER_API_KEY);
     cedarCaDSRAdminUserApiKey.add(SystemComponent.ADMIN_TOOL);
+    cedarCaDSRAdminUserApiKey.add(SystemComponent.CADSR_TOOL);
 
     Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME);
     cedarMongoUserName.add(SystemComponent.ADMIN_TOOL);
+    cedarMongoUserName.add(SystemComponent.CADSR_TOOL);
     // all the microservices for MongoDB initialization for user details
     cedarMongoUserName.addAll(allMicroservices);
 
@@ -202,16 +210,19 @@ public class CedarConfigEnvironmentDescriptor {
 
     Set<SystemComponent> cedarSaltApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_SALT_API_KEY);
     cedarSaltApiKey.add(SystemComponent.ADMIN_TOOL); //profile creation
+    cedarSaltApiKey.add(SystemComponent.CADSR_TOOL);
     cedarSaltApiKey.add(SystemComponent.SERVER_RESOURCE); //profile creation triggered by event listener
 
     Set<SystemComponent> redisPersistentHost = variableToComponent.get(CedarEnvironmentVariable
         .CEDAR_REDIS_PERSISTENT_HOST);
     redisPersistentHost.addAll(allMicroservices);
     redisPersistentHost.add(SystemComponent.ADMIN_TOOL);
+    redisPersistentHost.add(SystemComponent.CADSR_TOOL);
 
     Set<SystemComponent> redisPersistentPort = variableToComponent.get(CedarEnvironmentVariable.CEDAR_REDIS_PERSISTENT_PORT);
     redisPersistentPort.addAll(allMicroservices);
     redisPersistentPort.add(SystemComponent.ADMIN_TOOL);
+    redisPersistentPort.add(SystemComponent.CADSR_TOOL);
 
     Set<SystemComponent> cedarHttpPortGroup = variableToComponent.get(CedarEnvironmentVariable.CEDAR_GROUP_HTTP_PORT);
     cedarHttpPortGroup.add(SystemComponent.SERVER_GROUP);
@@ -246,6 +257,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarHttpPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_HTTP_PORT);
     cedarHttpPortResource.add(SystemComponent.SERVER_RESOURCE);
     cedarHttpPortResource.add(SystemComponent.ADMIN_TOOL);
+    cedarHttpPortResource.add(SystemComponent.CADSR_TOOL);
     Set<SystemComponent> cedarAdminPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_ADMIN_PORT);
     cedarAdminPortResource.add(SystemComponent.SERVER_RESOURCE);
     Set<SystemComponent> cedarStopPortResource = variableToComponent.get(CedarEnvironmentVariable.CEDAR_RESOURCE_STOP_PORT);

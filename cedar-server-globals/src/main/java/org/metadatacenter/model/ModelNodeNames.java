@@ -147,6 +147,9 @@ public class ModelNodeNames
   public static final String UI_INPUT_TIME_FORMAT = "inputTimeFormat";
   public static final String UI_TEMPORAL_GRANULARITY = "temporalGranularity";
   public static final String UI_TIMEZONE_ENABLED = "timezoneEnabled";
+  public static final String UI_CONTENT = "_content";
+  public static final String UI_HEADER = "header";
+  public static final String UI_FOOTER = "footer";
 
   public static final Set<String> FIELD_SCHEMA_UI_KEYWORDS = Stream
     .of(UI_VALUE_RECOMMENDATION_ENABLED, UI_FIELD_INPUT_TYPE, UI_HIDDEN,
