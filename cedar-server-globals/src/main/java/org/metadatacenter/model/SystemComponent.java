@@ -20,6 +20,7 @@ public enum SystemComponent {
   FRONTEND_TEST("frontend-test"),
   FRONTEND_PRODUCTION("frontend-production"),
   ADMIN_TOOL("admin-tool"),
+  CADSR_TOOL("cadsr-tool"),
   KEYCLOAK_EVENT_LISTENER("keycloak-event-listener"), // keycloak standalone.xml
   UTIL_BIN("util-bin"), // shell scripts in cedar-util/bin
   ALL("all"); // generic case, include all variables
