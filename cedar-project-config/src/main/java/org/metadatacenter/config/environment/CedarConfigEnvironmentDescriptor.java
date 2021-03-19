@@ -137,6 +137,7 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarCaDSRAdminUserApiKey = variableToComponent.get(CedarEnvironmentVariable.CEDAR_CADSR_ADMIN_USER_API_KEY);
     cedarCaDSRAdminUserApiKey.add(SystemComponent.ADMIN_TOOL);
     cedarCaDSRAdminUserApiKey.add(SystemComponent.CADSR_TOOL);
+    cedarCaDSRAdminUserApiKey.add(SystemComponent.SERVER_IMPEX);
 
     Set<SystemComponent> cedarMongoUserName = variableToComponent.get(CedarEnvironmentVariable.CEDAR_MONGO_APP_USER_NAME);
     cedarMongoUserName.add(SystemComponent.ADMIN_TOOL);
@@ -336,7 +337,6 @@ public class CedarConfigEnvironmentDescriptor {
     cedarAdminPortImpex.add(SystemComponent.SERVER_IMPEX);
     Set<SystemComponent> cedarStopPortImpex = variableToComponent.get(CedarEnvironmentVariable.CEDAR_IMPEX_STOP_PORT);
     cedarStopPortImpex.add(SystemComponent.SERVER_IMPEX);
-
 
     // Compute the reverse map
     componentToVariable = new LinkedHashMap<>();
