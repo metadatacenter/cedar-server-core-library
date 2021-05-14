@@ -47,6 +47,9 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
     try {
       FolderServerNodeInfo info = JsonMapper.MAPPER.readValue(JsonMapper.MAPPER.writeValueAsString(node), FolderServerNodeInfo.class);
       info.setType(node.getType());
+      if (node.getPathInfo() != null && node.getPathInfo().size() > 1) {
+        info.setParentFolderId(node.getPathInfo().get(node.getPathInfo().size()-2).getId());
+      }
       return info;
     } catch (IOException e) {
       e.printStackTrace();
@@ -208,6 +211,12 @@ public class FolderServerNodeInfo implements ResourceWithVersionData, ResourceWi
   public void setIsUserHome(boolean isUserHome) {
     folderData.setUserHome(isUserHome);
   }
+
+  @JsonProperty(NodeProperty.Label.PARENT_FOLDER_ID)
+  public String getParentFolderId() {return folderData.getParentFolderId();}
+
+  @JsonProperty(NodeProperty.Label.PARENT_FOLDER_ID)
+  public void setParentFolderId(String parentFolderId) {folderData.setParentFolderId(parentFolderId);}
 
   @JsonProperty(NodeProperty.Label.IS_OPEN)
   public boolean getIsOpen() {

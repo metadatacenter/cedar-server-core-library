@@ -3,6 +3,7 @@ package org.metadatacenter.server.search.elasticsearch.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.elasticsearch.client.Client;
 import org.metadatacenter.bridge.CedarDataServices;
+import org.metadatacenter.bridge.PathInfoBuilder;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarArtifactId;
@@ -16,6 +17,7 @@ import org.metadatacenter.model.folderserver.info.FolderServerNodeInfo;
 import org.metadatacenter.rest.context.CedarRequestContext;
 import org.metadatacenter.search.IndexingDocumentDocument;
 import org.metadatacenter.server.CategoryServiceSession;
+import org.metadatacenter.server.FolderServiceSession;
 import org.metadatacenter.server.ResourcePermissionServiceSession;
 import org.metadatacenter.server.search.IndexedDocumentId;
 import org.metadatacenter.server.search.elasticsearch.worker.ElasticsearchIndexingWorker;
@@ -46,6 +48,10 @@ public class NodeIndexingService extends AbstractIndexingService {
                                                       CedarNodeMaterializedCategories categories, CedarRequestContext requestContext,
                                                       boolean isIndexRegenerationTask) throws CedarProcessingException {
     IndexingDocumentDocument ir = new IndexingDocumentDocument(node.getId());
+    // Set node's path info
+    FolderServiceSession folderSession = CedarDataServices.getFolderServiceSession(requestContext);
+    node.setPathInfo(PathInfoBuilder.getResourcePathExtract(requestContext, folderSession,
+        CedarDataServices.getResourcePermissionServiceSession(requestContext), node));
     ir.setInfo(FolderServerNodeInfo.fromNode(node));
     ir.setMaterializedPermissions(permissions);
     ir.setMaterializedCategories(categories);

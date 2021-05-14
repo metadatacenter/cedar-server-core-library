@@ -23,6 +23,7 @@ public enum NodeProperty implements CypherQueryParameter {
   IS_ROOT(Label.IS_ROOT),
   IS_SYSTEM(Label.IS_SYSTEM),
   IS_USER_HOME(Label.IS_USER_HOME),
+  PARENT_FOLDER_ID(Label.PARENT_FOLDER_ID),
   NODE_SORT_ORDER(Label.NODE_SORT_ORDER),
   HOME_OF(Label.HOME_OF),
   PREVIOUS_VERSION(Label.PREVIOUS_VERSION),
@@ -67,6 +68,7 @@ public enum NodeProperty implements CypherQueryParameter {
     public static final String IS_ROOT = "isRoot";
     public static final String IS_SYSTEM = "isSystem";
     public static final String IS_USER_HOME = "isUserHome";
+    public static final String PARENT_FOLDER_ID = "parentFolderId";
     public static final String NODE_SORT_ORDER = "nodeSortOrder";
     public static final String HOME_OF = "homeOf";
     public static final String PREVIOUS_VERSION = "pav:previousVersion";

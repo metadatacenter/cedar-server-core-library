@@ -109,6 +109,9 @@
             },
             "schema:description": {
               "type": "keyword"
+            },
+            "parentFolderId": {
+              "type": "keyword"
             }
           }
         },
