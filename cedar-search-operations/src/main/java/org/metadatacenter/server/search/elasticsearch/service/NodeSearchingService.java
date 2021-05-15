@@ -34,6 +34,7 @@ import org.metadatacenter.server.security.model.permission.resource.FilesystemRe
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
+import org.metadatacenter.util.TrustedByUtil;
 import org.metadatacenter.util.http.LinkHeaderUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -147,6 +148,7 @@ public class NodeSearchingService extends AbstractSearchingService {
 
         FolderServerNodeInfo info = indexedDocument.getInfo();
         FolderServerResourceExtract folderServerNodeExtract = FolderServerResourceExtract.fromNodeInfo(info);
+        TrustedByUtil.decorateWithTrustedby(folderServerNodeExtract, info.getParentFolderId());
         resources.add(folderServerNodeExtract);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);
