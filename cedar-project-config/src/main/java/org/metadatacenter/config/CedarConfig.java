@@ -87,6 +87,9 @@ public class CedarConfig extends Configuration {
   @JsonProperty("submission")
   private SubmissionConfig submissionConfig;
 
+  @JsonProperty("trustedFolders")
+  private TrustedFoldersConfig trustedFolders;
+
   @JsonProperty("testUsers")
   private TestUsers testUsers;
 
@@ -264,9 +267,9 @@ public class CedarConfig extends Configuration {
     return categoryRESTAPI;
   }
 
-  public SubmissionConfig getSubmissionConfig() {
-    return submissionConfig;
-  }
+  public SubmissionConfig getSubmissionConfig() { return submissionConfig; }
+
+  public TrustedFoldersConfig getTrustedFolders() { return trustedFolders; }
 
   public TestUsers getTestUsers() {
     return testUsers;

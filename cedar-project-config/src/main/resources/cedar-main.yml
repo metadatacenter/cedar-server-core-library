@@ -345,3 +345,6 @@ testUsers:
     id: "${CEDAR_TEST_USER1_ID}"
   testUser2:
     id: "${CEDAR_TEST_USER2_ID}"
+
+trustedFolders:
+  foldersStr: "${CEDAR_TRUSTED_FOLDERS}"
