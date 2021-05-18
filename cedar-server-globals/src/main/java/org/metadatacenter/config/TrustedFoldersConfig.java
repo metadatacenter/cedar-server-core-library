@@ -16,7 +16,7 @@ public class TrustedFoldersConfig {
   private String foldersStr;
 
   @JsonIgnore
-  private Map<String, String> foldersMap;
+  private Map<String, String> foldersMap = new HashMap<>();
 
   public String getFoldersStr() {
     return foldersStr;
@@ -38,7 +38,9 @@ public class TrustedFoldersConfig {
 class TrustedFoldersConfigConverter extends StdConverter<TrustedFoldersConfig, TrustedFoldersConfig> {
   @Override
   public TrustedFoldersConfig convert(TrustedFoldersConfig trustedFoldersConfig) {
-    if (trustedFoldersConfig.getFoldersStr().charAt(0) != '$') {
+    if (trustedFoldersConfig.getFoldersStr() != null &&
+        trustedFoldersConfig.getFoldersStr().length() > 0 &&
+        trustedFoldersConfig.getFoldersStr().charAt(0) != '$') {
       try {
         Map<String, List<String>> map = JsonMapper.MAPPER.readValue(trustedFoldersConfig.getFoldersStr(), Map.class);
         Map<String, String> folderToEntityMap = new HashMap<>();
