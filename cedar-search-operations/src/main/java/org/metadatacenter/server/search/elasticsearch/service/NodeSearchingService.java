@@ -9,6 +9,7 @@ import org.elasticsearch.search.SearchHit;
 import org.metadatacenter.bridge.CedarDataServices;
 import org.metadatacenter.config.CedarConfig;
 import org.metadatacenter.config.ElasticsearchConfig;
+import org.metadatacenter.config.TrustedFoldersConfig;
 import org.metadatacenter.exception.CedarProcessingException;
 import org.metadatacenter.id.CedarArtifactId;
 import org.metadatacenter.id.CedarCategoryId;
@@ -34,6 +35,7 @@ import org.metadatacenter.server.security.model.permission.resource.FilesystemRe
 import org.metadatacenter.server.security.model.user.CedarUser;
 import org.metadatacenter.server.security.model.user.ResourcePublicationStatusFilter;
 import org.metadatacenter.server.security.model.user.ResourceVersionFilter;
+import org.metadatacenter.util.TrustedByUtil;
 import org.metadatacenter.util.http.LinkHeaderUtil;
 import org.metadatacenter.util.json.JsonMapper;
 import org.slf4j.Logger;
@@ -53,12 +55,14 @@ public class NodeSearchingService extends AbstractSearchingService {
 
   private final Client client;
   private final ElasticsearchConfig config;
+  private final TrustedFoldersConfig trustedFoldersConfig;
   private final ElasticsearchPermissionEnabledContentSearchingWorker permissionEnabledSearchWorker;
   private final ElasticsearchSearchingWorker searchWorker;
 
   NodeSearchingService(CedarConfig cedarConfig, Client client) {
     this.client = client;
     this.config = cedarConfig.getElasticsearchConfig();
+    this.trustedFoldersConfig = cedarConfig.getTrustedFolders();
     permissionEnabledSearchWorker = new ElasticsearchPermissionEnabledContentSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
     searchWorker = new ElasticsearchSearchingWorker(cedarConfig.getElasticsearchConfig(), client);
   }
@@ -147,6 +151,7 @@ public class NodeSearchingService extends AbstractSearchingService {
 
         FolderServerNodeInfo info = indexedDocument.getInfo();
         FolderServerResourceExtract folderServerNodeExtract = FolderServerResourceExtract.fromNodeInfo(info);
+        TrustedByUtil.decorateWithTrustedby(folderServerNodeExtract, info.getParentFolderId(), trustedFoldersConfig.getFoldersMap());
         resources.add(folderServerNodeExtract);
       } catch (IOException e) {
         log.error("Error while deserializing the search result document", e);

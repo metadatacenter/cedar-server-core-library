@@ -317,6 +317,10 @@ public class CedarConfigEnvironmentDescriptor {
     Set<SystemComponent> cedarTestUser2Id = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TEST_USER2_ID);
     cedarTestUser2Id.add(SystemComponent.SERVER_MESSAGING);
 
+    Set<SystemComponent> cedarTrustedFolders = variableToComponent.get(CedarEnvironmentVariable.CEDAR_TRUSTED_FOLDERS);
+    cedarTrustedFolders.add(SystemComponent.SERVER_WORKER);
+    cedarTrustedFolders.add(SystemComponent.SERVER_RESOURCE);
+
     Set<SystemComponent> cedarHttpPortOpenview = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPENVIEW_HTTP_PORT);
     cedarHttpPortOpenview.add(SystemComponent.SERVER_OPENVIEW);
     Set<SystemComponent> cedarAdminPortOpenview = variableToComponent.get(CedarEnvironmentVariable.CEDAR_OPENVIEW_ADMIN_PORT);

@@ -31,6 +31,7 @@ public abstract class FolderServerArtifactReport extends FolderServerArtifactCur
   private FolderServerArtifactExtract derivedFromExtract;
   private List<FolderServerArtifactExtract> versions;
   private List<List<FolderServerCategoryExtract>> categories;
+  private String trustedBy;
 
   public FolderServerArtifactReport(CedarResourceType resourceType) {
     super(resourceType);
@@ -76,6 +77,16 @@ public abstract class FolderServerArtifactReport extends FolderServerArtifactCur
   @JsonProperty(NodeProperty.OnTheFly.CATEGORIES)
   public void setCategories(List<List<FolderServerCategoryExtract>> categories) {
     this.categories = categories;
+  }
+
+  @JsonProperty("trustedBy")
+  public String getTrustedBy() {
+    return trustedBy;
+  }
+
+  @JsonProperty("trustedBy")
+  public void setTrustedBy(String trustedBy) {
+    this.trustedBy = trustedBy;
   }
 
 }

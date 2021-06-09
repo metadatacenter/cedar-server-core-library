@@ -5,6 +5,7 @@ public class FolderDataGroup {
   private boolean userHome;
   private boolean system;
   private boolean root;
+  private String parentFolderId;
 
   public FolderDataGroup() {
   }
@@ -32,4 +33,8 @@ public class FolderDataGroup {
   public void setRoot(boolean root) {
     this.root = root;
   }
+
+  public String getParentFolderId() { return parentFolderId; }
+
+  public void setParentFolderId(String parentFolderId) { this.parentFolderId = parentFolderId; }
 }

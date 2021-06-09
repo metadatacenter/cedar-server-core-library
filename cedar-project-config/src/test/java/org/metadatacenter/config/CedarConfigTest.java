@@ -79,6 +79,9 @@ public class CedarConfigTest {
     env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_TEMPLATE_ID_1.getName(), "http://template-id-1");
     env.put(CedarEnvironmentVariable.CEDAR_SUBMISSION_TEMPLATE_ID_2.getName(), "http://template-id-2");
 
+    env.put(CedarEnvironmentVariable.CEDAR_TRUSTED_FOLDERS.getName(),
+        "{\\\"caDSR\\\":[\\\"https://repo.metadatacenter.orgx/folders/c3a7b03c-87bb-49c4-b311-2eb1bd398c4e\\\"]}");
+
     env.put(CedarEnvironmentVariable.CEDAR_BIOPORTAL_REST_BASE.getName(), "http://data.bioontology.org/");
 
     env.put(CedarEnvironmentVariable.CEDAR_ELASTICSEARCH_HOST.getName(), "127.0.0.1");
