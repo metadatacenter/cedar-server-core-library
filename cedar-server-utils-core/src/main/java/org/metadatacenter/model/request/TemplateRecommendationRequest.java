@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class RecommendTemplatesRequest {
+public class TemplateRecommendationRequest {
 
   @Valid
   @NotNull
   private JsonNode metadataRecord;
 
-  public RecommendTemplatesRequest() { }
+  public TemplateRecommendationRequest() { }
 
   public JsonNode getMetadataRecord() {
     return metadataRecord;
